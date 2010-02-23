@@ -45,7 +45,7 @@ lanyard.geom.Extent.prototype.getRadius = function () {};
  * @param {lanyard.geom.Frustum} frustum the Frustum with which to test for intersection.
  * @return {boolean} true if there is an intersection, false otherwise.
  */
-lanyard.geom.Extent.prototype.intersects = function (frustum) {};
+lanyard.geom.Extent.prototype.intersectsFrustum = function (frustum) {};
 
 /**
  * Obtain the intersections of this extent with line. The returned array may be either

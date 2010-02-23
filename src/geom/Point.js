@@ -203,7 +203,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.dot', lanyard.geom.Point.prototy
 /**
  * Find the dot of the current point with the current point.
  * @this {lanyard.geom.Point}
- * @return {lanyard.geom.Point} the result of the dot product.
+ * @return {number} the result of the dot product.
  */
 lanyard.geom.Point.prototype.selfDot = function () {
     return this._x * this._x + this._y * this._y + this._z * this._z;

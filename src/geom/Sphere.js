@@ -37,9 +37,7 @@ goog.exportSymbol('lanyard.geom.Sphere', lanyard.geom.Sphere);
  * @const
  * @type {lanyard.geom.Sphere}
  */
-lanyard.geom.Sphere.prototype.UNIT_SPHERE = function () {
-    return new lanyard.geom.Sphere(lanyard.geom.Point.prototype.ZERO, 1);
-};
+lanyard.geom.Sphere.prototype.UNIT_SPHERE = new lanyard.geom.Sphere(lanyard.geom.Point.prototype.ZERO, 1);
 goog.exportSymbol('lanyard.geom.Sphere.prototype.UNIT_SPHERE',
     lanyard.geom.Sphere.prototype.UNIT_SPHERE);
 
@@ -88,6 +86,21 @@ lanyard.geom.Sphere.prototype.getCenter = function () {
 };
 
 /**
+ * Calculates a discriminant. A discriminant is useful to determine the number of
+ * roots to a quadratic equation. If the discriminant is less than zero, there are
+ * no roots. If it equals zero, there is one root. If it is greater than zero, there
+ * are two roots.
+ *
+ * @param {number} a the coefficient of the second order pronumeral.
+ * @param {number} b the coefficient of the first order pronumeral.
+ * @param {number} c the constant parameter in the quadratic equation.
+ * @return {number} the discriminant "b squared minus 4ac".
+ */
+lanyard.geom.Sphere.prototype.discriminant = function (a, b, c) {
+    return b * b - 4 * a * c;
+};
+
+/**
  * Obtains the intersections of this sphere with a line. The returned array may be
  * either null or of zero length if no intersections are discovered. It does not contain
  * null elements and will have a size of 2 at most. Tangential intersections are marked
@@ -115,21 +128,6 @@ lanyard.geom.Sphere.prototype.intersect = function (line) {
         var far = line.getPointAt((-b + discriminantRoot) / (2 * a));
         return [new lanyard.geom.Intersection(near, false), new lanyard.geom.Intersection(far, false)];
     }
-};
-
-/**
- * Calculates a discriminant. A discriminant is useful to determine the number of
- * roots to a quadratic equation. If the discriminant is less than zero, there are
- * no roots. If it equals zero, there is one root. If it is greater than zero, there
- * are two roots.
- *
- * @param {number} a the coefficient of the second order pronumeral.
- * @param {number} b the coefficient of the first order pronumeral.
- * @param {number} c the constant parameter in the quadratic equation.
- * @return {number} the discriminant "b squared minus 4ac".
- */
-lanyard.geom.Sphere.prototype.discriminant = function (a, b, c) {
-    return b * b - 4 * a * c;
 };
 
 /**

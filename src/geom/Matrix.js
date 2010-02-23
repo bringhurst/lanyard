@@ -111,7 +111,7 @@ lanyard.geom.Matrix.prototype.determinant = function () {};
 /**
  * Obtain the entries of this matrix.
  *
- * @return {array.<number>} the entries in this matrix.
+ * @return {Array.<number>} the entries in this matrix.
  */
 lanyard.geom.Matrix.prototype.getEntries = function () {};
 
