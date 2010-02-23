@@ -1,0 +1,37 @@
+<html>
+ <head>
+  <title>Test Page for Lanyard.Geom.Point</title>
+  <script language="javascript" src="/jsunit/app/jsUnitCore.js"></script>
+  <script language="javascript" src="/jsunit/test-lanyard/lanyard.js"></script>
+ </head>
+ <body>
+  <script language="javascript">
+    function testShortConstructor() {
+        var xVal = 20.0;
+        var yVal = -18.5;
+        var zVal = -10.2;
+
+        var p = new lanyard.geom.Point(xVal, yVal, zVal);
+
+        assertEquals(xVal, p.getX());
+        assertEquals(yVal, p.getY());
+        assertEquals(zVal, p.getZ());
+        assertEquals(1, p.getW());
+    }
+
+    function testLongConstructor() {
+        var xVal = 20.0;
+        var yVal = -18.5;
+        var zVal = -10.2;
+        var wVal = 5.0;
+
+        var p = new lanyard.geom.Point(xVal, yVal, zVal, wVal);
+
+        assertEquals(xVal, p.getX());
+        assertEquals(yVal, p.getY());
+        assertEquals(zVal, p.getZ());
+        assertEquals(wVal, p.getW());
+    }
+  </script>
+ </body>
+</html>

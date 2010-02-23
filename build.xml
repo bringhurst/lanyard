@@ -1,0 +1,102 @@
+<project name="lanyard" default="all" basedir=".">
+
+  <property name="src.dir" value="${basedir}/src" />
+  <property name="contrib.dir" value="${basedir}/contrib" />
+  <property name="closure-compiler.dir" value="${contrib.dir}/closure-compiler" />
+  <property name="closure-library.dir" value="${contrib.dir}/closure-library" />
+  <property name="build.dir" value="${basedir}/build" />
+  <property name="test.dir" value="${basedir}/test" />
+  <property name="jsunit.dir" value="${test.dir}/jsunit" />
+
+  <target name="clean" description="delete generated files" depends="test-clean">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <macrodef name="calcdeps">
+    <attribute name="inputfile" default="${src.dir}/lanyard.js" />
+    <attribute name="outputfile" />
+    <attribute name="compilerjarfile" default="${closure-compiler.dir}/compiler.jar" />
+    <attribute name="compilationlevel" default="ADVANCED_OPTIMIZATIONS" />
+    <attribute name="extraflags" default="" />
+    <attribute name="outputmode" default="compiled" />
+    <sequential>
+      <mkdir dir="${build.dir}" />
+      <exec executable="python"
+            output="${build.dir}/@{outputfile}"
+            logError="true"
+            failonerror="true">
+        <arg value="${closure-library.dir}/bin/calcdeps.py" />
+        <!-- Double-quote file arguments in case they contain spaces. -->
+        <arg line='-i "@{inputfile}"' />
+        <arg line='-p "${src.dir}"' />
+        <arg line='-p "${closure-library.dir}"' />
+        <arg line="-o @{outputmode}" />
+        <arg line='-c "@{compilerjarfile}"' />
+        <arg line='-f "--compilation_level=@{compilationlevel}"' />
+        <arg line='-f "--jscomp_error=deprecated"' />
+        <arg line='-f "--jscomp_error=visibility"' />
+        <arg line='-f "--jscomp_error=accessControls"' />
+        <arg line='-f "--jscomp_error=fileoverviewTags"' />
+        <arg line='-f "--jscomp_error=strictModuleDepCheck"' />
+        <arg line='-f "--jscomp_error=missingProperties"' />
+        <arg line='-f "--jscomp_error=unknownDefines"' />
+        <arg line='-f "--warning_level=VERBOSE"' />
+        <arg line="@{extraflags}" />
+      </exec>
+    </sequential>
+  </macrodef>
+
+  <target name="lanyard-advanced-no-debug" depends="lanyard-copy-html">
+    <calcdeps outputfile="lanyard-advanced-no-debug.js" compilerjarfile="${build.dir}/compiler.jar" />
+  </target>
+
+  <target name="lanyard-advanced" depends="lanyard-copy-html">
+    <calcdeps outputfile="lanyard.js" />
+  </target>
+
+  <target name="lanyard-simple" depends="lanyard-copy-html">
+    <calcdeps outputfile="lanyard-simple.js" compilationlevel="SIMPLE_OPTIMIZATIONS" />
+  </target>
+
+  <target name="lanyard-whitespace-only" depends="lanyard-copy-html">
+    <calcdeps outputfile="lanyard-whitespace-only.js" compilationlevel="WHITESPACE_ONLY" />
+  </target>
+
+  <target name="lanyard-copy-html">
+<!--
+    <copy todir="${build.dir}/">
+      <fileset dir="${src.dir}/html/" />
+    </copy>
+-->
+  </target>
+
+  <target name="test-clean" description="delete generated files for test">
+    <delete dir="${jsunit.dir}/test-lanyard" />
+    <delete dir="${jsunit.dir}/logs" />
+    <delete dir="${basedir}/logs" /> 
+  </target>
+
+  <target name="test" depends="test-setup-jsunit">
+    <ant antfile="${jsunit.dir}/build.xml" inheritAll="false" target="standalone_test"></ant>
+  </target>
+
+  <target name="test-setup-jsunit" depends="lanyard-advanced">
+    <copy file="${build.dir}/lanyard.js" tofile="${jsunit.dir}/test-lanyard/lanyard.js"/>
+    <copy todir="${jsunit.dir}/test-lanyard">
+      <fileset dir="${test.dir}/js" />
+    </copy>
+  </target>
+
+  <target name="doc">
+    <exec executable="${contrib.dir}/jsdoc-toolkit/jsrun.sh"
+        logError="true"
+        failonerror="true">
+      <arg value="${src.dir}" />
+      <arg value="${src.dir}/geom" />
+      <arg line='-t=${contrib.dir}/jsdoc-toolkit/templates/jsdoc' />
+      <arg line='-d=${build.dir}/doc' />
+    </exec>
+  </target>
+
+  <target name="all" depends="lanyard-advanced, doc" />
+</project>

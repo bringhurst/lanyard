@@ -1,0 +1,52 @@
+<html>
+ <head>
+  <title>Test Page for Lanyard.Geom.Angle</title>
+  <script language="javascript" src="/jsunit/app/jsUnitCore.js"></script>
+  <script language="javascript" src="/jsunit/test-lanyard/lanyard.js"></script>
+ </head>
+ <body>
+  <script language="javascript">
+    function testConstructor() {
+        var degreeValue = 14.2;
+        var radianValue = 0.3422;
+
+        var a = new lanyard.geom.Angle(degreeValue, radianValue);
+
+        assertEquals("getRadians from constructor", radianValue, a.getRadians());
+        assertEquals("getDegrees from constructor", degreeValue, a.getDegrees());
+    }
+
+    function testGetDegrees() {
+        var degreeValue = 20.0;
+        var a = lanyard.geom.Angle.prototype.fromDegrees(degreeValue);
+        assertEquals("fromDegrees to getDegrees", degreeValue, a.getDegrees());
+    }
+
+    function testGetRadians() {
+        var radianValue = 0.3;
+        var a = lanyard.geom.Angle.prototype.fromRadians(radianValue);
+        assertEquals("fromRadians to getRadians", radianValue, a.getRadians());
+    }
+
+    function testFromDegrees() {
+        var degreeValue = 35.0;
+        var radianValue = lanyard.geom.Angle.prototype.DEGREES_TO_RADIANS * degreeValue;
+
+        var a = lanyard.geom.Angle.prototype.fromDegrees(degreeValue);
+
+        assertEquals(radianValue, a.getRadians());
+        assertEquals(degreeValue, a.getDegrees());
+    }
+
+    function testFromRadians() {
+        var radianValue = 0.4;
+        var degreeValue = lanyard.geom.Angle.prototype.RADIANS_TO_DEGREES * radianValue;
+
+        var a = lanyard.geom.Angle.prototype.fromRadians(radianValue);
+
+        assertEquals(radianValue, a.getRadians());
+        assertEquals(degreeValue, a.getDegrees());
+    }
+  </script>
+ </body>
+</html>
