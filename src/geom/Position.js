@@ -10,7 +10,7 @@ goog.require('lanyard.geom.Angle');
  * @constructor
  * @param {lanyard.geom.Angle} latitude the position latitude.
  * @param {lanyard.geom.Angle} longitude the postion longitude.
- * @param {number} the position elevation.
+ * @param {number} elevation the position elevation.
  */
 lanyard.geom.Position = function (latitude, longitude, elevation) {
     /** @private */ this._latitude = latitude;

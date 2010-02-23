@@ -32,10 +32,9 @@ goog.exportSymbol('lanyard.geom.LatLon', lanyard.geom.LatLon);
  * @return {lanyard.geom.LatLon} a new LatLon from the given angles, which are expressed as radians.
  */
 lanyard.geom.LatLon.prototype.fromRadians = function (latitude, longitude) {
-    latitude = lanyard.geom.Angle.prototype.RADIANS_TO_DEGREES * latitude;
-    longitude = lanyard.geom.Angle.prototype.RADIANS_TO_DEGREES * longitude;
-
-    return new lanyard.geom.LatLon(latitude, longitude);
+    return new lanyard.geom.LatLon(
+        lanyard.geom.Angle.prototype.fromRadians(latitude),
+        lanyard.geom.Angle.prototype.fromRadians(longitude));
 };
 
 /**

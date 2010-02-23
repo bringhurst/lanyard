@@ -73,7 +73,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour', lanyard.geom.MatrixFour);
 
 /**
  * Create a string representation of this._matrix.
- * @return {String} the string representing this._matrix.
+ * @return {string} the string representing this._matrix.
  */
 lanyard.geom.MatrixFour.prototype.toString = function () {
     return "MatrixFour :\n[ " + this._m11 + ", " + this._m12 + ", " + this._m13 + ", " + this._m14 + ",\n " +
@@ -192,7 +192,7 @@ lanyard.geom.MatrixFour.prototype.rotate = function (rotation, axisX, axisY, axi
     var c = rotation.cos();
     var s = rotation.sin();
     var c1 = 1 - c;
-    var o = new lanyard.geom.MatrixFour();
+    var o = new lanyard.geom.MatrixFour(null);
 
     o._m11 = c + axisX * axisX * c1;
     o._m12 = axisX * axisY * c1 - axisZ * s;
@@ -211,7 +211,7 @@ lanyard.geom.MatrixFour.prototype.rotate = function (rotation, axisX, axisY, axi
     o._m43 = 0;
     o._m44 = 1;
 
-    return this._multiply(o);
+    return this.multiply(o);
 };
 
 /**
@@ -380,7 +380,7 @@ lanyard.geom.MatrixFour.prototype.add = function (m) {
  * @param {lanyard.geom.MatrixFour} m another MatrixFour.
  * @return {lanyard.geom.MatrixFour} this, postmultiplied by m.
  */
-lanyard.geom.MatrixFour.prototype._multiply = function (m) {
+lanyard.geom.MatrixFour.prototype.multiply = function (m) {
     var o = m;
 
     var n11 = this._m11 * o._m11 + this._m12 * o._m21 + this._m13 * o._m31 + this._m14 * o._m41;
@@ -430,7 +430,7 @@ lanyard.geom.MatrixFour.prototype._multiply = function (m) {
  * @return {lanyard.geom.MatrixFour} the transpoase of this MatrixFour.
  */
 lanyard.geom.MatrixFour.prototype.getTranspose = function () {
-    var transpose = new lanyard.geom.MatrixFour();
+    var transpose = new lanyard.geom.MatrixFour(null);
 
     transpose._m11 = this._m11;
     transpose._m12 = this._m21;
@@ -477,7 +477,7 @@ lanyard.geom.MatrixFour.prototype.getInverse = function () {
  * @return {lanyard.geom.MatrixFour} the orthonormal inverse of the current matrix.
  */
 lanyard.geom.MatrixFour.prototype.orthonormalInverse = function () {
-    var inverse = new lanyard.geom.MatrixFour();
+    var inverse = new lanyard.geom.MatrixFour(null);
 
     // Transpose of upper 3x3.
     inverse._m11 = this._m11;
@@ -516,7 +516,7 @@ lanyard.geom.MatrixFour.prototype.generalInverse = function () {
     }
 
     var id = 1 / d;
-    var inverse = new lanyard.geom.MatrixFour();
+    var inverse = new lanyard.geom.MatrixFour(null);
 
     // Form the adjoint matrix.
     var a1 = this._m33 * this._m44 - this._m34 * this._m43;
@@ -637,7 +637,7 @@ lanyard.geom.MatrixFour.prototype.determinant = function () {
  * @param {lanyard.geom.Point} p the Point to transform.
  * @return {lanyard.geom.Point} the point, transformed by the current state of this MatrixFour.
  */
-lanyard.geom.MatrixFour.prototype.transformPoint = function (p) {
+lanyard.geom.MatrixFour.prototype.transform = function (p) {
     var x = this._m11 * p.getX() + this._m12 * p.getY() + this._m13 * p.getZ() + this._m14 * p.getW();
     var y = this._m21 * p.getX() + this._m22 * p.getY() + this._m23 * p.getZ() + this._m24 * p.getW();
     var z = this._m31 * p.getX() + this._m32 * p.getY() + this._m33 * p.getZ() + this._m34 * p.getW();

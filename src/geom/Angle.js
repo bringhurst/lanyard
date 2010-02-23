@@ -97,9 +97,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.getRadians', lanyard.geom.Angle.
  * @const
  * @type {lanyard.geom.Angle}
  */
-lanyard.geom.Angle.prototype.ZERO = function () {
-    return lanyard.geom.Angle.prototype.fromDegrees(0);
-};
+lanyard.geom.Angle.prototype.ZERO = lanyard.geom.Angle.prototype.fromDegrees(0);
 goog.exportSymbol('lanyard.geom.Angle.prototype.ZERO', lanyard.geom.Angle.prototype.ZERO);
 
 /**
@@ -108,9 +106,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.ZERO', lanyard.geom.Angle.protot
  * @const
  * @type {lanyard.geom.Angle}
  */
-lanyard.geom.Angle.prototype.POS90 = function () {
-    return lanyard.geom.Angle.prototype.fromDegrees(90);
-};
+lanyard.geom.Angle.prototype.POS90 = lanyard.geom.Angle.prototype.fromDegrees(90);
 goog.exportSymbol('lanyard.geom.Angle.prototype.POS90', lanyard.geom.Angle.prototype.POS90);
 
 /**
@@ -119,9 +115,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.POS90', lanyard.geom.Angle.proto
  * @const
  * @type {lanyard.geom.Angle}
  */
-lanyard.geom.Angle.prototype.NEG90 = function () {
-    return lanyard.geom.Angle.prototype.fromDegrees(-90);
-};
+lanyard.geom.Angle.prototype.NEG90 = lanyard.geom.Angle.prototype.fromDegrees(-90);
 goog.exportSymbol('lanyard.geom.Angle.prototype.NEG90', lanyard.geom.Angle.prototype.NEG90);
 
 /**
@@ -130,9 +124,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.NEG90', lanyard.geom.Angle.proto
  * @const
  * @type {lanyard.geom.Angle}
  */
-lanyard.geom.Angle.prototype.POS180 = function () {
-    return lanyard.geom.Angle.prototype.fromDegrees(180);
-};
+lanyard.geom.Angle.prototype.POS180 = lanyard.geom.Angle.prototype.fromDegrees(180);
 goog.exportSymbol('lanyard.geom.Angle.prototype.POS180', lanyard.geom.Angle.prototype.POS180);
 
 /**
@@ -141,9 +133,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.POS180', lanyard.geom.Angle.prot
  * @const
  * @type {lanyard.geom.Angle}
  */
-lanyard.geom.Angle.prototype.NEG180 = function () {
-    return lanyard.geom.Angle.prototype.fromDegrees(-180);
-};
+lanyard.geom.Angle.prototype.NEG180 = lanyard.geom.Angle.prototype.fromDegrees(-180);
 goog.exportSymbol('lanyard.geom.Angle.prototype.NEG180', lanyard.geom.Angle.prototype.NEG180);
 
 /**
@@ -152,9 +142,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.NEG180', lanyard.geom.Angle.prot
  * @const
  * @type {lanyard.geom.Angle}
  */
-lanyard.geom.Angle.prototype.POS360 = function () {
-    return lanyard.geom.Angle.prototype.fromDegrees(360);
-};
+lanyard.geom.Angle.prototype.POS360 = lanyard.geom.Angle.prototype.fromDegrees(360);
 goog.exportSymbol('lanyard.geom.Angle.prototype.POS360', lanyard.geom.Angle.prototype.POS360);
 
 /**

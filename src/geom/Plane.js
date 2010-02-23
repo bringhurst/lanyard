@@ -27,7 +27,7 @@ lanyard.geom.Plane = function (a, b, c, d) {
 
 /**
  * Creates a Plane from the specified Point.
- * @param {lanyard.geom.Point} the point with a normal and distance to create the Plane from.
+ * @param {lanyard.geom.Point} vec the point with a normal and distance to create the Plane from.
  * @return {lanyard.geom.Plane} the plane created from the point.
  */
 lanyard.geom.Plane.prototype.fromPoint = function (vec) {

@@ -126,9 +126,9 @@ lanyard.geom.Point.prototype.subtract = function (p) {
 goog.exportSymbol('lanyard.geom.Point.prototype.subtract', lanyard.geom.Point.prototype.subtract);
 
 /**
- * Multiply another point to this one.
+ * Multiply this point by a scalar.
  * @this {lanyard.geom.Point}
- * @param {lanyard.geom.Point} s another point.
+ * @param {number} s a scalar.
  * @return {lanyard.geom.Point} the result of the multiplication.
  */
 lanyard.geom.Point.prototype.multiply = function (s) {
@@ -193,7 +193,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.normalize', lanyard.geom.Point.p
  * Find the dot product with another point.
  * @this {lanyard.geom.Point}
  * @param {lanyard.geom.Point} p the other point.
- * @return {lanyard.geom.Point} the result of the dot product.
+ * @return {number} the result of the dot product.
  */
 lanyard.geom.Point.prototype.dot = function (p) {
     return this._x * p.getX() + this._y * p.getY() + this._z * p.getZ();
@@ -214,7 +214,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.selfDot', lanyard.geom.Point.pro
  * Find the dot product with another point (include w).
  * @this {lanyard.geom.Point}
  * @param {lanyard.geom.Point} p the other point.
- * @return {lanyard.geom.Point} the result of the dot product.
+ * @return {number} the result of the dot product.
  */
 lanyard.geom.Point.prototype.dot4 = function (p) {
     return this._x * p.getX() + this._y * p.getY() + this._z * p.getZ() + this._w * this.getW();
@@ -224,7 +224,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.dot4', lanyard.geom.Point.protot
 /**
  * Find the distance to another point.
  * @this {lanyard.geom.Point}
- * @param {lanyard.geom.Point} the other point.
+ * @param {lanyard.geom.Point} p the other point.
  * @return {number} the distance between the points.
  */
 lanyard.geom.Point.prototype.distanceTo = function (p) {
@@ -288,7 +288,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.fromOriginAndDirection',
 
 /**
  * Find the extrema of an array of points.
- * @param {Array.<lanyard.geom.Point>} the array of Points.
+ * @param {Array.<lanyard.geom.Point>} points the array of Points.
  * @return {Array.<lanyard.geom.Point>} a bounding box of the points extrema.
  */
 lanyard.geom.Point.prototype.composeExtrema = function (points) {
@@ -359,7 +359,8 @@ lanyard.geom.Point.prototype.cross = function (that) {
     return new lanyard.geom.Point(
         this._y * that.getZ() - this._z * that.getY(),
         this._z * that.getX() - this._x * that.getZ(),
-        this._x * that.getY() - this._y * that.getX()
+        this._x * that.getY() - this._y * that.getX(),
+        1
     );
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.cross', lanyard.geom.Point.prototype.cross);

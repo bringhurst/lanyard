@@ -133,7 +133,7 @@ lanyard.geom.PolarPoint.prototype.toCartesian = function (latitude, longitude, r
     var y = radius * latitude.sin();
     var z = radius * longitude.cos() * latitude.cos();
 
-    return new lanyard.geom.Point(x, y, z);
+    return new lanyard.geom.Point(x, y, z, 1);
 };
 
 /**

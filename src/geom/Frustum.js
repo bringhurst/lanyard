@@ -106,12 +106,12 @@ lanyard.geom.Frustum.prototype.getInverseTransformed = function (m) {
     // Assumes orthogonal matrices with translation.
     var it = m.getTranspose();
 
-    var n = new lanyard.geom.Plane(it.transform(this._near.getVector()));
-    var f = new lanyard.geom.Plane(it.transform(this._far.getVector()));
-    var l = new lanyard.geom.Plane(it.transform(this._left.getVector()));
-    var r = new lanyard.geom.Plane(it.transform(this._right.getVector()));
-    var b = new lanyard.geom.Plane(it.transform(this._bottom.getVector()));
-    var t = new lanyard.geom.Plane(it.transform(this._topp.getVector()));
+    var n = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._near.getVector()));
+    var f = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._far.getVector()));
+    var l = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._left.getVector()));
+    var r = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._right.getVector()));
+    var b = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._bottom.getVector()));
+    var t = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._topp.getVector()));
 
     return new lanyard.geom.Frustum(n, f, l, r, b, t);
 };

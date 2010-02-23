@@ -40,7 +40,7 @@ lanyard.geom.Intersection.prototype.isTangent = function () {
 /**
  * Returns a string representation of this Intersection.
  *
- * @return {String} a string representation of this Intersection.
+ * @return {string} a string representation of this Intersection.
  */
 lanyard.geom.Intersection.prototype.toString = function () {
     var pt = "Intersection Point: " + this._intersectionPoint.toString();
