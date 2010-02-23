@@ -8,7 +8,7 @@ goog.require('lanyard.geom.Point');
 
 /**
  * The interface Lanyard uses to interact with matrices. This interface can be implemented by an application's
- * own matrix classes. World Wind will then use instances of those classes for matrix manipulation.
+ * own matrix classes. Lanyard will then use instances of those classes for matrix manipulation.
  *
  * @interface
  */
