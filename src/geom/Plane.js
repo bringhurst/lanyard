@@ -54,7 +54,7 @@ lanyard.geom.Plane.prototype.getNormal = function () {
  * on the caller's view of this method, the sign of distances may appear to be reversed.
  *
  * @this {lanyard.geom.Plane}
- * @return {Number} the distance between this Plane and the origin.
+ * @return {number} the distance between this Plane and the origin.
  */
 lanyard.geom.Plane.prototype.getDistance = function () {
     return this._n.getW();
@@ -77,7 +77,7 @@ lanyard.geom.Plane.prototype.getVector = function () {
  *
  * @this {lanyard.geom.Plane}
  * @param {lanyard.geom.Point} p the Point to dot with this Plane.
- * @return {Number} the dot product of p and this Plane.
+ * @return {number} the dot product of p and this Plane.
  */
 lanyard.geom.Plane.prototype.dot = function (p) {
     return this._n.getX() * p.getX() + this._n.getY() * p.getY() +
@@ -87,7 +87,7 @@ lanyard.geom.Plane.prototype.dot = function (p) {
 /**
  * Find a string representation of this Plane.
  * @this {lanyard.geom.Plane}
- * @return {String} a string representation of this Plane.
+ * @return {string} a string representation of this Plane.
  */
 lanyard.geom.Plane.prototype.toString = function () {
     return this._n.toString();

@@ -10,7 +10,7 @@ goog.require('lanyard.geom.Angle');
  * @constructor
  * @param {lanyard.geom.Angle} latitude the position latitude.
  * @param {lanyard.geom.Angle} longitude the postion longitude.
- * @param {Number} the position elevation.
+ * @param {number} the position elevation.
  */
 lanyard.geom.Position = function (latitude, longitude, elevation) {
     /** @private */ this._latitude = latitude;
@@ -31,9 +31,9 @@ lanyard.geom.Position.prototype.ZERO = new lanyard.geom.Position(
 
 /**
  * Create a position from radians.
- * @param {Number} latitude the latitude in radians.
- * @param {Number} longitude the longitude in radians.
- * @param {Number} elevation the elevation.
+ * @param {number} latitude the latitude in radians.
+ * @param {number} longitude the longitude in radians.
+ * @param {number} elevation the elevation.
  * @return {lanyard.geom.Position} the new position.
  */ 
 lanyard.geom.Position.prototype.fromRadians = function (latitude, longitude, elevation) {
@@ -46,9 +46,9 @@ lanyard.geom.Position.prototype.fromRadians = function (latitude, longitude, ele
 
 /**
  * Create a position from degrees.
- * @param {Number} latitude the latitude in degrees.
- * @param {Number} longitude the longitude in degrees.
- * @param {Number} elevation the elevation.
+ * @param {number} latitude the latitude in degrees.
+ * @param {number} longitude the longitude in degrees.
+ * @param {number} elevation the elevation.
  * @return {lanyard.geom.Position} the new position.
  */
 lanyard.geom.Position.prototype.fromDegrees = function (latitude, longitude, elevation) {
@@ -77,7 +77,7 @@ lanyard.geom.Position.prototype.getLongitude = function () {
 
 /**
  * Obtains the elevation of this position.
- * @return {Number} this position's elevation.
+ * @return {number} this position's elevation.
  */
 lanyard.geom.Position.prototype.getElevation = function () {
     return this._elevation;

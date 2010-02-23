@@ -89,10 +89,10 @@ lanyard.geom.ViewFrustum.prototype.fromProjectionMatrix = function (projectionMa
  * be a positive distance away.
  *
  * @param {lanyard.geom.Angle} fieldOfView horizontal field-of-view angle in the range (0, 180).
- * @param {Number} viewportWidth the width of the viewport in screen pixels.
- * @param {Number} viewportHeight the height of the viewport in screen pixels.
- * @param {Number} near distance to the near depth clipping plane.
- * @param {Number} far distance to far depth clipping plane.
+ * @param {number} viewportWidth the width of the viewport in screen pixels.
+ * @param {number} viewportHeight the height of the viewport in screen pixels.
+ * @param {number} near distance to the near depth clipping plane.
+ * @param {number} far distance to far depth clipping plane.
  * @return {lanyard.geom.ViewFrustum} the new view frustum.
  */
 lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView =
@@ -130,12 +130,12 @@ lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView =
  * Creates a Frustum from three sets of parallel clipping planes (a parallel projection). In this case,
  * the near and far depth clipping planes may be a negative distance away.
  *
- * @param {Number} left distance to the left vertical clipping plane.
- * @param {Number} right distance to the right vertical clipping plane.
- * @param {Number} bottom distance to the bottom horizontal clipping plane.
- * @param {Number} top distance to the top horizontal clipping plane.
- * @param {Number} near distance to the near depth clipping plane.
- * @param {Number} far distance to far depth clipping plane.
+ * @param {number} left distance to the left vertical clipping plane.
+ * @param {number} right distance to the right vertical clipping plane.
+ * @param {number} bottom distance to the bottom horizontal clipping plane.
+ * @param {number} top distance to the top horizontal clipping plane.
+ * @param {number} near distance to the near depth clipping plane.
+ * @param {number} far distance to far depth clipping plane.
  * @return {lanyard.geom.ViewFrustum} the new view frustum.
  */
 lanyard.geom.ViewFrustum.prototype.fromParallelClipplingPlanes =

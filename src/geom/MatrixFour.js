@@ -146,7 +146,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.setToIdentity', lanyard.geo
 
 /**
  * Obtains whether or not this MatrixFour is orthonormal.
- * @return {Boolean} if this._matrix is orthonormal.
+ * @return {boolean} if this._matrix is orthonormal.
  */
 lanyard.geom.MatrixFour.prototype.isOrthonormal = function () {
     return this._isOrthonormal;
@@ -156,7 +156,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.isOrthonormal',
 
 /**
  * Indicate if this MatrixFour is orthonormal.
- * @param {Boolean} value if this._matrix is orthonormal.
+ * @param {boolean} value if this._matrix is orthonormal.
  */
 lanyard.geom.MatrixFour.prototype.setOrthonormal = function (value) {
     this._isOrthonormal = value;
@@ -169,9 +169,9 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.setOrthonormal',
  * anti-clockwise direction. This method affects the internal state of this._matrix.
  *
  * @param {lanyard.geom.Angle} rotation the distance to rotate this._matrix
- * @param {Number} axisX the x component of the axis of rotation
- * @param {Number} axisY the y component of the axis of rotation
- * @param {Number} axisZ the z component of the axis of rotation
+ * @param {number} axisX the x component of the axis of rotation
+ * @param {number} axisY the y component of the axis of rotation
+ * @param {number} axisZ the z component of the axis of rotation
  * @return {lanyard.geom.MatrixFour} with the rotation applied
  */
 lanyard.geom.MatrixFour.prototype.rotate = function (rotation, axisX, axisY, axisZ) {
@@ -319,9 +319,9 @@ lanyard.geom.MatrixFour.prototype.rotateZ = function (rotation) {
 
 /**
  * Translates this MatrixFour in three dimensional space.
- * @param {Number} x the distance to translate along the x-axis
- * @param {Number} y the distance to translate along the y-axis
- * @param {Number} z the distance to translate along the z-axis
+ * @param {number} x the distance to translate along the x-axis
+ * @param {number} y the distance to translate along the y-axis
+ * @param {number} z the distance to translate along the z-axis
  * @return {lanyard.geom.MatrixFour} this matrix, translated by (x, y, z)
  */
 lanyard.geom.MatrixFour.prototype.translate = function (x, y, z) {
@@ -606,7 +606,7 @@ lanyard.geom.MatrixFour.prototype.generalInverse = function () {
 
 /**
  * Obtains the determinant of this MatrixFour.
- * @return {Number} the determinant
+ * @return {number} the determinant
  */
 lanyard.geom.MatrixFour.prototype.determinant = function () {
     var det = this._m11 * (

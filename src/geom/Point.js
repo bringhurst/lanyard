@@ -8,10 +8,10 @@ goog.provide('lanyard.geom.Point');
  *
  * @constructor
  * @this {lanyard.geom.Point}
- * @param {Number} x the x value of the point.
- * @param {Number} y the y value of the point.
- * @param {Number} z the z value of the point.
- * @param {Number} w the w value of thie point.
+ * @param {number} x the x value of the point.
+ * @param {number} y the y value of the point.
+ * @param {number} z the z value of the point.
+ * @param {number} w the w value of thie point.
  */
 lanyard.geom.Point = function (x, y, z, w) {
     /** @private */ this._x = x;
@@ -56,7 +56,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.UNIT_Z', lanyard.geom.Point.prot
 /**
  * Find the w value of this point.
  * @this {lanyard.geom.Point}
- * @return {Number} the w value.
+ * @return {number} the w value.
  */
 lanyard.geom.Point.prototype.getW = function () {
     return this._w;
@@ -66,7 +66,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getW', lanyard.geom.Point.protot
 /**
  * Find the x value of this point.
  * @this {lanyard.geom.Point}
- * @return {Number} the x value.
+ * @return {number} the x value.
  */
 lanyard.geom.Point.prototype.getX = function () {
     return this._x;
@@ -76,7 +76,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getX', lanyard.geom.Point.protot
 /**
  * Find the y value of this point.
  * @this {lanyard.geom.Point}
- * @return {Number} the y value.
+ * @return {number} the y value.
  */
 lanyard.geom.Point.prototype.getY = function () {
     return this._y;
@@ -86,7 +86,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getY', lanyard.geom.Point.protot
 /**
  * Find the z value of this point.
  * @this {lanyard.geom.Point}
- * @return {Number} the z value.
+ * @return {number} the z value.
  */
 lanyard.geom.Point.prototype.getZ = function () {
     return this._z;
@@ -144,9 +144,9 @@ goog.exportSymbol('lanyard.geom.Point.prototype.multiply', lanyard.geom.Point.pr
 /**
  * Scale based on the this point.
  * @this {lanyard.geom.Point}
- * @param {Number} sx factor for the x axis.
- * @param {Number} sy factor for the y axis.
- * @param {Number} sz factor for the z axis.
+ * @param {number} sx factor for the x axis.
+ * @param {number} sy factor for the y axis.
+ * @param {number} sz factor for the z axis.
  * @return {lanyard.geom.Point} the scaled point.
  */
 lanyard.geom.Point.prototype.scale = function (sx, sy, sz) {
@@ -171,7 +171,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.scale', lanyard.geom.Point.proto
 /**
  * Calculate the length of this point.
  * @this {lanyard.geom.Point}
- * @return {Number} the length.
+ * @return {number} the length.
  */
 lanyard.geom.Point.prototype.length = function () {
     return Math.sqrt(this.selfDot());
@@ -225,7 +225,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.dot4', lanyard.geom.Point.protot
  * Find the distance to another point.
  * @this {lanyard.geom.Point}
  * @param {lanyard.geom.Point} the other point.
- * @return {Number} the distance between the points.
+ * @return {number} the distance between the points.
  */
 lanyard.geom.Point.prototype.distanceTo = function (p) {
     var dx = this._x - p.getX();
@@ -240,7 +240,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.distanceTo', lanyard.geom.Point.
  * Find the squared distance between points.
  * @this {lanyard.geom.Point}
  * @param {lanyard.geom.Point} p the other point.
- * @return {Number} the squared distance.
+ * @return {number} the squared distance.
  */
 lanyard.geom.Point.prototype.distanceToSquared = function (p) {
     var dx = this._x - p.getX();
@@ -270,7 +270,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.midPoint', lanyard.geom.Point.pr
 
 /**
  * Find a point in the direction and location relative to two other points.
- * @param {Number} scale the scale of the vector between the two points.
+ * @param {number} scale the scale of the vector between the two points.
  * @param {lanyard.geom.Point} direction the vector heading from the origin point.
  * @param {lanyard.geom.Point} origin the origin of the vector heading toward the direction.
  * @return {lanyard.geom.Point} the new point in the specified location.
@@ -367,7 +367,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.cross', lanyard.geom.Point.proto
 /**
  * Find a string representation of this point.
  * @this {lanyard.geom.Point}
- * @return {String} the point represented as a string.
+ * @return {string} the point represented as a string.
  */
 lanyard.geom.Point.prototype.toString = function () {
     return "A point with values of x=" + this._x +

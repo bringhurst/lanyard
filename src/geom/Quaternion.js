@@ -10,10 +10,10 @@ goog.require('lanyard.geom.Angle');
  * Creates a new quaternion from an initial rotation state.
  *
  * @constructor
- * @param {Number} x
- * @param {Number} y
- * @param {Number} z
- * @param {Number} w
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} w
  */
 lanyard.geom.Quaternion = function (x, y, z, w) {
     /** @public */ this._x = x;
@@ -28,7 +28,7 @@ lanyard.geom.Quaternion = function (x, y, z, w) {
  * Find a string representation of this Quaternion.
  *
  * @this {lanyard.geom.Quaternion}
- * @return {String} a string representation of this Quaternion.
+ * @return {string} a string representation of this Quaternion.
  */
 lanyard.geom.Quaternion.prototype.toString = function () {
     return "(" + this._x + ", " + this._y + ", " + this._z + ", " + this._w + ")";
@@ -37,9 +37,9 @@ lanyard.geom.Quaternion.prototype.toString = function () {
 /**
  * Create a Quaternion from an Euler representation.
  *
- * @param {Number} yaw the raw of the euler representation.
- * @param {Number} pitch the pitch of the euler representation.
- * @param {Number} roll the roll of the euler representation.
+ * @param {number} yaw the raw of the euler representation.
+ * @param {number} pitch the pitch of the euler representation.
+ * @param {number} roll the roll of the euler representation.
  * @return {lanyard.geom.Quaternion} the new Quaternion.
  */
 lanyard.geom.Quaternion.prototype.fromEuler = function (yaw, pitch, roll) {
@@ -81,9 +81,9 @@ lanyard.geom.Quaternion.prototype.toEuler = function (q) {
  * Create a Quaternion from axis angle.
  *
  * @param {lanyard.geom.Angle} angle
- * @param {Number} x
- * @param {Number} y
- * @param {Number} z
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
  * @return {lanyard.geom.Quaternion} the new Quaternion.
  */
 lanyard.geom.Quaternion.prototype.fromAxisAngle = function (angle, x, y, z) {
@@ -169,7 +169,7 @@ lanyard.geom.Quaternion.prototype.multiply = function (a, b) {
 /**
  * Multiply a scalar by a quaternion.
  *
- * @param {Number} s the scalar.
+ * @param {number} s the scalar.
  * @param {lanyard.geom.Quaternion} q the quaternion.
  * @return {lanyard.geom.Quaternion} the result of the multiplication.
  */
@@ -181,7 +181,7 @@ lanyard.geom.Quaternion.prototype.multiply = function (s, q) {
  * Multiply a quaternion by a scalar.
  *
  * @param {lanyard.geom.Quaternion} q the quaternion.
- * @param {Number} s the scalar.
+ * @param {number} s the scalar.
  * @return {lanyard.geom.Quaternion} the result of the multiplication.
  */
 lanyard.geom.Quaternion.prototype.multiply = function (q, s) {
@@ -209,7 +209,7 @@ lanyard.geom.Quaternion.prototype.multiply = function (v, q) {
  *
  *
  * @param {lanyard.geom.Quaternion} q
- * @param {Number} s
+ * @param {number} s
  * @return {lanyard.geom.Quaternion}
  */
 lanyard.geom.Quaternion.prototype.divide = function (q, s) {
@@ -230,7 +230,7 @@ lanyard.geom.Quaternion.prototype.conjugate = function () {
  *
  *
  * @param {lanyard.geom.Quaternion} q
- * @return {Number}
+ * @return {number}
  */
 lanyard.geom.Quaternion.prototype.norm2 = function (q) {
     return q._x * q._x + q._y * q._y + q._z * q._z + q._w * q._w;
@@ -240,7 +240,7 @@ lanyard.geom.Quaternion.prototype.norm2 = function (q) {
  *
  *
  * @param {lanyard.geom.Quaternion} q
- * @return {Number}
+ * @return {number}
  */
 lanyard.geom.Quaternion.prototype.abs = function (q) {
     return Math.sqrt(lanyard.geom.Quaternion.prototype.norm2(q));
@@ -270,7 +270,7 @@ lanyard.geom.Quaternion.prototype.divide = function (a, b) {
  *
  * @param {lanyard.geom.Quaternion} a
  * @param {lanyard.geom.Quaternion} b
- * @return {Number}
+ * @return {number}
  */
 lanyard.geom.Quaternion.prototype.dot = function (a, b) {
     return a._x * b._x + a._y * b._y + a._z * b._z + a._w * b._w;
@@ -296,7 +296,7 @@ lanyard.geom.Quaternion.prototype.normalize = function () {
  * Find the length of this quaternion.
  *
  * @this {lanyard.geom.Quaternion}
- * @return {Number} the length of this quaternion.
+ * @return {number} the length of this quaternion.
  */
 lanyard.geom.Quaternion.prototype.length = function () {
     return Math.sqrt(
@@ -308,7 +308,7 @@ lanyard.geom.Quaternion.prototype.length = function () {
  *
  * @param {lanyard.geom.Quaternion} q0
  * @param {lanyard.geom.Quaternion} q1
- * @param {Number} t
+ * @param {number} t
  * @return {lanyard.geom.Quaternion}
  */
 lanyard.geom.Quaternion.prototype.slerp = function (q0, q1, t) {

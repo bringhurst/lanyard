@@ -25,9 +25,9 @@ lanyard.geom.Matrix.prototype.setToIdentity = function () {};
  * Rotate this matrix.
  *
  * @param {lanyard.geom.Angle} rotation
- * @param {Number} axisX
- * @param {Number} axisY
- * @param {Number} axisZ
+ * @param {number} axisX
+ * @param {number} axisY
+ * @param {number} axisZ
  * @return {lanyard.geom.Matrix}
  */
 lanyard.geom.Matrix.prototype.rotate = function (rotation, axisX, axisY, axisZ) {};
@@ -58,9 +58,9 @@ lanyard.geom.Matrix.prototype.rotateZ = function (rotation) {};
 
 /**
  *
- * @param {Number} x
- * @param {Number} y
- * @param {Number} z
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
  * @return {lanyard.geom.Matrix}
  */
 lanyard.geom.Matrix.prototype.translate = function (x, y, z) {};
@@ -104,21 +104,21 @@ lanyard.geom.Matrix.prototype.getTranspose = function () {};
 /**
  * Find the determiniant of this matrix.
  *
- * @return {Number} the determinant.
+ * @return {number} the determinant.
  */
 lanyard.geom.Matrix.prototype.determinant = function () {};
 
 /**
  * Obtain the entries of this matrix.
  *
- * @return {Array.<Number>} the entries in this matrix.
+ * @return {array.<number>} the entries in this matrix.
  */
 lanyard.geom.Matrix.prototype.getEntries = function () {};
 
 /**
  * Check if this matrix is orthonormal.
  *
- * @return {Boolean} true if this matrix is orthonormal, false otherwise.
+ * @return {boolean} true if this matrix is orthonormal, false otherwise.
  */
 lanyard.geom.Matrix.prototype.isOrthonormal = function () {};
 

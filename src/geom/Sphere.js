@@ -23,7 +23,7 @@ goog.require('lanyard.geom.Plane');
  * @implements {lanyard.Renderable}
  * @this {lanyard.geom.Sphere}
  * @param {lanyard.geom.Point} center the center of the new sphere.
- * @param {Number} radius the radius of the new sphere.
+ * @param {number} radius the radius of the new sphere.
  */
 lanyard.geom.Sphere = function (center, radius) {
     /** @private */ this._center = center;
@@ -63,7 +63,7 @@ lanyard.geom.Sphere.prototype.createBoundingSphere = function (points) {
  * object's distance to this sphere's center is less than or equal to the radius, then that object is at least
  * partially within this Sphere.
  *
- * @return {Number} the radius of this sphere
+ * @return {number} the radius of this sphere
  */
 lanyard.geom.Sphere.prototype.getRadius = function () {
     return this._radius;
@@ -72,7 +72,7 @@ lanyard.geom.Sphere.prototype.getRadius = function () {
 /**
  * Obtains the diameter of this Sphere. The diameter is twice the radius.
  *
- * @return {Number} the diameter of this Sphere.
+ * @return {number} the diameter of this Sphere.
  */
 lanyard.geom.Sphere.prototype.getDiameter = function () {
     return 2 * this._radius;
@@ -123,10 +123,10 @@ lanyard.geom.Sphere.prototype.intersect = function (line) {
  * no roots. If it equals zero, there is one root. If it is greater than zero, there
  * are two roots.
  *
- * @param {Number} a the coefficient of the second order pronumeral.
- * @param {Number} b the coefficient of the first order pronumeral.
- * @param {Number} c the constant parameter in the quadratic equation.
- * @return {Number} the discriminant "b squared minus 4ac".
+ * @param {number} a the coefficient of the second order pronumeral.
+ * @param {number} b the coefficient of the first order pronumeral.
+ * @param {number} c the constant parameter in the quadratic equation.
+ * @return {number} the discriminant "b squared minus 4ac".
  */
 lanyard.geom.Sphere.prototype.discriminant = function (a, b, c) {
     return b * b - 4 * a * c;
@@ -137,7 +137,7 @@ lanyard.geom.Sphere.prototype.discriminant = function (a, b, c) {
  * someSphere.intersects(frustum) and frustum.intersects(someSphere) are equivalent.
  *
  * @param {lanyard.geom.Frustum} frustum the Frustum with which to test for intersection
- * @return {Boolean} true if either frustum or this Sphere wholly or partially contain the other.
+ * @return {boolean} true if either frustum or this Sphere wholly or partially contain the other.
  */
 lanyard.geom.Sphere.prototype.intersectsFrustum = function (frustum) {
     return frustum.intersects(this);
@@ -147,7 +147,7 @@ lanyard.geom.Sphere.prototype.intersectsFrustum = function (frustum) {
  * Tests for intersection with a Line.
  *
  * @param {lanyard.geom.Line} line the Line with which to test for intersection.
- * @return {Boolean} true if line intersects or makes a tangent with the surface of this Sphere.
+ * @return {boolean} true if line intersects or makes a tangent with the surface of this Sphere.
  */
 lanyard.geom.Sphere.prototype.intersectsLine = function (line) {
     return line.distanceTo(this._center) <= this._radius;
@@ -157,11 +157,11 @@ lanyard.geom.Sphere.prototype.intersectsLine = function (line) {
  * Tests for intersection with a Plane.
  *
  * @param {lanyard.geom.Plane} plane the Plane with which to test for intersection.
- * @return {Boolean} true if plane intersects or makes a tangent with the surface of this Sphere.
+ * @return {boolean} true if plane intersects or makes a tangent with the surface of this Sphere.
  */
 lanyard.geom.Sphere.prototype.intersectsPlane = function (plane) {
     var dq1 = plane.dot(this._center);
-    return new Boolean(dq1 <= this._radius);
+    return dq1 <= this._radius;
 };
 
 /**
@@ -195,10 +195,12 @@ lanyard.geom.Sphere.prototype.render = function (dc) {
 /**
  * Obtain a string representation of this sphere.
  * 
- * @return {String} a string representation of this sphere.
+ * @this {lanyard.geom.Sphere}
+ * @return {string} a string representation of this sphere.
  */
 lanyard.geom.Sphere.prototype.toString = function () {
-    return new String("Sphere: center = " + this._center.toString() + " radius = " + this._radius);
+    var stringValue = "Sphere: center = " + this._center.toString() + " radius = " + this._radius;
+    return stringValue;
 };
 
 /* EOF */

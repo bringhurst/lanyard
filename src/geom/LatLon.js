@@ -27,8 +27,8 @@ goog.exportSymbol('lanyard.geom.LatLon', lanyard.geom.LatLon);
 /**
  * Factor method for obtaining a new LatLon from two angles expressed in radians.
  *
- * @param {Number} latitude in radians.
- * @param {Number} longitude in radians.
+ * @param {number} latitude in radians.
+ * @param {number} longitude in radians.
  * @return {lanyard.geom.LatLon} a new LatLon from the given angles, which are expressed as radians.
  */
 lanyard.geom.LatLon.prototype.fromRadians = function (latitude, longitude) {
@@ -41,8 +41,8 @@ lanyard.geom.LatLon.prototype.fromRadians = function (latitude, longitude) {
 /**
  * Factory method for obtaining a new LatLon from two angles expressed in degrees.
  *
- * @param {Number} latitude in degrees.
- * @param {Number} longitude in degrees.
+ * @param {number} latitude in degrees.
+ * @param {number} longitude in degrees.
  * @return {lanyard.geom.LatLon} a new LatLon from the given angles, which are expressed as degrees.
  */
 lanyard.geom.LatLon.prototype.fromDegrees = function (latitude, longitude) {
@@ -72,7 +72,7 @@ lanyard.geom.LatLon.prototype.getLongitude = function () {
 /**
  * Interpolate between two LatLons.
  *
- * @param {Number} t
+ * @param {number} t
  * @param {lanyard.geom.LatLon} begin
  * @param {lanyard.geom.LatLon} end
  * @return {lanyard.geom.LatLon}
@@ -106,7 +106,7 @@ lanyard.geom.LatLon.prototype.interpolate = function (t, begin, end) {
 /**
  * Obtain a string representation of this LatLon.
  *
- * @return {String} a string representation of this LatLon.
+ * @return {string} a string representation of this LatLon.
  */
 lanyard.geom.LatLon.prototype.toString = function () {
     return "(" + this._latitude.toString() + ", " + this._longitude.toString() + ")";

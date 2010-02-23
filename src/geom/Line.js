@@ -40,7 +40,7 @@ lanyard.geom.Line.prototype.getOrigin = function () {
 /**
  *
  *
- * @param {Number} t
+ * @param {number} t
  * @return {lanyard.geom.Point}
  */
 lanyard.geom.Line.prototype.getPointAt = function (t) {
@@ -50,7 +50,7 @@ lanyard.geom.Line.prototype.getPointAt = function (t) {
 /**
  *
  *
- * @return {Number}
+ * @return {number}
  */
 lanyard.geom.Line.prototype.selfDot = function () {
     return this._origin.dot(this._direction);
@@ -61,7 +61,7 @@ lanyard.geom.Line.prototype.selfDot = function () {
  * positive distance.
  *
  * @param {lanyard.geom.Point} p the Point whose distance from this Line will be calculated.
- * @return {Number} the distance between this Line and the specified Point.
+ * @return {number} the distance between this Line and the specified Point.
  */
 lanyard.geom.Line.prototype.distanceTo = function (p) {
     var origin = this.getOrigin();
@@ -81,7 +81,7 @@ lanyard.geom.Line.prototype.distanceTo = function (p) {
 /**
  * Obtain a string representation of this line.
  *
- * @return {String} a string representation of this line.
+ * @return {string} a string representation of this line.
  */
 lanyard.geom.Line.prototype.toString = function () {
     return "Origin: " + this._origin.toString() +

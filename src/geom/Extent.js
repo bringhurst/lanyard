@@ -26,14 +26,14 @@ lanyard.geom.Extent.prototype.getCenter = function () {};
 /**
  * Accessor for the diameter.
  *
- * @return {Number}
+ * @return {number}
  */
 lanyard.geom.Extent.prototype.getDiameter = function () {};
 
 /**
  * Accessor for the radius.
  *
- * @return {Number}
+ * @return {number}
  */
 lanyard.geom.Extent.prototype.getRadius = function () {};
 
@@ -43,7 +43,7 @@ lanyard.geom.Extent.prototype.getRadius = function () {};
  * other, false otherwise.
  *
  * @param {lanyard.geom.Frustum} frustum the Frustum with which to test for intersection.
- * @return {Boolean} true if there is an intersection, false otherwise.
+ * @return {boolean} true if there is an intersection, false otherwise.
  */
 lanyard.geom.Extent.prototype.intersects = function (frustum) {};
 
@@ -66,7 +66,7 @@ lanyard.geom.Extent.prototype.intersect = function (line) {};
  * one element.
  *
  * @param {lanyard.geom.Line} line the Line with which to test for intersection.
- * @return {Boolean} true if an intersection is found, false otherwise.
+ * @return {boolean} true if an intersection is found, false otherwise.
  */
 lanyard.geom.Extent.prototype.intersectsLine = function (line) {};
 
@@ -74,7 +74,7 @@ lanyard.geom.Extent.prototype.intersectsLine = function (line) {};
  * Calculate whether or not this Extent is intersected by plane.
  *
  * @param {lanyard.geom.Plane} plane the Plane with which to test for intersection.
- * @return {Boolean} true if plane is found to intersect this Extent.
+ * @return {boolean} true if plane is found to intersect this Extent.
  */
 lanyard.geom.Extent.prototype.intersectsPlane = function (plane) {};
 

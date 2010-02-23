@@ -11,7 +11,7 @@ goog.require('lanyard.geom.Point');
  * @constructor
  * @this {lanyard.geom.Intersection}
  * @param {lanyard.geom.Point} intersectionPoint the point of intersection.
- * @param {Boolean} isTangent if the intersection is a tangent.
+ * @param {boolean} isTangent if the intersection is a tangent.
  */
 lanyard.geom.Intersection = function (intersectionPoint, isTangent) {
     /** @private */ this._intersectionPoint = intersectionPoint;
@@ -31,7 +31,7 @@ lanyard.geom.Intersection.prototype.getIntersectionPoint = function () {
 /**
  * Return if this intersection is a tangent.
  *
- * @return {Boolean} if this intersection is a tangent.
+ * @return {boolean} if this intersection is a tangent.
  */
 lanyard.geom.Intersection.prototype.isTangent = function () {
     return this._isTangent;

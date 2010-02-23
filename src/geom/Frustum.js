@@ -120,7 +120,7 @@ lanyard.geom.Frustum.prototype.getInverseTransformed = function (m) {
  *
  *
  * @param {lanyard.geom.Extent} extent
- * @return {Boolean} if this frustum intersects.
+ * @return {boolean} if this frustum intersects.
  */
 lanyard.geom.Frustum.prototype.intersects = function (extent) {
     // See if the extent's bounding sphere is within or intersects the frustum.
@@ -158,7 +158,7 @@ lanyard.geom.Frustum.prototype.intersects = function (extent) {
  *
  *
  * @param {lanyard.geom.Point} point
- * @return {Boolean}
+ * @return {boolean}
  */
 lanyard.geom.Frustum.prototype.contains = function (point) {
     if (this._far.dot(point) < 0) {
@@ -191,7 +191,7 @@ lanyard.geom.Frustum.prototype.contains = function (point) {
 /**
  * Obtain a string representation of this Frustum.
  *
- * @return {String} a string representation of this frustum.
+ * @return {string} a string representation of this frustum.
  */
 lanyard.geom.Frustum.prototype.toString = function () {
     return "near: " + this._near.toString() + "... far: " + this._far.toString() +
