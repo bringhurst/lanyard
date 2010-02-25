@@ -304,7 +304,9 @@ lanyard.geom.Quaternion.prototype.length = function () {
 };
 
 /**
- *
+ * Spherical linear interpolation with fallback to linear interpolation.
+ * Constant speed motion along a unit radius great circle arc, given the
+ * ends and an interpolation parameter between 0 and 1.
  *
  * @param {lanyard.geom.Quaternion} q0
  * @param {lanyard.geom.Quaternion} q1
