@@ -312,7 +312,7 @@ lanyard.geom.Cylinder.getCenter = function () {
     /** @type {lanyard.geom.Point} */
     var t = this.topCenter;
 
-    return new lanyard.geom.Point(0.5 * (b.x() + t.x()), 0.5 * (b.y() + t.y()), 0.5 * (b.z() + t.z()));
+    return new lanyard.geom.Point(0.5 * (b.getX() + t.getX()), 0.5 * (b.getY() + t.getY()), 0.5 * (b.getZ() + t.getZ()));
 };
 
 /**

@@ -4,7 +4,6 @@
 goog.provide('lanyard.Elevations');
 
 goog.require('lanyard.geom.Sector');
-goog.require('lanyard.ElevationModel');
 
 /**
  * The Elevations interface provides elevations at specified latitude and longitude
@@ -32,21 +31,21 @@ lanyard.Elevations.prototype.hasElevations = function () {};
  * @param {number} lonRadians the position's longitude in radians, in the range [-pi, +pi].
  * @return {number} The elevation at the given position, or 0 if elevations are not available.
  */
-lanyard.geom.Elevations.prototype.getElevation = function (latRadians, lonRadians) {};
+lanyard.Elevations.prototype.getElevation = function (latRadians, lonRadians) {};
 
 /**
  * Returns the resolution value of the elevations. The meaning and use of this value is defined
- * by subclasses of {lanyard.ElevationModel}.
+ * by subclasses of ElevationModel.
  *
  * @return {number} the resolution associated with this.
  */
-lanyard.geom.Elevations.prototype.getResolution = function () {};
+lanyard.Elevations.prototype.getResolution = function () {};
 
 /**
  * Returns the {lanyard.geom.Sector} the elevations pertain to.
  *
  * @return {lanyard.geom.Sector} the sector the elevations pertain to.
  */
-lanyard.geom.Elevations.prototype.getSector = function () {};
+lanyard.Elevations.prototype.getSector = function () {};
 
 /* EOF */

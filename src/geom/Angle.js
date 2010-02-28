@@ -434,6 +434,27 @@ lanyard.geom.Angle.prototype.average = function (a, b, c) {
 goog.exportSymbol('lanyard.geom.Angle.prototype.average', lanyard.geom.Angle.prototype.average);
 
 /**
+ * Compares this Angle with angle for order. Returns a negative integer if this is the
+ * smaller Angle, a positive integer if this is the larger, and zero if both Angles are
+ * equal.
+ *
+ * @param {lanyard.geom.Angle} angle the Angle to compare against.
+ * @return {number} -1 if this Angle is smaller, 0 if both are equal and +1 if this Angle is larger.
+ */
+lanyard.geom.Angle.prototype.compareTo = function (angle) {
+    if (this._degrees < angle.getDegrees()) {
+        return -1;
+    }
+
+    if (this._degrees > angle.getDegrees()) {
+        return 1;
+    }
+
+    return 0;
+};
+goog.exportSymbol('lanyard.geom.Angle.prototype.compareTo', lanyard.geom.Angle.prototype.compareTo);
+
+/**
  * This angle as a string.
  *
  * @this {lanyard.geom.Angle}

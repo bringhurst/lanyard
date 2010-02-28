@@ -41,7 +41,10 @@ lanyard.globes.Earth = function () {
     /** @private */ this.polarRadius = lanyard.globes.Earth.prototype.WGS84_POLAR_RADIUS;
     /** @private */ this.es = lanyard.globes.Earth.prototype.WGS84_ES;
     /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
-    /** @private */ this.elevationModel = new lanyard.globes.EarthElevationModel();
+
+    // TODO: create an earth elevation model.
+    // /** @private */ this.elevationModel = new lanyard.globes.EarthElevationModel();
+    /** @private */ this.elevationModel = null;
 };
 goog.exportSymbol('lanyard.globes.Earth', lanyard.globes.Earth);
 

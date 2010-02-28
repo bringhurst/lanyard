@@ -3,6 +3,9 @@
 
 goog.provide('lanyard.globes.EllipsoidalGlobe');
 
+goog.require('lanyard.ElevationModel');
+goog.require('lanyard.Globe');
+
 /**
  * An ellipsoidal globe
  *
@@ -68,7 +71,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getMaximumRadius = function () {
  */
 lanyard.globes.EllipsoidalGlobe.prototype.getRadiusAt = function (latitude, longitude) {
     /** @type {lanyard.geom.Point} */
-    var p = this.computePointFromPosition(latitude, longitude, 0);
+    var p = this.computePointFromPositionAngles(latitude, longitude, 0);
 
     /** @type {number} */
     var rad = p.length();
@@ -251,7 +254,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.intersectsLine = function (line) {
  * @param {lanyard.geom.Plane} plane the plane.
  * @return {boolean} if this globe intersects with the given plane.
  */
-lanyard.globes.EllipsoidalGlobe.intersectsPlane = function (plane) {
+lanyard.globes.EllipsoidalGlobe.prototype.intersectsPlane = function (plane) {
     /** @type {number} */
     var dq1 = plane.dot(this.center);
 
@@ -270,7 +273,8 @@ lanyard.globes.EllipsoidalGlobe.prototype.computeSurfaceNormalAtPoint = function
     /** @type {lanyard.geom.Point} */
     var norm = new lanyard.geom.Point(p.getX() / (this.equatorialRadius * this.equatorialRadius),
             p.getY() / (this.polarRadius * this.polarRadius),
-            p.getZ() / (this.equatorialRadius * this.equatorialRadius));
+            p.getZ() / (this.equatorialRadius * this.equatorialRadius),
+            1);
 
     /** @type {lanyard.geom.Point} */
     var ret = norm.normalize();
@@ -386,7 +390,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
     /** @type {number} */
     var z = (rpm + metersElevation) * cosLat * longitude.cos();
 
-    return new lanyard.geom.Point(x, y, z);
+    return new lanyard.geom.Point(x, y, z, 1);
 };
 
 /**
@@ -399,7 +403,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
  * @param {lanyard.geom.Point} cart the cartesian point.
  * @return {lanyard.geom.Position} the geodetic position.
  */
-lanyard.globes.EllipsoidalGLobe.prototype.cartesianToGeodetic = function (cart) {
+lanyard.globes.EllipsoidalGlobe.prototype.cartesianToGeodetic = function (cart) {
 
     /** @type {number} */
     var ra2 = 1 / (this.equatorialRadius * this.equatorialRadius);

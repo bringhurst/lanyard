@@ -13,6 +13,7 @@
 goog.provide('lanyard.geom.Sector');
 
 goog.require('lanyard.geom.Angle');
+goog.require('lanyard.geom.Cylinder');
 
 /**
  * Creates a new Sector and initializes it to the specified angles. The angles are assumed to be
@@ -460,10 +461,10 @@ lanyard.geom.Sector.prototype.computeBoundingCylinder = function (globe, vertica
  */
 lanyard.geom.Sector.prototype.contains = function (latitude, longitude) {
     /** @type {boolean} */    
-    var ret = (latitude.getDegrees() >= this.minLatitude.getDegrees()) &&
-        (latitude.getDegrees() <= this.maxLatitude.getDegrees()) &&
-        (longitude.getDegrees() >= this.minLongitude.getDegrees()) &&
-        (longitude.getDegrees() <= this.maxLongitude.getDegrees());
+    var ret = (latitude.getDegrees() >= this._minLatitude.getDegrees()) &&
+        (latitude.getDegrees() <= this._maxLatitude.getDegrees()) &&
+        (longitude.getDegrees() >= this._minLongitude.getDegrees()) &&
+        (longitude.getDegrees() <= this._maxLongitude.getDegrees());
 
     return ret;
 };
@@ -492,10 +493,10 @@ lanyard.geom.Sector.prototype.containsLatLon = function (latLon) {
  */
 lanyard.geom.Sector.prototype.containsRadians = function (radiansLatitude, radiansLongitude) {
     /** @type {boolean} */
-    var ret = (radiansLatitude >= this.minLatitude.radians) &&
-        (radiansLatitude <= this.maxLatitude.radians) &&
-        (radiansLongitude >= this.minLongitude.radians) &&
-        (radiansLongitude <= this.maxLongitude.radians);
+    var ret = (radiansLatitude >= this._minLatitude.getRadians()) &&
+        (radiansLatitude <= this._maxLatitude.getRadians()) &&
+        (radiansLongitude >= this._minLongitude.getRadians()) &&
+        (radiansLongitude <= this._maxLongitude.getRadians());
 
     return ret;
 };
@@ -509,10 +510,10 @@ lanyard.geom.Sector.prototype.containsRadians = function (radiansLatitude, radia
  */
 lanyard.geom.Sector.prototype.containsDegrees = function (degreesLatitude, degreesLongitude) {
     /** @type {boolean} */
-    var ret = (degreesLatitude >= this.minLatitude.degrees) &&
-        (degreesLatitude <= this.maxLatitude.degrees) &&
-        (degreesLongitude >= this.minLongitude.degrees) &&
-        (degreesLongitude <= this.maxLongitude.degrees);
+    var ret = (degreesLatitude >= this._minLatitude.getDegrees()) &&
+        (degreesLatitude <= this._maxLatitude.getDegrees()) &&
+        (degreesLongitude >= this._minLongitude.getDegrees()) &&
+        (degreesLongitude <= this._maxLongitude.getDegrees());
 
     return ret;
 };
@@ -601,8 +602,8 @@ lanyard.geom.Sector.prototype.union = function (that) {
 /**
  * Find a sector that is a union of the specified coordinate and this.
  *
- * @param {lanyard.geom.Angle} the latitude coordinate.
- * @param {lanyard.geom.Angle} the longitude coordinate.
+ * @param {lanyard.geom.Angle} latitude the latitude coordinate.
+ * @param {lanyard.geom.Angle} longitude the longitude coordinate.
  * @return {lanyard.geom.Sector} the result of the union.
  */
 lanyard.geom.Sector.prototype.union = function (latitude, longitude) {
@@ -626,15 +627,15 @@ lanyard.geom.Sector.prototype.union = function (latitude, longitude) {
         minLat = latitude;
     }
 
-    if (latitude.getDegrees() > this.maxLatitude.getDegrees()) {
+    if (latitude.getDegrees() > this._maxLatitude.getDegrees()) {
         maxLat = latitude;
     }
 
-    if (longitude.getDegrees() < this.minLongitude.getDegrees()) {
+    if (longitude.getDegrees() < this._minLongitude.getDegrees()) {
         minLon = longitude;
     }
 
-    if (longitude.getDegrees() > this.maxLongitude.getDegrees()) {
+    if (longitude.getDegrees() > this._maxLongitude.getDegrees()) {
         maxLon = longitude;
     }
 
@@ -658,11 +659,11 @@ lanyard.geom.Sector.prototype.intersection = function (that) {
     /** @type {lanyard.geom.Angle} */
     var maxLat;
 
-    minLat = (this.minLatitude.getDegrees() > that.minLatitude.getDegrees()) ?
-        this.minLatitude : that.minLatitude;
+    minLat = (this._minLatitude.getDegrees() > that.getMinLatitude().getDegrees()) ?
+        this._minLatitude : that.getMinLatitude();
 
-    maxLat = (this.maxLatitude.getDegrees() < that.maxLatitude.getDegrees()) ?
-        this.maxLatitude : that.maxLatitude;
+    maxLat = (this._maxLatitude.getDegrees() < that.getMaxLatitude().getDegrees()) ?
+        this._maxLatitude : that.getMaxLatitude();
 
     if (minLat.getDegrees() > maxLat.getDegrees()) {
         return null;
@@ -674,11 +675,11 @@ lanyard.geom.Sector.prototype.intersection = function (that) {
     /** @type {lanyard.geom.Angle} */
     var maxLon;
 
-    minLon = (this.minLongitude.getDegrees() > that.minLongitude.getDegrees()) ?
-        this.minLongitude : that.minLongitude;
+    minLon = (this._minLongitude.getDegrees() > that.getMinLongitude().getDegrees()) ?
+        this._minLongitude : that.getMinLongitude();
 
-    maxLon = (this.maxLongitude.getDegrees() < that.maxLongitude.getDegrees()) ?
-        this.maxLongitude : that.maxLongitude;
+    maxLon = (this._maxLongitude.getDegrees() < that.getMaxLongitude().getDegrees()) ?
+        this._maxLongitude : that.getMaxLongitude();
 
     if (minLon.getDegrees() > maxLon.getDegrees()) {
         return null;
