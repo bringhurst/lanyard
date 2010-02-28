@@ -26,7 +26,15 @@ lanyard.Globe = function () {};
  * @param {number} metersElevation the elevation of the point in meters.
  * @return {lanyard.geom.Point} the point.
  */
-lanyard.Globe.prototype.computePointFromPosition = function (latitude, longitude, metersElevation) {};
+lanyard.Globe.prototype.computePointFromPositionAngles = function (latitude, longitude, metersElevation) {};
+
+/**
+ * Compute a point from the specified position.
+ *
+ * @param {lanyard.geom.Position} position the position.
+ * @return {lanyard.geom.Point} the point.
+ */
+lanyard.Globe.prototype.computePointFromPosition = function (position) {};
 
 /**
  * Compute the surface normal at a specified point on the globe.
@@ -125,13 +133,5 @@ lanyard.Globe.prototype.getEccentricitySquared = function () {};
  * @return {lanyard.geom.Position} the position.
  */
 lanyard.Globe.prototype.computePositionFromPoint = function (point) {};
-
-/**
- * Compute a point from the specified position.
- *
- * @param {lanyard.geom.Position} position the position.
- * @return {lanyard.geom.Point} the point.
- */
-lanyard.Globe.prototype.computePointFromPosition = function (position) {};
 
 /* EOF */

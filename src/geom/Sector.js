@@ -71,10 +71,10 @@ lanyard.geom.Sector.prototype.EMPTY_SECTOR =
  * normalized to +/- 90 degrees latitude and +/- 180 degrees longitude, but this method does not
  * verify that.
  *
- * @param {Number} minLatitude the sector's minimum latitude in degrees.
- * @param {Number} maxLatitude the sector's maximum latitude in degrees.
- * @param {Number} minLongitude the sector's minimum longitude in degrees.
- * @param {Number} maxLongitude the sector's maximum longitude in degrees.
+ * @param {number} minLatitude the sector's minimum latitude in degrees.
+ * @param {number} maxLatitude the sector's maximum latitude in degrees.
+ * @param {number} minLongitude the sector's minimum longitude in degrees.
+ * @param {number} maxLongitude the sector's maximum longitude in degrees.
  * @return {lanyard.geom.Sector} the new Sector.
  */
 lanyard.geom.Sector.prototype.fromDegrees =
@@ -286,7 +286,7 @@ lanyard.geom.Sector.prototype.getCentroid = function () {
 /**
  * Compute the center point of a globe.
  *
- * @param {lanyard.Globe} the globe.
+ * @param {lanyard.Globe} globe the globe.
  * @return {lanyard.geom.Point} the center point.
  */
 lanyard.geom.Sector.prototype.computeCenterPoint = function (globe) {
@@ -303,7 +303,7 @@ lanyard.geom.Sector.prototype.computeCenterPoint = function (globe) {
     /** @type {lanyard.geom.Angle} */
     var cLon = lanyard.geom.Angle.prototype.fromDegrees(lon);
 
-    return globe.computePointFromPosition(cLat, cLon, globe.getElevation(cLat, cLon));
+    return globe.computePointFromPositionAngles(cLat, cLon, globe.getElevation(cLat, cLon));
 };
 
 /**
@@ -329,10 +329,10 @@ lanyard.geom.Sector.prototype.computeCornerPoints = function (globe) {
     /** @type {lanyard.geom.Angle} */
     var maxLon = this._maxLongitude;
 
-    corners[0] = globe.computePointFromPosition(minLat, minLon, globe.getElevation(minLat, minLon));
-    corners[1] = globe.computePointFromPosition(minLat, maxLon, globe.getElevation(minLat, maxLon));
-    corners[2] = globe.computePointFromPosition(maxLat, maxLon, globe.getElevation(maxLat, maxLon));
-    corners[3] = globe.computePointFromPosition(maxLat, minLon, globe.getElevation(maxLat, minLon));
+    corners[0] = globe.computePointFromPositionAngles(minLat, minLon, globe.getElevation(minLat, minLon));
+    corners[1] = globe.computePointFromPositionAngles(minLat, maxLon, globe.getElevation(minLat, maxLon));
+    corners[2] = globe.computePointFromPositionAngles(maxLat, maxLon, globe.getElevation(maxLat, maxLon));
+    corners[3] = globe.computePointFromPositionAngles(maxLat, minLon, globe.getElevation(maxLat, minLon));
 
     return corners;
 };
@@ -359,15 +359,24 @@ lanyard.geom.Sector.prototype.computeBoundingSphere = function (globe, verticalE
     /** @type {Array.<lanyard.geom.Point>} */
     var points = [];
 
-    points[0] = globe.computePointFromPosition(center.getLatitude(), center.getLongitude(), maxHeight);
-    points[1] = globe.computePointFromPosition(sector.getMaxLatitude(), sector.getMinLongitude(), maxHeight);
-    points[2] = globe.computePointFromPosition(sector.getMinLatitude(), sector.getMaxLongitude(), maxHeight);
-    points[3] = globe.computePointFromPosition(sector.getMinLatitude(), sector.getMinLongitude(), maxHeight);
-    points[4] = globe.computePointFromPosition(sector.getMaxLatitude(), sector.getMaxLongitude(), maxHeight);
-    points[5] = globe.computePointFromPosition(sector.getMaxLatitude(), sector.getMinLongitude(), minHeight);
-    points[6] = globe.computePointFromPosition(sector.getMinLatitude(), sector.getMaxLongitude(), minHeight);
-    points[7] = globe.computePointFromPosition(sector.getMinLatitude(), sector.getMinLongitude(), minHeight);
-    points[8] = globe.computePointFromPosition(sector.getMaxLatitude(), sector.getMaxLongitude(), minHeight);
+    points[0] =
+        globe.computePointFromPositionAngles(center.getLatitude(), center.getLongitude(), maxHeight);
+    points[1] =
+        globe.computePointFromPositionAngles(sector.getMaxLatitude(), sector.getMinLongitude(), maxHeight);
+    points[2] =
+        globe.computePointFromPositionAngles(sector.getMinLatitude(), sector.getMaxLongitude(), maxHeight);
+    points[3] =
+        globe.computePointFromPositionAngles(sector.getMinLatitude(), sector.getMinLongitude(), maxHeight);
+    points[4] =
+        globe.computePointFromPositionAngles(sector.getMaxLatitude(), sector.getMaxLongitude(), maxHeight);
+    points[5] =
+        globe.computePointFromPositionAngles(sector.getMaxLatitude(), sector.getMinLongitude(), minHeight);
+    points[6] =
+        globe.computePointFromPositionAngles(sector.getMinLatitude(), sector.getMaxLongitude(), minHeight);
+    points[7] =
+        globe.computePointFromPositionAngles(sector.getMinLatitude(), sector.getMinLongitude(), minHeight);
+    points[8] =
+        globe.computePointFromPositionAngles(sector.getMaxLatitude(), sector.getMaxLongitude(), minHeight);
 
     return lanyard.geom.Sphere.prototype.createBoundingSphere(points);
 };
@@ -563,7 +572,7 @@ lanyard.geom.Sector.prototype.intersects = function (that) {
  * @param {lanyard.geom.Sector} that the sector to join with this.
  * @return {lanyard.geom.Sector} a new sector formed from the extremes of the two sectors.
  */
-lanyard.geom.Sector.prototype.union = function (that) {
+lanyard.geom.Sector.prototype.unionWithSector = function (that) {
     if (!that) {
         return this;
     }
@@ -606,7 +615,7 @@ lanyard.geom.Sector.prototype.union = function (that) {
  * @param {lanyard.geom.Angle} longitude the longitude coordinate.
  * @return {lanyard.geom.Sector} the result of the union.
  */
-lanyard.geom.Sector.prototype.union = function (latitude, longitude) {
+lanyard.geom.Sector.prototype.unionWithCoordinate = function (latitude, longitude) {
     if (!latitude || !longitude) {
         return this;
     }
@@ -645,10 +654,10 @@ lanyard.geom.Sector.prototype.union = function (latitude, longitude) {
 /**
  * Find the intersection of this sector with another.
  *
- * @param {lanyard.geom.Sector} the sector to check for intersection.
+ * @param {lanyard.geom.Sector} that the sector to check for intersection.
  * @return {lanyard.geom.Sector} a sector of the intersection.
  */
-lanyard.geom.Sector.prototype.intersection = function (that) {
+lanyard.geom.Sector.prototype.intersectionWithSector = function (that) {
     if (!that) {
         return this;
     }
@@ -695,7 +704,7 @@ lanyard.geom.Sector.prototype.intersection = function (that) {
  * @param {lanyard.geom.Angle} longitude the longitude of the coordinate.
  * @return {lanyard.geom.Sector} the sector of the intersection.
  */
-lanyard.geom.Sector.prototype.intersection = function (latitude, longitude) {
+lanyard.geom.Sector.prototype.intersectionWithCoordinate = function (latitude, longitude) {
     if (!latitude || !longitude) {
         return this;
     }

@@ -128,7 +128,7 @@ lanyard.geom.Cylinder.prototype.intersect = function (line) {
  * @param {lanyard.geom.Line} line the line to check.
  * @return {boolean} if this line intersects with the cylinder.
  */
-lanyard.geom.Cylinder.prototype.intersects = function (line) {
+lanyard.geom.Cylinder.prototype.intersectsLine = function (line) {
     /** @type {lanyard.geom.Point} */
     var ld = line.getDirection();
 
@@ -305,7 +305,7 @@ lanyard.geom.Cylinder.prototype.intersectsFrustum = function (frustum) {
  *
  * @return {lanyard.geom.Point} the center of this cylinder.
  */
-lanyard.geom.Cylinder.getCenter = function () {
+lanyard.geom.Cylinder.prototype.getCenter = function () {
     /** @type {lanyard.geom.Point} */
     var b = this.bottomCenter;
 
@@ -313,7 +313,7 @@ lanyard.geom.Cylinder.getCenter = function () {
     var t = this.topCenter;
 
     /** @type {lanyard.geom.Point} */
-    var ret = lanyard.geom.Point(
+    var ret = new lanyard.geom.Point(
         0.5 * (b.getX() + t.getX()),
         0.5 * (b.getY() + t.getY()),
         0.5 * (b.getZ() + t.getZ()),
