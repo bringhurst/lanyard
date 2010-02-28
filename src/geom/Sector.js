@@ -715,10 +715,10 @@ lanyard.geom.Sector.prototype.intersection = function (latitude, longitude) {
 lanyard.geom.Sector.prototype.subdivide = function () {
 
     /** @type {lanyard.geom.Angle} */
-    var midLat = lanyard.geom.Angle.prototype.average(this._minLatitude, this._maxLatitude);
+    var midLat = lanyard.geom.Angle.prototype.average(this._minLatitude, this._maxLatitude, null);
 
     /** @type {lanyard.geom.Angle} */
-    var midLon = lanyard.geom.Angle.prototype.average(this._minLongitude, this._maxLongitude);
+    var midLon = lanyard.geom.Angle.prototype.average(this._minLongitude, this._maxLongitude, null);
 
     /** @type {Array.<lanyard.geom.Sector>} */
     var sectors = [];
