@@ -19,4 +19,27 @@ lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
 };
 goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
 
+/**
+ * Initializes and starts the demo.
+ *
+ * @this {lanyard.demo.BasicDemo}
+ */
+lanyard.demo.BasicDemo.prototype.run = function () {
+    var gl = null;
+
+    try {
+        gl = this._webGLCanvas.getContext("experimental-webgl");
+        gl.viewport(0, 0, this.webGLCanvas.width, this._webGLCanvas.height);
+    } catch(e) {
+        // TODO
+    }
+
+    if (!gl) {
+        // TODO: change to logger.severe
+        alert("Could not initialise WebGL, sorry :-(");
+    }
+};
+goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
+    lanyard.demo.BasicDemo.prototype.run);
+
 /* EOF */
