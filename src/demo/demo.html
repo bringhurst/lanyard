@@ -5,29 +5,31 @@
         <link href="demo.css" media="screen" rel="stylesheet" type="text/css"></link>
     </head>
     <body>
-        <div id="header">
-            <h2>Lanyard Demo</h2>
+        <div class="column-container">
+        <div class="layer-list-column">
+            <!-- Layer list start -->
+            <fieldset>
+                <legend>Layers</legend>
+                <div id="layer-list"></div>
+            </fieldset>
+            <!-- Layer list end -->
         </div>
-        <div class="colmask threecol">
-            <div class="colmid">
-                <div class="colleft">
-                    <div class="layer-list-column">
-                        <!-- Layer list start -->
-                        <h2>First Column</h2>
-                        <!-- Layer list end -->
-                    </div>
-                    <div class="map-canvas-column">
-                        <!-- Map canvas start -->
-                        <h2>Second Column</h2>
-                        <!-- Map canvas end -->
-                    </div>
-                    <div class="map-console-column">
-                        <!-- Map console start -->
-                        <h2>Third Column</h2>
-                        <!-- Map console end -->
-                    </div>
-                </div>
-            </div>
+        <div class="map-canvas-column">
+            <!-- Map canvas start -->
+            <fieldset>
+                <legend>Lanyard Demo</legend>
+                <canvas id="lanyard-canvas" width="500" height="500"></canvas>
+            </fieldset>
+            <!-- Map canvas end -->
+        </div>
+        <div class="map-console-column">
+            <!-- Map console start -->
+            <fieldset class="goog-debug-panel">
+                <legend>Event Log</legend>
+                <div id="log"></div>
+            </fieldset>
+            <!-- Map console end -->
+        </div>
         </div>
     </body>
 </html>
