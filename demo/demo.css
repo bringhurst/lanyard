@@ -16,6 +16,7 @@ body {
 
 .layer-list-column {
     width:200px;
+    height:100%;
 }
 
 .map-canvas-column {
@@ -28,4 +29,5 @@ body {
 
 .column-container {
     width:1160px;
+    clear:both;
 }

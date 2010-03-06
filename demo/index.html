@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Lanyard Demo</title>
+        <link href="demo.css" media="screen" rel="stylesheet" type="text/css"/>
+        <script>
+            goog.require('goog.debug.DivConsole');
+            goog.require('goog.debug.LogManager');
+            goog.require('goog.debug.Logger');
+            goog.require('goog.dom');
+            goog.require('goog.events');
+            goog.require('goog.ui.Checkbox');
+            goog.require('goog.ui.Checkbox.State');
+
+            /* lanyard.* objects */
+            goog.require('lanyard.DrawContext');
+            goog.require('lanyard.Elevations');
+            goog.require('lanyard.ElevationModel');
+            goog.require('lanyard.Layer');
+            goog.require('lanyard.Renderable');
+            //goog.require('lanyard.SceneController');
+
+            /* lanyard.geom.* objects */
+            goog.require('lanyard.geom.Angle');
+            goog.require('lanyard.geom.Cylinder');
+            goog.require('lanyard.geom.Extent');
+            goog.require('lanyard.geom.Frustum');
+            goog.require('lanyard.geom.Intersection');
+            goog.require('lanyard.geom.LatLon')
+            goog.require('lanyard.geom.Line');
+            goog.require('lanyard.geom.Matrix');
+            goog.require('lanyard.geom.MatrixFour');
+            goog.require('lanyard.geom.Plane');
+            goog.require('lanyard.geom.Point');
+            goog.require('lanyard.geom.PolarPoint');
+            goog.require('lanyard.geom.Position');
+            goog.require('lanyard.geom.Quaternion');
+            goog.require('lanyard.geom.Sector');
+            goog.require('lanyard.geom.Sphere');
+            goog.require('lanyard.geom.ViewFrustum');
+
+            /* lanayrd.globes.* objects */
+            goog.require('lanyard.globes.Earth');
+            goog.require('lanyard.globes.EllipsoidalGlobe');
+        </script>
+    </head>
+    <body>
+        <div class="column-container">
+           <div class="layer-list-column">
+                <!-- Layer list start -->
+                <fieldset>
+                    <legend>Layers</legend>
+                    <div id="layer-list"></div>
+                </fieldset>
+                <!-- Layer list end -->
+            </div>
+            <div class="map-canvas-column">
+                <!-- Map canvas start -->
+                <fieldset>
+                    <legend>Lanyard Demo</legend>
+                    <canvas id="lanyard-canvas" width="500" height="500"></canvas>
+                </fieldset>
+                <!-- Map canvas end -->
+            </div>
+            <div class="map-console-column">
+                <!-- Map console start -->
+                <fieldset class="goog-debug-panel">
+                    <legend>Event Log</legend>
+                    <div id="log"></div>
+                </fieldset>
+                <!-- Map console end -->
+            </div>
+        </div>
+        <script type="text/javascript">
+            // Set up a logger.
+            goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+
+            var logger = goog.debug.Logger.getLogger('demo');
+            var logconsole = new goog.debug.DivConsole(goog.dom.$('log'));
+
+            logconsole.setCapturing(true);
+
+            var EVENTS = goog.object.getValues(goog.ui.Component.EventType);
+            logger.fine('Listening for: ' + EVENTS.join(', ') + '.');
+        </script>
+    </body>
+</html>
