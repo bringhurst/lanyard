@@ -13,7 +13,7 @@
   </target>
 
   <macrodef name="calcdeps">
-    <attribute name="inputfile" default="${basedir}/index.html" />
+    <attribute name="inputfile" default="${basedir}/src/demo/BasicDemo.js" />
     <attribute name="outputfile" />
     <attribute name="compilerjarfile" default="${closure-compiler.dir}/compiler.jar" />
     <attribute name="compilationlevel" default="ADVANCED_OPTIMIZATIONS" />
@@ -33,9 +33,9 @@
         <arg line="-o @{outputmode}" />
         <arg line='-c "@{compilerjarfile}"' />
         <arg line='-f "--compilation_level=@{compilationlevel}"' />
-        <arg line='-f "--jscomp_error=deprecated"' />
-        <arg line='-f "--jscomp_error=visibility"' />
-        <arg line='-f "--jscomp_error=accessControls"' />
+        <arg line='-f "--jscomp_warning=deprecated"' />
+        <arg line='-f "--jscomp_warning=visibility"' />
+        <arg line='-f "--jscomp_warning=accessControls"' />
         <arg line='-f "--jscomp_error=fileoverviewTags"' />
         <arg line='-f "--jscomp_error=strictModuleDepCheck"' />
         <arg line='-f "--jscomp_error=missingProperties"' />
