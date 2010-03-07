@@ -19,7 +19,9 @@
                 <!-- Map canvas start -->
                 <fieldset>
                     <legend>Lanyard Demo</legend>
-                    <canvas id="lanyard-demo-canvas" width="500" height="500"></canvas>
+                    <canvas id="lanyard-demo-canvas" width="500" height="500">
+                        Your browser doesn't appear to support the HTML5 canvas element.
+                    </canvas>
                 </fieldset>
                 <!-- Map canvas end -->
             </div>
@@ -38,6 +40,7 @@
                 document.getElementById("lanyard-demo-layer-list"),
                 document.getElementById("lanyard-demo-log")
             );
+            basicDemo.run();
         </script>
     </body>
 </html>
