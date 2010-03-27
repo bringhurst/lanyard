@@ -1,5 +1,10 @@
+/*global goog, lanyard */
+/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
+
+goog.provide('lanyard.util.Color');
+
 /**
- * Create a new color object.
+ * An object for holding and manipulating color values.
  *
  * @constructor
  * @param {number} red a red value, normalized to [0.0, 1.0].
@@ -7,7 +12,7 @@
  * @param {number} blue a blue value, normalized to [0.0, 1.0].
  * @param {number} alpha an alpha value, normalized to [0.0, 1.0].
  */
-Color = function(red, green, blue, alpha, hex, name) {
+lanyard.util.Color = function(red, green, blue, alpha, hex, name) {
     this._red = red;
     this._green = green;
     this._blue = blue;
@@ -19,7 +24,7 @@ Color = function(red, green, blue, alpha, hex, name) {
 /**
  * @const
  */
-Color.prototype.ENGLISH_STRINGS = {
+lanyard.util.Color.prototype.ENGLISH_STRINGS = {
     "black" : {
         "hex" : "000000",
         "red": 0.0,
@@ -107,20 +112,21 @@ Color.prototype.ENGLISH_STRINGS = {
     }
 };
 
-Color.prototype.fromEnglishString = function (name) {
-    if (Color.prototype.ENGLISH_STRINGS[name]) {
-        this._red = Color.prototype.ENGLISH_STRINGS[name].red;
-        this._green = Color.prototype.ENGLISH_STRINGS[name].green;
-        this._blue = Color.prototype.ENGLISH_STRINGS[name].blue;
-        this._alpha = Color.prototype.ENGLISH_STRINGS[name].alpha;
-        this._hex = Color.prototype.ENGLISH_STRINGS[name].hex;
+lanyard.util.Color.prototype.fromEnglishString = function (name) {
+    if (lanyard.util.Color.prototype.ENGLISH_STRINGS[name]) {
+        this._red = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].red;
+        this._green = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].green;
+        this._blue = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].blue;
+        this._alpha = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].alpha;
+        this._hex = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].hex;
         this._name = name;
     } else {
-        console.log("English color name is unknown.");
+        // TODO error
+        //console.log("English color name is unknown.");
     }
 };
 
-Color.prototype.fromHexString = function (hexString) {
+lanyard.util.Color.prototype.fromHexString = function (hexString) {
     if (!hexString) {
         return null;
     }
@@ -135,7 +141,7 @@ Color.prototype.fromHexString = function (hexString) {
 
     if (hexString.length === 6) {
         // handle an html color
-        c = new Color(
+        c = new lanyard.util.Color(
             parseInt(hexString.substring(0, 1), 16) / 255,
             parseInt(hexString.substring(2, 3), 16) / 255,
             parseInt(hexString.substring(4, 5), 16) / 255,
@@ -145,7 +151,7 @@ Color.prototype.fromHexString = function (hexString) {
         );
     } else if (hexString.length === 8) {
         // handle a KML color (includes alpha)
-        c = new Color(
+        c = new lanyard.util.Color(
             parseInt(hexString.substring(0, 1), 16) / 255,
             parseInt(hexString.substring(2, 3), 16) / 255,
             parseInt(hexString.substring(4, 5), 16) / 255,
@@ -158,15 +164,15 @@ Color.prototype.fromHexString = function (hexString) {
     return c;
 };
 
-Color.prototype.toVec4 = function () {
+lanyard.util.Color.prototype.toVec4 = function () {
     return [this._red, this._green, this._blue, this._alpha];
 };
 
-Color.prototype.toVec3 = function () {
+lanyard.util.Color.prototype.toVec3 = function () {
     return [this._red, this._green, this._blue];
 };
 
-Color.prototype.toHex = function () {
+lanyard.util.Color.prototype.toHex = function () {
     return this._hex;
 };
 
