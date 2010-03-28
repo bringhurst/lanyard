@@ -11,8 +11,6 @@ goog.require('goog.events');
 goog.require('goog.ui.Checkbox');
 goog.require('goog.ui.Checkbox.State');
 
-goog.require('lanyard.layers.earth.BMNGSurfaceLayer');
-
 /**
  * A basic demo of Lanyard.
  *
@@ -26,13 +24,13 @@ lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
     /** @private */ this._webGLCanvas = webGLCanvas;
     /** @private */ this._layerListDiv = layerListDiv;
     /** @private */ this._eventLogDiv = eventLogDiv;
-    /** @private */ this._logger = goog.debug.Logger.getLogger('basicDemo');
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.BasicDemo');
 
     /**
      * @private
      * @type {Array.<lanyard.Layer>}
      */
-    this._layerList = [ new lanyard.layers.earth.BMNGSurfaceLayer() ];
+    this._layerList = [];
 };
 goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
 
@@ -44,31 +42,20 @@ goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
 lanyard.demo.BasicDemo.prototype.run = function () {
     this.setupEventLog();
     this.setupLayerList();
-    this.setupWebGLCanvas();
+
+    /** @type {lanyard.LanyardCanvas} */
+    var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
+
+    /** @type {lanyard.Model} */
+    var m = new lanyard.BasicModel();
+    m.setLayers(this._layerList);
+    m.setShowWireframeExterior(true);
+    m.setShowWireframeInterior(false);
+    m.setShowTessellationBoundingVolumes(false);
+    lc.setModel(m);
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
     lanyard.demo.BasicDemo.prototype.run);
-
-/**
- * Setup the WebGL context.
- *
- * @this {lanyard.demo.BasicDemo}
- * @return {WebGLRenderingContext} the WebGL rendering context.
- */
-lanyard.demo.BasicDemo.prototype.setupWebGLCanvas = function () {
-    var glContext = this._webGLCanvas.getContext("experimental-webgl");
-    glContext.viewport(0, 0, this.webGLCanvas.width, this._webGLCanvas.height);
-
-    if (!glContext) {
-        this._logger.severe("The canvas specified does not seem to support WebGL.");
-    } else {
-        this._logger.fine("A WebGL context was successfully obtained from the canvas.");
-    }
-
-    return glContext;
-};
-goog.exportSymbol('lanyard.demo.BasicDemo.prototype.setupWebGLCanvas',
-    lanyard.demo.BasicDemo.prototype.setupWebGLCanvas);
 
 /**
  * Setup the event log.

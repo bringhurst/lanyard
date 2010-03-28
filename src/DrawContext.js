@@ -7,17 +7,43 @@ goog.provide('lanyard.DrawContext');
  * A drawcontext.
  *
  * @constructor
+ * @param {canvas} the WebGL enabled canvas element.
  */
-lanyard.DrawContext = function () {
+lanyard.DrawContext = function (canvasElement) {
 
+    /**
+     * @private
+     * @type {WebGLRenderingContext}
+     */
+    this._glContext = lanyard.DrawContext.prototype.setupWebGLCanvas(canvasElement);
 };
 
 /**
- * @return {Object}
+ * Accessor for getting the WebGL context.
+ *
+ * @return {WebGLRenderingContext} the WebGL context.
  */
 lanyard.DrawContext.prototype.getGL = function () {
-    var gl = {};
-    return gl;
+    return this._glContext;
+};
+
+/**
+ * Setup the WebGL context.
+ *
+ * @param {canvas} canvasElement the WebGL enabled canvas element.
+ * @return {WebGLRenderingContext} the WebGL rendering context.
+ */
+lanyard.DrawContext.prototype.setupWebGLCanvas = function (canvasElement) {
+    var glContext = canvasElement.getContext("experimental-webgl");
+    glContext.viewport(0, 0, canvasElement.width, canvasElement.height);
+
+    if (!glContext) {
+        this._logger.severe("The canvas specified does not seem to support WebGL.");
+    } else {
+        this._logger.fine("A WebGL context was successfully obtained from the canvas.");
+    }
+
+    return glContext;
 };
 
 /* EOF */

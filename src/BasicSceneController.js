@@ -8,9 +8,9 @@ goog.provide('lanyard.BasicSceneController');
  *
  * @constructor
  * @implements {lanyard.SceneController}
- * @this {lanyard.BasicSceneController}
+ * @param {canvas} canvasElement the WebGL enabled canvas element.
  */
-lanyard.BasicSceneController = function () {
+lanyard.BasicSceneController = function (canvasElement) {
     /**
      * @private
      * @type {lanyard.Model}
@@ -39,7 +39,7 @@ lanyard.BasicSceneController = function () {
      * @private
      * @type {lanyard.DrawContext}
      */
-    this._dc = new lanyard.DrawContextImpl();
+    this._dc = new lanyard.DrawContextImpl(canvasElement);
 
     /**
      * @private
