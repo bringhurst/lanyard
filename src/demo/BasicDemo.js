@@ -53,6 +53,9 @@ lanyard.demo.BasicDemo.prototype.run = function () {
     m.setShowWireframeInterior(false);
     m.setShowTessellationBoundingVolumes(false);
     lc.setModel(m);
+
+    // FIXME: setup mouse listeners.
+    lc.display();
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
     lanyard.demo.BasicDemo.prototype.run);

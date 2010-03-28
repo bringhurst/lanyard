@@ -15,6 +15,12 @@ lanyard.LanyardCanvas = function (canvasElement) {
      * @type {lanyard.SceneController}
      */
     this._sceneController = new lanyard.BasicSceneController(canvasElement);
+
+    /**
+     * @private
+     * @type {lanyard.util.Point}
+     */
+    this._pickPoint = null;
 };
 
 /**
@@ -83,6 +89,26 @@ lanyard.LanyardCanvas.prototype.setModelAndView = function (model, view) {
  */
 lanyard.LanyardCanvas.prototype.getSceneController = function () {
     return this._sceneController;
+};
+
+/**
+ * Display or update the map.
+ */
+lanyard.LanyardCanvas.prototype.display = function () {
+
+    /** @type {lanyard.SceneController} */
+    var sc = this.getSceneController();
+
+    if (!sc) {
+        this._logger.fine("LanyardCanvas.ScnCntrllerNullOnRepaint");
+    }
+
+    if (this._pickPoint) {
+        sc.pick(this._pickPoint);
+        this._pickPoint = null;
+    }
+
+    sc.repaint();
 };
 
 /* EOF */
