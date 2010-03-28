@@ -13,12 +13,43 @@ goog.provide('lanyard.util.Color');
  * @param {number} alpha an alpha value, normalized to [0.0, 1.0].
  */
 lanyard.util.Color = function(red, green, blue, alpha, hex, name) {
+    /**
+     * @private
+     * @type {number}
+     */
     this._red = red;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this._green = green;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this._blue = blue;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this._alpha = alpha;
+
+    /**
+     * @private
+     * @type {string}
+     */
     this._hex = hex;
+
+    /**
+     * @private
+     * @type {string}
+     */
     this._name = name;
+
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.util.Color');
 };
 
 /**
@@ -154,6 +185,12 @@ lanyard.util.Color.prototype.ENGLISH_STRINGS = {
     }
 };
 
+/**
+ * Convert an english color name into a {lanyard.util.Color} object.
+ *
+ * @param {string} name the english name of the color.
+ * @return {lanyard.util.Color} the color from the name, or null if the name was not recognized.
+ */
 lanyard.util.Color.prototype.fromEnglishString = function (name) {
     if (lanyard.util.Color.prototype.ENGLISH_STRINGS[name]) {
         this._red = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].red;
@@ -163,11 +200,16 @@ lanyard.util.Color.prototype.fromEnglishString = function (name) {
         this._hex = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].hex;
         this._name = name;
     } else {
-        // TODO error
-        //console.log("English color name is unknown.");
+        this._logger.severe("English color name is unknown.");
     }
 };
 
+/**
+ * Create a {lanyard.util.Color} object from a kml or html color hex string.
+ *
+ * @param {string} the hex string of the color in RRGGBB or RRGGBBAA format.
+ * @return {lanyard.util.Color} the new color object.
+ */
 lanyard.util.Color.prototype.fromHexString = function (hexString) {
     if (!hexString) {
         return null;
@@ -178,7 +220,10 @@ lanyard.util.Color.prototype.fromHexString = function (hexString) {
         hexString = hexString(1);
     }
 
-    // The return value.
+    /**
+     * The return value.
+     * @type {lanyard.util.Color}
+     */
     var c = null;
 
     if (hexString.length === 6) {
@@ -206,14 +251,29 @@ lanyard.util.Color.prototype.fromHexString = function (hexString) {
     return c;
 };
 
+/**
+ * Convert this color into a four part RGBA vector.
+ *
+ * @return {Array.<number>} the color as a four part RGBA vector.
+ */
 lanyard.util.Color.prototype.toVec4 = function () {
     return [this._red, this._green, this._blue, this._alpha];
 };
 
+/**
+ * Convert this color into a three part RGB vector.
+ *
+ * @return {Array.<number>} the color as a three part RGB vector.
+ */
 lanyard.util.Color.prototype.toVec3 = function () {
     return [this._red, this._green, this._blue];
 };
 
+/**
+ * Find the hex value of this color.
+ *
+ * @return {string} the string value of this color.
+ */
 lanyard.util.Color.prototype.toHex = function () {
     return this._hex;
 };
