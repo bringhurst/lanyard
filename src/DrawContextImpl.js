@@ -1,21 +1,22 @@
 /*global goog, lanyard */
 /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
-goog.provide('lanyard.DrawContext');
+goog.provide('lanyard.DrawContextImpl');
 
 /**
- * A drawcontext.
+ * A drawcontext implementation.
  *
  * @constructor
+ * @implements {lanyard.DrawContext}
  * @param {canvas} the WebGL enabled canvas element.
  */
-lanyard.DrawContext = function (canvasElement) {
+lanyard.DrawContextImpl = function (canvasElement) {
 
     /**
      * @private
      * @type {WebGLRenderingContext}
      */
-    this._glContext = lanyard.DrawContext.prototype.setupWebGLCanvas(canvasElement);
+    this._glContext = lanyard.DrawContextImpl.prototype.setupWebGLCanvas(canvasElement);
 };
 
 /**
@@ -23,7 +24,7 @@ lanyard.DrawContext = function (canvasElement) {
  *
  * @return {WebGLRenderingContext} the WebGL context.
  */
-lanyard.DrawContext.prototype.getGL = function () {
+lanyard.DrawContextImpl.prototype.getGL = function () {
     return this._glContext;
 };
 
@@ -33,7 +34,7 @@ lanyard.DrawContext.prototype.getGL = function () {
  * @param {canvas} canvasElement the WebGL enabled canvas element.
  * @return {WebGLRenderingContext} the WebGL rendering context.
  */
-lanyard.DrawContext.prototype.setupWebGLCanvas = function (canvasElement) {
+lanyard.DrawContextImpl.prototype.setupWebGLCanvas = function (canvasElement) {
     var glContext = canvasElement.getContext("experimental-webgl");
     glContext.viewport(0, 0, canvasElement.width, canvasElement.height);
 
