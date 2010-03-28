@@ -35,71 +35,113 @@ lanyard.util.Color.prototype.ENGLISH_STRINGS = {
 
     "navy" : {
         "hex" : "000080",
+        "red" : 0.0,
+        "green" : 0.0,
+        "blue" : 0.5,
         "alpha" : 1.0
     },
 
     "blue" : {
         "hex" : "0000FF",
+        "red" : 0.0,
+        "green" : 0.0,
+        "blue" : 1.0,
         "alpha" : 1.0
     },
 
     "green" : {
         "hex" : "008000",
+        "red" : 0.0,
+        "green" : 0.5,
+        "blue" : 0.0,
         "alpha" : 1.0
     },
 
     "teal" : {
         "hex" : "008080",
+        "red" : 0.0,
+        "green" : 0.5,
+        "blue" : 0.5,
         "alpha" : 1.0
     },
 
     "lime" : {
         "hex" : "00FF00",
+        "red" : 0.0,
+        "green" : 1.0,
+        "blue" : 0.0,
         "alpha" : 1.0
     },
 
     "aqua" : {
         "hex" : "00FFFF",
+        "red" : 0.0,
+        "green" : 1.0,
+        "blue" : 1.0,
         "alpha" : 1.0
     },
 
     "maroon" : {
         "hex" : "800000",
+        "red" : 0.5,
+        "green" : 0.0,
+        "blue" : 0.0,
         "alpha" : 1.0
     },
 
     "purple" : {
         "hex" : "800080",
+        "red" : 0.5,
+        "green" : 0.0,
+        "blue" : 0.5,
         "alpha" : 1.0
     },
 
     "olive" : {
         "hex" : "808000",
+        "red" : 0.5,
+        "green" : 0.5,
+        "blue" : 0.0,
         "alpha" : 1.0
     },
 
     "gray" : {
         "hex" : "808080",
+        "red" : 0.5,
+        "green" : 0.5,
+        "blue" : 0.5,
         "alpha" : 1.0
     },
 
     "silver" : {
         "hex" : "C0C0C0",
+        "red" : 0.75,
+        "green" : 0.75,
+        "blue" : 0.75,
         "alpha" : 1.0
     },
 
     "red" : {
         "hex" : "FF0000",
+        "red" : 1.0,
+        "green" : 0.0,
+        "blue" : 0.0,
         "alpha" : 1.0
     },
 
     "fuchsia" : {
         "hex" : "FF00FF",
+        "red" : 1.0,
+        "green" : 0.0,
+        "blue" : 1.0,
         "alpha" : 1.0
     },
 
     "yellow" : {
         "hex" : "FFFF00",
+        "red" : 1.0,
+        "green" : 1.0,
+        "blue" : 0.0,
         "alpha" : 1.0
     },
 
