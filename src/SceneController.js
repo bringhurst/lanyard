@@ -6,7 +6,6 @@ goog.provide('lanyard.SceneController');
 goog.require('lanyard.Model');
 goog.require('lanyard.View');
 goog.require('lanyard.FrameController');
-goog.require('lanyard.pick.PickedObjectList');
 
 /**
  * An interface for scene controllers.
@@ -75,21 +74,6 @@ lanyard.SceneController.prototype.setVerticalExaggeration = function (verticalEx
  * @return {Number} the vertical exaggeration.
  */
 lanyard.SceneController.prototype.getVerticalExaggeration = function () {};
-
-/**
- * Access to the pick list.
- *
- * @return {lanyard.pick.PickedObjectList} the pick list.
- */
-lanyard.SceneController.prototype.getPickedObjectList = function () {};
-
-/**
- * Do picking based on the point.
- *
- * @param {lanyard.geom.ScreenPoint} pickPoint the point on the canvas.
- * @return {lanyard.pick.PickedObjectList} the list of picked objects
- */
-lanyard.SceneController.prototype.pick = function (pickPoint) {};
 
 /**
  * Get the current frames per second.

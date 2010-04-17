@@ -31,26 +31,4 @@ lanyard.FrameController.prototype.drawFrame = function (dc) {};
  */
 lanyard.FrameController.prototype.finalizeFrame = function (dc) {};
 
-/**
- * Initialize picking.
- *
- * @param {lanyard.DrawContext} dc the context where the frame is located.
- */
-lanyard.FrameController.prototype.initializePicking = function (dc) {};
-
-/**
- * Finalize picking.
- *
- * @param {lanyard.DrawContext} dc the context where the frame is located.
- */
-lanyard.FrameController.prototype.finalizePicking = function (dc) {};
-
-/**
- * Perform picking.
- *
- * @param {lanyard.DrawContext} dc the context where the frame is located.
- * @param {lanyard.util.Point} pickPoint the point where a pick occurred.
- */
-lanyard.FrameController.prototype.pick = function (dc, pickPoint) {};
-
 /* EOF */

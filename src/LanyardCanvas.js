@@ -15,12 +15,6 @@ lanyard.LanyardCanvas = function (canvasElement) {
      * @type {lanyard.SceneController}
      */
     this._sceneController = new lanyard.BasicSceneController(canvasElement);
-
-    /**
-     * @private
-     * @type {lanyard.util.Point}
-     */
-    this._pickPoint = null;
 };
 
 /**
@@ -101,11 +95,6 @@ lanyard.LanyardCanvas.prototype.display = function () {
 
     if (!sc) {
         this._logger.fine("LanyardCanvas.ScnCntrllerNullOnRepaint");
-    }
-
-    if (this._pickPoint) {
-        sc.pick(this._pickPoint);
-        this._pickPoint = null;
     }
 
     sc.repaint();

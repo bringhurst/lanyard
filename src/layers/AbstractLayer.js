@@ -19,12 +19,6 @@ lanyard.layers.AbstractLayer = function () {
 
     /**
      * @private
-     * @type {boolean}
-     */
-    this.pickable = true;
-
-    /**
-     * @private
      * @type {number}
      */
     this.opacity = 1.0;
@@ -57,26 +51,6 @@ goog.exportSymbol('lanyard.layers.AbstractLayer', lanyard.layers.AbstractLayer);
  */
 lanyard.layers.AbstractLayer.prototype.isEnabled = function () {
     return this.enabled;
-};
-
-/**
- * Determine if picking is enabled on this layer.
- *
- * @this {lanyard.layers.AbstractLayer}
- * @return {boolean} if the layer is pick enabled or not.
- */
-lanyard.layers.AbstractLayer.prototype.isPickEnabled = function () {
-    return this.pickable;
-};
-
-/**
- * Set picking to enabled for this layer.
- *
- * @this {lanyard.layers.AbstractLayer}
- * @param {boolean} pickable if this layer should be pickable or not.
- */
-lanyard.layers.AbstractLayer.prototype.setPickEnabled = function (pickable) {
-    this.pickable = pickable;
 };
 
 /**
@@ -230,45 +204,6 @@ lanyard.layers.AbstractLayer.prototype.render = function (dc) {
     }
 
     this.doRender(dc);
-};
-
-/**
- * Do picking on this layer based on the specified point.
- *
- * @param {lanyard.DrawContext} dc the draw context.
- * @param {number} mouseX the X position of the mouse.
- * @param {number} mouseY the Y position of the mouse.
- */
-lanyard.layers.AbstractLayer.prototype.pick = function (dc, mouseX, mouseY) {
-    if (!this.enabled) {
-        return;
-    }
-
-    if (!this.isLayerActive(dc)) {
-        return;
-    }
-
-    if (!this.isLayerInView(dc)) {
-        return;
-    }
-
-    this.doPick(dc, mouseX, mouseY);
-};
-
-/**
- * Do picking on this layer based on the specified point.
- *
- * @param {lanyard.DrawContext} dc the draw context.
- * @param {number} mouseX the X position of the mouse.
- * @param {number} mouseY the Y position of the mouse.
- */
-lanyard.layers.AbstractLayer.prototype.doPick = function (dc, mouseX, mouseY) {
-    // any state that could change the color needs to be disabled, such as GL_TEXTURE, GL_LIGHTING or GL_FOG.
-    // re-draw with unique colors
-    // store the object info in the selectable objects table
-    // read the color under the coursor
-    // use the color code as a key to retrieve a selected object from the selectable objects table
-    // create an instance of the PickedObject and add to the dc via the dc.addPickedObject() method
 };
 
 /* EOF */

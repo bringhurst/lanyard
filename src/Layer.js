@@ -53,33 +53,10 @@ lanyard.Layer.prototype.getOpacity = function () {};
 lanyard.Layer.prototype.setOpacity = function (opacity) {};
 
 /**
- * Accessor to see if this layer has picking turned on.
- *
- * @return {boolean} if picking on this layer is enabled.
- */
-lanyard.Layer.prototype.isPickEnabled = function () {};
-
-/**
- * Mutator to set if picking should be enabled for this layer.
- *
- * @param {boolean} isPickable if this layer is pickable or not.
- */
-lanyard.Layer.prototype.setPickEnabled = function (isPickable) {};
-
-/**
  * A way to render this layer to the draw context.
  *
  * @param {lanyard.DrawContext} dc the draw context to render to.
  */
 lanyard.Layer.prototype.render = function (dc) {};
-
-/**
- * A way to handle pick events.
- *
- * @param {lanyard.DrawContext} dc the draw context where the pick event takes place.
- * @param {number} mouseX the x value of the pick event.
- * @param {number} mouseY the y value of the pick event.
- */
-lanyard.Layer.prototype.pick = function (dc, mouseX, mouseY) {};
 
 /* EOF */

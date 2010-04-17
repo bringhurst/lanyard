@@ -36,14 +36,6 @@ lanyard.SectorGeometry.prototype.getSector = function () {};
 lanyard.SectorGeometry.prototype.getSurfacePoint = function (latitude, longitude, metersOffset) {};
 
 /**
- * Perform a picking operation on this sector geometry.
- *
- * @param {lanyard.DrawContext} dc the draw context.
- * @param {lanyard.util.Point} pickPoint the picking point.
- */
-lanyard.SectorGeometry.prototype.pick = function (dc, pickPoint) {};
-
-/**
  * Render multi-texture.
  *
  * @param {lanyard.DrawContext} dc the draw context.

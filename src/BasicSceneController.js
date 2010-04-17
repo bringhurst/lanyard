@@ -43,12 +43,6 @@ lanyard.BasicSceneController = function (canvasElement) {
 
     /**
      * @private
-     * @type {lanyard.PickedObjectList}
-     */
-    this._lastPickedObjects = null;
-
-    /**
-     * @private
      */
     this._logger = goog.debug.Logger.getLogger('lanyard.BasicSceneController');
 };
@@ -158,63 +152,6 @@ lanyard.BasicSceneController.prototype.repaint = function () {
 
         // TODO: calculate end of FPS here
     }
-};
-
-/**
- * Perform a pick.
- *
- * @param {lanyard.util.Point} pickPoint the pick point.
- * @return {lanyard.PickedObjectList} the picked object listing.
- */
-lanyard.BasicSceneController.prototype.pick = function (pickPoint) {
-
-    if (!pickPoint) {
-        this._logger.fine("nullValue.PickPoint");
-    }
-
-    if (!this._dc.getSurfaceGeometry() || !this._dc.getVisibleSector()) {
-        this.lastPickedObjects = null;
-        return null;
-    }
-
-    // PickingMode should be enabled before the initialize() method
-    this._dc.enablePickingMode();
-    this._dc.initialize(/* FIXME: pass in GLContext.getCurrent() */);
-    this._dc.setModel(this._model);
-    this._dc.setView(this._view);
-    this._dc.setVerticalExaggeration(this._verticalExaggeration);
-
-    if (!this.dc.getGLContext()) {
-        this._logger.fine("BasicSceneController.GLContextNullStartPick");
-    }
-
-    /** @type {lanyard.FrameController} */
-    var fc = this.getFrameController();
-    if (!fc) {
-        this._logger.fine("BasicSceneController.NoFrameControllerStartPick");
-    }
-
-    try {
-        fc.initializePicking(this._dc);
-        fc.pick(this._dc, pickPoint);
-    } catch (e) {
-        this._logger.fine("BasicSceneController.ExceptionDuringPick");
-    } finally {
-        fc.finalizePicking(this._dc);
-        this._dc.disablePickingMode();
-    }
-
-    this._lastPickedObjects = new lanyard.PickedObjectList(this._dc.getPickedObjects());
-    return this._lastPickedObjects;
-};
-
-/**
- * Accessor for the picked object list of this scene.
- *
- * @return {lanyard.PickedObjectList} the picked object list.
- */
-lanyard.BasicSceneController.prototype.getPickedObjectList = function () {
-    return this._lastPickedObjects;
 };
 
 /**
