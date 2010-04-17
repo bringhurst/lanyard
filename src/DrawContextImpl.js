@@ -17,18 +17,6 @@ lanyard.DrawContextImpl = function (canvasElement) {
      * @type {WebGLRenderingContext}
      */
     this._glContext = lanyard.DrawContextImpl.prototype.setupWebGLCanvas(canvasElement);
-
-    /**
-     * @private
-     * @type {Array.<lanyard.geom.MatrixFour>}
-     */
-    this._modelViewMatrixStack = [new lanyard.geom.MatrixFour()];
-
-    /**
-     * @private
-     * @type {lanyard.geom.MatrixFour}
-     */
-    this._projectionMatrix = null;
 };
 
 /**
