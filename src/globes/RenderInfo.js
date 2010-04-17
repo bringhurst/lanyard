@@ -17,12 +17,12 @@ goog.require('lanyard.globes.RectTile');
  * @param {number} resolution
  */
 lanyard.globes.RenderInfo = function (density, vertices, texCoords, refCenter, resolution) {
-    /** @private */ this.density = density;
-    /** @private */ this.vertices = vertices;
-    /** @private */ this.texCoords = texCoords;
-    /** @private */ this.referenceCenter = refCenter;
-    /** @private */ this.indices = lanyard.globes.RectTile.prototype.getIndices(this.density);
-    /** @private */ this.resolution = resolution;
+    /** @public */ this.density = density;
+    /** @public */ this.vertices = vertices;
+    /** @public */ this.texCoords = texCoords;
+    /** @public */ this.referenceCenter = refCenter;
+    /** @public */ this.indices = lanyard.globes.RectTile.prototype.getIndices(this.density);
+    /** @public */ this.resolution = resolution;
 };
 goog.exportSymbol('lanyard.globes.RenderInfo', lanyard.globes.RenderInfo);
 
