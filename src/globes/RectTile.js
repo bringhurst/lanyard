@@ -6,7 +6,7 @@ goog.provide('lanyard.globes.RectTile');
 /**
  * A representation of a rectangular tile.
  *
- * @param {lanyard.geom.Globe} globe
+ * @param {lanyard.Globe} globe
  * @param {number} level
  * @param {number} density
  * @param {lanyard.geom.Sector} sector
@@ -140,7 +140,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
     /** @type {Array.<number>} */
     var verts = [];
 
-    /** @type {lanyard.geom.Globe} */
+    /** @type {lanyard.Globe} */
     var globe = dc.getGlobe();
 
     /** @type {lanyard.Elevations} */
@@ -484,7 +484,7 @@ lanyard.globes.RectTile.prototype.getSurfacePoint = function (latitude, longitud
 /**
  * Offsets point by metersOffset meters.
  *
- * @param {lanyard.geom.Globes} globe the Globe from which to offset.
+ * @param {lanyard.Globe} globe the Globe from which to offset.
  * @param {lanyard.geom.Point} point the Point to offset.
  * @param {number} metersOffset the magnitude of the offset.
  * @return {lanyard.geom.Point} point offset along its surface normal as if it were on globe.
