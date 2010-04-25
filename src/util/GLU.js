@@ -16,14 +16,14 @@ lanyard.util.GLU = function() {};
  * @param {number} z
  * @param {lanyard.geom.Matrix} model
  * @param {lanyard.geom.Matrix} proj
- * @param {lanyard.geom.Matrix} view
+ * @param {Array.<number>} view the viewport rectangle.
  * @return {lanyard.geom.Point}
  */
 lanyard.util.GLU.prototype.unProject = function (x, y, z, model, proj, view) {
     var inverseProjection = (model.multiply(proj)).getInverse();
     var cords = new lanyard.geom.Point(
-        2 * (x - view._m11) / view._m13 - 1,
-        2 * (y - view._m12) / view._m14 - 1,
+        2 * (x - view[0]) / view[2] - 1,
+        2 * (y - view[1]) / view[3] - 1,
         2 * (z) - 1,
         1
     );
