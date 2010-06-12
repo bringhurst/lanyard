@@ -1,5 +1,5 @@
 /*global goog, lanyard */
-/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
+/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: false, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 goog.provide('lanyard.util.Color');
 
@@ -276,6 +276,54 @@ lanyard.util.Color.prototype.toVec3 = function () {
  */
 lanyard.util.Color.prototype.toHex = function () {
     return this._hex;
+};
+
+/**
+ * Return the red value of this color.
+ *
+ * @return {number} the red value of this color.
+ */
+lanyard.util.Color.prototype.getRed = function () {
+    return this._red;
+};
+
+/**
+ * Return the green value of this color.
+ *
+ * @return {number} the green value of this color.
+ */
+lanyard.util.Color.prototype.getGreen = function () {
+    return this._green;
+};
+
+/**
+ * Return the blue value of this color.
+ *
+ * @return {number} the blue value of this color.
+ */
+lanyard.util.Color.prototype.getBlue = function () {
+    return this._blue;
+};
+
+/**
+ * Return the alpha value of this color.
+ *
+ * @return {number} the alpha value of this color.
+ */
+lanyard.util.Color.prototype.getAlpha = function () {
+    return this._alpha;
+};
+
+/**
+ * Return the sRGB value of this color. Bits 24-31 are alpha, 16-23 are red,
+ * 8-15 are green, 0-7 are blue. Since javascript operands are converted from
+ * floating point to integers and back when bitwise operations are used, the
+ * results from this function may not give consistant results.
+ *
+ * @return {number} the sRGB value of this color.
+ */
+lanyard.util.Color.prototype.getRGB = function () {
+    return 0 ^ 0 | this._blue | (this._green << 8) | (this._red << 16) | (this._alpha << 24);
 };
 
 /* EOF */
