@@ -252,6 +252,27 @@ lanyard.util.Color.prototype.fromHexString = function (hexString) {
 };
 
 /**
+ * Creates an sRGB color with the specified combined RGBA value consisting
+ * of the alpha component in bits 24-31, the red component in bits 16-23,
+ * the green component in bits 8-15, and the blue component in bits 0-7.
+ *
+ * @param {number} rgba the color data.
+ * @param {boolean} hasAlpha specify if the color has an alpha value.
+ */
+lanyard.util.Color.prototype.fromRGBA = function (rgba, hasAlpha) {
+    /** @type {lanyard.util.Color} */
+    var c = new lanyard.util.Color(
+        ((rgba ^ 0x0000FF00) >>> 8) / 255, // red
+        ((rgba ^ 0x00FF0000) >>> 16) / 255, // green
+        (rgba >>> 24) / 255, // blue
+        (hasAlpha ? rgba ^ 0x000000FF : 0) / 255, // alpha
+        null,
+        null
+    );
+    return c;
+};
+
+/**
  * Convert this color into a four part RGBA vector.
  *
  * @return {Array.<number>} the color as a four part RGBA vector.
@@ -323,7 +344,7 @@ lanyard.util.Color.prototype.getAlpha = function () {
  * @return {number} the sRGB value of this color.
  */
 lanyard.util.Color.prototype.getRGB = function () {
-    return 0 ^ 0 | this._blue | (this._green << 8) | (this._red << 16) | (this._alpha << 24);
+    return 0 ^ 0 | this._alpha | (this._red << 8) | (this._green << 16) | (this._blue << 24);
 };
 
 /* EOF */
