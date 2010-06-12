@@ -79,4 +79,11 @@ lanyard.util.PriorityQueue.prototype.toArray = function () {
     return this._elements.slice();
 };
 
+/**
+ * Clear out the current elements in the queue.
+ */
+lanyard.util.PriorityQueue.prototype.clear = function () {
+    this._elements = [];
+};
+
 /* EOF */
