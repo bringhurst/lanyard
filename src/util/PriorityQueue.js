@@ -76,7 +76,7 @@ lanyard.util.PriorityQueue.prototype.peek = function () {
  * @return {Array.<Object>} the queue as an array.
  */
 lanyard.util.PriorityQueue.prototype.toArray = function () {
-    return this._elements.slice(0);
+    return this._elements.slice();
 };
 
 /* EOF */
