@@ -62,7 +62,7 @@ lanyard.util.PriorityQueue.prototype.poll = function () {
 };
 
 /**
- * Return the first element in the queue without removing it.
+ * Return a reference to the first element in the queue without removing it.
  *
  * @return {Object} the first element in the queue.
  */
@@ -71,7 +71,7 @@ lanyard.util.PriorityQueue.prototype.peek = function () {
 };
 
 /**
- * Return a COPY of this queue as an array.
+ * Return a COPY of this queue as an array. References may point to the original objects.
  *
  * @return {Array.<Object>} the queue as an array.
  */
