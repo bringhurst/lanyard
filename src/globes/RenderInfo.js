@@ -3,8 +3,6 @@
 
 goog.provide('lanyard.globes.RenderInfo');
 
-goog.require('lanyard.globes.RectTile');
-
 /**
  * Render info for tessellation.
  *

@@ -3,6 +3,8 @@
 
 goog.provide('lanyard.globes.EllipsoidRectangularTessellator');
 
+goog.require('lanyard.globes.RectTile');
+
 /**
  * @const
  * @type {number}

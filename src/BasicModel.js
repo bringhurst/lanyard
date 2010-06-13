@@ -3,6 +3,8 @@
 
 goog.provide('lanyard.BasicModel');
 
+goog.require('lanyard.globes.EllipsoidRectangularTessellator');
+
 /**
  * A model implementation.
  *

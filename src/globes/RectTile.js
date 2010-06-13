@@ -3,6 +3,11 @@
 
 goog.provide('lanyard.globes.RectTile');
 
+goog.require('lanyard.geom.Point');
+goog.require('lanyard.geom.Angle');
+goog.require('lanyard.globes.RenderInfo');
+goog.require('lanyard.ElevationModel');
+
 /**
  * A representation of a rectangular tile.
  *
@@ -147,19 +152,19 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
     var elevations = globe.getElevationModel().getElevations(this._sector, resolution);
 
     /** @type {number} */
-    var latMin = this.sector.getMinLatitude().radians;
+    var latMin = this._sector.getMinLatitude().getRadians();
 
     /** @type {number} */
-    var latMax = this.sector.getMaxLatitude().radians;
+    var latMax = this._sector.getMaxLatitude().getRadians();
 
     /** @type {number} */
     var dLat = (latMax - latMin) / density;
 
     /** @type {number} */
-    var lonMin = this.sector.getMinLongitude().radians;
+    var lonMin = this._sector.getMinLongitude().getRadians();
 
     /** @type {number} */
-    var lonMax = this.sector.getMaxLongitude().radians;
+    var lonMax = this._sector.getMaxLongitude().getRadians();
 
     /** @type {number} */
     var dLon = (lonMax - lonMin) / density;
@@ -246,7 +251,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
         new lanyard.globes.RenderInfo(
             density,
             verts,
-            this._parameterization.density,
+            this._parameterizations.density,
             refCenter,
             elevations.getResolution()
         );
@@ -468,7 +473,7 @@ lanyard.globes.RectTile.prototype.getSurfacePoint = function (latitude, longitud
     var l = lanyard.globes.RectTile.prototype.createPosition(column, leftDecimal, this._ri.density);
 
     /** @type {number} */
-    var h = lanyard.globes.RectTile.prototype.createPosition(row, bottomDecimal, this.ri._density);
+    var h = lanyard.globes.RectTile.prototype.createPosition(row, bottomDecimal, this._ri.density);
 
     /** @type {lanyard.geom.Point} */
     var result = lanyard.globes.RectTile.prototype.interpolate(row, column, l, h, this._ri);
@@ -546,22 +551,22 @@ lanyard.globes.RectTile.prototype.interpolate = function (row, column, xDec, yDe
     var numVertsTimesThree = numVerticesPerEdge * 3;
 
     /** @type {lanyard.geom.Point} */
-    var bL = new lanyard.geom.Point(ri.vertices.get(bottomLeft), ri.vertices.get(bottomLeft + 1), ri.vertices.get(
-        bottomLeft + 2));
+    var bL = new lanyard.geom.Point(ri.vertices[bottomLeft], ri.vertices[bottomLeft + 1],
+        ri.vertices[bottomLeft + 2]);
 
     /** @type {lanyard.geom.Point} */
-    var bR = new lanyard.geom.Point(ri.vertices.get(bottomLeft + 3), ri.vertices.get(bottomLeft + 4),
-        ri.vertices.get(bottomLeft + 5));
+    var bR = new lanyard.geom.Point(ri.vertices[bottomLeft + 3], ri.vertices[bottomLeft + 4],
+        ri.vertices[bottomLeft + 5]);
 
     bottomLeft += numVertsTimesThree;
 
     /** @type {lanyard.geom.Point} */
-    var tL = new lanyard.geom.Point(ri.vertices.get(bottomLeft), ri.vertices.get(bottomLeft + 1), ri.vertices.get(
-        bottomLeft + 2));
+    var tL = new lanyard.geom.Point(ri.vertices[bottomLeft], ri.vertices[bottomLeft + 1],
+        ri.vertices[bottomLeft + 2]);
 
     /** @type {lanyard.geom.Point} */
-    var tR = new lanyard.geom.Point(ri.vertices.get(bottomLeft + 3), ri.vertices.get(bottomLeft + 4),
-        ri.vertices.get(bottomLeft + 5));
+    var tR = new lanyard.geom.Point(this._ri.vertices[bottomLeft + 3], this._ri.vertices[bottomLeft + 4],
+        this._ri.vertices[bottomLeft + 5]);
 
     return lanyard.globes.RectTile.prototype.interpolateTriangles(bL, bR, tR, tL, xDec, yDec);
 };

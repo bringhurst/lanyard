@@ -7,14 +7,14 @@ goog.provide('lanyard.util.PriorityQueue');
  * A generic priority queue with variable comparison.
  *
  * @constructor
- * @param {function} compare the function used to compare elements.
+ * @param {Function} compare the function used to compare elements.
  */
 lanyard.util.PriorityQueue = function (compare) {
     /**
      * The function used for comparing elements.
      *
      * @private
-     * @type {function}
+     * @type {Function}
      */
     this._compare = compare;
 
