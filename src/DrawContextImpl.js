@@ -115,20 +115,25 @@ lanyard.DrawContextImpl = function (canvasElement) {
           return eA > eB ? -1 : eA === eB ? 0 : 1;
       }
     );
-};
 
-/**
- * Setup the WebGL/draw context.
- */
-lanyard.DrawContextImpl.prototype.initialize = function () {
+    /**
+     * @private
+     * @type {*}
+     */
     this.gl = this.canvasElement.getContext("experimental-webgl");
-    this.gl.viewport(0, 0, this.canvasElement.width, this.canvasElement.height);
 
     if (!this.gl) {
         this._logger.severe("The canvas specified does not seem to support WebGL.");
     } else {
         this._logger.fine("A WebGL context was successfully obtained from the canvas.");
     }
+};
+
+/**
+ * Setup the WebGL/draw context.
+ */
+lanyard.DrawContextImpl.prototype.initialize = function () {
+    this.gl.viewport(0, 0, this.canvasElement.width, this.canvasElement.height);
 
     this.visibleSector = null;
 
@@ -141,7 +146,7 @@ lanyard.DrawContextImpl.prototype.initialize = function () {
     this.uniquePickNumber = 0;
 
     if (this.numTextureUnits < 1) {
-        this.numTextureUnits = lanyard.DrawContextImpl.prototype.queryMaxTextureUnits(this.gl);
+        this.numTextureUnits = this.queryMaxTextureUnits(this.gl);
     }
 };
 
