@@ -3,6 +3,9 @@
 
 goog.provide('lanyard.BasicOrbitView');
 
+goog.require('lanyard.geom.ViewFrustum');
+goog.require('lanyard.util.GLU');
+
 /**
  * A basic orbit view implementation.
  *
@@ -350,7 +353,11 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
     }
 
     /** @type {lanyard.geom.Point} */
-    var focusPoint = globe.computePointFromPosition(this.focusLat, this.focusLon, 0);
+    var focusPoint = globe.computePointFromPosition(
+        new lanyard.geom.Position(
+            this.focusLat, this.focusLon, 0
+        )
+    );
 
     /** @type {lanyard.geom.MatrixFour} */
     var modelView = lanyard.BasicOrbitView.prototype.lookAt(
@@ -430,7 +437,7 @@ lanyard.BasicOrbitView.prototype.lookAt =
         function (focusX, focusY, focusDistance, tiltDistance, tiltZ, tiltX) {
 
     /** @type {lanyard.geom.MatrixFour} */
-    var m = new lanyard.geom.MatrixFour(); // identity
+    var m = new lanyard.geom.MatrixFour(null); // identity
 
     // Translate model away from eye.
     m.translate(0, 0, -tiltDistance);
@@ -464,7 +471,7 @@ lanyard.BasicOrbitView.prototype.computeSurfacePoint = function (dc, lat, lon) {
     var geom = dc.getSurfaceGeometry();
 
     if (geom) {
-        p = geom.getSurfacePoint(lat, lon);
+        p = geom.getSurfacePoint(lat, lon, 0);
     }
 
     if (p) {
@@ -477,7 +484,9 @@ lanyard.BasicOrbitView.prototype.computeSurfacePoint = function (dc, lat, lon) {
     if (globe) {
         /** @type {number} */
         var elevation = dc.getVerticalExaggeration() * globe.getElevation(lat, lon);
-        p = globe.computePointFromPosition(lat, lon, elevation);
+        p = globe.computePointFromPosition(
+                new lanyard.geom.Position(lat, lon, elevation)
+            );
     }
 
     return p;
@@ -529,7 +538,8 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
     var far = this.computeHorizonDistance(dc.getGlobe(), dc.getVerticalExaggeration(), eyePoint);
 
     // Compute the frustum from a standard perspective projection.
-    return new lanyard.geom.ViewFrustum(fov, viewport.width, viewport.height, near, far);
+    return new lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView(
+        fov, viewport.width, viewport.height, near, far);
 };
 
 /**
@@ -872,7 +882,6 @@ lanyard.BasicOrbitView.prototype.computeVisibleLatLonRange = function () {
  * Unproject a window point.
  *
  * @param {lanyard.geom.Point} windowPoint the window point.
- * @param {lanyard.geom.Point}
  */
 lanyard.BasicOrbitView.prototype.unProject = function (windowPoint) {
 
@@ -881,19 +890,13 @@ lanyard.BasicOrbitView.prototype.unProject = function (windowPoint) {
     }
 
     /** @type {Array.<number>} */
-    var projectionMatrix = this.projection.getEntries();
-
-    /** @type {Array.<number>} */
-    var modelViewMatrix = this.modelView.getEntries();
-
-    /** @type {Array.<number>} */
     var viewport = [this.viewport.getX(), this.viewport.getY(),
         this.viewport.getWidth(), this.viewport.getHeight()];
 
     /** @type {lanyard.geom.Point} */
-    var modelPoint = lanyard.util.GLU.unProject(
+    var modelPoint = lanyard.util.GLU.prototype.unProject(
         windowPoint.getX(), windowPoint.getY(), windowPoint.getZ(),
-        modelViewMatrix, projectionMatrix, viewport);
+        this.modelView, this.projection, viewport);
 
     return modelPoint;
 };
@@ -930,8 +933,8 @@ lanyard.BasicOrbitView.prototype.project = function (modelPoint) {
     );
 
     return new lanyard.geom.Point(
-        (normDeviceCoord.getX() + 1) * (this.viewport.getWidth / 2) + this.viewport.getX(),
-        (normDeviceCoord.getY() + 1) * (this.viewport.getHeight / 2) + this.viewport.getY(),
+        (normDeviceCoord.getX() + 1) * (this.viewport.getWidth() / 2) + this.viewport.getX(),
+        (normDeviceCoord.getY() + 1) * (this.viewport.getHeight() / 2) + this.viewport.getY(),
         (normDeviceCoord.getZ() + 1) / 2,
         0);
 };
@@ -1025,24 +1028,6 @@ lanyard.BasicOrbitView.prototype.computePositionFromScreenPoint = function (x, y
 };
 
 /**
- * Get the up vector.
- *
- * @return {lanyard.geom.Point}
- */
-lanyard.BasicOrbitView.prototype.getUpVector = function () {
-    if (!this.up && this.modelView) {
-        /** @type {lanyard.geom.Matrix} */
-        var modelViewInv = this.modelView.getInverse();
-
-        if (modelViewInv) {
-            this.up = modelViewInv.transform(new lanyard.geom.Point(0, 1, 0, 0));
-        }
-    }
-
-    return this.up;
-};
-
-/**
  * Get the forward vector.
  *
  * @return {lanyard.geom.Point}
@@ -1076,24 +1061,6 @@ lanyard.BasicOrbitView.prototype.getUpVector = function () {
     }
 
     return this.up;
-};
-
-/**
- * The forward vector.
- *
- * @return {lanyard.geom.Point}
- */
-lanyard.BasicOrbitView.prototype.getForwardVector = function () {
-    if (!this.forward && this.modelView) {
-        /** @type {lanyard.geom.Matrix} */
-        var modelViewInv = this.modelView.getInverse();
-
-        if(modelViewInv) {
-            this.forward = modelViewInv.transform(new lanyard.geom.Point(0, 0, -1, 0));
-        }
-    }
-
-    return this.forward;
 };
 
 /**
@@ -1240,7 +1207,7 @@ lanyard.BasicOrbitView.prototype.clearCachedAttributes = function () {
  *
  * @param {lanyard.Globe} globe the current globe.
  * @param {number} verticalExaggeration
- * @param {lanyard.geom.Point} the camera eye point.
+ * @param {lanyard.geom.Point} eyePoint the camera eye point.
  * @return {number} the distance to the horizon.
  */
 lanyard.BasicOrbitView.prototype.computeHorizonDistance = function (globe, verticalExaggeration, eyePoint) {
@@ -1259,7 +1226,12 @@ lanyard.BasicOrbitView.prototype.computeHorizonDistance = function (globe, verti
 
     /** @type {lanyard.geom.Point} */
     var surface = globe.computePointFromPosition(
-        eyePosition.getLatitude(), eyePosition.getLongitude(), elevation);
+        new lanyard.geom.Position(
+            eyePosition.getLatitude(),
+            eyePosition.getLongitude(),
+            elevation
+        )
+    );
 
     /** @type {number} */
     var altitude = eyePoint.length() - surface.length();

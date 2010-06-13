@@ -94,6 +94,24 @@ lanyard.geom.Point.prototype.getZ = function () {
 goog.exportSymbol('lanyard.geom.Point.prototype.getZ', lanyard.geom.Point.prototype.getZ);
 
 /**
+ * Transform this point by a matrix.
+ *
+ * @param {lanyard.geom.Matrix} m the matrix.
+ * @return {lanyard.geom.Point} the result of the transform.
+ */
+lanyard.geom.Point.prototype.translate = function (m) {
+    /** @type {lanyard.geom.Point} */
+    var p = new lanyard.geom.Point(
+        m._m11 * this._x + m._m21 * this._y + m._m31 * this._z + m._m41,
+        m._m12 * this._x + m._m22 * this._y + m._m32 * this._z + m._m42,
+        m._m13 * this._x + m._m23 * this._y + m._m33 * this._z + m._m43,
+        1
+    );
+
+    return p;
+};
+
+/**
  * Add this point to another point.
  * @this {lanyard.geom.Point}
  * @param {lanyard.geom.Point} p another point.

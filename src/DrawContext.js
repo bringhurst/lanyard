@@ -136,7 +136,7 @@ lanyard.DrawContext.prototype.getVerticalExaggeration = function () {};
 /**
  * Retrieves a list of all the sectors rendered so far this frame.
  *
- * @return {Array.<lanyard.Layer>} a list containing every SectorGeometry rendered so far this pass.
+ * @return {lanyard.SectorGeometryList} a list containing every SectorGeometry rendered so far this pass.
  */
 lanyard.DrawContext.prototype.getSurfaceGeometry = function () {};
 

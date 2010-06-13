@@ -12,6 +12,7 @@ goog.require('lanyard.BasicModel');
 goog.require('lanyard.LanyardCanvas');
 goog.require('lanyard.Model');
 goog.require('lanyard.Layer');
+goog.require('lanyard.BasicOrbitView');
 
 /**
  * A basic demo of Lanyard.
@@ -47,14 +48,14 @@ lanyard.demo.BasicDemo.prototype.run = function () {
 
     /** @type {lanyard.LanyardCanvas} */
     var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
-
-    /** @type {lanyard.Model} */
+    
+    /** @type {lanyard.BasicModel} */
     var m = new lanyard.BasicModel();
     m.setLayers(this._layerList);
     m.setShowWireframeExterior(true);
-    m.setShowWireframeInterior(false);
-    m.setShowTessellationBoundingVolumes(false);
-    lc.setModel(m);
+    m.setShowWireframeInterior(true);
+    m.setShowTessellationBoundingVolumes(true);
+    lc.setModelAndView(m, new lanyard.BasicOrbitView());
 
     // FIXME: setup mouse listeners.
     lc.display();

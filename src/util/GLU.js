@@ -28,8 +28,7 @@ lanyard.util.GLU.prototype.unProject = function (x, y, z, model, proj, view) {
         1
     );
 
-    // FIXME: does translate work here?
-    return inverseProjection.translate(cords);
+    return cords.translate(inverseProjection);
 };
 
 /* EOF */
