@@ -98,5 +98,5 @@
     </exec>
   </target>
 
-  <target name="all" depends="lanyard-advanced, doc" />
+  <target name="all" depends="lanyard-simple, doc" />
 </project>
