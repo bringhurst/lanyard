@@ -46,28 +46,20 @@
     </sequential>
   </macrodef>
 
-  <target name="lanyard-advanced-no-debug" depends="lanyard-copy-html">
+  <target name="lanyard-advanced-no-debug">
     <calcdeps outputfile="lanyard-advanced-no-debug.js" compilerjarfile="${build.dir}/compiler.jar" />
   </target>
 
-  <target name="lanyard-advanced" depends="lanyard-copy-html">
+  <target name="lanyard-advanced">
     <calcdeps outputfile="lanyard.js" />
   </target>
 
-  <target name="lanyard-simple" depends="lanyard-copy-html">
+  <target name="lanyard-simple">
     <calcdeps outputfile="lanyard-simple.js" compilationlevel="SIMPLE_OPTIMIZATIONS" />
   </target>
 
-  <target name="lanyard-whitespace-only" depends="lanyard-copy-html">
+  <target name="lanyard-whitespace-only">
     <calcdeps outputfile="lanyard-whitespace-only.js" compilationlevel="WHITESPACE_ONLY" />
-  </target>
-
-  <target name="lanyard-copy-html">
-<!--
-    <copy todir="${build.dir}/">
-      <fileset dir="${src.dir}/html/" />
-    </copy>
--->
   </target>
 
   <target name="test-clean" description="delete generated files for test">
