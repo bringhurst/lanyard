@@ -22,7 +22,9 @@ lanyard.render.GLSL = function (gl) {
     this.fshaderSource = "";
 
     /** @type {*} */
-    this.programObject = gl.glCreateProgram();  
+    this.programObject = gl.glCreateProgram();
+
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.GLSL');
 };
 
 /**
