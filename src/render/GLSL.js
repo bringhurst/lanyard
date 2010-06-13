@@ -76,7 +76,7 @@ lanyard.render.GLSL.prototype.loadVertexShader = function (id) {
     }
 
     if (shaderScript.type !== "x-shader/x-vertex") {
-        this._logger.fine("Attempted to update a vertex shader with an incorrect mime type.");
+        this._logger.severe("Attempted to update a vertex shader with an incorrect mime type.");
         return;
     }
 
@@ -104,7 +104,7 @@ lanyard.render.GLSL.prototype.loadFragmentShader = function (id) {
     }
 
     if (shaderScript.type !== "x-shader/x-fragment") {
-        this._logger.fine("Attempted to update a fragment shader with an incorrect mime type.");
+        this._logger.severe("Attempted to update a fragment shader with an incorrect mime type.");
         return;
     }
 
@@ -168,7 +168,7 @@ lanyard.render.GLSL.prototype.endShader = function () {
  */
 lanyard.render.GLSL.prototype.checkCompilerOutput = function (shader) {
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-        this._logger.fine("Compilation of a shader failed. " +
+        this._logger.severe("Compilation of a shader failed. " +
             this.gl.getShaderInfoLog(shader));
     }
 };
