@@ -6,22 +6,21 @@ goog.provide('lanyard.demo.BasicDemo');
 goog.require('goog.debug.DivConsole');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
-goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.ui.Checkbox');
-goog.require('goog.ui.Checkbox.State');
+goog.require('goog.events.Event');
 
 goog.require('lanyard.BasicModel');
 goog.require('lanyard.LanyardCanvas');
+goog.require('lanyard.Model');
+goog.require('lanyard.Layer');
 
 /**
  * A basic demo of Lanyard.
  *
  * @constructor
  * @this {lanyard.demo.BasicDemo}
- * @param {canvas} webGLCanvas The WebGL enabled canvas to draw the map to.
- * @param {div} layerListDiv The div where the layerList should be contained.
- * @param {div} eventLogDiv The div where the event log is at.
+ * @param {Element} webGLCanvas The WebGL enabled canvas to draw the map to.
+ * @param {Element} layerListDiv The div where the layerList should be contained.
+ * @param {Element} eventLogDiv The div where the event log is at.
  */
 lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
     /** @private */ this._webGLCanvas = webGLCanvas;

@@ -207,7 +207,7 @@ lanyard.util.Color.prototype.fromEnglishString = function (name) {
 /**
  * Create a {lanyard.util.Color} object from a kml or html color hex string.
  *
- * @param {string} the hex string of the color in RRGGBB or RRGGBBAA format.
+ * @param {string} hexString the hex string of the color in RRGGBB or RRGGBBAA format.
  * @return {lanyard.util.Color} the new color object.
  */
 lanyard.util.Color.prototype.fromHexString = function (hexString) {
@@ -217,7 +217,7 @@ lanyard.util.Color.prototype.fromHexString = function (hexString) {
 
     // Remove the "#" if it exists.
     if ("#" === hexString.charAt(0)) {
-        hexString = hexString(1);
+        hexString = hexString.substr(1);
     }
 
     /**

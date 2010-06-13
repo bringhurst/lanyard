@@ -11,7 +11,7 @@ goog.require('lanyard.BasicFrameController');
  *
  * @constructor
  * @implements {lanyard.SceneController}
- * @param {canvas} canvasElement the WebGL enabled canvas element.
+ * @param {Element} canvasElement the WebGL enabled canvas element.
  */
 lanyard.BasicSceneController = function (canvasElement) {
     /**
@@ -80,7 +80,7 @@ lanyard.BasicSceneController.prototype.getView = function () {
 /**
  * Mutator for the frame controller.
  *
- * @param {lanyard.FraneController} frameController the frame controller.
+ * @param {lanyard.FrameController} frameController the frame controller.
  */
 lanyard.BasicSceneController.prototype.setFrameController = function (frameController) {
     this._frameController = frameController;
@@ -89,7 +89,7 @@ lanyard.BasicSceneController.prototype.setFrameController = function (frameContr
 /**
  * Model mutator.
  *
- * @param {lanyard.Model} the new model;
+ * @param {lanyard.Model} model the new model;
  */
 lanyard.BasicSceneController.prototype.setModel = function (model) {
     this._model = model;
@@ -128,7 +128,7 @@ lanyard.BasicSceneController.prototype.getVerticalExaggeration = function () {
 lanyard.BasicSceneController.prototype.repaint = function () {
     // TODO: calculate start of FPS here
 
-    this._dc.initialize(/* FIXME: pass in GLContext.getCurrent() */);
+    this._dc.initialize();
     this._dc.setModel(this._model);
     this._dc.setView(this._view);
     this._dc.setVerticalExaggeration(this._verticalExaggeration);

@@ -3,6 +3,8 @@
 
 goog.provide('lanyard.BasicFrameController');
 
+goog.require('lanyard.util.Point');
+
 /**
  * A frame controller implementation.
  *

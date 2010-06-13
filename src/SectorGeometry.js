@@ -36,14 +36,6 @@ lanyard.SectorGeometry.prototype.getSector = function () {};
 lanyard.SectorGeometry.prototype.getSurfacePoint = function (latitude, longitude, metersOffset) {};
 
 /**
- * Render multi-texture.
- *
- * @param {lanyard.DrawContext} dc the draw context.
- * @param {number} numTextureUnits the number of texture units.
- */
-lanyard.SectorGeometry.prototype.renderMultiTexture = function (dc, numTextureUnits) {};
-
-/**
  * Render the wireframe.
  *
  * @param {lanyard.DrawContext} dc the draw context to render to.
@@ -55,7 +47,7 @@ lanyard.SectorGeometry.prototype.renderWireframe = function (dc, interior, exter
 /**
  * Render the bounding volume.
  *
- * @param {lanyard.DrawContext} the draw context.
+ * @param {lanyard.DrawContext} dc the draw context.
  */
 lanyard.SectorGeometry.prototype.renderBoundingVolume = function (dc) {};
 

@@ -6,13 +6,15 @@ goog.provide('lanyard.DrawContextImpl');
 goog.require('lanyard.util.Color');
 goog.require('goog.debug.Logger');
 goog.require('lanyard.util.PriorityQueue');
+goog.require('lanyard.OrderedRenderable');
+goog.require('lanyard.util.TextureCoords');
 
 /**
  * A drawcontext implementation.
  *
  * @constructor
  * @implements {lanyard.DrawContext}
- * @param {canvas} the WebGL enabled canvas element.
+ * @param {Element} canvasElement the WebGL enabled canvas element.
  */
 lanyard.DrawContextImpl = function (canvasElement) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.DrawContextImpl');
@@ -37,7 +39,7 @@ lanyard.DrawContextImpl = function (canvasElement) {
 
     /**
      * @private
-     * @type {canvas}
+     * @type {Element}
      */
     this.canvasElement = canvasElement;
 
@@ -75,7 +77,7 @@ lanyard.DrawContextImpl = function (canvasElement) {
      * @private
      * @type {boolean}
      */
-    this.isPickingMode = false;
+    this._isPickingMode = false;
 
     /**
      * @private
@@ -84,8 +86,8 @@ lanyard.DrawContextImpl = function (canvasElement) {
     this.numTextureUnits = -1;
 
     /**
-     * @private
-     * @type {lanyard.SurfaceTileRenderer}
+     * private
+     * type {lanyard.SurfaceTileRenderer}
      */
     //this.surfaceTileRenderer = new lanyard.SurfaceTileRenderer();
     this.surfaceTileRenderer = null;
@@ -146,7 +148,7 @@ lanyard.DrawContextImpl.prototype.initialize = function () {
 /**
  * Return the current WebGL rendering context.
  *
- * @return {WebGLRenderingContext} the current rendering context.
+ * @return {*} the current rendering context.
  */
 lanyard.DrawContextImpl.prototype.getGL = function () {
     return this.gl;
@@ -155,10 +157,19 @@ lanyard.DrawContextImpl.prototype.getGL = function () {
 /**
  * Accessor for getting the WebGL context.
  *
- * @return {WebGLRenderingContext} the WebGL context.
+ * @return {Element} the WebGL context.
  */
 lanyard.DrawContextImpl.prototype.getWebGLCanvas = function () {
     return this.canvasElement;
+};
+
+/**
+ * Mutator for the WebGL context.
+ *
+ * @param {Element} canvas the webgl canvas.
+ */
+lanyard.DrawContextImpl.prototype.setWebGLCanvas = function (canvas) {
+    this.canvasElement = canvas;
 };
 
 /**
@@ -183,7 +194,7 @@ lanyard.DrawContextImpl.prototype.getDrawableWidth = function () {
  * Return the number of available texture units.
  *
  * @private
- * @param {WebGLRenderingContext} gl the rendering context.
+ * @param {*} gl the rendering context.
  * @return {number} the number of available texture units.
  */
 lanyard.DrawContextImpl.prototype.queryMaxTextureUnits = function (gl) {
@@ -193,7 +204,7 @@ lanyard.DrawContextImpl.prototype.queryMaxTextureUnits = function (gl) {
 /**
  * Set the current model.
  *
- * @param {lanyard.Model} the new model to use in this context.
+ * @param {lanyard.Model} model the new model to use in this context.
  */
 lanyard.DrawContextImpl.prototype.setModel = function (model) {
     if (!model) {
@@ -350,21 +361,21 @@ lanyard.DrawContextImpl.prototype.getClearColor = function () {
  * @return {boolean} true if the Picking mode is active, otherwise return false
  */
 lanyard.DrawContextImpl.prototype.isPickingMode = function () {
-    return this.isPickingMode;    
+    return this._isPickingMode;
 };
 
 /**
  * Enables color picking mode.
  */
 lanyard.DrawContextImpl.prototype.enablePickingMode = function () {
-    this.isPickingMode = true;
+    this._isPickingMode = true;
 };
 
 /**
  * Disables color picking mode.
  */
 lanyard.DrawContextImpl.prototype.disablePickingMode = function () {
-    this.isPickingMode = false;
+    this._isPickingMode = false;
 };
 
 /**
@@ -389,6 +400,7 @@ lanyard.DrawContextImpl.prototype.getOrderedRenderables = function () {
  * Draw a unit quad to the current context.
  */
 lanyard.DrawContextImpl.prototype.drawUnitQuad = function () {
+/*
     var gl = this.getGL();
 
     gl.glBegin(gl.GL_QUADS); // TODO: use a vertex array or vertex buffer
@@ -397,6 +409,7 @@ lanyard.DrawContextImpl.prototype.drawUnitQuad = function () {
     gl.glVertex2d(1, 1);
     gl.glVertex2d(0.0, 1);
     gl.glEnd();
+*/
 };
 
 /**
@@ -404,7 +417,8 @@ lanyard.DrawContextImpl.prototype.drawUnitQuad = function () {
  *
  * @param {lanyard.util.TextureCoords} texCoords the texture coordinates.
  */
-lanyard.DrawContextImpl.prototype.drawUnitQuad = function (texCoords) {
+lanyard.DrawContextImpl.prototype.drawUnitQuadWithTexCoords = function (texCoords) {
+/*
     var gl = this.getGL();
 
     gl.glBegin(gl.GL_QUADS); // TODO: use a vertex array or vertex buffer
@@ -417,6 +431,7 @@ lanyard.DrawContextImpl.prototype.drawUnitQuad = function (texCoords) {
     gl.glTexCoord2d(texCoords.left(), texCoords.top());
     gl.glVertex2d(0.0, 1);
     gl.glEnd();
+*/
 };
 
 /**
@@ -454,7 +469,7 @@ lanyard.DrawContextImpl.prototype.getPointOnGlobe = function (latitude, longitud
 
     if (sectorGeometry) {
         /** @type {lanyard.geom.Point} */
-        var p = sectorGeometry.getSurfacePoint(latitude, longitude);
+        var p = sectorGeometry.getSurfacePoint(latitude, longitude, 0);
         if (p) {
             return p;
         }
@@ -475,8 +490,8 @@ lanyard.DrawContextImpl.prototype.getPointOnGlobe = function (latitude, longitud
  *
  * @return {lanyard.SurfaceTileRenderer} the surface tile renderer.
  */
-lanyard.DrawContextImpl.prototype.getSurfaceTileRenderer = function () {
-    return this.surfaceTileRenderer;
-};
+//lanyard.DrawContextImpl.prototype.getSurfaceTileRenderer = function () {
+//    return this.surfaceTileRenderer;
+//};
 
 /* EOF */

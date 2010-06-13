@@ -59,7 +59,7 @@ lanyard.SceneController.prototype.setFrameController = function (frameController
 /**
  * Repaint the scene.
  */
-lanyard.SceneController.prototype.repaint = function ();
+lanyard.SceneController.prototype.repaint = function () {};
 
 /**
  * Set the vertical exaggeration.
@@ -81,12 +81,5 @@ lanyard.SceneController.prototype.getVerticalExaggeration = function () {};
  * @return {Number} the current frames per second.
  */
 lanyard.SceneController.prototype.getFramesPerSecond = function () {};
-
-/**
- * Get the current frame time.
- *
- * @return {Number} the current frame time.
- */
-lanyard.SceneController.prototype.getFrameTime = function () {};
 
 /* EOF */

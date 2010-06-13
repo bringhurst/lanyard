@@ -11,7 +11,7 @@ goog.provide('lanyard.SectorGeometryList');
 lanyard.SectorGeometryList = function () {
     /**
      * @private
-     * @type {Array.<SectorGeometry>}
+     * @type {Array.<lanyard.SectorGeometry>}
      */
     this._geometryList = [];
 };
@@ -36,11 +36,11 @@ lanyard.SectorGeometryList.prototype.clear = function () {
  * Get a list of the intersecting sectors.
  *
  * @param {lanyard.geom.Sector} sector the sector to check for intersection with.
- * @return {Array.<SectorGeometry>} the array of sector geometries.
+ * @return {Array.<lanyard.SectorGeometry>} the array of sector geometries.
  */
 lanyard.SectorGeometryList.prototype.getIntersectingSectors = function (sector) {
 
-    /** @type {Array.<SectorGeometry>} */
+    /** @type {Array.<lanyard.SectorGeometry>} */
     var list = [];
 
     /** @type {number} */

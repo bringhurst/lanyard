@@ -6,6 +6,8 @@ goog.provide('lanyard.globes.EllipsoidRectangularTessellator');
 goog.require('lanyard.globes.RectTile');
 goog.require('lanyard.geom.Sector');
 goog.require('lanyard.SectorGeometryList');
+goog.require('lanyard.View');
+goog.require('lanyard.Tessellator');
 
 /**
  * @const
@@ -43,7 +45,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LON_SUBDIVI
  * @constructor
  * @implements {lanyard.Tessellator}
  * @this {lanyard.globes.EllipsoidRectangularTessellator}
- * @param {lanayrd.Globe} globe the globe to tessellate.
+ * @param {lanyard.Globe} globe the globe to tessellate.
  */
 lanyard.globes.EllipsoidRectangularTessellator = function (globe) {
     /**
@@ -245,16 +247,16 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
  * Determine if splitting should occur.
  *
  * @param {lanyard.DrawContext} dc the draw context.
- * @param {lanyard.globes.RectTile} the tile.
+ * @param {lanyard.globes.RectTile} tile the tile.
  * @return {boolean} if we should split or not.
  */
 lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function (dc, tile) {
 
     /** @type {Array.<lanyard.geom.Point>} */
-    var corners = tile.sector.computeCornerPoints(dc.getGlobe());
+    var corners = tile.getSector().computeCornerPoints(dc.getGlobe());
 
-    /** @type {Array.<lanyard.geom.Point>} */
-    var centerPoint = tile.sector.computeCenterPoint(dc.getGlobe());
+    /** @type {lanyard.geom.Point} */
+    var centerPoint = tile.getSector().computeCenterPoint(dc.getGlobe());
 
     /** @type {lanyard.View} */
     var view = dc.getView();

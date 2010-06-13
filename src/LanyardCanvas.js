@@ -5,12 +5,13 @@ goog.provide('lanyard.LanyardCanvas');
 
 goog.require('goog.debug.Logger');
 goog.require('lanyard.BasicSceneController');
+goog.require('lanyard.SceneController');
 
 /**
  * Provides a wrapper for the WebGL canvas.
  *
  * @constructor
- * @param {canvas} canvasElement the WebGL enabled canvas to draw to.
+ * @param {Element} canvasElement the WebGL enabled canvas to draw to.
  */
 lanyard.LanyardCanvas = function (canvasElement) {
     /**
@@ -25,7 +26,7 @@ lanyard.LanyardCanvas = function (canvasElement) {
 /**
  * Model mutator.
  *
- * @param {lanyard.Model} the new model.
+ * @param {lanyard.Model} model the new model.
  */
 lanyard.LanyardCanvas.prototype.setModel = function (model) {
     // model can be null, that's ok -- it indicates no model.

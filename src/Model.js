@@ -27,21 +27,21 @@ lanyard.Model.prototype.getGlobe = function () {};
 /**
  * Get the layers.
  *
- * @return {lanyard.LayerList} the layer list.
+ * @return {Array.<lanyard.Layer>} the layer list.
  */
 lanyard.Model.prototype.getLayers = function () {};
 
 /**
  * The globe mutator.
  *
- * @param {lanyard.Globe} the new globe.
+ * @param {lanyard.Globe} globe the new globe.
  */
 lanyard.Model.prototype.setGlobe = function (globe) {};
 
 /**
  * Layers mutator.
  *
- * @param {lanyard.LayerList} layers the new layer list.
+ * @param {Array.<lanyard.Layer>} layers the new layer list.
  */
 lanyard.Model.prototype.setLayers = function (layers) {};
 

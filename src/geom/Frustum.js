@@ -3,6 +3,8 @@
 
 goog.provide('lanyard.geom.Frustum');
 
+goog.require('lanyard.geom.Matrix');
+
 /**
  * Create a frustum from six Planes, which define its boundaries.
  *

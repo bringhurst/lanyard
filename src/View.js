@@ -3,6 +3,9 @@
 
 goog.provide('lanyard.View');
 
+goog.require('lanyard.geom.MatrixFour');
+goog.require('lanyard.util.Rectangle');
+
 /**
  * The View interface provides basic methods for implementations to communicate state and state changes to
  * the caller. Views provide a coordinate transformation from the object coordinates of the model to eye
@@ -211,7 +214,7 @@ lanyard.View.prototype.setPitch = function (newPitch) {};
  * Returns a two-dimensional array containing the range of angles (inclusive) the View may limit
  * its pitch to, if pitch constraints are enabled.
  *
- * @return {Array.<lanyard.geom.Angle} a two-dimensional array, with the minimum and maximum pitch angles.
+ * @return {Array.<lanyard.geom.Angle>} a two-dimensional array, with the minimum and maximum pitch angles.
  */
 lanyard.View.prototype.getPitchConstraints = function () {};
 

@@ -7,6 +7,8 @@ goog.require('lanyard.geom.Point');
 goog.require('lanyard.geom.Angle');
 goog.require('lanyard.globes.RenderInfo');
 goog.require('lanyard.ElevationModel');
+goog.require('lanyard.geom.Position');
+goog.require('lanyard.SectorGeometry');
 
 /**
  * A representation of a rectangular tile.
@@ -103,7 +105,6 @@ lanyard.globes.RectTile.prototype.getExtent = function () {
 /**
  * Split the current tile.
  *
- * @private
  * @return {Array.<lanyard.globes.RectTile>} the split RectTiles.
  */
 lanyard.globes.RectTile.prototype.split = function () {
@@ -123,7 +124,6 @@ lanyard.globes.RectTile.prototype.split = function () {
 /**
  * Build vertices.
  *
- * @private
  * @param {lanyard.DrawContext} dc the drawcontext.
  */
 lanyard.globes.RectTile.prototype.makeVerts = function (dc) {
@@ -200,7 +200,12 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
     var centroid = this._sector.getCentroid();
 
     /** @type {lanyard.geom.Point} */
-    var refCenter = globe.computePointFromPosition(centroid.getLatitude(), centroid.getLongitude(), 0);
+    var refCenter = globe.computePointFromPosition(
+        new lanyard.geom.Position(
+            centroid.getLatitude(),
+            centroid.getLongitude(),
+            0)
+        );
 
     /** @type {number} */
     var j;
@@ -273,7 +278,6 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
  *
  * @param {lanyard.DrawContext} dc the draw context.
  * @param {number} numTextureUnits the number of texture units available.
- * @param {number} the number of triangles rendered.
  */
 lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
 /*******
@@ -355,8 +359,8 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
  * TODO: Draw the boundary using the vertices along the boundary
  * rather than just at the corners.
  *
- * @param {lanyard.DrawContex} dc the draw context.
- * @param {WebGLContext} gl the webgl context.
+ * @param {lanyard.DrawContext} dc the draw context.
+ * @param {*} gl the webgl context.
  */
 lanyard.globes.RectTile.prototype.renderPatchBoundary = function (dc, gl) {
 /**************
@@ -561,21 +565,21 @@ lanyard.globes.RectTile.prototype.interpolate = function (row, column, xDec, yDe
 
     /** @type {lanyard.geom.Point} */
     var bL = new lanyard.geom.Point(ri.vertices[bottomLeft], ri.vertices[bottomLeft + 1],
-        ri.vertices[bottomLeft + 2]);
+        ri.vertices[bottomLeft + 2], 1);
 
     /** @type {lanyard.geom.Point} */
     var bR = new lanyard.geom.Point(ri.vertices[bottomLeft + 3], ri.vertices[bottomLeft + 4],
-        ri.vertices[bottomLeft + 5]);
+        ri.vertices[bottomLeft + 5], 1);
 
     bottomLeft += numVertsTimesThree;
 
     /** @type {lanyard.geom.Point} */
     var tL = new lanyard.geom.Point(ri.vertices[bottomLeft], ri.vertices[bottomLeft + 1],
-        ri.vertices[bottomLeft + 2]);
+        ri.vertices[bottomLeft + 2], 1);
 
     /** @type {lanyard.geom.Point} */
     var tR = new lanyard.geom.Point(this._ri.vertices[bottomLeft + 3], this._ri.vertices[bottomLeft + 4],
-        this._ri.vertices[bottomLeft + 5]);
+        this._ri.vertices[bottomLeft + 5], 1);
 
     return lanyard.globes.RectTile.prototype.interpolateTriangles(bL, bR, tR, tL, xDec, yDec);
 };
@@ -606,7 +610,7 @@ lanyard.globes.RectTile.prototype.interpolateTriangles = function (bL, bR, tR, t
     if (pos === 1) {
         // on the diagonal - what's more, we don't need to do any "oneMinusT" calculation
         return new lanyard.geom.Point(tL.getX() * yDec + bR.getX() * xDec, tL.getY() * yDec + bR.getY() * xDec,
-            tL.getZ() * yDec + bR.getZ() * xDec);
+            tL.getZ() * yDec + bR.getZ() * xDec, 1);
     } else if (pos > 1) {
         // in the "top right" half
 
@@ -741,7 +745,6 @@ lanyard.globes.RectTile.prototype.getParameterization = function (density) {
 /**
  * Get the indices.
  *
- * @private
  * @param {number} density the density.
  * @return {Array.<number>} the indices.
  */

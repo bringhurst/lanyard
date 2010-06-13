@@ -3,6 +3,8 @@
 
 goog.provide('lanyard.globes.Earth');
 
+goog.require('lanyard.globes.EllipsoidalGlobe');
+
 /**
  * The WGS84 ellipsoid equatorial radius of the earth, in meters.
  *

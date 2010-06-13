@@ -7,27 +7,28 @@ goog.provide('lanyard.DrawContext');
  * An interface for a draw context.
  *
  * @interface
+ * @param {Element} canvas the webgl canvas.
  */
-lanyard.DrawContext = function () {};
+lanyard.DrawContext = function (canvas) {};
 
 /**
  * Accessor for getting the WebGL canvas.
  *
- * @return {canvas} the WebGL canvas.
+ * @return {Element} the WebGL canvas.
  */
 lanyard.DrawContext.prototype.getWebGLCanvas = function () {};
 
 /**
  * Mutator for the webgl canvas.
  *
- * @param {canvas} canvas the new webgl context.
+ * @param {Element} canvas the new webgl context.
  */
 lanyard.DrawContext.prototype.setWebGLCanvas = function (canvas) {};
 
 /**
  * Retrieves the current GL.
  *
- * @return {WebGLRenderingContext} the current GL if available, null otherwise.
+ * @return {*} the current GL if available, null otherwise.
  */
 lanyard.DrawContext.prototype.getGL = function () {};
 
@@ -48,10 +49,8 @@ lanyard.DrawContext.prototype.getDrawableHeight = function () {};
 /**
  * Initializes this DrawContext. This method should be called at the beginning of each frame to prepare
  * the DrawContext for the coming render pass.
- *
- * @param {canvas} canvas the canvas to use for this render pass.
  */
-lanyard.DrawContext.prototype.initialize = function (canvas) {};
+lanyard.DrawContext.prototype.initialize = function () {};
 
 /**
  * Assigns a new View. Some layers cannot function properly with a null View. It is
@@ -137,7 +136,7 @@ lanyard.DrawContext.prototype.getVerticalExaggeration = function () {};
 /**
  * Retrieves a list of all the sectors rendered so far this frame.
  *
- * @return {Array.<lanyard.Layer} a list containing every SectorGeometry rendered so far this pass.
+ * @return {Array.<lanyard.Layer>} a list containing every SectorGeometry rendered so far this pass.
  */
 lanyard.DrawContext.prototype.getSurfaceGeometry = function () {};
 
