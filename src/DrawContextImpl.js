@@ -71,7 +71,7 @@ lanyard.DrawContextImpl = function (canvasElement) {
      * @private
      * @type {lanyard.util.Color}
      */
-    this.clearColor = lanyard.util.Color.prototype.fromEnglishString("black");
+    this.clearColor = lanyard.util.Color.prototype.BLACK;
 
     /**
      * @private

@@ -188,9 +188,8 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
 
     /** @type {*} */
     var gl = dc.getGL();
-
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    //gl.clearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());
+    
+    gl.clearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };
 

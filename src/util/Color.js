@@ -11,8 +11,9 @@ goog.provide('lanyard.util.Color');
  * @param {number} green a green value, normalized to [0.0, 1.0].
  * @param {number} blue a blue value, normalized to [0.0, 1.0].
  * @param {number} alpha an alpha value, normalized to [0.0, 1.0].
+ * @param {string} hex the html hex value of the color.
  */
-lanyard.util.Color = function(red, green, blue, alpha, hex, name) {
+lanyard.util.Color = function(red, green, blue, alpha, hex) {
     /**
      * @private
      * @type {number}
@@ -43,166 +44,120 @@ lanyard.util.Color = function(red, green, blue, alpha, hex, name) {
      */
     this._hex = hex;
 
-    /**
-     * @private
-     * @type {string}
-     */
-    this._name = name;
-
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.util.Color');
 };
 
 /**
  * @const
+ * @type {lanyard.util.Color}
  */
-lanyard.util.Color.prototype.ENGLISH_STRINGS = {
-    "black" : {
-        "hex" : "000000",
-        "red": 0.0,
-        "green" : 0.0,
-        "blue" : 0.0,
-        "alpha" : 1.0
-    },
-
-    "navy" : {
-        "hex" : "000080",
-        "red" : 0.0,
-        "green" : 0.0,
-        "blue" : 0.5,
-        "alpha" : 1.0
-    },
-
-    "blue" : {
-        "hex" : "0000FF",
-        "red" : 0.0,
-        "green" : 0.0,
-        "blue" : 1.0,
-        "alpha" : 1.0
-    },
-
-    "green" : {
-        "hex" : "008000",
-        "red" : 0.0,
-        "green" : 0.5,
-        "blue" : 0.0,
-        "alpha" : 1.0
-    },
-
-    "teal" : {
-        "hex" : "008080",
-        "red" : 0.0,
-        "green" : 0.5,
-        "blue" : 0.5,
-        "alpha" : 1.0
-    },
-
-    "lime" : {
-        "hex" : "00FF00",
-        "red" : 0.0,
-        "green" : 1.0,
-        "blue" : 0.0,
-        "alpha" : 1.0
-    },
-
-    "aqua" : {
-        "hex" : "00FFFF",
-        "red" : 0.0,
-        "green" : 1.0,
-        "blue" : 1.0,
-        "alpha" : 1.0
-    },
-
-    "maroon" : {
-        "hex" : "800000",
-        "red" : 0.5,
-        "green" : 0.0,
-        "blue" : 0.0,
-        "alpha" : 1.0
-    },
-
-    "purple" : {
-        "hex" : "800080",
-        "red" : 0.5,
-        "green" : 0.0,
-        "blue" : 0.5,
-        "alpha" : 1.0
-    },
-
-    "olive" : {
-        "hex" : "808000",
-        "red" : 0.5,
-        "green" : 0.5,
-        "blue" : 0.0,
-        "alpha" : 1.0
-    },
-
-    "gray" : {
-        "hex" : "808080",
-        "red" : 0.5,
-        "green" : 0.5,
-        "blue" : 0.5,
-        "alpha" : 1.0
-    },
-
-    "silver" : {
-        "hex" : "C0C0C0",
-        "red" : 0.75,
-        "green" : 0.75,
-        "blue" : 0.75,
-        "alpha" : 1.0
-    },
-
-    "red" : {
-        "hex" : "FF0000",
-        "red" : 1.0,
-        "green" : 0.0,
-        "blue" : 0.0,
-        "alpha" : 1.0
-    },
-
-    "fuchsia" : {
-        "hex" : "FF00FF",
-        "red" : 1.0,
-        "green" : 0.0,
-        "blue" : 1.0,
-        "alpha" : 1.0
-    },
-
-    "yellow" : {
-        "hex" : "FFFF00",
-        "red" : 1.0,
-        "green" : 1.0,
-        "blue" : 0.0,
-        "alpha" : 1.0
-    },
-
-    "white" : {
-        "hex" : "FFFFFF",
-        "red": 0.0,
-        "green" : 0.0,
-        "blue" : 0.0,
-        "alpha" : 1.0
-    }
-};
+lanyard.util.Color.prototype.BLACK =
+    new lanyard.util.Color(0.0, 0.0, 0.0, 1.0, "000000FF");
 
 /**
- * Convert an english color name into a {lanyard.util.Color} object.
- *
- * @param {string} name the english name of the color.
- * @return {lanyard.util.Color} the color from the name, or null if the name was not recognized.
+ * @const
+ * @type {lanyard.util.Color}
  */
-lanyard.util.Color.prototype.fromEnglishString = function (name) {
-    if (lanyard.util.Color.prototype.ENGLISH_STRINGS[name]) {
-        this._red = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].red;
-        this._green = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].green;
-        this._blue = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].blue;
-        this._alpha = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].alpha;
-        this._hex = lanyard.util.Color.prototype.ENGLISH_STRINGS[name].hex;
-        this._name = name;
-    } else {
-        this._logger.severe("English color name is unknown.");
-    }
-};
+lanyard.util.Color.prototype.NAVY =
+    new lanyard.util.Color(0.0, 0.0, 0.5, 1.0, "000080FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.BLUE =
+    new lanyard.util.Color(0.0, 0.0, 1.0, 1.0, "0000FFFF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.GREEN =
+    new lanyard.util.Color(0.0, 0.5, 0.0, 1.0, "008000FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.TEAL =
+    new lanyard.util.Color(0.0, 0.5, 0.5, 1.0, "008080FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.LIME =
+    new lanyard.util.Color(0.0, 1.0, 0.0, 1.0, "00FF00FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.AQUA =
+    new lanyard.util.Color(0.0, 1.0, 1.0, 1.0, "00FFFFFF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.MAROON =
+    new lanyard.util.Color(0.5, 0.0, 0.0, 1.0, "800000FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.PURPLE =
+    new lanyard.util.Color(0.5, 0.0, 0.5, 1.0, "800080FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.OLIVE =
+    new lanyard.util.Color(0.5, 0.5, 0.0, 1.0, "808000FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.GRAY =
+    new lanyard.util.Color(0.5, 0.5, 0.5, 1.0, "808080FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.SILVER =
+    new lanyard.util.Color(0.75, 0.75, 0.75, 1.0, "C0C0C0FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.RED =
+    new lanyard.util.Color(1.0, 0.0, 0.0, 1.0, "FF0000FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.FUCHSIA =
+    new lanyard.util.Color(1.0, 0.0, 1.0, 1.0, "FF00FFFF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.YELLOW =
+    new lanyard.util.Color(1.0, 1.0, 0.0, 1.0, "FFFF00FF");
+
+/**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.WHITE =
+    new lanyard.util.Color(0.0, 0.0, 0.0, 1.0, "FFFFFFFF");
 
 /**
  * Create a {lanyard.util.Color} object from a kml or html color hex string.
@@ -212,64 +167,32 @@ lanyard.util.Color.prototype.fromEnglishString = function (name) {
  */
 lanyard.util.Color.prototype.fromHexString = function (hexString) {
     if (!hexString) {
+        this._logger.fine("Attempted to parse a null color hex string.");
         return null;
     }
 
-    // Remove the "#" if it exists.
-    if ("#" === hexString.charAt(0)) {
-        hexString = hexString.substr(1);
+    // Strip a leading "#" if it exists.
+    hexString = hexString.charAt(0) === "#" ? hexString.substring(1) : hexString;
+
+    if(hexString.length !== 6 || hexString !== 8) {
+        this._logger.fine(
+            "Attempted to parse a color hex string of an incorrect length. " +
+            hexString);
+        return null;
     }
 
-    /**
-     * The return value.
-     * @type {lanyard.util.Color}
-     */
-    var c = null;
+    var r = parseInt(hexString.substring(0, 2), 16) / 255;
+    var g = parseInt(hexString.substring(2, 4), 16) / 255;
+    var b = parseInt(hexString.substring(4, 6), 16) / 255;
 
-    if (hexString.length === 6) {
-        // handle an html color
-        c = new lanyard.util.Color(
-            parseInt(hexString.substring(0, 1), 16) / 255,
-            parseInt(hexString.substring(2, 3), 16) / 255,
-            parseInt(hexString.substring(4, 5), 16) / 255,
-            1.0,
-            hexString,
-            null
-        );
-    } else if (hexString.length === 8) {
-        // handle a KML color (includes alpha)
-        c = new lanyard.util.Color(
-            parseInt(hexString.substring(0, 1), 16) / 255,
-            parseInt(hexString.substring(2, 3), 16) / 255,
-            parseInt(hexString.substring(4, 5), 16) / 255,
-            parseInt(hexString.substring(6, 7), 16) / 255,
-            hexString,
-            null
-        );
+    // Default to full alpha.
+    var a = 1.0;
+
+    if(hexString.length === 8) {
+        a = parseInt(hexString.substring(6, 8), 16) / 255;
     }
- 
-    return c;
-};
 
-/**
- * Creates an sRGB color with the specified combined RGBA value consisting
- * of the alpha component in bits 24-31, the red component in bits 16-23,
- * the green component in bits 8-15, and the blue component in bits 0-7.
- *
- * @param {number} rgba the color data.
- * @param {boolean} hasAlpha specify if the color has an alpha value.
- */
-lanyard.util.Color.prototype.fromRGBA = function (rgba, hasAlpha) {
-    /** @type {lanyard.util.Color} */
-    var c = new lanyard.util.Color(
-        ((rgba ^ 0x0000FF00) >>> 8) / 255, // red
-        ((rgba ^ 0x00FF0000) >>> 16) / 255, // green
-        (rgba >>> 24) / 255, // blue
-        (hasAlpha ? rgba ^ 0x000000FF : 0) / 255, // alpha
-        null,
-        null
-    );
-    return c;
+    return new lanyard.util.Color(r, g, b, a, hexString);
 };
 
 /**
@@ -333,18 +256,6 @@ lanyard.util.Color.prototype.getBlue = function () {
  */
 lanyard.util.Color.prototype.getAlpha = function () {
     return this._alpha;
-};
-
-/**
- * Return the sRGB value of this color. Bits 24-31 are alpha, 16-23 are red,
- * 8-15 are green, 0-7 are blue. Since javascript operands are converted from
- * floating point to integers and back when bitwise operations are used, the
- * results from this function may not be consistant.
- *
- * @return {number} the sRGB value of this color.
- */
-lanyard.util.Color.prototype.getRGB = function () {
-    return 0 ^ 0 | this._alpha | (this._red << 8) | (this._green << 16) | (this._blue << 24);
 };
 
 /* EOF */
