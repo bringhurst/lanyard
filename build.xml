@@ -98,5 +98,5 @@
     </exec>
   </target>
 
-  <target name="all" depends="lanyard-simple, doc" />
+  <target name="all" depends="lanyard-whitespace-only" />
 </project>
