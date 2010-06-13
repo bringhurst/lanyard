@@ -10,6 +10,12 @@ goog.require('lanyard.View');
 goog.require('lanyard.Tessellator');
 
 /**
+ * A temporary object for consts.
+ * @type {Object}
+ */
+lanyard.globes.EllipsoidRectangularTessellator.prototype = {};
+
+/**
  * @const
  * @type {number}
  */
@@ -48,6 +54,8 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LON_SUBDIVI
  * @param {lanyard.Globe} globe the globe to tessellate.
  */
 lanyard.globes.EllipsoidRectangularTessellator = function (globe) {
+    this.prototype = lanyard.globes.EllipsoidRectangularTessellator.prototype;
+
     /**
      * @private
      * @type {Array.<lanyard.globes.RectTile>}
@@ -97,8 +105,6 @@ lanyard.globes.EllipsoidRectangularTessellator = function (globe) {
      */
     this.density = lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_DENSITY;
 };
-goog.exportSymbol('lanyard.globes.EllipsoidRectangularTessellator',
-    lanyard.globes.EllipsoidRectangularTessellator);
 
 /**
  * Get the sector associated with this tessellator.

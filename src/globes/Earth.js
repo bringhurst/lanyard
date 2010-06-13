@@ -5,6 +5,12 @@ goog.provide('lanyard.globes.Earth');
 
 goog.require('lanyard.globes.EllipsoidalGlobe');
 
+/*
+ * A temporary object for prototype consts.
+ * @type {Object}
+ */
+lanyard.globes.Earth.prototype = {};
+
 /**
  * The WGS84 ellipsoid equatorial radius of the earth, in meters.
  *
@@ -39,6 +45,9 @@ lanyard.globes.Earth.prototype.WGS84_ES = 0;
  * @this {lanyard.globes.Earth}
  */
 lanyard.globes.Earth = function () {
+
+    this.prototype = lanyard.globes.Earth.prototype;
+
     /** @private */ this.equatorialRadius = lanyard.globes.Earth.prototype.WGS84_EQUATORIAL_RADIUS;
     /** @private */ this.polarRadius = lanyard.globes.Earth.prototype.WGS84_POLAR_RADIUS;
     /** @private */ this.es = lanyard.globes.Earth.prototype.WGS84_ES;
