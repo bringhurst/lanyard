@@ -3,6 +3,8 @@
 
 goog.provide('lanyard.BasicFrameController');
 
+goog.require('goog.debug.Logger');
+
 goog.require('lanyard.util.Point');
 
 /**
@@ -11,7 +13,9 @@ goog.require('lanyard.util.Point');
  * @constructor
  * @implements {lanyard.FrameController}
  */
-lanyard.BasicFrameController = function () {};
+lanyard.BasicFrameController = function () {
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.BasicFrameController');
+};
 
 /**
  * Initialize the frame.
@@ -68,15 +72,17 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
  * @param {lanyard.DrawContext} dc the relevant DrawContext.
  */
 lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
-/*
-    GL gl = dc.getGL();
-    int err = gl.glGetError();
-    if (err != GL.GL_NO_ERROR) {
-        String msg = dc.getGLU().gluErrorString(err);
-        msg += err;
-        log(Level.FINE, msg);
+    /** @type {*} */
+    var gl = dc.getGL();
+
+    /** @type {number} */
+    var err = gl.getError();
+
+    if (err != gl.NO_ERROR) {
+        /** @type {string} */
+        var msg = "A GL error code of type " + err + " happened.";
+        this._logger.fine(msg);
     }
-*/
 };
 
 /**
@@ -85,8 +91,8 @@ lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
-/*
     this.clearFrame(dc);
+/*
 
     if (dc.getView() == null || dc.getModel() == null || dc.getLayers() == null) {
         return;
@@ -177,11 +183,15 @@ lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
-/*
+    /** @type {lanyard.util.Color} */
     var cc = dc.getClearColor();
-    dc.getGL().glClearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());
-    dc.getGL().glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-*/
+
+    /** @type {*} */
+    var gl = dc.getGL();
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    //gl.clearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };
 
 /* EOF */
