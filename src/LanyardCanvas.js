@@ -3,6 +3,9 @@
 
 goog.provide('lanyard.LanyardCanvas');
 
+goog.require('goog.debug.Logger');
+goog.require('lanyard.BasicSceneController');
+
 /**
  * Provides a wrapper for the WebGL canvas.
  *
@@ -15,6 +18,8 @@ lanyard.LanyardCanvas = function (canvasElement) {
      * @type {lanyard.SceneController}
      */
     this._sceneController = new lanyard.BasicSceneController(canvasElement);
+
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.LanyardCanvas');
 };
 
 /**

@@ -11,6 +11,9 @@ goog.require('goog.events');
 goog.require('goog.ui.Checkbox');
 goog.require('goog.ui.Checkbox.State');
 
+goog.require('lanyard.BasicModel');
+goog.require('lanyard.LanyardCanvas');
+
 /**
  * A basic demo of Lanyard.
  *

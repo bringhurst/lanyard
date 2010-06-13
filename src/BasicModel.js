@@ -166,7 +166,7 @@ lanyard.BasicModel.prototype.isShowWireframeExterior = function () {
  * @return {boolean} true if the tessellation bounding volume should be drawn, false otherwise.
  */
 lanyard.BasicModel.prototype.isShowTessellationBoundingVolumes = function () {
-    return showTessellationBoundingVolumes;
+    return this.showTessellationBoundingVolumes;
 };
 
 /**

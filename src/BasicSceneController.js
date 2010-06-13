@@ -3,6 +3,9 @@
 
 goog.provide('lanyard.BasicSceneController');
 
+goog.require('lanyard.DrawContextImpl');
+goog.require('lanyard.BasicFrameController');
+
 /**
  * An implementation of a basic scene controller.
  *
@@ -142,12 +145,12 @@ lanyard.BasicSceneController.prototype.repaint = function () {
     }
 
     try {
-        fc.initializeFrame(this.dc);
-        fc.drawFrame(this.dc);
+        fc.initializeFrame(this._dc);
+        fc.drawFrame(this._dc);
     } catch (e) {
         this._logger.fine("BasicSceneController.ExceptionDuringRendering");
     } finally {
-        fc.finalizeFrame(this.dc);
+        fc.finalizeFrame(this._dc);
         this.frame = this.frame + 1;
 
         // TODO: calculate end of FPS here

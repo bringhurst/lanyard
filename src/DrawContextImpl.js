@@ -3,6 +3,10 @@
 
 goog.provide('lanyard.DrawContextImpl');
 
+goog.require('lanyard.util.Color');
+goog.require('goog.debug.Logger');
+goog.require('lanyard.util.PriorityQueue');
+
 /**
  * A drawcontext implementation.
  *
@@ -11,6 +15,8 @@ goog.provide('lanyard.DrawContextImpl');
  * @param {canvas} the WebGL enabled canvas element.
  */
 lanyard.DrawContextImpl = function (canvasElement) {
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.DrawContextImpl');
+
     /**
      * @private
      * @type {lanyard.View}
@@ -82,6 +88,7 @@ lanyard.DrawContextImpl = function (canvasElement) {
      * @type {lanyard.SurfaceTileRenderer}
      */
     //this.surfaceTileRenderer = new lanyard.SurfaceTileRenderer();
+    this.surfaceTileRenderer = null;
 
     /**
      * The ordered renderable queue.

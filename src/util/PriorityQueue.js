@@ -33,7 +33,7 @@ lanyard.util.PriorityQueue = function (compare) {
  * @return {number} the number of elements in this queue.
  */
 lanyard.util.PriorityQueue.prototype.size = function () {
-    return this._elements.size;
+    return this._elements.length;
 };
 
 /**
@@ -44,7 +44,7 @@ lanyard.util.PriorityQueue.prototype.size = function () {
 lanyard.util.PriorityQueue.prototype.offer = function (element) {
     this._elements.push(element);
 
-    if(this._size <= 1) {
+    if(this._elements.length <= 1) {
         // no need to sort
         return;
     }
