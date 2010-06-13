@@ -6,7 +6,7 @@ goog.provide('lanyard.render.GLSL');
 goog.require('goog.debug.Logger');
 
 /**
- * A place to keep track of shaders.
+ * A place to keep track of GLSL based shaders.
  *
  * @constructor
  * @param {*} gl the WebGL rendering context.
