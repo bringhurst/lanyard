@@ -48,4 +48,13 @@ lanyard.globes.Earth = function () {
 };
 goog.exportSymbol('lanyard.globes.Earth', lanyard.globes.Earth);
 
+/**
+ * Get the radius of the earth.
+ *
+ * @return {number} the radius of the earth.
+ */
+lanyard.globes.Earth.prototype.getRadius = function () {
+    return this.equatorialRadius;
+};
+
 /* EOF */

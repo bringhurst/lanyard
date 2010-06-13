@@ -14,6 +14,9 @@ goog.provide('lanyard.geom.Sector');
 
 goog.require('lanyard.geom.Angle');
 goog.require('lanyard.geom.Cylinder');
+goog.require('lanyard.Globe');
+goog.require('lanyard.geom.Sphere');
+goog.require('lanyard.geom.LatLon');
 
 /**
  * Creates a new Sector and initializes it to the specified angles. The angles are assumed to be
@@ -423,19 +426,19 @@ lanyard.geom.Sector.prototype.computeBoundingCylinder = function (globe, vertica
 
     /** @type {lanyard.geom.Point} */
     var northwest =
-        globe.computePointFromPosition(sector.getMaxLatitude(), sector.getMinLongitude(), maxHeight);
+        globe.computePointFromPositionAngles(sector.getMaxLatitude(), sector.getMinLongitude(), maxHeight);
 
     /** @type {lanyard.geom.Point} */
     var southeast =
-        globe.computePointFromPosition(sector.getMinLatitude(), sector.getMaxLongitude(), maxHeight);
+        globe.computePointFromPositionAngles(sector.getMinLatitude(), sector.getMaxLongitude(), maxHeight);
 
     /** @type {lanyard.geom.Point} */
     var southwest =
-        globe.computePointFromPosition(sector.getMinLatitude(), sector.getMinLongitude(), maxHeight);
+        globe.computePointFromPositionAngles(sector.getMinLatitude(), sector.getMinLongitude(), maxHeight);
 
     /** @type {lanyard.geom.Point} */
     var northeast =
-        globe.computePointFromPosition(sector.getMaxLatitude(), sector.getMaxLongitude(), maxHeight);
+        globe.computePointFromPositionAngles(sector.getMaxLatitude(), sector.getMaxLongitude(), maxHeight);
 
     /** @type {number} */
     var a = southwest.distanceTo(southeast);

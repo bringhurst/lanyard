@@ -306,6 +306,19 @@ lanyard.geom.Angle.prototype.addRadians = function (radians) {
 goog.exportSymbol('lanyard.geom.Angle.prototype.addRadians', lanyard.geom.Angle.prototype.addRadians);
 
 /**
+ * Adds this angle to degreess. This Angle remains unchanged. The result is
+ * returned as a new Angle.
+ *
+ * @this {lanyard.geom.Angle}
+ * @param {number} degrees the number to be added.
+ * @return {lanyard.geom.Angle} a new angle equivalent to this Angle added to degrees.
+ */
+lanyard.geom.Angle.prototype.addDegrees = function (degrees) {
+    return lanyard.geom.Angle.prototype.fromDegrees(this._degrees + degrees);
+};
+goog.exportSymbol('lanyard.geom.Angle.prototype.addDegrees', lanyard.geom.Angle.prototype.addDegrees);
+
+/**
  * Subtracts this angle from radians. This Angle remains unchanged. The result is
  * returned as a new Angle.
  *

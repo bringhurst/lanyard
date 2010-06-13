@@ -5,7 +5,6 @@ goog.provide('lanyard.Globe');
 
 goog.require('lanyard.geom.Angle');
 goog.require('lanyard.geom.Point');
-goog.require('lanyard.geom.Sector');
 goog.require('lanyard.geom.Extent');
 goog.require('lanyard.geom.Line');
 goog.require('lanyard.geom.Position');
@@ -133,5 +132,12 @@ lanyard.Globe.prototype.getEccentricitySquared = function () {};
  * @return {lanyard.geom.Position} the position.
  */
 lanyard.Globe.prototype.computePositionFromPoint = function (point) {};
+
+/**
+ * Get the radius of this globe.
+ *
+ * @return {number} the radius of this globe.
+ */
+lanyard.Globe.prototype.getRadius = function () {};
 
 /* EOF */

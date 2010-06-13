@@ -4,6 +4,7 @@
 goog.provide('lanyard.BasicModel');
 
 goog.require('lanyard.globes.EllipsoidRectangularTessellator');
+goog.require('lanyard.globes.Earth');
 
 /**
  * A model implementation.
@@ -61,7 +62,7 @@ lanyard.BasicModel.prototype.createLayers = function () {
     /** @type {Array.<lanyard.Layer>} */
     var layers = [
         /* A plain blue marble layer. */
-        new lanyard.layers.Earth.BMNGSurfaceLayer()
+        //new lanyard.layers.Earth.BMNGSurfaceLayer()
     ];
 
     this.setLayers(layers);

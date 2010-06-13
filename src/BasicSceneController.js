@@ -133,7 +133,7 @@ lanyard.BasicSceneController.prototype.repaint = function () {
     this._dc.setView(this._view);
     this._dc.setVerticalExaggeration(this._verticalExaggeration);
 
-    if (!this._dc.getGLContext()) {
+    if (!this._dc.getWebGLCanvas()) {
         this._logger.fine("BasicSceneController.GLContextNullStartRedisplay");
     }
 

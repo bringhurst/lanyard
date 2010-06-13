@@ -17,6 +17,13 @@ goog.require('lanyard.geom.Intersection');
 lanyard.geom.Extent = function () {};
 
 /**
+ * Render this extent.
+ *
+ * @param {lanyard.DrawContext} dc the draw context to render to.
+ */
+lanyard.geom.Extent.prototype.render = function (dc) {};
+
+/**
  * Accessor for the center point.
  *
  * @return {lanyard.geom.Point}

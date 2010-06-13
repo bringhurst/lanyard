@@ -17,6 +17,22 @@ lanyard.SectorGeometryList = function () {
 };
 
 /**
+ * Add a geometry.
+ *
+ * @param {lanyard.SectorGeometry} sg the sector geometry to add.
+ */
+lanyard.SectorGeometryList.prototype.add = function (sg) {
+    this._geometryList.push(sg);
+};
+
+/**
+ * Clear the elements in this list
+ */
+lanyard.SectorGeometryList.prototype.clear = function () {
+    this._geometryList = [];
+};
+
+/**
  * Get a list of the intersecting sectors.
  *
  * @param {lanyard.geom.Sector} sector the sector to check for intersection with.

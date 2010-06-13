@@ -9,6 +9,7 @@
 goog.provide('lanyard.geom.LatLon');
 
 goog.require('lanyard.geom.Angle');
+goog.require('lanyard.geom.Quaternion');
 
 /**
  * Contructs a new LatLon from two angles.

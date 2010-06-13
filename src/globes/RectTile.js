@@ -51,7 +51,7 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
      * @type {number}
      * @private
      */
-    this._log10CellSize = Math.log10(cellSize);
+    this._log10CellSize = Math.log(cellSize) / Math.LN10;;
 
     /**
      * @type {lanyard.globes.RenderInfo|null}
@@ -72,6 +72,15 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
     this._indexLists = {};
 };
 goog.exportSymbol('lanyard.globes.RectTile', lanyard.globes.RectTile);
+
+/**
+ * Return the log10 cell size.
+ *
+ * @return {number} the log10 cell size.
+ */
+lanyard.globes.RectTile.prototype.getLog10CellSize = function () {
+    return this._log10CellSize;
+};
 
 /**
  * Returns the current sector.

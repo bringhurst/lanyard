@@ -4,6 +4,8 @@
 goog.provide('lanyard.globes.EllipsoidRectangularTessellator');
 
 goog.require('lanyard.globes.RectTile');
+goog.require('lanyard.geom.Sector');
+goog.require('lanyard.SectorGeometryList');
 
 /**
  * @const
@@ -212,7 +214,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
 lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = function (dc, tile) {
 
     /** @type {boolean} */
-    var doesIntersectFrustum = tile.getExtent().intersects(this.currentFrustum);
+    var doesIntersectFrustum = tile.getExtent().intersectsFrustum(this.currentFrustum);
 
     if (!doesIntersectFrustum) {
         return;
@@ -235,7 +237,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
         return;
     }
 
-    this.sector = tile.getSector().union(this.sector);
+    this.sector = tile.getSector().unionWithSector(this.sector);
     this.currentTiles.add(tile);
 };
 
