@@ -8,6 +8,7 @@ goog.require('goog.debug.Logger');
 goog.require('lanyard.util.PriorityQueue');
 goog.require('lanyard.OrderedRenderable');
 goog.require('lanyard.util.TextureCoords');
+goog.require('lanyard.render.SurfaceTileRenderer');
 
 /**
  * A drawcontext implementation.
