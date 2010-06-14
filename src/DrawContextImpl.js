@@ -89,8 +89,7 @@ lanyard.DrawContextImpl = function (canvasElement) {
      * private
      * type {lanyard.SurfaceTileRenderer}
      */
-    //this.surfaceTileRenderer = new lanyard.SurfaceTileRenderer();
-    this.surfaceTileRenderer = null;
+    this.surfaceTileRenderer = new lanyard.render.SurfaceTileRenderer();
 
     /**
      * The ordered renderable queue.

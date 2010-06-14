@@ -25,6 +25,16 @@ lanyard.util.Texture.prototype.bind = function () {
 };
 
 /**
+ * Updates the entire content area of this texture using the data in the given canvas.
+ *
+ * @param {Element} textureCanvas the canvas that holds the texture.
+ */
+lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
+    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, textureCanvas);
+    this.gl.generateMipmap(this.gl.TEXTURE_2D);
+};
+
+/**
  * Sets the OpenGL integer texture parameter for the texture's target.
  *
  * @param {number} parameterName the parameter name.
