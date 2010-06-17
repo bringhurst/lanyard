@@ -45,10 +45,20 @@ goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
 lanyard.demo.BasicDemo.prototype.run = function () {
     this.setupEventLog();
     this.setupLayerList();
+    this.setupCanvasView();
+};
+goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
+    lanyard.demo.BasicDemo.prototype.run);
 
+/**
+ * Setup the canvas and initial model.
+ *
+ * @this {lanyard.demo.BasicDemo}
+ */
+lanyard.demo.BasicDemo.prototype.setupCanvasView = function () {
     /** @type {lanyard.LanyardCanvas} */
     var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
-    
+
     /** @type {lanyard.BasicModel} */
     var m = new lanyard.BasicModel();
     m.setLayers(this._layerList);
@@ -60,8 +70,8 @@ lanyard.demo.BasicDemo.prototype.run = function () {
     // FIXME: setup mouse listeners.
     lc.display();
 };
-goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
-    lanyard.demo.BasicDemo.prototype.run);
+goog.exportSymbol('lanyard.demo.BasicDemo.prototype.setupEventLog',
+    lanyard.demo.BasicDemo.prototype.setupEventLog);
 
 /**
  * Setup the event log.

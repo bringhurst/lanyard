@@ -1,5 +1,5 @@
 /*global goog, lanyard */
-/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
+/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: false, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 goog.provide('lanyard.BasicFrameController');
 
@@ -23,6 +23,7 @@ lanyard.BasicFrameController = function () {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
+    this._logger.fine("The frame controller is initializing a frame.");
 /*
     GL gl = dc.getGL();
 
@@ -47,6 +48,7 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
+    this._logger.fine("The frame controller is finalizing a frame.");
 /*
     GL gl = dc.getGL();
 
@@ -72,13 +74,14 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
  * @param {lanyard.DrawContext} dc the relevant DrawContext.
  */
 lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
+    this._logger.fine("The frame controller is checking for webgl errors.");
     /** @type {*} */
     var gl = dc.getGL();
 
     /** @type {number} */
     var err = gl.getError();
 
-    if (err != gl.NO_ERROR) {
+    if (err !== gl.NO_ERROR) {
         /** @type {string} */
         var msg = "A GL error code of type " + err + " happened.";
         this._logger.fine(msg);
@@ -91,61 +94,83 @@ lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
+    this._logger.fine("The frame controller is attempting to draw the frame.");
     this.clearFrame(dc);
-/*
 
-    if (dc.getView() == null || dc.getModel() == null || dc.getLayers() == null) {
+    // Perform some basic sanity checks.
+
+    if (!dc.getView()) {
+        this._logger.severe("The view was null when the frame controller attempted to draw.");
         return;
     }
 
+    if (!dc.getModel()) {
+        this._logger.severe("The model was null when the frame controller attempted to draw.");
+        return;
+    }
+
+    if (!dc.getLayers()) {
+        this._logger.severe("The layers were null when the frame controller attempted to draw.");
+        return;
+    }
+  
     dc.getView().apply(dc);
 
-    if (dc.getModel().getTessellator() != null) {
-        SectorGeometryList sgl = dc.getModel().getTessellator().tessellate(dc);
+    if (dc.getModel().getTessellator()) {
+        /** @type {lanyard.SectorGeometryList} */
+        var sgl = dc.getModel().getTessellator().tessellate(dc);
         dc.setSurfaceGeometry(sgl);
     }
 
-    gov.nasa.worldwind.LayerList layers = dc.getLayers();
-    Iterator<Layer> iter = layers.iterator();
+    /** @type {Array.<lanyard.Layer>} */
+    var layers = dc.getLayers();
 
-    while (iter.hasNext()) {
-        Layer layer = null;
-        layer = iter.next();
+    for(var i = 0; i < layers.length; i = i + 1) {
+        /** @type {lanyard.Layer} */
+        var layer = layers[i];
 
-        if (layer != null) {
+        if(layer) {
             layer.render(dc);
         }
     }
 
-    while (dc.getOrderedRenderables().peek() != null) {
+    while (dc.getOrderedRenderables().peek()) {
         dc.getOrderedRenderables().poll().render(dc);
     }
 
     // Diagnostic displays.
-    if (dc.getSurfaceGeometry() != null
-        && dc.getModel().isShowWireframeExterior()
-        || dc.getModel().isShowWireframeInterior()
-        || dc.getModel().isShowTessellationBoundingVolumes()) {
+    if (dc.getSurfaceGeometry() && dc.getModel().isShowWireframeExterior() ||
+        dc.getModel().isShowWireframeInterior() ||
+        dc.getModel().isShowTessellationBoundingVolumes()) {
 
-        Model model = dc.getModel();
+        /** @type {lanyard.Model} */
+        var model = dc.getModel();
 
-        float[] previousColor = new float[4];
-        dc.getGL().glGetFloatv(GL.GL_CURRENT_COLOR, previousColor, 0);
+        /** @type {Array.<number>} */
+        var previousColor = [];
 
-        for (SectorGeometry sg : dc.getSurfaceGeometry()) {
+        // FIXME: save the current color.
+        //dc.getGL().getFloatv(this.dc.getGL().CURRENT_COLOR, previousColor, 0);
+
+        /** @type {Array.<lanyard.SectorGeometry>} */
+        var sgs = dc.getSurfaceGeometry();
+
+        for (var j = 0; j < sgs.length; j = j + 1) {
             if (model.isShowWireframeInterior() || model.isShowWireframeExterior()) {
-                sg.renderWireframe(dc, model.isShowWireframeInterior(), model.isShowWireframeExterior());
+                sgs[j].renderWireframe(dc, model.isShowWireframeInterior(), model.isShowWireframeExterior());
             }
 
             if (model.isShowTessellationBoundingVolumes()) {
-                dc.getGL().glColor3d(1, 0, 0);
-                sg.renderBoundingVolume(dc);
+                // FIXME: set the color for the bounding volume
+                //dc.getGL().color(1, 0, 0);
+
+                sgs[j].renderBoundingVolume(dc);
             }
         }
-            
-        dc.getGL().glColor4fv(previousColor, 0);
+
+        // FIXME: restore the current color.
+        //dc.getGL().color4fv(previousColor, 0);
     }
-*/
 };
 
 /**
@@ -154,6 +179,8 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.initializePicking = function (dc) {
+    this._logger.fine("The frame controller is attempting to initialize picking.");
+
     // TODO: something
 };
 
@@ -164,6 +191,8 @@ lanyard.BasicFrameController.prototype.initializePicking = function (dc) {
  * @param {lanyard.util.Point} pickPoint the pick point.
  */
 lanyard.BasicFrameController.prototype.pick = function (dc, pickPoint) {
+    this._logger.fine("The frame controller is performing a pick operation.");
+
     // TODO: something
 };
 
@@ -173,6 +202,8 @@ lanyard.BasicFrameController.prototype.pick = function (dc, pickPoint) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
+    this._logger.fine("The frame controller is attempting to finalize picking.");
+
     // TODO: something
 };
 
@@ -183,6 +214,8 @@ lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
+    this._logger.fine("The frame controller is clearing the frame.");
+
     /** @type {lanyard.util.Color} */
     var cc = dc.getClearColor();
 
@@ -190,6 +223,7 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
     var gl = dc.getGL();
     
     gl.clearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());
+
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };
 

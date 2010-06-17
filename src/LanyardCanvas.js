@@ -100,7 +100,7 @@ lanyard.LanyardCanvas.prototype.display = function () {
     var sc = this.getSceneController();
 
     if (!sc) {
-        this._logger.fine("LanyardCanvas.ScnCntrllerNullOnRepaint");
+        this._logger.fine("The scene controller was null when a repaint was attempted.");
     }
 
     sc.repaint();
