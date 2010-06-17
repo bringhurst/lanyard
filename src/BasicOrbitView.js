@@ -353,8 +353,6 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
     /** @type {lanyard.Globe} */
     var globe = dc.getGlobe();
 
-    console.log(globe);
-
     if (!globe) {
         this._logger.severe("The globe was null when computing the model-view matrix.");
         return null;
