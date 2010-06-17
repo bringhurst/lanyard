@@ -144,17 +144,12 @@ lanyard.BasicSceneController.prototype.repaint = function () {
         this._logger.fine("The frame controller did not exist when the scene controller tried to use it.");
     }
 
-    try {
-        fc.initializeFrame(this._dc);
-        fc.drawFrame(this._dc);
-    } catch (e) {
-        this._logger.severe("An exception occurred during rendering " + e.message);
-    } finally {
-        fc.finalizeFrame(this._dc);
-        this.frame = this.frame + 1;
-
-        // TODO: calculate end of FPS here
-    }
+    fc.initializeFrame(this._dc);
+    fc.drawFrame(this._dc);
+    fc.finalizeFrame(this._dc);
+    this.frame = this.frame + 1;
+    
+    // TODO: calculate end of FPS here
 };
 
 /**

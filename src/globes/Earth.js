@@ -40,7 +40,7 @@ lanyard.globes.Earth.prototype.WGS84_ES = 0;
 /**
  * A representation of the earth.
  *
- * @extends {lanyard.globes.EllipsoidalGlobe}
+ * @extends lanyard.globes.EllipsoidalGlobe
  * @constructor
  * @this {lanyard.globes.Earth}
  */
@@ -58,6 +58,7 @@ lanyard.globes.Earth = function () {
     /** @private */ this.elevationModel = null;
 };
 goog.exportSymbol('lanyard.globes.Earth', lanyard.globes.Earth);
+goog.inherits(lanyard.globes.Earth, lanyard.globes.EllipsoidalGlobe);
 
 /**
  * Get the radius of the earth.

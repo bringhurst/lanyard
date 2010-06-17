@@ -5,6 +5,7 @@ goog.provide('lanyard.BasicOrbitView');
 
 goog.require('lanyard.geom.ViewFrustum');
 goog.require('lanyard.util.GLU');
+goog.require('lanyard.Globe');
 
 /**
  * A basic orbit view implementation.
@@ -13,6 +14,10 @@ goog.require('lanyard.util.GLU');
  * @implements {lanyard.View}
  */
 lanyard.BasicOrbitView = function () {
+    /**
+     * @private
+     */
+    this._logger = goog.debug.Logger.getLogger('lanyard.BasicOrbitView');
 
     // Setup defaults.
 
@@ -348,7 +353,10 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
     /** @type {lanyard.Globe} */
     var globe = dc.getGlobe();
 
+    console.log(globe);
+
     if (!globe) {
+        this._logger.severe("The globe was null when computing the model-view matrix.");
         return null;
     }
 

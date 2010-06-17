@@ -7,7 +7,7 @@ goog.provide('lanyard.SectorGeometry');
  * An interface for a sector geometry.
  *
  * @interface
- * @extends {lanyard.Renderable}
+ * @implements {lanyard.Renderable}
  */
 lanyard.SectorGeometry = function () {};
 
