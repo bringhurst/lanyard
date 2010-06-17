@@ -127,6 +127,15 @@ lanyard.DrawContextImpl = function (canvasElement) {
     } else {
         this._logger.fine("A WebGL context was successfully obtained from the canvas.");
     }
+
+    /** @type {lanyard.render.GLSL} */
+    this.glsl = null;
+
+    /** @type {string} */
+    this.vshaderId = "shader-vs";
+
+    /** @type {string} */
+    this.fshaderId = "shader-fs";
 };
 
 /**
@@ -151,12 +160,47 @@ lanyard.DrawContextImpl.prototype.initialize = function () {
 };
 
 /**
+ * Setup the shaders for rendering the tiles.
+ */
+lanyard.DrawContextImpl.prototype.setupShaders = function () {
+    if(!this.glsl && this.vshaderId && this.fshaderId)  {
+        this.glsl = new lanyard.util.GLSL(this.gl);
+
+        this.glsl.loadVertexShader(this.vshaderId);
+        this.glsl.loadFragmentShader(this.fshaderId);
+
+        this.glsl.useShaders();
+    }
+};
+
+/**
+ * Set the location of the vertex and fragment shaders and reset the shaders.
+ *
+ * @param {string} vshaderId the dom id of the vertex shader.
+ * @param {string} fshaderId the dom id of the fragment shader.
+ */
+lanyard.DrawContextImpl.prototype.loadShaders = function (vshaderId, fshaderId) {
+    this.vshaderId = vshaderId;
+    this.fshaderId = fshaderId;
+    this.glsl = null; // Force a reload.
+};
+
+/**
  * Return the current WebGL rendering context.
  *
  * @return {*} the current rendering context.
  */
 lanyard.DrawContextImpl.prototype.getGL = function () {
     return this.gl;
+};
+
+/**
+ * Return the current shader context.
+ *
+ * @return {lanyard.render.GLSL} the current shader context.
+ */
+lanyard.DrawContextImpl.prototype.getGLSL = function () {
+    return this.glsl;
 };
 
 /**

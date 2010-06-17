@@ -23,15 +23,6 @@ lanyard.render.SurfaceTileRenderer = function () {
     /** @type {*} */
     this.gl = null;
 
-    /** @type {lanyard.render.GLSL} */
-    this.glsl = null;
-
-    /** @type {string} */
-    this.vshaderId = null;
-
-    /** @type {string} */
-    this.fshaderId = null;
-
     /** @type {Object} */
     this.transform = {
         HScale: 0.0,
@@ -141,41 +132,6 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTile = function (dc, tile) {
 };
 
 /**
- * Setup the shaders for rendering the tiles.
- *
- * @param {lanyard.DrawContext} dc the draw context to render to.
- */
-lanyard.render.SurfaceTileRenderer.prototype.setupShaders = function (dc) {
-    this.gl = dc.getGL();
-
-    if(!this.glsl && this.vshader && this.fshader)  {
-        this.glsl = new lanyard.util.GLSL(this.gl);
-
-        if(this.vshader) {
-            this.glsl.loadVertexShader(this.vshader);
-        }
-
-        if(this.fshader) {
-            this.glsl.loadFragmentShader(this.fshader);
-        }
-
-        this.glsl.useShaders();
-    }
-};
-
-/**
- * Set the location of the vertex and fragment shaders.
- *
- * @param {string} vshaderId the dom id of the vertex shader.
- * @param {string} fshaderId the dom id of the fragment shader.
- */
-lanyard.render.SurfaceTileRenderer.prototype.loadShaders = function (vshaderId, fshaderId) {
-    this.vshaderId = vshaderId;
-    this.fshaderId = fshaderId;
-    this.glsl = null; // Force a reload.
-};
-
-/**
  * Do a render of the tiles.
  *
  * @param {lanyard.DrawContext} dc the draw context to render to.
@@ -222,7 +178,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
             // TODO: Figure out how to apply multi-texture to more than one tile at a time, most likely via a
             // fragment shader.
 
-            this.glsl.startShader();
+            dc.getGLSL().startShader();
 
             /** @type {number} */
             var j;
@@ -232,8 +188,8 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
 
                 if (tilesToRender[j].bind(dc)) {
                     // Pass some uniform values to fragment shader.
-                    this.gl.uniform1i(this.glsl.getUniformLocation("tile_image"), 0); // Use texture unit 0.
-                    this.gl.uniform1i(this.glsl.getUniformLocation("alpha_mask"), 1); // Use texture unit 1.
+                    this.gl.uniform1i(dc.getGLSL().getUniformLocation("tile_image"), 0); // Use texture unit 0.
+                    this.gl.uniform1i(dc.getGLSL().getUniformLocation("alpha_mask"), 1); // Use texture unit 1.
 
                     /** @type {number} */
                     var so = 0;
@@ -243,7 +199,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                     }
 
                     // Flag for fragment shader.
-                    this.gl.uniform1i(this.glsl.getUniformLocation("showoutlines"), so);
+                    this.gl.uniform1i(dc.getGLSL().getUniformLocation("showoutlines"), so);
 
                     tilesToRender[j].applyInternalTransform(dc);
 
@@ -253,12 +209,12 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                     this.gl.glTranslated(this.transform.HShift, this.transform.VShift, 0.0);
 
                     this.gl.glUniform1f(
-                        this.glsl.getUniformLocation("latitude"),
+                        dc.getGLSL().getUniformLocation("latitude"),
                         tilesToRender[j].getSector().getCentroid().getLatitude().getDegrees()
                     );
 
                     this.gl.glUniform1f(
-                        this.glsl.getUniformLocation("longitude"),
+                        dc.getGLSL().getUniformLocation("longitude"),
                         tilesToRender[j].getSector().getCentroid().getLongitude().getDegrees()
                     );
 
@@ -272,7 +228,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                     sectorGeoms[i].renderMultiTexture(dc, numTexUnitsUsed);
                 }
             }
-            this.glsl.endShader();
+            dc.getGLSL().endShader();
         }
 
         this.gl.activeTexture(this.gl.TEXTURE0);
