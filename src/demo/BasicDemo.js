@@ -67,7 +67,8 @@ lanyard.demo.BasicDemo.prototype.setupCanvasView = function () {
     m.setShowTessellationBoundingVolumes(true);
     lc.setModelAndView(m, new lanyard.BasicOrbitView());
 
-    // FIXME: setup mouse listeners.
+    // TODO: setup mouse listeners.
+
     lc.display();
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.setupEventLog',

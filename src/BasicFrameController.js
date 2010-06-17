@@ -62,8 +62,8 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
 
     gl.glFlush();
 
-    checkGLErrors(dc);
-*/
+/*/
+    this.checkGLErrors(dc);
 };
 
 /**
@@ -94,8 +94,9 @@ lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
-    this._logger.fine("Drawing the frame.");
     this.clearFrame(dc);
+
+    this._logger.fine("Drawing the frame.");
 
     // Perform some basic sanity checks.
 
@@ -223,7 +224,6 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
     var gl = dc.getGL();
     
     gl.clearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());
-
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };
 
