@@ -84,7 +84,7 @@ lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
     if (err !== gl.NO_ERROR) {
         /** @type {string} */
         var msg = "A GL error code of type " + err + " happened.";
-        this._logger.fine(msg);
+        this._logger.severe(msg);
     }
 };
 
