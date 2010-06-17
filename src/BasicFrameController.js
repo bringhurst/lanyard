@@ -23,7 +23,7 @@ lanyard.BasicFrameController = function () {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
-    this._logger.fine("The frame controller is initializing a frame.");
+    this._logger.fine("Initializing a frame.");
 /*
     GL gl = dc.getGL();
 
@@ -48,7 +48,7 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
-    this._logger.fine("The frame controller is finalizing a frame.");
+    this._logger.fine("Finalizing a frame.");
 /*
     GL gl = dc.getGL();
 
@@ -74,7 +74,7 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
  * @param {lanyard.DrawContext} dc the relevant DrawContext.
  */
 lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
-    this._logger.fine("The frame controller is checking for webgl errors.");
+    this._logger.fine("Checking for webgl errors.");
     /** @type {*} */
     var gl = dc.getGL();
 
@@ -94,23 +94,23 @@ lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
-    this._logger.fine("The frame controller is attempting to draw the frame.");
+    this._logger.fine("Drawing the frame.");
     this.clearFrame(dc);
 
     // Perform some basic sanity checks.
 
     if (!dc.getView()) {
-        this._logger.severe("The view was null when the frame controller attempted to draw.");
+        this._logger.severe("The view was null when attempting to draw.");
         return;
     }
 
     if (!dc.getModel()) {
-        this._logger.severe("The model was null when the frame controller attempted to draw.");
+        this._logger.severe("The model was null when attempting to draw.");
         return;
     }
 
     if (!dc.getLayers()) {
-        this._logger.severe("The layers were null when the frame controller attempted to draw.");
+        this._logger.severe("The layers were null when attempting to draw.");
         return;
     }
   
@@ -179,7 +179,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.initializePicking = function (dc) {
-    this._logger.fine("The frame controller is attempting to initialize picking.");
+    this._logger.fine("Initializing picking.");
 
     // TODO: something
 };
@@ -191,7 +191,7 @@ lanyard.BasicFrameController.prototype.initializePicking = function (dc) {
  * @param {lanyard.util.Point} pickPoint the pick point.
  */
 lanyard.BasicFrameController.prototype.pick = function (dc, pickPoint) {
-    this._logger.fine("The frame controller is performing a pick operation.");
+    this._logger.fine("Performing a pick operation.");
 
     // TODO: something
 };
@@ -202,7 +202,7 @@ lanyard.BasicFrameController.prototype.pick = function (dc, pickPoint) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
-    this._logger.fine("The frame controller is attempting to finalize picking.");
+    this._logger.fine("Finalizing picking.");
 
     // TODO: something
 };
@@ -214,7 +214,7 @@ lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
-    this._logger.fine("The frame controller is clearing the frame.");
+    this._logger.fine("Clearing the frame.");
 
     /** @type {lanyard.util.Color} */
     var cc = dc.getClearColor();
