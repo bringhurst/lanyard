@@ -9,6 +9,7 @@ goog.require('lanyard.util.PriorityQueue');
 goog.require('lanyard.OrderedRenderable');
 goog.require('lanyard.util.TextureCoords');
 goog.require('lanyard.render.SurfaceTileRenderer');
+goog.require('lanyard.render.GLSL');
 
 /**
  * A drawcontext implementation.
@@ -164,7 +165,7 @@ lanyard.DrawContextImpl.prototype.initialize = function () {
  */
 lanyard.DrawContextImpl.prototype.setupShaders = function () {
     if(!this.glsl && this.vshaderId && this.fshaderId)  {
-        this.glsl = new lanyard.util.GLSL(this.gl);
+        this.glsl = new lanyard.render.GLSL(this.gl);
 
         this.glsl.loadVertexShader(this.vshaderId);
         this.glsl.loadFragmentShader(this.fshaderId);

@@ -4,8 +4,52 @@
         <title>Lanyard Demo</title>
         <link href="demo.css" media="screen" rel="stylesheet" type="text/css"/>
         <script src="../build/lanyard-whitespace-only.js" type="text/javascript"></script>
-        <script src="fragment.glsl" id="shader-fs" type="x-shader/x-fragment"></script>
-        <script src="vertex.glsl" id="shader-vs" type="x-shader/x-vertex"></script>
+        <script src="fragment.glsl" id="shader-fs" type="x-shader/x-fragment">
+            uniform sampler2D uSamplerTileImage;
+            uniform sampler2D uSamplerAlphaMask;
+
+            uniform int showOutlines;
+
+            varying vec4 vTextureCoord0;
+            varying vec4 vTextureCoord1;
+
+            void main (void) {
+                vec4 tileColor = texture2D(uSamplerTileImage, vec2(vTextureCoord0.s, vTextureCoord0.t));
+                vec4 alphaColor = texture2D(uSamplerAlphaMask, vec2(vTextureCoord1.s, vTextureCoord1.t));
+
+                if(showOutlines == 1) {
+                    // Black borders 50 percent.
+                    if(vTextureCoord0.s < 0.01 || vTextureCoord0.s > 0.99) {
+                        tileColor = mix(tileColor, vec4(0.0, 0.0, 0.0, tileColor.a), 0.5);
+                    }
+
+                    if(vTextureCoord0.t < 0.01 || vTextureCoord0.t > 0.99) {
+                        tileColor = mix(tileColor, vec4(0.0, 0.0, 0.0, tileColor.a), 0.5);
+                    }
+                }
+
+                gl_FragColor = vec4(tileColor.rgba);
+            }
+        </script>
+        <script src="vertex.glsl" id="shader-vs" type="x-shader/x-vertex">
+            attribute vec4 aTextureCoord0;
+            attribute vec4 aTextureCoord1;
+            attribute vec3 aVertexPosition;
+
+            uniform mat4 uMVMatrix;
+            uniform mat4 uPMatrix;
+            uniform mat4 uTextureMatrix[2];
+
+            varying vec4 vTextureCoord0;
+            varying vec4 vTextureCoord1;
+
+            void main(void) {
+                vTextureCoord0 = uTextureMatrix[0] * aTextureCoord0;
+                vTextureCoord1 = uTextureMatrix[0] * aTextureCoord1;
+
+                gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+            }
+        </script>
     </head>
     <body>
         <div class="column-container">

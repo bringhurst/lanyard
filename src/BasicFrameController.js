@@ -24,6 +24,9 @@ lanyard.BasicFrameController = function () {
  */
 lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
     this._logger.fine("Initializing a frame.");
+
+    dc.setupShaders();
+
 /*
     GL gl = dc.getGL();
 

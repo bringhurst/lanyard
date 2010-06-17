@@ -16,13 +16,13 @@ lanyard.render.GLSL = function (gl) {
     this.gl = gl;
 
     /** @type {string} */
-    this.vshaderSource = "";
+    this.vshaderSource = null;
 
     /** @type {string} */
-    this.fshaderSource = "";
+    this.fshaderSource = null;
 
     /** @type {*} */
-    this.programObject = gl.glCreateProgram();
+    this.programObject = gl.createProgram();
 
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.GLSL');
 };
@@ -38,7 +38,7 @@ lanyard.render.GLSL.prototype.updateVertexShader = function () {
     this.gl.shaderSource(vs, this.vshaderSource);
     this.gl.compileShader(vs);
  
-    this.checkCompilerOutput(vs);
+    this.checkCompilerOutput(vs, false);
     this.gl.attachShader(this.programObject, vs);
 };
 
@@ -53,7 +53,7 @@ lanyard.render.GLSL.prototype.updateFragmentShader = function () {
     this.gl.shaderSource(fs, this.fshaderSource);
     this.gl.compileShader(fs);
 
-    this.checkCompilerOutput(this.gl, fs);
+    this.checkCompilerOutput(fs, false);
     this.gl.attachShader(this.programObject, fs);
 };
 
@@ -66,15 +66,9 @@ lanyard.render.GLSL.prototype.loadVertexShader = function (id) {
     var shaderScript = goog.dom.getElement(id);
 
     if (!shaderScript) {
-      return null;
-    }
-
-    var k = shaderScript.firstChild;
-    while (k) {
-        if (k.nodeType === 3) {
-            this.vshaderSource += k.textContent;
-        }
-        k = k.nextSibling;
+        return null;
+    } else {
+        this.vshaderSource = shaderScript.innerHTML;
     }
 
     if (shaderScript.type !== "x-shader/x-vertex") {
@@ -94,15 +88,9 @@ lanyard.render.GLSL.prototype.loadFragmentShader = function (id) {
     var shaderScript = goog.dom.getElement(id);
 
     if (!shaderScript) {
-      return null;
-    }
-
-    var k = shaderScript.firstChild;
-    while (k) {
-        if (k.nodeType === 3) {
-            this.fshaderSource += k.textContent;
-        }
-        k = k.nextSibling;
+        return null;
+    } else {
+        this.fshaderSource = shaderScript.innerHTML;
     }
 
     if (shaderScript.type !== "x-shader/x-fragment") {
@@ -148,7 +136,7 @@ lanyard.render.GLSL.prototype.getProgramObject = function () {
 lanyard.render.GLSL.prototype.useShaders = function () {
     this.gl.linkProgram(this.programObject);
     this.gl.validateProgram(this.programObject);
-    this.checkCompilerOutput(this.programObject);
+    this.checkCompilerOutput(this.programObject, true);
 };
 
 /**
@@ -168,10 +156,17 @@ lanyard.render.GLSL.prototype.endShader = function () {
 /**
  * Check the compilation status of a shader.
  */
-lanyard.render.GLSL.prototype.checkCompilerOutput = function (shader) {
-    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-        this._logger.severe("Compilation of a shader failed. " +
-            this.gl.getShaderInfoLog(shader));
+lanyard.render.GLSL.prototype.checkCompilerOutput = function (shader, isProgram) {
+    if(isProgram) {
+      if (!this.gl.getProgramParameter(shader, this.gl.LINK_STATUS)) {
+          this._logger.severe("Linking of a program failed. " +
+                this.gl.getProgramInfoLog(shader));
+      }
+    } else {
+        if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+            this._logger.severe("Compilation of a shader failed. " +
+                this.gl.getShaderInfoLog(shader));
+        }
     }
 };
 
