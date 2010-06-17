@@ -29,9 +29,10 @@ lanyard.LanyardCanvas = function (canvasElement) {
  * @param {lanyard.Model} model the new model.
  */
 lanyard.LanyardCanvas.prototype.setModel = function (model) {
-    // model can be null, that's ok -- it indicates no model.
-    if (!this._sceneController) {
+    if (this._sceneController) {
         this._sceneController.setModel(model);
+    } else {
+        this._logger("Attempted to set a model without a valid scene controller.");
     }
 };
 

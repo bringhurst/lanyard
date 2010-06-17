@@ -148,7 +148,7 @@ lanyard.BasicSceneController.prototype.repaint = function () {
         fc.initializeFrame(this._dc);
         fc.drawFrame(this._dc);
     } catch (e) {
-        this._logger.fine("BasicSceneController.ExceptionDuringRendering " + e.message);
+        this._logger.severe("An exception occurred during rendering " + e.message);
     } finally {
         fc.finalizeFrame(this._dc);
         this.frame = this.frame + 1;
