@@ -32,13 +32,13 @@
             }
         </script>
         <script id="shader-vs" type="x-shader/x-vertex">
+            uniform mat4 uPMatrix;
+            uniform mat4 uMVMatrix;
+            uniform mat4 uTextureMatrix[2];
+
             attribute vec4 aTextureCoord0;
             attribute vec4 aTextureCoord1;
             attribute vec3 aVertexPosition;
-
-            uniform mat4 uMVMatrix;
-            uniform mat4 uPMatrix;
-            uniform mat4 uTextureMatrix[2];
 
             varying vec4 vTextureCoord0;
             varying vec4 vTextureCoord1;

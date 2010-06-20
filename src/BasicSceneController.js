@@ -132,6 +132,7 @@ lanyard.BasicSceneController.prototype.repaint = function () {
     this._dc.setModel(this._model);
     this._dc.setView(this._view);
     this._dc.setVerticalExaggeration(this._verticalExaggeration);
+    this._dc.setupShaders();
 
     if (!this._dc.getWebGLCanvas()) {
         this._logger.fine("The scene controller has a null gl canvas context.");
@@ -143,7 +144,7 @@ lanyard.BasicSceneController.prototype.repaint = function () {
     if (!fc) {
         this._logger.fine("The frame controller did not exist when the scene controller tried to use it.");
     }
-
+    
     fc.initializeFrame(this._dc);
     fc.drawFrame(this._dc);
     fc.finalizeFrame(this._dc);

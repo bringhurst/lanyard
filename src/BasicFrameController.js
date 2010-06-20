@@ -25,7 +25,7 @@ lanyard.BasicFrameController = function () {
 lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
     this._logger.fine("Initializing a frame.");
 
-    dc.setupShaders();
+    dc.getGLSL().startShader();
 
     dc.loadIdentity("uMVMatrix");
     dc.loadIdentity("uPMatrix");
@@ -42,6 +42,7 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
     this._logger.fine("Finalizing a frame.");
 
     dc.getGL().flush();
+    dc.getGLSL().endShader();
     this.checkGLErrors(dc);
 };
 

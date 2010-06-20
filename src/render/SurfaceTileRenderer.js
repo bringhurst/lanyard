@@ -138,8 +138,6 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTile = function (dc, tile) {
  * @param {Array.<lanyard.render.SurfaceTile>} tiles the tiles to render.
  */
 lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) {
-    this.setupShaders(dc);
-
     try {
         if (!this.alphaTexture) {
             this.initAlphaTexture(
@@ -177,8 +175,6 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
 
             // TODO: Figure out how to apply multi-texture to more than one tile at a time, most likely via a
             // fragment shader.
-
-            dc.getGLSL().startShader();
 
             /** @type {number} */
             var j;
@@ -228,7 +224,6 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                     sectorGeoms[i].renderMultiTexture(dc, numTexUnitsUsed);
                 }
             }
-            dc.getGLSL().endShader();
         }
 
         this.gl.activeTexture(this.gl.TEXTURE0);

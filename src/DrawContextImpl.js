@@ -551,11 +551,6 @@ lanyard.DrawContextImpl.prototype.getSurfaceTileRenderer = function () {
  * @param {lanyard.geom.MatrixFour} matrix the matrix to load.
  */
 lanyard.DrawContextImpl.prototype.loadMatrix = function (name, matrix) {
-    this._logger.fine("the name is = " + name);
-    this._logger.fine("the matrix is = " + matrix.toString());
-
-    this._logger.fine("mat is = " + this.glsl.getUniformLocation(name).toString());
-
     this.gl.uniformMatrix4fv(
         this.glsl.getUniformLocation(name),
         false,
