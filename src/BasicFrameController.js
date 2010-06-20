@@ -112,6 +112,8 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
         /** @type {lanyard.SectorGeometryList} */
         var sgl = dc.getModel().getTessellator().tessellate(dc);
         dc.setSurfaceGeometry(sgl);
+    } else {
+        this._logger.severe("No tessellator was available.");
     }
 
     /** @type {Array.<lanyard.Layer>} */

@@ -65,7 +65,16 @@ lanyard.demo.BasicDemo.prototype.setupCanvasView = function () {
     m.setShowWireframeExterior(true);
     m.setShowWireframeInterior(true);
     m.setShowTessellationBoundingVolumes(true);
-    lc.setModelAndView(m, new lanyard.BasicOrbitView());
+
+    /** @type {lanyard.BasicOrbitView} */
+    var v = new lanyard.BasicOrbitView();
+    v.setViewport(
+        new lanyard.util.Rectangle(
+            0, 0, this._webGLCanvas.width, this._webGLCanvas.height
+        )
+    );
+
+    lc.setModelAndView(m, v);
 
     // TODO: setup mouse listeners.
 

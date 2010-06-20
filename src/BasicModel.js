@@ -35,19 +35,19 @@ lanyard.BasicModel = function () {
      * @private
      * @type {boolean}
      */
-    this.showWireframeInterior = false;
+    this.showWireframeInterior = true;
 
     /**
      * @private
      * @type {boolean}
      */
-    this.showWireframeExterior = false;
+    this.showWireframeExterior = true;
 
     /**
      * @private
      * @type {boolean}
      */
-    this.showTessellationBoundingVolumes = false;
+    this.showTessellationBoundingVolumes = true;
 
     /* Create the default layers, probably just a BMNGSurfaceLayer for now. */
     this.createLayers();

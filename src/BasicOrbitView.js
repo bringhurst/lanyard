@@ -313,6 +313,8 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
     if (this.viewFrustum) {
         this.collisionRadius = this.computeCollisionRadius(this.viewFrustum);
         projection = this.viewFrustum.getProjectionMatrix();
+    } else {
+        this._logger.severe("We don't have a view frustum to generate the projection matrix.");
     }
 
     // Set current GL matrix state.
@@ -523,10 +525,16 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
     /** @type {lanyard.util.Rectangle} */
     var viewport = this.getViewport();
 
+    if(!viewport) {
+        this._logger.severe("We don't know anything about the viewport.");
+        return null;
+    }
+
     /** @type {lanyard.geom.Angle} */
     var fov = this.getFieldOfView();
 
-    if (!viewport || !fov) {
+    if(!fov) {
+        this._logger.severe("We don't know anything about the field of view.");
         return null;
     }
 
@@ -1178,6 +1186,15 @@ lanyard.BasicOrbitView.prototype.getViewport = function () {
 };
 
 /**
+ * Mutator for the viewport.
+ *
+ * @param {lanyard.util.Rectangle} vp the current viewport rectangle.
+ */
+lanyard.BasicOrbitView.prototype.setViewport = function (vp) {
+    this.viewport = vp;
+};
+
+/**
  * Apply this view to the current draw context.
  *
  * @param {lanyard.DrawContext} dc the draw context.
@@ -1256,43 +1273,25 @@ lanyard.BasicOrbitView.prototype.computeHorizonDistance = function (globe, verti
  * @param {lanyard.geom.MatrixFour} projection the projection matrix.
  */
 lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, projection) {
-    /***
-    GL gl = dc.getGL();
-
-    // Store the current matrix-mode state.
-    gl.glGetIntegerv(GL.GL_MATRIX_MODE, matrixMode, 0);
-    int newMatrixMode = matrixMode[0];
+    /** @type {WebGLRenderingContext} */
+    var gl = dc.getGL();
 
     // Apply the model-view matrix to the current OpenGL context held by 'dc'.
-    if (newMatrixMode != GL.GL_MODELVIEW) {
-        newMatrixMode = GL.GL_MODELVIEW;
-        gl.glMatrixMode(newMatrixMode);
-    }
-
-    if (modelView != null) {
-        gl.glLoadMatrixd(modelView.getEntries(), 0);
+    if (!modelView) {
+        dc.loadMatrix("uMVMatrix", modelView.getEntries());
     } else {
-        gl.glLoadIdentity();
+        dc.loadIdentity("uMVMatrix");
     }
 
     // Apply the projection matrix to the current OpenGL context held by 'dc'.
-    newMatrixMode = GL.GL_PROJECTION;
-    gl.glMatrixMode(newMatrixMode);
-
-    if (projection != null) {
-        gl.glLoadMatrixd(projection.getEntries(), 0);
+    if (!projection) {
+        dc.loadMatrix("uPMatrix", projection.getEntries());
     } else {
-        gl.glLoadIdentity();
-    }
-
-    // Restore matrix-mode state.
-    if (newMatrixMode != matrixMode[0]) {
-        gl.glMatrixMode(matrixMode[0]);
+        dc.loadIdentity("uPMatrix");
     }
 
     this.modelView = modelView;
     this.projection = projection;
-    ****/
 };
 
 /**
