@@ -23,7 +23,7 @@ lanyard.BasicFrameController = function () {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
-    this._logger.fine("Initializing a frame.");
+    this._logger.fine("Initializing the frame.");
 
     dc.getGLSL().startShader();
 
@@ -39,7 +39,7 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
-    this._logger.fine("Finalizing a frame.");
+    this._logger.fine("Finalizing the frame.");
 
     dc.getGL().flush();
     dc.getGLSL().endShader();
