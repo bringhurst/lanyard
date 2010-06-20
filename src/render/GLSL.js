@@ -9,10 +9,10 @@ goog.require('goog.debug.Logger');
  * A place to keep track of GLSL based shaders.
  *
  * @constructor
- * @param {*} gl the WebGL rendering context.
+ * @param {WebGLRenderingContext} gl the WebGL rendering context.
  */
 lanyard.render.GLSL = function (gl) {
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     this.gl = gl;
 
     /** @type {string} */
@@ -21,7 +21,7 @@ lanyard.render.GLSL = function (gl) {
     /** @type {string} */
     this.fshaderSource = null;
 
-    /** @type {*} */
+    /** @type {WebGLProgram} */
     this.programObject = gl.createProgram();
 
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.GLSL');
@@ -33,6 +33,7 @@ lanyard.render.GLSL = function (gl) {
  * @param {string} vshaderSource the contents of the vertex shader.
  */
 lanyard.render.GLSL.prototype.updateVertexShader = function () {
+    /** @type {WebGLShader} */
     var vs = this.gl.createShader(this.gl.VERTEX_SHADER);
  
     this.gl.shaderSource(vs, this.vshaderSource);
@@ -48,6 +49,7 @@ lanyard.render.GLSL.prototype.updateVertexShader = function () {
  * @param {string} fshaderSource the contents of the fragment shader.
  */
 lanyard.render.GLSL.prototype.updateFragmentShader = function () {
+    /** @type {WebGLShader} */
     var fs = this.gl.createShader(this.gl.FRAGMENT_SHADER);
 
     this.gl.shaderSource(fs, this.fshaderSource);
@@ -63,6 +65,7 @@ lanyard.render.GLSL.prototype.updateFragmentShader = function () {
  * @param {string} id the dom id of the vertex shader.
  */
 lanyard.render.GLSL.prototype.loadVertexShader = function (id) {
+    /** @type {Element} */
     var shaderScript = goog.dom.getElement(id);
 
     if (!shaderScript) {
@@ -85,6 +88,7 @@ lanyard.render.GLSL.prototype.loadVertexShader = function (id) {
  * @param {string} id the dom id of the fragment shader.
  */
 lanyard.render.GLSL.prototype.loadFragmentShader = function (id) {
+    /** @type {Element} */
     var shaderScript = goog.dom.getElement(id);
 
     if (!shaderScript) {
@@ -108,7 +112,7 @@ lanyard.render.GLSL.prototype.loadFragmentShader = function (id) {
  * @return {number} the location of the variable.
  */ 
 lanyard.render.GLSL.prototype.getAttribLocation = function (name) {
-    return(this.gl.getAttribLocation(this.programObject, name));
+    return this.gl.getAttribLocation(this.programObject, name);
 };
 
 /**
@@ -118,13 +122,20 @@ lanyard.render.GLSL.prototype.getAttribLocation = function (name) {
  * @return {number} the location of the variable.
  */
 lanyard.render.GLSL.prototype.getUniformLocation = function (name) {
-    return(this.gl.getUniformLocation(this.programObject, name));
+    /** @type {WebGLUniformLocation} */
+    var loc = this.gl.getUniformLocation(this.programObject, name);
+
+    if(!loc) {
+        this._logger.severe("The specified uniform was not found in the shader.");
+    }
+
+    return loc;
 };
 
 /**
  * Get a reference to the program object.
  *
- * @return {*} a reference to the program object.
+ * @return {WebGLProgram} a reference to the program object.
  */
 lanyard.render.GLSL.prototype.getProgramObject = function () {
     return this.programObject;

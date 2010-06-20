@@ -7,13 +7,13 @@ goog.provide('lanyard.util.Texture');
  * Represent an OpenGL texture object.
  *
  * @constructor
- * @param {*} gl the current webgl context.
+ * @param {WebGLRenderingContext} gl the current webgl context.
  */
 lanyard.util.Texture = function (gl) {
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     this.gl = gl;
 
-    /** @type {*} */
+    /** @type {WebGLTexture} */
     this.tex = gl.createTexture(); 
 };
 

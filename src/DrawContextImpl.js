@@ -1,4 +1,4 @@
-/*global goog, lanyard */
+/*global goog, lanyard, WebGLFloatArray */
 /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 goog.provide('lanyard.DrawContextImpl');
@@ -119,7 +119,7 @@ lanyard.DrawContextImpl = function (canvasElement) {
 
     /**
      * @private
-     * @type {*}
+     * @type {WebGLRenderingContext}
      */
     this.gl = this.canvasElement.getContext("experimental-webgl");
 
@@ -189,7 +189,7 @@ lanyard.DrawContextImpl.prototype.loadShaders = function (vshaderId, fshaderId) 
 /**
  * Return the current WebGL rendering context.
  *
- * @return {*} the current rendering context.
+ * @return {WebGLRenderingContext} the current rendering context.
  */
 lanyard.DrawContextImpl.prototype.getGL = function () {
     return this.gl;
@@ -244,7 +244,7 @@ lanyard.DrawContextImpl.prototype.getDrawableWidth = function () {
  * Return the number of available texture units.
  *
  * @private
- * @param {*} gl the rendering context.
+ * @param {WebGLRenderingContext} gl the rendering context.
  * @return {number} the number of available texture units.
  */
 lanyard.DrawContextImpl.prototype.queryMaxTextureUnits = function (gl) {
@@ -538,10 +538,39 @@ lanyard.DrawContextImpl.prototype.getPointOnGlobe = function (latitude, longitud
 /**
  * Get the current surface tile renderer.
  *
- * @return {lanyard.SurfaceTileRenderer} the surface tile renderer.
+ * @return {lanyard.render.SurfaceTileRenderer} the surface tile renderer.
  */
-//lanyard.DrawContextImpl.prototype.getSurfaceTileRenderer = function () {
-//    return this.surfaceTileRenderer;
-//};
+lanyard.DrawContextImpl.prototype.getSurfaceTileRenderer = function () {
+    return this.surfaceTileRenderer;
+};
+
+/**
+ * Load the specified matrix into the specified uniform.
+ *
+ * @param {string} name the shader name of the matrix.
+ * @param {lanyard.geom.MatrixFour} matrix the matrix to load.
+ */
+lanyard.DrawContextImpl.prototype.loadMatrix = function (name, matrix) {
+    this._logger.fine("the name is = " + name);
+    this._logger.fine("the matrix is = " + matrix.toString());
+
+    this._logger.fine("mat is = " + this.glsl.getUniformLocation(name).toString());
+
+    this.gl.uniformMatrix4fv(
+        this.glsl.getUniformLocation(name),
+        false,
+        new WebGLFloatArray(matrix.getEntries())
+    );
+};
+
+/**
+ * Load the identity matrix into the specified uniform.
+ *  
+ * @param {string} name the shader name of the matrix.
+ */     
+lanyard.DrawContextImpl.prototype.loadIdentity = function (name) {
+    // Matrix constructor defaults to identity.
+    this.loadMatrix(name, new lanyard.geom.MatrixFour());
+};
 
 /* EOF */

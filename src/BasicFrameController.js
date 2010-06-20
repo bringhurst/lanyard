@@ -27,22 +27,10 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
 
     dc.setupShaders();
 
-/*
-    GL gl = dc.getGL();
+    dc.loadIdentity("uMVMatrix");
+    dc.loadIdentity("uPMatrix");
 
-    gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT
-        | GL.GL_TRANSFORM_BIT);
-
-    gl.glMatrixMode(GL.GL_MODELVIEW);
-    gl.glPushMatrix();
-    gl.glLoadIdentity();
-
-    gl.glMatrixMode(GL.GL_PROJECTION);
-    gl.glPushMatrix();
-    gl.glLoadIdentity();
-
-    gl.glEnable(GL.GL_DEPTH_TEST);
-*/
+    dc.getGL().enable(dc.getGL().DEPTH_TEST);
 };
 
 /**
@@ -52,20 +40,8 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
  */
 lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
     this._logger.fine("Finalizing a frame.");
-/*
-    GL gl = dc.getGL();
 
-    gl.glMatrixMode(GL.GL_MODELVIEW);
-    gl.glPopMatrix();
-
-    gl.glMatrixMode(GL.GL_PROJECTION);
-    gl.glPopMatrix();
-
-    gl.glPopAttrib();
-
-    gl.glFlush();
-
-/*/
+    dc.getGL().flush();
     this.checkGLErrors(dc);
 };
 
@@ -77,17 +53,28 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
  * @param {lanyard.DrawContext} dc the relevant DrawContext.
  */
 lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
-    this._logger.fine("Checking for webgl errors.");
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     var gl = dc.getGL();
 
     /** @type {number} */
     var err = gl.getError();
 
-    if (err !== gl.NO_ERROR) {
-        /** @type {string} */
-        var msg = "A GL error code of type " + err + " happened.";
-        this._logger.severe(msg);
+    if (err === gl.NO_ERROR) {
+        this._logger.fine("No webgl errors detected.");
+    } else {
+        /** @type {Object.<number, string>} */
+        var errCodes = {
+            0x0500: "INVALID_ENUM",
+            0x0501: "INVALID_VALUE",
+            0x0502: "INVALID_OPERATION",
+            0x0505: "OUT_OF_MEMORY"
+        };
+
+        if(errCodes[err]) {
+            this._logger.severe("A GL error code of type " + errCodes[err] + " was reported.");
+        } else {
+            this._logger.severe("A GL error code of type " + err + " happened.");
+        }
     }
 };
 
@@ -223,7 +210,7 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
     /** @type {lanyard.util.Color} */
     var cc = dc.getClearColor();
 
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     var gl = dc.getGL();
     
     gl.clearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());

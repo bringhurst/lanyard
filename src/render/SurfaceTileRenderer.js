@@ -20,7 +20,7 @@ lanyard.render.SurfaceTileRenderer = function () {
     /** @type {boolean} */
     this.showImageTileOutlines = true;
 
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     this.gl = null;
 
     /** @type {Object} */
@@ -271,10 +271,7 @@ lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function (size) 
     var textureCanvas = goog.dom.createElement("canvas");
     textureCanvas.width = textureCanvas.height = size;
 
-    /** @type {*} */
     var textureContext = textureCanvas.getContext("2d");
-
-    /** @type {*} */
     var textureImage = textureContext.createImageData(size, size);
 
     for (var i = 0; i < size; i += 1) {
@@ -310,10 +307,7 @@ lanyard.render.SurfaceTileRenderer.prototype.initOutlineTexture = function (size
     var textureCanvas = goog.dom.createElement("canvas");
     textureCanvas.width = textureCanvas.height = size;
 
-    /** @type {*} */
     var textureContext = textureCanvas.getContext("2d");
-
-    /** @type {*} */
     var textureImage = textureContext.createImageData(size, size);
 
     for (var i = 0; i < size; i += 1) {
