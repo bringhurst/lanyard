@@ -161,7 +161,7 @@ lanyard.render.GLSL.prototype.startShader = function () {
  * End using the shader in this program.
  */
 lanyard.render.GLSL.prototype.endShader = function () {
-    this.gl.useProgram(0);  
+    this.gl.useProgram(null);  
 };
 
 /**
