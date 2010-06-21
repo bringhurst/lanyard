@@ -174,7 +174,7 @@ lanyard.util.Color.prototype.fromHexString = function (hexString) {
     // Strip a leading "#" if it exists.
     hexString = hexString.charAt(0) === "#" ? hexString.substring(1) : hexString;
 
-    if(hexString.length !== 6 || hexString !== 8) {
+    if(hexString.length !== 6 || hexString.length !== 8) {
         this._logger.fine(
             "Attempted to parse a color hex string of an incorrect length. " +
             hexString);
