@@ -4,14 +4,14 @@
 goog.provide('lanyard.render.SurfaceTile');
 
 /**
- * Provides an interface for surface tiles.
+ * An interface for a surface tile.
  *
  * @interface
  */
 lanyard.render.SurfaceTile = function () {};
 
 /**
- * Bind the tile.
+ * Bind the tile to a draw context.
  *
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {boolean} true if the bind was successful, false otherwise.
@@ -26,17 +26,17 @@ lanyard.render.SurfaceTile.prototype.bind = function (dc) {};
 lanyard.render.SurfaceTile.prototype.applyInternalTransform = function (dc) {};
 
 /**
- * Get this tile's sector.
+ * Get the sector of this surface tile.
  *
- * @return {lanyard.geom.Sector} this tile's sector.
+ * @return {lanyard.geom.Sector} the sector of the surface tile.
  */
 lanyard.render.SurfaceTile.prototype.getSector = function () {};
 
 /**
- * Get the extent of this tile.
+ * Get the extent of this surface tile.
  *
  * @param {lanyard.DrawContext} dc the draw context.
- * @return {lanyard.geom.Extent} the extent of the tile.
+ * @return {lanyard.geom.Extent} the extent of this surface tile.
  */
 lanyard.render.SurfaceTile.prototype.getExtent = function (dc) {};
 
