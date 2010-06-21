@@ -5,6 +5,9 @@ goog.provide('lanyard.render.SurfaceTileRenderer');
 
 goog.require('goog.debug.Logger');
 
+goog.require('lanyard.util.Texture');
+goog.require('lanyard.render.SurfaceTile');
+
 /**
  * A surface tile renderer.
  *
@@ -20,7 +23,6 @@ lanyard.render.SurfaceTileRenderer = function () {
     /** @type {boolean} */
     this.showImageTileOutlines = true;
 
-    /** @type {WebGLRenderingContext} */
     this.gl = null;
 
     /** @type {Object} */
@@ -151,22 +153,22 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
         this.gl.activeTexture(this.gl.TEXTURE0);
         this.gl.enable(this.gl.TEXTURE_2D);
 
-        /** @type {Array.<lanyard.SectorGeometry>} */
+        /** @type {lanyard.SectorGeometryList} */
         var sectorGeoms = dc.getSurfaceGeometry();
 
         /** @type {number} */
         var i;
 
-        for(i = 0; i < sectorGeoms.length; i = i + 1) {
+        for(i = 0; i < sectorGeoms.geometryList.length; i = i + 1) {
             /** @type {Array.<lanyard.render.SurfaceTile>} */
-            var tilesToRender = this.getIntersectingTiles(sectorGeoms[i], tiles);
+            var tilesToRender = this.getIntersectingTiles(sectorGeoms.geometryList[i], tiles);
 
             if (!tilesToRender) {
                 continue;
             }
 
             // Pre-load info to compute the texture transform below
-            this.preComputeTransform(dc, sectorGeoms[i]);
+            this.preComputeTransform(dc, sectorGeoms.geometryList[i]);
 
             // For each interesecting tile, establish the texture transform necessary to map the image tile
             // into the geometry tile's texture space. Use an alpha texture as a mask to prevent changing the
@@ -221,7 +223,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                     var numTexUnitsUsed = 2;
 
                     // Render the geometry tile
-                    sectorGeoms[i].renderMultiTexture(dc, numTexUnitsUsed);
+                    sectorGeoms.geometryList[i].render(dc);
                 }
             }
         }
