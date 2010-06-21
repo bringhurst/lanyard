@@ -9,19 +9,17 @@ goog.require('goog.debug.Logger');
  * A place to keep track of GLSL based shaders.
  *
  * @constructor
- * @param {WebGLRenderingContext} gl the WebGL rendering context.
+ * @param {*} gl the WebGL rendering context.
  */
 lanyard.render.GLSL = function (gl) {
-    /** @type {WebGLRenderingContext} */
     this.gl = gl;
 
-    /** @type {string} */
+    /** @type {string|null} */
     this.vshaderSource = null;
 
-    /** @type {string} */
+    /** @type {string|null} */
     this.fshaderSource = null;
 
-    /** @type {WebGLProgram} */
     this.programObject = gl.createProgram();
 
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.GLSL');
@@ -29,11 +27,8 @@ lanyard.render.GLSL = function (gl) {
 
 /**
  * Compile and attach a vertex shader.
- *
- * @param {string} vshaderSource the contents of the vertex shader.
  */
 lanyard.render.GLSL.prototype.updateVertexShader = function () {
-    /** @type {WebGLShader} */
     var vs = this.gl.createShader(this.gl.VERTEX_SHADER);
  
     this.gl.shaderSource(vs, this.vshaderSource);
@@ -45,11 +40,8 @@ lanyard.render.GLSL.prototype.updateVertexShader = function () {
 
 /**
  * Compile and attach a fragment shader.
- *
- * @param {string} fshaderSource the contents of the fragment shader.
  */
 lanyard.render.GLSL.prototype.updateFragmentShader = function () {
-    /** @type {WebGLShader} */
     var fs = this.gl.createShader(this.gl.FRAGMENT_SHADER);
 
     this.gl.shaderSource(fs, this.fshaderSource);
@@ -122,7 +114,6 @@ lanyard.render.GLSL.prototype.getAttribLocation = function (name) {
  * @return {number} the location of the variable.
  */
 lanyard.render.GLSL.prototype.getUniformLocation = function (name) {
-    /** @type {WebGLUniformLocation} */
     var loc = this.gl.getUniformLocation(this.programObject, name);
 
     if(!loc) {
@@ -135,7 +126,7 @@ lanyard.render.GLSL.prototype.getUniformLocation = function (name) {
 /**
  * Get a reference to the program object.
  *
- * @return {WebGLProgram} a reference to the program object.
+ * @return {*} a reference to the program object.
  */
 lanyard.render.GLSL.prototype.getProgramObject = function () {
     return this.programObject;
