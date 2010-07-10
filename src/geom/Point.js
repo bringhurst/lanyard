@@ -17,7 +17,12 @@ lanyard.geom.Point = function (x, y, z, w) {
     /** @private */ this._x = x;
     /** @private */ this._y = y;
     /** @private */ this._z = z;
-    /** @private */ this._w = w;
+
+    if(w) {
+        /** @private */ this._w = w;
+    } else {
+        /** @private */ this._w = 1;
+    }
 };
 goog.exportSymbol('lanyard.geom.Point', lanyard.geom.Point);
 

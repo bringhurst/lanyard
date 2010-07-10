@@ -91,5 +91,5 @@
     </exec>
   </target>
 
-  <target name="all" depends="lanyard-advanced" />
+  <target name="all" depends="lanyard-whitespace-only" />
 </project>
