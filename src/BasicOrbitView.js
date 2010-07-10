@@ -1273,7 +1273,6 @@ lanyard.BasicOrbitView.prototype.computeHorizonDistance = function (globe, verti
  * @param {lanyard.geom.MatrixFour} projection the projection matrix.
  */
 lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, projection) {
-    /** @type {WebGLRenderingContext} */
     var gl = dc.getGL();
 
     // Apply the model-view matrix to the current OpenGL context held by 'dc'.

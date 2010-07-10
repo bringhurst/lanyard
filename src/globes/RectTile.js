@@ -1,4 +1,4 @@
-/*global goog, lanyard */
+/*global goog, lanyard, WebGLFloatArray */
 /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: false, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 goog.provide('lanyard.globes.RectTile');
@@ -21,6 +21,11 @@ goog.require('lanyard.SectorGeometry');
  * @constructor
  */
 lanyard.globes.RectTile = function (globe, level, density, sector) {
+    /**
+     * @private
+     */
+    this._logger = goog.debug.Logger.getLogger('lanyard.globes.RectTile');
+
     /**
      * @type {number}
      * @private
@@ -73,7 +78,6 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
      */
     this._indexLists = {};
 };
-goog.exportSymbol('lanyard.globes.RectTile', lanyard.globes.RectTile);
 
 /**
  * Return the log10 cell size.
@@ -103,20 +107,22 @@ lanyard.globes.RectTile.prototype.getExtent = function () {
 };
 
 /**
- * Split the current tile.
+ * Split the tile.
  *
- * @return {Array.<lanyard.globes.RectTile>} the split RectTiles.
+ * @param {lanyard.DrawContext} dc the draw context.
+ * @param {lanyard.globes.RectTile} tile the tile to split.
+ * @return {Array.<lanyard.globes.RectTile>} the split tiles.
  */
-lanyard.globes.RectTile.prototype.split = function () {
+lanyard.globes.RectTile.prototype.split = function (dc, tile) {
     /** @type {Array.<lanyard.geom.Sector>} */
     var sectors = this._sector.subdivide();
 
     /** @type {Array.<lanyard.globes.RectTile>} */
     var subTiles = [];
-    subTiles[0] = new lanyard.globes.RectTile(this._globe, this._level + 1, this._density, sectors[0]);
-    subTiles[1] = new lanyard.globes.RectTile(this._globe, this._level + 1, this._density, sectors[1]);
-    subTiles[2] = new lanyard.globes.RectTile(this._globe, this._level + 1, this._density, sectors[2]);
-    subTiles[3] = new lanyard.globes.RectTile(this._globe, this._level + 1, this._density, sectors[3]);
+    subTiles[0] = new lanyard.globes.RectTile(this._globe, tile._level + 1, this._density, sectors[0]);
+    subTiles[1] = new lanyard.globes.RectTile(this._globe, tile._level + 1, this._density, sectors[1]);
+    subTiles[2] = new lanyard.globes.RectTile(this._globe, tile._level + 1, this._density, sectors[2]);
+    subTiles[3] = new lanyard.globes.RectTile(this._globe, tile._level + 1, this._density, sectors[3]);
 
     return subTiles;
 };
@@ -127,6 +133,8 @@ lanyard.globes.RectTile.prototype.split = function () {
  * @param {lanyard.DrawContext} dc the drawcontext.
  */
 lanyard.globes.RectTile.prototype.makeVerts = function (dc) {
+    this._logger.fine("Make verts called.");
+
     /** @type {number} */
     var resolution = dc.getGlobe().getElevationModel().getTargetResolution(dc, this._sector, this._density);
 
@@ -314,32 +322,26 @@ lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
  */
 lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles, showTileBoundary) {
     /** @type {Array.<number>} */
-/****************************
-    var indices = getIndices(this._ri.density);
+    var indices = this.getIndices(this._ri.density);
 
     dc.getView().pushReferenceCenter(dc, this._ri.referenceCenter);
 
     var gl = dc.getGL();
-    gl.glPushAttrib(
-        GL.GL_DEPTH_BUFFER_BIT | GL.GL_POLYGON_BIT | GL.GL_TEXTURE_BIT | GL.GL_ENABLE_BIT | GL.GL_CURRENT_BIT);
-    gl.glEnable(GL.GL_BLEND);
-    gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE);
-    gl.glDisable(javax.media.opengl.GL.GL_DEPTH_TEST);
-    gl.glEnable(javax.media.opengl.GL.GL_CULL_FACE);
-    gl.glCullFace(javax.media.opengl.GL.GL_BACK);
-    gl.glDisable(javax.media.opengl.GL.GL_TEXTURE_2D);
-    gl.glColor4d(1d, 1d, 1d, 0.2);
-    gl.glPolygonMode(javax.media.opengl.GL.GL_FRONT, javax.media.opengl.GL.GL_LINE);
+
+    gl.glColor4d(1.0, 1.0, 1.0, 0.2);
 
     if (showTriangles) {
-        gl.glPushClientAttrib(GL.GL_CLIENT_VERTEX_ARRAY_BIT);
-        gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
+        this._logger.fine("Show triangles enabled.");
 
-        gl.glVertexPointer(3, GL.GL_DOUBLE, 0, this.ri.vertices);
-        gl.glDrawElements(javax.media.opengl.GL.GL_TRIANGLE_STRIP, indices.limit(),
-            javax.media.opengl.GL.GL_UNSIGNED_INT, indices);
+        var vertexBuf = gl.createBuffer();
 
-        gl.glPopClientAttrib();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, this._ri.vertices, gl.STATIC_DRAW);
+
+        gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+            this._ri.vertices.length, gl.FLOAT, false, 0, 0);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, this._ri.vertices.length - 1);
     }
 
     dc.getView().popReferenceCenter(dc);
@@ -347,9 +349,6 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     if (showTileBoundary) {
         this.renderPatchBoundary(dc, gl);
     }
-
-    gl.glPopAttrib();
-******************/
 };
 
 /**
@@ -360,7 +359,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
  * rather than just at the corners.
  *
  * @param {lanyard.DrawContext} dc the draw context.
- * @param {WebGLRenderingContext} gl the webgl context.
+ * @param {*} gl the webgl context.
  */
 lanyard.globes.RectTile.prototype.renderPatchBoundary = function (dc, gl) {
 /**************

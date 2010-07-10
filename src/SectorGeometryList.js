@@ -10,10 +10,9 @@ goog.provide('lanyard.SectorGeometryList');
  */
 lanyard.SectorGeometryList = function () {
     /**
-     * @private
      * @type {Array.<lanyard.SectorGeometry>}
      */
-    this._geometryList = [];
+    this.geometryList = [];
 };
 
 /**
@@ -22,14 +21,14 @@ lanyard.SectorGeometryList = function () {
  * @param {lanyard.SectorGeometry} sg the sector geometry to add.
  */
 lanyard.SectorGeometryList.prototype.add = function (sg) {
-    this._geometryList.push(sg);
+    this.geometryList.push(sg);
 };
 
 /**
  * Clear the elements in this list
  */
 lanyard.SectorGeometryList.prototype.clear = function () {
-    this._geometryList = [];
+    this.geometryList = [];
 };
 
 /**
@@ -45,9 +44,9 @@ lanyard.SectorGeometryList.prototype.getIntersectingSectors = function (sector) 
 
     /** @type {number} */
     var i;
-    for(i = 0; i < this._geometryList.length; i = i + 1) {
-        if (this._geometryList[i].getSector().intersects(sector)) {
-            list.push(this._geometryList[i]);
+    for(i = 0; i < this.geometryList.length; i = i + 1) {
+        if (this.geometryList[i].getSector().intersects(sector)) {
+            list.push(this.geometryList[i]);
         } else {
             // this._logger.fine("no intersection");
         }
@@ -68,10 +67,10 @@ lanyard.SectorGeometryList.prototype.getSurfacePoint = function (latitude, longi
 
     /** @type {number} */
     var i;
-    for(i = 0; i < this._geometryList.length; i = i + 1) {
-        if (this._geometryList[i].getSector().contains(latitude, longitude)) {
+    for(i = 0; i < this.geometryList.length; i = i + 1) {
+        if (this.geometryList[i].getSector().contains(latitude, longitude)) {
             /** @type {lanyard.geom.Point} */
-            var point = this._geometryList[i].getSurfacePoint(latitude, longitude, metersOffset);
+            var point = this.geometryList[i].getSurfacePoint(latitude, longitude, metersOffset);
             if (point) {
                 return point;
             }

@@ -33,13 +33,14 @@
         <arg line="-o @{outputmode}" />
         <arg line='-c "@{compilerjarfile}"' />
         <arg line='-f "--compilation_level=@{compilationlevel}"' />
-        <arg line='-f "--jscomp_warning=deprecated"' />
-        <arg line='-f "--jscomp_warning=visibility"' />
-        <arg line='-f "--jscomp_warning=accessControls"' />
+        <arg line='-f "--jscomp_error=deprecated"' />
+        <arg line='-f "--jscomp_error=visibility"' />
+        <arg line='-f "--jscomp_error=accessControls"' />
         <arg line='-f "--jscomp_error=fileoverviewTags"' />
         <arg line='-f "--jscomp_error=strictModuleDepCheck"' />
         <arg line='-f "--jscomp_error=missingProperties"' />
         <arg line='-f "--jscomp_error=unknownDefines"' />
+        <arg line='-f "--jscomp_error=checkTypes"' />
         <arg line='-f "--warning_level=VERBOSE"' />
         <arg line="@{extraflags}" />
       </exec>
@@ -59,7 +60,7 @@
   </target>
 
   <target name="lanyard-whitespace-only">
-    <calcdeps outputfile="lanyard-whitespace-only.js" compilationlevel="WHITESPACE_ONLY" />
+    <calcdeps outputfile="lanyard.js" compilationlevel="WHITESPACE_ONLY" />
   </target>
 
   <target name="test-clean" description="delete generated files for test">
@@ -90,5 +91,5 @@
     </exec>
   </target>
 
-  <target name="all" depends="lanyard-whitespace-only" />
+  <target name="all" depends="lanyard-advanced" />
 </project>

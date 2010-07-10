@@ -54,7 +54,6 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
  * @param {lanyard.DrawContext} dc the relevant DrawContext.
  */
 lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
-    /** @type {WebGLRenderingContext} */
     var gl = dc.getGL();
 
     /** @type {number} */
@@ -111,6 +110,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
     if (dc.getModel().getTessellator()) {
         /** @type {lanyard.SectorGeometryList} */
         var sgl = dc.getModel().getTessellator().tessellate(dc);
+
         dc.setSurfaceGeometry(sgl);
     } else {
         this._logger.severe("No tessellator was available.");
@@ -137,6 +137,8 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
         dc.getModel().isShowWireframeInterior() ||
         dc.getModel().isShowTessellationBoundingVolumes()) {
 
+        this._logger.fine("Creating diagnostic displays.");
+
         /** @type {lanyard.Model} */
         var model = dc.getModel();
 
@@ -146,19 +148,25 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
         // FIXME: save the current color.
         //dc.getGL().getFloatv(this.dc.getGL().CURRENT_COLOR, previousColor, 0);
 
-        /** @type {Array.<lanyard.SectorGeometry>} */
+        /** @type {lanyard.SectorGeometryList} */
         var sgs = dc.getSurfaceGeometry();
 
-        for (var j = 0; j < sgs.length; j = j + 1) {
+        for (var j = 0; j < sgs.geometryList.length; j = j + 1) {
             if (model.isShowWireframeInterior() || model.isShowWireframeExterior()) {
-                sgs[j].renderWireframe(dc, model.isShowWireframeInterior(), model.isShowWireframeExterior());
+                this._logger.fine("Rendering wireframe for surface geometry.");
+
+                sgs.geometryList[j].renderWireframe(
+                    dc, model.isShowWireframeInterior(), model.isShowWireframeExterior()
+                );
             }
 
             if (model.isShowTessellationBoundingVolumes()) {
+                this._logger.fine("Displaying tessellation bounding volumes.");
+
                 // FIXME: set the color for the bounding volume
                 //dc.getGL().color(1, 0, 0);
 
-                sgs[j].renderBoundingVolume(dc);
+                sgs.geometryList[j].renderBoundingVolume(dc);
             }
         }
 
@@ -211,9 +219,9 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
     this._logger.fine("Clearing the frame.");
 
     /** @type {lanyard.util.Color} */
-    var cc = dc.getClearColor();
+    //var cc = dc.getClearColor();
+    var cc = new lanyard.util.Color(0.75, 0.75, 0.75, 1.0, "");
 
-    /** @type {WebGLRenderingContext} */
     var gl = dc.getGL();
     
     gl.clearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());

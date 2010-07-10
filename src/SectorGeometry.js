@@ -51,4 +51,11 @@ lanyard.SectorGeometry.prototype.renderWireframe = function (dc, interior, exter
  */
 lanyard.SectorGeometry.prototype.renderBoundingVolume = function (dc) {};
 
+/**
+ * Render this sector geometry using multiple texture units.
+ *
+ * @param {lanyard.DrawContext} dc the draw context.
+ */
+lanyard.SectorGeometry.prototype.render = function (dc) {};
+
 /* EOF */

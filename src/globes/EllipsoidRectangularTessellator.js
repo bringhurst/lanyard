@@ -10,42 +10,6 @@ goog.require('lanyard.View');
 goog.require('lanyard.Tessellator');
 
 /**
- * A temporary object for consts.
- * @type {Object}
- */
-lanyard.globes.EllipsoidRectangularTessellator.prototype = {};
-
-/**
- * @const
- * @type {number}
- */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_DENSITY = 24;
-
-/**
- * @const
- * @type {number}
- */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_LOG10_RESOLUTION_TARGET = 1.3;
-
-/**
- * @const
- * @type {number}
- */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_MAX_LEVEL = 12;
-
-/**
- * @const
- * @type {number}
- */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LAT_SUBDIVISIONS = 5;
-
-/**
- * @const
- * @type {number}
- */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LON_SUBDIVISIONS = 10;
-
-/**
  * A rectangular tessellator for ellipsoids.
  *
  * @constructor
@@ -54,24 +18,22 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LON_SUBDIVI
  * @param {lanyard.Globe} globe the globe to tessellate.
  */
 lanyard.globes.EllipsoidRectangularTessellator = function (globe) {
-    this.prototype = lanyard.globes.EllipsoidRectangularTessellator.prototype;
+    /**
+     * @private
+     */
+    this._logger = goog.debug.Logger.getLogger('lanyard.globes.EllipsoidRectangularTessellator');
 
     /**
      * @private
      * @type {Array.<lanyard.globes.RectTile>}
      */
-    this.topLevels =
-        this.createTopLevelTiles(
-            globe,
-            lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LAT_SUBDIVISIONS,
-            lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LON_SUBDIVISIONS
-        );
+    this.topLevels = this.createTopLevelTiles(globe, 5, 10);
 
     /**
      * @private
      * @type {number}
      */
-    this.maxLevel = lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_MAX_LEVEL;
+    this.maxLevel = 12;
 
     /**
      * @private
@@ -103,8 +65,38 @@ lanyard.globes.EllipsoidRectangularTessellator = function (globe) {
      * @private
      * @type {number}
      */
-    this.density = lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_DENSITY;
+    this.density = 24;
 };
+
+/**
+ * @const
+ * @type {number}
+ */
+lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_DENSITY = 24;
+
+/**
+ * @const
+ * @type {number}
+ */
+lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_LOG10_RESOLUTION_TARGET = 1.3;
+
+/**
+ * @const
+ * @type {number}
+ */
+lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_MAX_LEVEL = 12;
+
+/**
+ * @const
+ * @type {number}
+ */
+lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LAT_SUBDIVISIONS = 5;
+
+/**
+ * @const
+ * @type {number}
+ */
+lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LON_SUBDIVISIONS = 10;
 
 /**
  * Get the sector associated with this tessellator.
@@ -138,12 +130,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
     /** @type {lanyard.geom.Angle} */
     var lastLat = lanyard.geom.Angle.prototype.NEG90;
 
-    /** @type {number} */
-    var row;
-    for (row = 0;
-            row < lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LAT_SUBDIVISIONS;
-            row = row + 1) {
-
+    for (var r = 0; r < nRows; r = r + 1) {
         /** @type {lanyard.geom.Angle} */
         var lat = lastLat.addDegrees(deltaLat);
 
@@ -154,12 +141,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
         /** @type {lanyard.geom.Angle} */
         var lastLon = lanyard.geom.Angle.prototype.NEG180;
 
-        /** @type {number} */
-        var col;
-        for (col = 0;
-                col < lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LON_SUBDIVISIONS;
-                col = col + 1) {
-
+        for (var c = 0; c < nCols; c = c + 1) {
             /** @type {lanyard.geom.Angle} */
             var lon = lastLon.addDegrees(deltaLon);
 
@@ -167,12 +149,12 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
                 lon = lanyard.geom.Angle.prototype.POS180;
             }
 
-            tops.push(
-                new lanyard.globes.RectTile(
-                    globe, 0, this.density, new lanyard.geom.Sector(lastLat, lat, lastLon, lon)
-                )
+            /** @type {lanyard.globes.RectTile} */
+            var newTile = new lanyard.globes.RectTile(
+                globe, 0, this.density, new lanyard.geom.Sector(lastLat, lat, lastLon, lon)
             );
 
+            tops.push(newTile);
             lastLon = lon;
         }
         lastLat = lat;
@@ -188,22 +170,22 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
  * @return {lanyard.SectorGeometryList} the sector geometries.
  */
 lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (dc) {
+    this._logger.fine("Tessellating the draw context geometries.");
+
     this.currentTiles.clear();
     this.currentLevel = 0;
     this.sector = null;
     this.currentFrustum = dc.getView().getFrustumInModelCoordinates();
 
-    /** @type {number} */
-    var i;
-    for(i = 0; i < this.topLevels.length; i = 1 + 1) {
+    for(var i = 0; i < this.topLevels.length; i = i + 1) {
+        this._logger.fine("called in a loop" + i);
+
         this.selectVisibleTiles(dc, this.topLevels[i]);
     }
 
     dc.setVisibleSector(this.getSector());
 
-    /** @type {number} */
-    var j;
-    for(j = 0; j < this.currentTiles.length; j = j + 1) {
+    for(var j = 0; j < this.currentTiles.length; j = j + 1) {
         /** @type {lanyard.globes.RectTile} */
         var t = this.currentTiles[j];
 
@@ -229,22 +211,14 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
     }
 
     if (this.currentLevel < this.maxLevel && this.needToSplit(dc, tile)) {
-
-        this.currentLevel = this.currentLevel + 1;
-
-        /** @type {Array.<lanyard.globes.RectTile>} */
-        var subtiles = tile.split();
-
-        /** @type {number} */
-        var i;
-        for(i = 1; i < subtiles.length; i = i + 1) {
+        ++this.currentLevel;
+        var subtiles = tile.split(dc, tile);
+        for(var i = 1; i < subtiles.length; i = i + 1) {
             this.selectVisibleTiles(dc, subtiles[i]);
         }
-
-        this.currentLevel = this.currentLevel - 1;
+        --this.currentLevel;
         return;
     }
-
     this.sector = tile.getSector().unionWithSector(this.sector);
     this.currentTiles.add(tile);
 };
@@ -267,6 +241,8 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
     /** @type {lanyard.View} */
     var view = dc.getView();
 
+    this._logger.fine("eyepoint = " + view.getEyePoint().toString());
+
     /** @type {number} */
     var d1 = view.getEyePoint().distanceTo(corners[0]);
 
@@ -281,6 +257,9 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
 
     /** @type {number} */
     var d5 = view.getEyePoint().distanceTo(centerPoint);
+
+    this._logger.fine("d1/min = " + d1 + "; d2 = " + d2 + "; d3 = " + d3 + 
+      "; d4 = " + d4 + "; d5 = " + d5);
 
     /** @type {number} */
     var minDistance = d1;
@@ -310,6 +289,8 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
             logDist -
             lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_LOG10_RESOLUTION_TARGET
         );
+
+    this._logger.fine("need to split = " + !useTile);
 
     return !useTile;
 };

@@ -22,7 +22,7 @@ lanyard.globes.EllipsoidalGlobe = function (equatorialRadius, polarRadius, es, e
     /** @private */ this.polarRadius = polarRadius;
     /** @private */ this.es = es; // assume it's consistent with the two radii
     /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
-    /** @private */ this.elevationModel = em;
+    /** @protected */ this.elevationModel = em;
 };
 goog.exportSymbol('lanyard.globes.EllipsoidalGlobe', lanyard.globes.EllipsoidalGlobe);
 
@@ -112,7 +112,11 @@ lanyard.globes.EllipsoidalGlobe.prototype.getCenter = function () {
  * @return {number} the maximum elevation of this globe.
  */
 lanyard.globes.EllipsoidalGlobe.prototype.getMaxElevation = function () {
-    return this.elevationModel.getMaximumElevation();
+    if(this.elevationModel) {
+        return this.elevationModel.getMaximumElevation();
+    } else {
+        return 0;
+    }
 };
 
 /**
@@ -121,7 +125,11 @@ lanyard.globes.EllipsoidalGlobe.prototype.getMaxElevation = function () {
  * @return {number} the minimum elevation of this globe.
  */
 lanyard.globes.EllipsoidalGlobe.prototype.getMinElevation = function () {
-    return this.elevationModel.getMinimumElevation();
+    if(this.elevationModel) {
+        return this.elevationModel.getMinimumElevation();
+    } else {
+        return 0;
+    }
 };
 
 /**
@@ -472,6 +480,16 @@ lanyard.globes.EllipsoidalGlobe.prototype.cartesianToGeodetic = function (cart) 
     var elevation = (k + e2 - 1) * sqrtDDpZZ / k;
 
     return lanyard.geom.Position.prototype.fromRadians(lat, lon, elevation);
+};
+
+/**
+ * Perform top level tessellation of the globe.
+ *
+ * @param {lanyard.DrawContext} dc the draw context.
+ * @return {lanyard.SectorGeometryList} the geometry list.
+ */
+lanyard.globes.EllipsoidalGlobe.prototype.tessellate = function (dc) {
+    return dc.getModel().getTessellator().tessellate(dc);
 };
 
 /* EOF */

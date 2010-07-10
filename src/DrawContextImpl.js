@@ -1,4 +1,4 @@
-/*global goog, lanyard, WebGLFloatArray */
+/*global goog, lanyard */
 /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 goog.provide('lanyard.DrawContextImpl');
@@ -119,7 +119,7 @@ lanyard.DrawContextImpl = function (canvasElement) {
 
     /**
      * @private
-     * @type {WebGLRenderingContext}
+     * @type {*}
      */
     this.gl = this.canvasElement.getContext("experimental-webgl");
 
@@ -157,6 +157,8 @@ lanyard.DrawContextImpl.prototype.initialize = function () {
 
     if (this.numTextureUnits < 1) {
         this.numTextureUnits = this.queryMaxTextureUnits(this.gl);
+        this._logger.fine(
+            "Query for available texture units returned " + this.numTextureUnits);
     }
 };
 
@@ -189,7 +191,7 @@ lanyard.DrawContextImpl.prototype.loadShaders = function (vshaderId, fshaderId) 
 /**
  * Return the current WebGL rendering context.
  *
- * @return {WebGLRenderingContext} the current rendering context.
+ * @return {*} the current rendering context.
  */
 lanyard.DrawContextImpl.prototype.getGL = function () {
     return this.gl;
@@ -244,7 +246,7 @@ lanyard.DrawContextImpl.prototype.getDrawableWidth = function () {
  * Return the number of available texture units.
  *
  * @private
- * @param {WebGLRenderingContext} gl the rendering context.
+ * @param {*} gl the rendering context.
  * @return {number} the number of available texture units.
  */
 lanyard.DrawContextImpl.prototype.queryMaxTextureUnits = function (gl) {
@@ -376,9 +378,10 @@ lanyard.DrawContextImpl.prototype.setVerticalExaggeration = function (verticalEx
  * @return {lanyard.util.Color} the new unique pick color.
  */
 lanyard.DrawContextImpl.prototype.getUniquePickColor = function () {
-    this.uniquePickNumber = this.uniquePickNumber + 1;
+    return lanyard.util.Color.prototype.GREEN;
 
-    /** @type {number} */
+  /*** TODO: pick an actual random color...
+    this.uniquePickNumber = this.uniquePickNumber + 1;
     var clearColorCode = this.getClearColor().getRGB();
 
     if(clearColorCode === this.uniquePickNumber) {
@@ -394,6 +397,7 @@ lanyard.DrawContextImpl.prototype.getUniquePickColor = function () {
 
     // has alpha
     return new lanyard.util.Color.prototype.fromRGBA(this.uniquePickNumber, true);
+  */
 };
 
 /**
@@ -450,6 +454,24 @@ lanyard.DrawContextImpl.prototype.getOrderedRenderables = function () {
  * Draw a unit quad to the current context.
  */
 lanyard.DrawContextImpl.prototype.drawUnitQuad = function () {
+    this._logger.fine("Drawing a unit quad.");
+
+    var gl = this.getGL();
+
+    var quadBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+
+    var vertices = [
+         0.0, 0.0, 0.0,
+         1.0, 0.0, 0.0,
+         1.0, 1.0, 0.0,
+         0.0, 1.0, 0.0
+    ];
+
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(this.glsl.getAttribLocation("aVertexPosition"), 3, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
 /*
     var gl = this.getGL();
 
@@ -554,7 +576,7 @@ lanyard.DrawContextImpl.prototype.loadMatrix = function (name, matrix) {
     this.gl.uniformMatrix4fv(
         this.glsl.getUniformLocation(name),
         false,
-        new WebGLFloatArray(matrix.getEntries())
+        matrix.getEntries()
     );
 };
 
@@ -565,7 +587,7 @@ lanyard.DrawContextImpl.prototype.loadMatrix = function (name, matrix) {
  */     
 lanyard.DrawContextImpl.prototype.loadIdentity = function (name) {
     // Matrix constructor defaults to identity.
-    this.loadMatrix(name, new lanyard.geom.MatrixFour());
+    this.loadMatrix(name, new lanyard.geom.MatrixFour(null));
 };
 
 /* EOF */

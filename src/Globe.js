@@ -140,4 +140,12 @@ lanyard.Globe.prototype.computePositionFromPoint = function (point) {};
  */
 lanyard.Globe.prototype.getRadius = function () {};
 
+/**
+ * Create a tessellation of this globe.
+ *
+ * @param {lanyard.DrawContext} dc the draw context.
+ * @return {lanyard.SectorGeometryList} the tessellated globe.
+ */
+lanyard.Globe.prototype.tessellate = function (dc) {}
+
 /* EOF */

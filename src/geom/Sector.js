@@ -407,11 +407,11 @@ lanyard.geom.Sector.prototype.computeBoundingCylinder = function (globe, vertica
 
     /** @type {lanyard.geom.Point} */
     var centroidTop =
-        globe.computePointFromPosition(center.getLatitude(), center.getLongitude(), maxHeight);
+        globe.computePointFromPositionAngles(center.getLatitude(), center.getLongitude(), maxHeight);
 
     /** @type {lanyard.geom.Point} */
     var lowPoint =
-        globe.computePointFromPosition(sector.getMinLatitude(), sector.getMinLongitude(), minHeight);
+        globe.computePointFromPositionAngles(sector.getMinLatitude(), sector.getMinLongitude(), minHeight);
 
     /** @type {lanyard.geom.Point} */
     var axis = centroidTop.normalize();

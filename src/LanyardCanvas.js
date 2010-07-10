@@ -32,7 +32,7 @@ lanyard.LanyardCanvas.prototype.setModel = function (model) {
     if (this._sceneController) {
         this._sceneController.setModel(model);
     } else {
-        this._logger("Attempted to set a model without a valid scene controller.");
+        this._logger.severe("Attempted to set a model without a valid scene controller.");
     }
 };
 

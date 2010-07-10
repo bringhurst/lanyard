@@ -62,7 +62,7 @@ lanyard.BasicModel.prototype.createLayers = function () {
     /** @type {Array.<lanyard.Layer>} */
     var layers = [
         /* A plain blue marble layer. */
-        //new lanyard.layers.Earth.BMNGSurfaceLayer()
+        //new lanyard.layers.earth.BMNGSurfaceLayer()
     ];
 
     this.setLayers(layers);
