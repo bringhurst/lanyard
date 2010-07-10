@@ -1,0 +1,34 @@
+<html>
+ <head>
+  <title>Test Page for Lanyard.Geom.MatrixFour</title>
+  <script language="javascript" src="/jsunit/app/jsUnitCore.js"></script>
+  <script language="javascript" src="/jsunit/test-lanyard/lanyard.js"></script>
+ </head>
+ <body>
+  <script language="javascript">
+    function testConstructor() {
+        // check to make sure the identity is set by default
+        var iden = new lanyard.geom.MatrixFour(null);
+        assertTrue("The diagonal is incorrect.", 1 === iden._m11 === iden._m22 === iden._m33 === iden._m44);
+        assertTrue("The rest is incorrect.", 0 === iden._m12 === iden._m13 === iden._m14 ===
+            iden._m21 === iden._m23 === iden._m24 ===
+            iden._m31 === iden._m32 === iden._m34 ===
+            iden._m41 === iden._m42 === iden._m43);
+    }
+
+    function testTranslate() {
+        var m = new lanyard.geom.MatrixFour(null);
+        var p = new lanyard.geom.Point(5, 5, 5, 5);
+
+        var tM = m.translatePoint(p);
+
+        assertTrue("The diagonal doesn't match.", 5 === tM._m11 === tM._m22 === tM._m33);
+        assertTrue("The w doesn't match.", 1 === tM._m44);
+        assertTrue("The rest doesn't match.", 0 === tM._m12 === tM._m13 === tM._m14 ===
+            tM._m21 === tM._m23 === tM._m24 ===
+            tM._m31 === tM._m32 === tM._m34 ===
+            tM._m41 === tM._m42 === tM._m43);
+    }
+  </script>
+ </body>
+</html>

@@ -23,48 +23,48 @@ goog.require('lanyard.geom.Matrix');
 lanyard.geom.MatrixFour = function (entries) {
     if(!entries) {
         // default to identity matrix
-        /** @public */ this._m11 = 1;
-        /** @public */ this._m22 = 1;
-        /** @public */ this._m33 = 1;
-        /** @public */ this._m44 = 1;
+        /** @public */ this['_m11'] = 1;
+        /** @public */ this['_m22'] = 1;
+        /** @public */ this['_m33'] = 1;
+        /** @public */ this['_m44'] = 1;
 
-        /** @public */ this._m12 = 0;
-        /** @public */ this._m13 = 0;
-        /** @public */ this._m14 = 0;
+        /** @public */ this['_m12'] = 0;
+        /** @public */ this['_m13'] = 0;
+        /** @public */ this['_m14'] = 0;
 
-        /** @public */ this._m21 = 0;
-        /** @public */ this._m23 = 0;
-        /** @public */ this._m24 = 0;
+        /** @public */ this['_m21'] = 0;
+        /** @public */ this['_m23'] = 0;
+        /** @public */ this['_m24'] = 0;
 
-        /** @public */ this._m31 = 0;
-        /** @public */ this._m32 = 0;
-        /** @public */ this._m34 = 0;
+        /** @public */ this['_m31'] = 0;
+        /** @public */ this['_m32'] = 0;
+        /** @public */ this['_m34'] = 0;
 
-        /** @public */ this._m41 = 0;
-        /** @public */ this._m42 = 0;
-        /** @public */ this._m43 = 0;
+        /** @public */ this['_m41'] = 0;
+        /** @public */ this['_m42'] = 0;
+        /** @public */ this['_m43'] = 0;
 
         /** @private */ this._isOrthonormal = true;
     } else {
-        /** @public */ this._m11 = entries[0];
-        /** @public */ this._m21 = entries[1];
-        /** @public */ this._m31 = entries[2];
-        /** @public */ this._m41 = entries[3];
+        /** @public */ this['_m11'] = entries[0];
+        /** @public */ this['_m21'] = entries[1];
+        /** @public */ this['_m31'] = entries[2];
+        /** @public */ this['_m41'] = entries[3];
 
-        /** @public */ this._m12 = entries[4];
-        /** @public */ this._m22 = entries[5];
-        /** @public */ this._m32 = entries[6];
-        /** @public */ this._m42 = entries[7];
+        /** @public */ this['_m12'] = entries[4];
+        /** @public */ this['_m22'] = entries[5];
+        /** @public */ this['_m32'] = entries[6];
+        /** @public */ this['_m42'] = entries[7];
 
-        /** @public */ this._m13 = entries[8];
-        /** @public */ this._m23 = entries[9];
-        /** @public */ this._m33 = entries[10];
-        /** @public */ this._m43 = entries[11];
+        /** @public */ this['_m13'] = entries[8];
+        /** @public */ this['_m23'] = entries[9];
+        /** @public */ this['_m33'] = entries[10];
+        /** @public */ this['_m43'] = entries[11];
 
-        /** @public */ this._m14 = entries[12];
-        /** @public */ this._m24 = entries[13];
-        /** @public */ this._m34 = entries[14];
-        /** @public */ this._m44 = entries[15];
+        /** @public */ this['_m14'] = entries[12];
+        /** @public */ this['_m24'] = entries[13];
+        /** @public */ this['_m34'] = entries[14];
+        /** @public */ this['_m44'] = entries[15];
 
         /** @private */ this._isOrthonormal = false;
     }
@@ -342,6 +342,8 @@ lanyard.geom.MatrixFour.prototype.translate = function (x, y, z) {
 lanyard.geom.MatrixFour.prototype.translatePoint = function (p) {
     return this.translate(p.getX(), p.getY(), p.getZ());
 };
+goog.exportSymbol('lanyard.geom.MatrixFour.prototype.translatePoint',
+    lanyard.geom.MatrixFour.prototype.translatePoint);
 
 /**
  * Adds this another MatrixFour to this one.
