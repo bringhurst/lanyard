@@ -107,9 +107,9 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getZ', lanyard.geom.Point.protot
 lanyard.geom.Point.prototype.translate = function (m) {
     /** @type {lanyard.geom.Point} */
     var p = new lanyard.geom.Point(
-        m._m11 * this._x + m._m21 * this._y + m._m31 * this._z + m._m41,
-        m._m12 * this._x + m._m22 * this._y + m._m32 * this._z + m._m42,
-        m._m13 * this._x + m._m23 * this._y + m._m33 * this._z + m._m43,
+        m.get11() * this._x + m.get21() * this._y + m.get31() * this._z + m.get41(),
+        m.get12() * this._x + m.get22() * this._y + m.get32() * this._z + m.get42(),
+        m.get13() * this._x + m.get23() * this._y + m.get33() * this._z + m.get43(),
         1
     );
 

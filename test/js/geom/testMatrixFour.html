@@ -12,51 +12,51 @@
                                                  8,  9,  10, 11,
                                                  12, 13, 14, 15 ]);
 
-        assertTrue("ent m11", entm._m11 === 0);
-        assertTrue("ent m21", entm._m21 === 1);
-        assertTrue("ent m31", entm._m31 === 2);
-        assertTrue("ent m41", entm._m41 === 3);
+        assertTrue("ent m11", entm.get11() === 0);
+        assertTrue("ent m21", entm.get21() === 1);
+        assertTrue("ent m31", entm.get31() === 2);
+        assertTrue("ent m41", entm.get41() === 3);
 
-        assertTrue("ent m12", entm._m12 === 4);
-        assertTrue("ent m22", entm._m22 === 5);
-        assertTrue("ent m32", entm._m32 === 6);
-        assertTrue("ent m42", entm._m42 === 7);
+        assertTrue("ent m12", entm.get12() === 4);
+        assertTrue("ent m22", entm.get22() === 5);
+        assertTrue("ent m32", entm.get32() === 6);
+        assertTrue("ent m42", entm.get42() === 7);
 
-        assertTrue("ent m13", entm._m13 === 8);
-        assertTrue("ent m23", entm._m23 === 9);
-        assertTrue("ent m33", entm._m33 === 10);
-        assertTrue("ent m43", entm._m43 === 11);
+        assertTrue("ent m13", entm.get13() === 8);
+        assertTrue("ent m23", entm.get23() === 9);
+        assertTrue("ent m33", entm.get33() === 10);
+        assertTrue("ent m43", entm.get43() === 11);
 
-        assertTrue("ent m14", entm._m14 === 12);
-        assertTrue("ent m24", entm._m24 === 13);
-        assertTrue("ent m34", entm._m34 === 14);
-        assertTrue("ent m44", entm._m44 === 15);
+        assertTrue("ent m14", entm.get14() === 12);
+        assertTrue("ent m24", entm.get24() === 13);
+        assertTrue("ent m34", entm.get34() === 14);
+        assertTrue("ent m44", entm.get44() === 15);
 
         // check to make sure the identity is set by default
         var iden = new lanyard.geom.MatrixFour(null);
 
         // check diagonals
-        assertTrue("diag m11", 1 === iden._m11);
-        assertTrue("diag m22", 1 === iden._m22);
-        assertTrue("diag m33", 1 === iden._m33);
-        assertTrue("diag m44", 1 === iden._m44);
+        assertTrue("diag m11", 1 === iden.get11());
+        assertTrue("diag m22", 1 === iden.get22());
+        assertTrue("diag m33", 1 === iden.get33());
+        assertTrue("diag m44", 1 === iden.get44());
 
         // check everything else
-        assertTrue("rem m12", 0 === iden._m12);
-        assertTrue("rem m13", 0 === iden._m13);
-        assertTrue("rem m14", 0 === iden._m14);
+        assertTrue("rem m12", 0 === iden.get12());
+        assertTrue("rem m13", 0 === iden.get13());
+        assertTrue("rem m14", 0 === iden.get14());
 
-        assertTrue("rem m21", 0 === iden._m21);
-        assertTrue("rem m23", 0 === iden._m23);
-        assertTrue("rem m24", 0 === iden._m24);
+        assertTrue("rem m21", 0 === iden.get21());
+        assertTrue("rem m23", 0 === iden.get23());
+        assertTrue("rem m24", 0 === iden.get24());
 
-        assertTrue("rem m31", 0 === iden._m31);
-        assertTrue("rem m32", 0 === iden._m32);
-        assertTrue("rem m34", 0 === iden._m43);
+        assertTrue("rem m31", 0 === iden.get31());
+        assertTrue("rem m32", 0 === iden.get32());
+        assertTrue("rem m34", 0 === iden.get43());
 
-        assertTrue("rem m41", 0 === iden._m41);
-        assertTrue("rem m42", 0 === iden._m42);
-        assertTrue("rem m43", 0 === iden._m43);
+        assertTrue("rem m41", 0 === iden.get41());
+        assertTrue("rem m42", 0 === iden.get42());
+        assertTrue("rem m43", 0 === iden.get43());
     }
 
     function testTranslate() {
@@ -65,26 +65,26 @@
 
         var tM = m.translatePoint(p);
 
-        assertTrue("diag m14", 5 === tM._m14); // x
-        assertTrue("diag m24", 5 === tM._m24); // y
-        assertTrue("diag m34", 5 === tM._m34); // z
-        assertTrue("diag m44", 1 === tM._m44); // w
+        assertTrue("diag m14", 5 === tM.get14()); // x
+        assertTrue("diag m24", 5 === tM.get24()); // y
+        assertTrue("diag m34", 5 === tM.get34()); // z
+        assertTrue("diag m44", 1 === tM.get44()); // w
 
-        assertTrue("rest m11", 0 === tM._m11);
-        assertTrue("rest m12", 0 === tM._m12);
-        assertTrue("rest m13", 0 === tM._m13);
+        assertTrue("rest m11", 1 === tM.get11());
+        assertTrue("rest m12", 0 === tM.get12());
+        assertTrue("rest m13", 0 === tM.get13());
 
-        assertTrue("rest m21", 0 === tM._m21);
-        assertTrue("rest m22", 0 === tM._m22);
-        assertTrue("rest m23", 0 === tM._m23);
+        assertTrue("rest m21", 0 === tM.get21());
+        assertTrue("rest m22", 1 === tM.get22());
+        assertTrue("rest m23", 0 === tM.get23());
 
-        assertTrue("rest m31", 0 === tM._m31);
-        assertTrue("rest m32", 0 === tM._m32);
-        assertTrue("rest m33", 0 === tM._m33);
+        assertTrue("rest m31", 0 === tM.get31());
+        assertTrue("rest m32", 0 === tM.get32());
+        assertTrue("rest m33", 1 === tM.get33());
 
-        assertTrue("rest m41", 0 === tM._m41);
-        assertTrue("rest m42", 0 === tM._m42);
-        assertTrue("rest m43", 0 === tM._m43);
+        assertTrue("rest m41", 0 === tM.get41());
+        assertTrue("rest m42", 0 === tM.get42());
+        assertTrue("rest m43", 0 === tM.get43());
     }
   </script>
  </body>
