@@ -7,27 +7,84 @@
  <body>
   <script language="javascript">
     function testConstructor() {
+        var entm = new lanyard.geom.MatrixFour([ 0,  1,  2,  3,
+                                                 4,  5,  6,  7,
+                                                 8,  9,  10, 11,
+                                                 12, 13, 14, 15 ]);
+
+        assertTrue("ent m11", entm._m11 === 0);
+        assertTrue("ent m21", entm._m21 === 1);
+        assertTrue("ent m31", entm._m31 === 2);
+        assertTrue("ent m41", entm._m41 === 3);
+
+        assertTrue("ent m12", entm._m12 === 4);
+        assertTrue("ent m22", entm._m22 === 5);
+        assertTrue("ent m32", entm._m32 === 6);
+        assertTrue("ent m42", entm._m42 === 7);
+
+        assertTrue("ent m13", entm._m13 === 8);
+        assertTrue("ent m23", entm._m23 === 9);
+        assertTrue("ent m33", entm._m33 === 10);
+        assertTrue("ent m43", entm._m43 === 11);
+
+        assertTrue("ent m14", entm._m14 === 12);
+        assertTrue("ent m24", entm._m24 === 13);
+        assertTrue("ent m34", entm._m34 === 14);
+        assertTrue("ent m44", entm._m44 === 15);
+
         // check to make sure the identity is set by default
         var iden = new lanyard.geom.MatrixFour(null);
-        assertTrue("The diagonal is incorrect.", 1 === iden._m11 === iden._m22 === iden._m33 === iden._m44);
-        assertTrue("The rest is incorrect.", 0 === iden._m12 === iden._m13 === iden._m14 ===
-            iden._m21 === iden._m23 === iden._m24 ===
-            iden._m31 === iden._m32 === iden._m34 ===
-            iden._m41 === iden._m42 === iden._m43);
+
+        // check diagonals
+        assertTrue("diag m11", 1 === iden._m11);
+        assertTrue("diag m22", 1 === iden._m22);
+        assertTrue("diag m33", 1 === iden._m33);
+        assertTrue("diag m44", 1 === iden._m44);
+
+        // check everything else
+        assertTrue("rem m12", 0 === iden._m12);
+        assertTrue("rem m13", 0 === iden._m13);
+        assertTrue("rem m14", 0 === iden._m14);
+
+        assertTrue("rem m21", 0 === iden._m21);
+        assertTrue("rem m23", 0 === iden._m23);
+        assertTrue("rem m24", 0 === iden._m24);
+
+        assertTrue("rem m31", 0 === iden._m31);
+        assertTrue("rem m32", 0 === iden._m32);
+        assertTrue("rem m34", 0 === iden._m43);
+
+        assertTrue("rem m41", 0 === iden._m41);
+        assertTrue("rem m42", 0 === iden._m42);
+        assertTrue("rem m43", 0 === iden._m43);
     }
 
     function testTranslate() {
         var m = new lanyard.geom.MatrixFour(null);
-        var p = new lanyard.geom.Point(5, 5, 5, 5);
+        var p = new lanyard.geom.Point(5, 5, 5, 1);
 
         var tM = m.translatePoint(p);
 
-        assertTrue("The diagonal doesn't match.", 5 === tM._m11 === tM._m22 === tM._m33);
-        assertTrue("The w doesn't match.", 1 === tM._m44);
-        assertTrue("The rest doesn't match.", 0 === tM._m12 === tM._m13 === tM._m14 ===
-            tM._m21 === tM._m23 === tM._m24 ===
-            tM._m31 === tM._m32 === tM._m34 ===
-            tM._m41 === tM._m42 === tM._m43);
+        assertTrue("diag m14", 5 === tM._m14); // x
+        assertTrue("diag m24", 5 === tM._m24); // y
+        assertTrue("diag m34", 5 === tM._m34); // z
+        assertTrue("diag m44", 1 === tM._m44); // w
+
+        assertTrue("rest m11", 0 === tM._m11);
+        assertTrue("rest m12", 0 === tM._m12);
+        assertTrue("rest m13", 0 === tM._m13);
+
+        assertTrue("rest m21", 0 === tM._m21);
+        assertTrue("rest m22", 0 === tM._m22);
+        assertTrue("rest m23", 0 === tM._m23);
+
+        assertTrue("rest m31", 0 === tM._m31);
+        assertTrue("rest m32", 0 === tM._m32);
+        assertTrue("rest m33", 0 === tM._m33);
+
+        assertTrue("rest m41", 0 === tM._m41);
+        assertTrue("rest m42", 0 === tM._m42);
+        assertTrue("rest m43", 0 === tM._m43);
     }
   </script>
  </body>
