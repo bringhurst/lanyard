@@ -157,8 +157,11 @@ lanyard.DrawContextImpl.prototype.initialize = function () {
 
     if (this.numTextureUnits < 1) {
         this.numTextureUnits = this.queryMaxTextureUnits(this.gl);
+
+/*
         this._logger.fine(
             "Query for available texture units returned " + this.numTextureUnits);
+*/
     }
 };
 
