@@ -32,6 +32,17 @@
         assertEquals(zVal, p.getZ());
         assertEquals(wVal, p.getW());
     }
+
+    function testTranslate() {
+        var mat = new lanyard.geom.MatrixFour(null);
+        var p = new lanyard.geom.Point(4, 3, 2, 1);
+        var newp = p.translate(mat);
+
+        assertEquals("x", p.getX(), newp.getX());
+        assertEquals("y", p.getY(), newp.getY());
+        assertEquals("z", p.getZ(), newp.getZ());
+        assertEquals("w", p.getW(), newp.getW());
+    }
   </script>
  </body>
 </html>

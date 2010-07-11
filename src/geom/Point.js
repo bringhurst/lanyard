@@ -115,6 +115,8 @@ lanyard.geom.Point.prototype.translate = function (m) {
 
     return p;
 };
+goog.exportSymbol('lanyard.geom.Point.prototype.translate',
+    lanyard.geom.Point.prototype.translate);
 
 /**
  * Add this point to another point.
