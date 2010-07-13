@@ -57,6 +57,8 @@ lanyard.LanyardCanvas.prototype.setView = function (view) {
     // view can be null, that's ok - it indicates no view.
     if (this._sceneController) {
         this._sceneController.setView(view);
+    } else {
+      this._logger.severe("Tried to set a view without a scene controller existing.");
     }
 };
 
