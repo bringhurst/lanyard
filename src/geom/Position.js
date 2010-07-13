@@ -7,6 +7,7 @@ goog.require('lanyard.geom.Angle');
 
 /**
  * A basic position on the globe.
+ *
  * @constructor
  * @param {lanyard.geom.Angle} latitude the position latitude.
  * @param {lanyard.geom.Angle} longitude the postion longitude.
@@ -20,6 +21,7 @@ lanyard.geom.Position = function (latitude, longitude, elevation) {
 
 /**
  * A zero position.
+ *
  * @const
  * @type {lanyard.geom.Position}
  */
@@ -31,6 +33,7 @@ lanyard.geom.Position.prototype.ZERO = new lanyard.geom.Position(
 
 /**
  * Create a position from radians.
+ *
  * @param {number} latitude the latitude in radians.
  * @param {number} longitude the longitude in radians.
  * @param {number} elevation the elevation.
@@ -46,6 +49,7 @@ lanyard.geom.Position.prototype.fromRadians = function (latitude, longitude, ele
 
 /**
  * Create a position from degrees.
+ *
  * @param {number} latitude the latitude in degrees.
  * @param {number} longitude the longitude in degrees.
  * @param {number} elevation the elevation.
@@ -61,6 +65,7 @@ lanyard.geom.Position.prototype.fromDegrees = function (latitude, longitude, ele
 
 /**
  * Obtains the latitude of this position.
+ *
  * @return {lanyard.geom.Angle} this position's latitude.
  */
 lanyard.geom.Position.prototype.getLatitude = function () {
@@ -69,6 +74,7 @@ lanyard.geom.Position.prototype.getLatitude = function () {
 
 /**
  * Obtains the longitude of this position.
+ *
  * @return {lanyard.geom.Angle} this position's longitude.
  */
 lanyard.geom.Position.prototype.getLongitude = function () {
@@ -77,10 +83,25 @@ lanyard.geom.Position.prototype.getLongitude = function () {
 
 /**
  * Obtains the elevation of this position.
+ *
  * @return {number} this position's elevation.
  */
 lanyard.geom.Position.prototype.getElevation = function () {
     return this._elevation;
+};
+
+/**
+ * Override the toString method.
+ *
+ * @return {string} this position as a string.
+ */
+lanyard.geom.Position.prototype.toString = function () {
+    /** @type {string} */
+    var ret = "A position with a longitude of " + this._longitude +
+        ", a latitude of " + this._latitude + " and an elevation of " +
+        this._elevation;
+
+    return ret;
 };
 
 /* EOF */
