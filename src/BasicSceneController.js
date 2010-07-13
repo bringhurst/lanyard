@@ -3,7 +3,7 @@
 
 goog.provide('lanyard.BasicSceneController');
 
-goog.require('lanyard.DrawContextImpl');
+goog.require('lanyard.BasicDrawContext');
 goog.require('lanyard.BasicFrameController');
 
 /**
@@ -42,7 +42,7 @@ lanyard.BasicSceneController = function (canvasElement) {
      * @private
      * @type {lanyard.DrawContext}
      */
-    this._dc = new lanyard.DrawContextImpl(canvasElement);
+    this._dc = new lanyard.BasicDrawContext(canvasElement);
 
     /**
      * @private
