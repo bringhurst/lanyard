@@ -249,6 +249,8 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
     /** @type {lanyard.View} */
     var view = dc.getView();
 
+    this._logger.fine("Using an eyepoint of: " + view.getEyePoint().toString());
+
     /** @type {number} */
     var d1 = view.getEyePoint().distanceTo(corners[0]);
 

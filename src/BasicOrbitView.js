@@ -304,8 +304,12 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
     /** @type {lanyard.geom.MatrixFour} */
     var modelView = this.computeModelViewMatrix(dc);
 
+    this._logger.fine("Initial model-view matrix is: " + modelView.toString());
+
     /** @type {lanyard.geom.Point} */
     var eyePoint = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
+
+    this._logger.fine("Initial eye point is: " + eyePoint.toString());
 
     // Compute the current viewing frustum and projection matrix.
     this.viewFrustum = this.computeViewFrustum(dc, eyePoint);
