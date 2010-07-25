@@ -390,10 +390,16 @@ lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
         this.equatorialRadius / Math.sqrt(1.0 - this.es * sinLat * sinLat);
 
     /** @type {number} */
-    var x = (rpm + metersElevation) * cosLat * longitude.sin();
+    var sinLng = longitude.sin();
 
     /** @type {number} */
-    var y = (rpm * (1.0 - this.es) + metersElevation) * sinLat;
+    var cosLon = longitude.cos();
+
+    /** @type {number} */
+    var x = (rpm + metersElevation) * cosLat * sinLng;
+
+    /** @type {number} */
+    var y = (rpm * (1.0 - this.es) + metersElevation) * cosLon;
 
     /** @type {number} */
     var z = (rpm + metersElevation) * cosLat * longitude.cos();

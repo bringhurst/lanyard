@@ -21,9 +21,6 @@ lanyard.BasicOrbitView = function () {
 
     // Setup defaults.
 
-    /** @type {Date} */
-    this.tzDate = new Date();
-
     /**
      * @private
      * @type {number}
@@ -34,7 +31,7 @@ lanyard.BasicOrbitView = function () {
      * @private
      * @type {number}
      */
-    this.DefaultLongitude = (180.0 * this.tzDate.getTimezoneOffset() / (12.0 * 3.6e6));
+    this.DefaultLongitude = (180.0 * (new Date()).getTimezoneOffset() / (12.0 * 3.6e6));
 
     /**
      * @private
@@ -194,13 +191,16 @@ lanyard.BasicOrbitView = function () {
      * @private
      * @type {lanyard.geom.Angle}
      */
-    this.focusLat = lanyard.geom.Angle.prototype.fromDegrees(this.DefaultLatitude);
+    this.focusLat = lanyard.geom.Angle.prototype.fromDegrees(0);
 
     /**
      * @private
      * @type {lanyard.geom.Angle}
      */
-    this.focusLon = lanyard.geom.Angle.prototype.fromDegrees(this.DefaultLongitude);
+    this.focusLon =
+        lanyard.geom.Angle.prototype.fromDegrees(
+            (180.0 * (new Date()).getTimezoneOffset() / (12.0 * 3.6e6))
+        );
 
     /**
      * @private
@@ -212,13 +212,13 @@ lanyard.BasicOrbitView = function () {
      * @private
      * @type {lanyard.geom.Angle}
      */
-    this.heading = lanyard.geom.Angle.prototype.fromDegrees(this.DefaultHeading);
+    this.heading = lanyard.geom.Angle.prototype.fromDegrees(0);
 
     /**
      * @private
      * @type {lanyard.geom.Angle}
      */
-    this.pitch = lanyard.geom.Angle.prototype.fromDegrees(this.DefaultPitch);
+    this.pitch = lanyard.geom.Angle.prototype.fromDegrees(0);
 
     /**
      * @private
@@ -360,12 +360,13 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
         return null;
     }
 
-    /** @type {lanyard.geom.Point} */
-    var focusPoint = globe.computePointFromPosition(
-        new lanyard.geom.Position(
-            this.focusLat, this.focusLon, 0
-        )
+    /** @type {lanyard.geom.Position} */
+    var focusPosition = new lanyard.geom.Position(
+        this.focusLat, this.focusLon, 0
     );
+
+    /** @type {lanyard.geom.Point} */
+    var focusPoint = globe.computePointFromPosition(focusPosition);
 
     /** @type {lanyard.geom.MatrixFour} */
     var modelView = lanyard.BasicOrbitView.prototype.lookAt(
@@ -1083,8 +1084,10 @@ lanyard.BasicOrbitView.prototype.getUpVector = function () {
  * @param {lanyard.DrawContext} dc the draw context.
  */
 lanyard.BasicOrbitView.prototype.popReferenceCenter = function (dc) {
-/*****
-    GL gl = dc.getGL();
+
+/***
+
+    var gl = dc.getGL();
 
     // Store the current matrix-mode state.
     gl.glGetIntegerv(GL.GL_MATRIX_MODE, matrixMode, 0);
@@ -1100,7 +1103,8 @@ lanyard.BasicOrbitView.prototype.popReferenceCenter = function (dc) {
     if (matrixMode[0] != GL.GL_MODELVIEW) {
         gl.glMatrixMode(matrixMode[0]);
     }
-*****/
+
+***/
 };
 
 /**
@@ -1300,7 +1304,8 @@ lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, pro
  * @param {lanyard.geom.Point} referenceCenter the reference center.
  */
 lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCenter) {
-    /***
+
+/***
     Matrix4 newModelView;
 
     if (this.modelView != null) {
@@ -1329,7 +1334,8 @@ lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCe
     if (matrixMode[0] != GL.GL_MODELVIEW) {
         gl.glMatrixMode(matrixMode[0]);
     }
-    **/
+
+****/
 };
 
 /* EOF */

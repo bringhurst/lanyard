@@ -126,8 +126,6 @@ lanyard.BasicSceneController.prototype.getVerticalExaggeration = function () {
  * Repaint the entire scene.
  */
 lanyard.BasicSceneController.prototype.repaint = function () {
-    this._logger.fine("Repainting the scene.");
-
     // TODO: calculate start of FPS here
 
     this._dc.initialize();
@@ -151,8 +149,6 @@ lanyard.BasicSceneController.prototype.repaint = function () {
 
     this._view.apply(this._dc);
 
-    this.createTerrain();
-
     fc.drawFrame(this._dc);
     fc.finalizeFrame(this._dc);
     this.frame = this.frame + 1;
@@ -167,19 +163,6 @@ lanyard.BasicSceneController.prototype.repaint = function () {
  */
 lanyard.BasicSceneController.prototype.getFramesPerSecond = function () {
     return 0;
-};
-
-/**
- * Create the basic terrain.
- */
-lanyard.BasicSceneController.prototype.createTerrain = function () {
-    this._logger.fine("Creating the terrain.");
-
-    /** @type {lanyard.SectorGeometryList} */
-    var sgl = this._model.getGlobe().tessellate(this._dc);
-
-    this._dc.setSurfaceGeometry(sgl);
-    //this._dc.setVisibleSector(sgl.getSector());
 };
 
 /* EOF */

@@ -474,7 +474,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.compareTo', lanyard.geom.Angle.p
  * @return {string} the string representation of this angle.
  */
 lanyard.geom.Angle.prototype.toString = function () {
-    return "This Angle equals " + this._degrees;
+    return "This Angle equals " + this._degrees + " (" + this._radians + " radians).";
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.toString', lanyard.geom.Angle.prototype.toString);
 

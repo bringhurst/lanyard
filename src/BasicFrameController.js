@@ -104,7 +104,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
         this._logger.severe("The layers were null when attempting to draw.");
         return;
     }
-  
+
     dc.getView().apply(dc);
 
     if (dc.getModel().getTessellator()) {

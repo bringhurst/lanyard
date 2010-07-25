@@ -170,7 +170,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
  * @return {lanyard.SectorGeometryList} the sector geometries.
  */
 lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (dc) {
-    this._logger.fine("Tessellating the draw context geometries.");
+    // this._logger.fine("Tessellating the draw context geometries.");
 
     this.currentTiles.clear();
     this.currentLevel = 0;
@@ -178,8 +178,6 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
     this.currentFrustum = dc.getView().getFrustumInModelCoordinates();
 
     for(var i = 0; i < this.topLevels.length; i = i + 1) {
-        this._logger.fine("called in a loop" + i);
-
         this.selectVisibleTiles(dc, this.topLevels[i]);
     }
 
@@ -235,13 +233,15 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
     /** @type {Array.<lanyard.geom.Point>} */
     var corners = tile.getSector().computeCornerPoints(dc.getGlobe());
 
+    this._logger.fine("Corner points of the sector are: " +
+        corners[0] + "; " + corners[1] + "; " +
+        corners[2] + "; " + corners[3] + "; ");
+
     /** @type {lanyard.geom.Point} */
     var centerPoint = tile.getSector().computeCenterPoint(dc.getGlobe());
 
     /** @type {lanyard.View} */
     var view = dc.getView();
-
-    this._logger.fine("eyepoint = " + view.getEyePoint().toString());
 
     /** @type {number} */
     var d1 = view.getEyePoint().distanceTo(corners[0]);
