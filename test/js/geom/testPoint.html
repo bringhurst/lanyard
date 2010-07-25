@@ -45,6 +45,13 @@
         assertEquals("z", p.getZ(), newp.getZ());
         assertEquals("w", p.getW(), newp.getW());
     }
+
+    function testDistanceTo() {
+        var p1 = new lanyard.geom.Point(4, 3, 2, 1);
+        var p2 = new lanyard.geom.Point(4, 3, 2, 1);
+
+        assertTrue(p1.distanceTo(p2) === 0);
+    }
   </script>
  </body>
 </html>
