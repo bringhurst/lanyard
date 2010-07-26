@@ -190,6 +190,8 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
     /** @type {number} */
     var dLon = (lonMax - lonMin) / density;
 
+    this._logger.fine("Tile contains degrees lat of " + dLat + "; lon of " + dLon);
+
     /** @type {number} */
     var iv = 0;
 
@@ -238,16 +240,16 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
         var i;
         for (i = 0; i <= density + 2; i = i + 1) {
             // FIXME:
-            ///** @type {number} */
-            //var elevation = verticalExaggeration * elevations.getElevation(lat, lon);
 
-            //if (j === 0 || j >= density + 2 || i === 0 || i >= density + 2) {
-            //    // use abs to account for negative elevation.
-            //    elevation -= exaggeratedMinElevation >= 0 ? exaggeratedMinElevation : -exaggeratedMinElevation;
-            //}
+            /** @type {number} */
+            //var elevation = verticalExaggeration * elevations.getElevation(lat, lon);
 
             var elevation = 0;
 
+            if (j === 0 || j >= density + 2 || i === 0 || i >= density + 2) {
+                // use abs to account for negative elevation.
+                elevation -= exaggeratedMinElevation >= 0 ? exaggeratedMinElevation : -exaggeratedMinElevation;
+            }
 
             /** @type {number} */
             var x = ((rpm + elevation) * cosLat * Math.sin(lon)) - refCenter.getX();
@@ -275,6 +277,8 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
             lat += dLat;
         }
     }
+
+    this._logger.fine("Created vert of: " + verts);
 
     /** @type {lanyard.globes.RenderInfo} */
     var retVal =
@@ -343,10 +347,12 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     if (showTriangles) {
         this._logger.fine("Show triangles enabled.");
 
+        this._logger.fine("vertices = " + this._ri.vertices.length);
+
         var vertexBuf = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, this._ri.vertices, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(this._ri.vertices), gl.STATIC_DRAW);
 
         gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
             this._ri.vertices.length, gl.FLOAT, false, 0, 0);
@@ -758,7 +764,7 @@ lanyard.globes.RectTile.prototype.getParameterization = function (density) {
  * @return {Array.<number>} the indices.
  */
 lanyard.globes.RectTile.prototype.getIndices = function (density) {
-    if (!density || density < 1) {
+    if (density < 1) {
         density = 1;
     }
 
