@@ -382,8 +382,8 @@ lanyard.globes.EllipsoidalGlobe.prototype.getIntersectionPosition = function (li
 lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
         function (latitude, longitude, metersElevation) {
 
-    this._logger.fine("Converting from geodetic to Cartesian with: " +
-        latitude + "; " + longitude + "; " + metersElevation);
+    //this._logger.fine("Converting from geodetic to Cartesian with: " +
+    //    latitude + "; " + longitude + "; " + metersElevation);
 
     /** @type {number} */
     var cosLat = latitude.cos();
@@ -391,14 +391,14 @@ lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
     /** @type {number} */
     var sinLat = latitude.sin();
 
-    this._logger.fine("Computing RPM with es = " + this.es +
-        "; sinLat = " + sinLat + "; equatorialRadius = " + this.equatorialRadius);
+    //this._logger.fine("Computing RPM with es = " + this.es +
+    //    "; sinLat = " + sinLat + "; equatorialRadius = " + this.equatorialRadius);
 
     /** @type {number} */
     var rpm = // getRadius (in meters) of vertical in prime meridian
         this.equatorialRadius / Math.sqrt(1.0 - this.es * sinLat * sinLat);
 
-    this._logger.fine("Radius of vertical in prime meridian: " + rpm);
+    //this._logger.fine("Radius of vertical in prime meridian: " + rpm);
 
     /** @type {number} */
     var sinLng = longitude.sin();
