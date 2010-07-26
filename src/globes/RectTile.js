@@ -133,7 +133,7 @@ lanyard.globes.RectTile.prototype.split = function (dc, tile) {
  * @param {lanyard.DrawContext} dc the drawcontext.
  */
 lanyard.globes.RectTile.prototype.makeVerts = function (dc) {
-    this._logger.fine("Make verts called.");
+    //this._logger.fine("Make verts called.");
 
     // FIXME
     // /** @type {number} */
@@ -338,7 +338,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
 
     var gl = dc.getGL();
 
-    gl.glColor4d(1.0, 1.0, 1.0, 0.2);
+    //gl.glColor4d(1.0, 1.0, 1.0, 0.2);
 
     if (showTriangles) {
         this._logger.fine("Show triangles enabled.");

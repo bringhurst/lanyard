@@ -187,13 +187,13 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
 
     dc.setVisibleSector(this.getSector());
 
-    this._logger.fine("Number of current tiles: " + this.currentTiles.length());
+    //this._logger.fine("Number of current tiles: " + this.currentTiles.length());
 
     for(var j = 0; j < this.currentTiles.length(); j = j + 1) {
         /** @type {lanyard.SectorGeometry} */
         var t = this.currentTiles.at(j);
 
-        this._logger.fine("Creating vertices for tile: " + t);
+        //this._logger.fine("Creating vertices for tile: " + t);
 
         t.makeVerts(dc);
     }
