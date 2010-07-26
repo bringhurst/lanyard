@@ -284,7 +284,8 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
             this._parameterizations.density,
             refCenter,
             //elevations.getResolution() FIXME
-            0
+            0,
+            this
         );
 
     return retVal;
@@ -757,7 +758,7 @@ lanyard.globes.RectTile.prototype.getParameterization = function (density) {
  * @return {Array.<number>} the indices.
  */
 lanyard.globes.RectTile.prototype.getIndices = function (density) {
-    if (density < 1) {
+    if (!density || density < 1) {
         density = 1;
     }
 

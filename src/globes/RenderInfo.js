@@ -13,13 +13,14 @@ goog.provide('lanyard.globes.RenderInfo');
  * @param {Array.<number>} texCoords
  * @param {lanyard.geom.Point} refCenter
  * @param {number} resolution
+ * @param {lanyard.globes.RectTile} tile the tile this info is for.
  */
-lanyard.globes.RenderInfo = function (density, vertices, texCoords, refCenter, resolution) {
+lanyard.globes.RenderInfo = function (density, vertices, texCoords, refCenter, resolution, tile) {
     /** @public */ this.density = density;
     /** @public */ this.vertices = vertices;
     /** @public */ this.texCoords = texCoords;
     /** @public */ this.referenceCenter = refCenter;
-    /** @public */ this.indices = lanyard.globes.RectTile.prototype.getIndices(this.density);
+    /** @public */ this.indices = tile.getIndices(this.density);
     /** @public */ this.resolution = resolution;
 };
 goog.exportSymbol('lanyard.globes.RenderInfo', lanyard.globes.RenderInfo);
