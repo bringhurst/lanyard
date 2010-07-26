@@ -170,12 +170,16 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
  * @return {lanyard.SectorGeometryList} the sector geometries.
  */
 lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (dc) {
-    // this._logger.fine("Tessellating the draw context geometries.");
+    this._logger.fine("Tessellating the draw context geometries.");
 
     this.currentTiles.clear();
     this.currentLevel = 0;
     this.sector = null;
     this.currentFrustum = dc.getView().getFrustumInModelCoordinates();
+
+    //this._logger.fine("Current frustum is: " + this.currentFrustum);
+
+    //this._logger.fine("Number of top level tiles: " + this.topLevels.length);
 
     for(var i = 0; i < this.topLevels.length; i = i + 1) {
         this.selectVisibleTiles(dc, this.topLevels[i]);
@@ -183,9 +187,13 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
 
     dc.setVisibleSector(this.getSector());
 
-    for(var j = 0; j < this.currentTiles.length; j = j + 1) {
-        /** @type {lanyard.globes.RectTile} */
-        var t = this.currentTiles[j];
+    this._logger.fine("Number of current tiles: " + this.currentTiles.length());
+
+    for(var j = 0; j < this.currentTiles.length(); j = j + 1) {
+        /** @type {lanyard.SectorGeometry} */
+        var t = this.currentTiles.at(j);
+
+        this._logger.fine("Creating vertices for tile: " + t);
 
         t.makeVerts(dc);
     }
@@ -210,13 +218,19 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
 
     if (this.currentLevel < this.maxLevel && this.needToSplit(dc, tile)) {
         ++this.currentLevel;
+
         var subtiles = tile.split(dc, tile);
+
         for(var i = 1; i < subtiles.length; i = i + 1) {
             this.selectVisibleTiles(dc, subtiles[i]);
         }
-        --this.currentLevel;
+
+    // FIXME:
+//        --this.currentLevel;
+
         return;
     }
+
     this.sector = tile.getSector().unionWithSector(this.sector);
     this.currentTiles.add(tile);
 };
@@ -233,15 +247,15 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
     if(!tile || !(tile.getSector())) {
         this._logger.error("Attempted to perform a split check on an invalid tile.");
     } else {
-        this._logger.fine("Split check with sector: " + tile.getSector().toString());
+    //    this._logger.fine("Split check with sector: " + tile.getSector().toString());
     }
 
     /** @type {Array.<lanyard.geom.Point>} */
     var corners = tile.getSector().computeCornerPoints(dc.getGlobe());
 
-    this._logger.fine("Corner points of the sector are: " +
-        corners[0] + "; " + corners[1] + "; " +
-        corners[2] + "; " + corners[3] + "; ");
+    // this._logger.fine("Corner points of the sector are: " +
+    //    corners[0] + "; " + corners[1] + "; " +
+    //    corners[2] + "; " + corners[3] + "; ");
 
     /** @type {lanyard.geom.Point} */
     var centerPoint = tile.getSector().computeCenterPoint(dc.getGlobe());
@@ -249,7 +263,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
     /** @type {lanyard.View} */
     var view = dc.getView();
 
-    this._logger.fine("Using an eyepoint of: " + view.getEyePoint().toString());
+    //this._logger.fine("Using an eyepoint of: " + view.getEyePoint().toString());
 
     /** @type {number} */
     var d1 = view.getEyePoint().distanceTo(corners[0]);
@@ -266,8 +280,8 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
     /** @type {number} */
     var d5 = view.getEyePoint().distanceTo(centerPoint);
 
-    this._logger.fine("d1/min = " + d1 + "; d2 = " + d2 + "; d3 = " + d3 + 
-      "; d4 = " + d4 + "; d5 = " + d5);
+    //this._logger.fine("d1/min = " + d1 + "; d2 = " + d2 + "; d3 = " + d3 + 
+    //  "; d4 = " + d4 + "; d5 = " + d5);
 
     /** @type {number} */
     var minDistance = d1;
@@ -298,7 +312,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
             lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_LOG10_RESOLUTION_TARGET
         );
 
-    this._logger.fine("need to split = " + !useTile);
+    //this._logger.fine("need to split = " + !useTile);
 
     return !useTile;
 };

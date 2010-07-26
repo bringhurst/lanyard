@@ -25,6 +25,29 @@ lanyard.SectorGeometryList.prototype.add = function (sg) {
 };
 
 /**
+ * Pass up the length.
+ *
+ * @return {number} the length of the geometry list.
+ */
+lanyard.SectorGeometryList.prototype.length = function () {
+    if(!this.geometryList) {
+        return 0;
+    } else {
+        return this.geometryList.length;
+    }
+};
+
+/**
+ * Get a sector geometry at the specified position in the list.
+ *
+ * @param {number} position the position of the wanted sector geometry.
+ * @return {lanyard.SectorGeometry} the sector geometry.
+ */
+lanyard.SectorGeometryList.prototype.at = function (position) {
+    return this.geometryList[position];
+};
+
+/**
  * Clear the elements in this list
  */
 lanyard.SectorGeometryList.prototype.clear = function () {

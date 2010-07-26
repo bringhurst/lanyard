@@ -32,6 +32,7 @@
         <arg line='-p "${closure-library.dir}"' />
         <arg line="-o @{outputmode}" />
         <arg line='-c "@{compilerjarfile}"' />
+        <arg line='-f "--create_source_map=${build.dir}/inspector.map"' />
         <arg line='-f "--compilation_level=@{compilationlevel}"' />
         <arg line='-f "--jscomp_error=deprecated"' />
         <arg line='-f "--jscomp_error=visibility"' />

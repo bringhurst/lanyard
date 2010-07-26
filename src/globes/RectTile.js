@@ -73,7 +73,7 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
     this._parameterizations = {};
 
     /**
-     * @type {Object.<number, Array.<number>>}
+     * @type {Object}
      * @private
      */
     this._indexLists = {};
@@ -135,8 +135,11 @@ lanyard.globes.RectTile.prototype.split = function (dc, tile) {
 lanyard.globes.RectTile.prototype.makeVerts = function (dc) {
     this._logger.fine("Make verts called.");
 
-    /** @type {number} */
-    var resolution = dc.getGlobe().getElevationModel().getTargetResolution(dc, this._sector, this._density);
+    // FIXME
+    // /** @type {number} */
+    // var resolution = dc.getGlobe().getElevationModel().getTargetResolution(dc, this._sector, this._density);
+
+    var resolution = 0;
 
     if (this._ri && this._ri.resolution >= resolution) {
         return;
@@ -165,8 +168,9 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
     /** @type {lanyard.Globe} */
     var globe = dc.getGlobe();
 
-    /** @type {lanyard.Elevations} */
-    var elevations = globe.getElevationModel().getElevations(this._sector, resolution);
+    // FIXME:
+    // /** @type {lanyard.Elevations} */
+    // var elevations = globe.getElevationModel().getElevations(this._sector, resolution);
 
     /** @type {number} */
     var latMin = this._sector.getMinLatitude().getRadians();
@@ -233,13 +237,17 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
         /** @type {number} */
         var i;
         for (i = 0; i <= density + 2; i = i + 1) {
-            /** @type {number} */
-            var elevation = verticalExaggeration * elevations.getElevation(lat, lon);
+            // FIXME:
+            ///** @type {number} */
+            //var elevation = verticalExaggeration * elevations.getElevation(lat, lon);
 
-            if (j === 0 || j >= density + 2 || i === 0 || i >= density + 2) {
-                // use abs to account for negative elevation.
-                elevation -= exaggeratedMinElevation >= 0 ? exaggeratedMinElevation : -exaggeratedMinElevation;
-            }
+            //if (j === 0 || j >= density + 2 || i === 0 || i >= density + 2) {
+            //    // use abs to account for negative elevation.
+            //    elevation -= exaggeratedMinElevation >= 0 ? exaggeratedMinElevation : -exaggeratedMinElevation;
+            //}
+
+            var elevation = 0;
+
 
             /** @type {number} */
             var x = ((rpm + elevation) * cosLat * Math.sin(lon)) - refCenter.getX();
@@ -275,7 +283,8 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
             verts,
             this._parameterizations.density,
             refCenter,
-            elevations.getResolution()
+            //elevations.getResolution() FIXME
+            0
         );
 
     return retVal;
@@ -753,7 +762,7 @@ lanyard.globes.RectTile.prototype.getIndices = function (density) {
     }
 
     // return a pre-computed buffer if possible.
-    if(this._indexLists.density) {
+    if(this._indexLists && this._indexLists.density) {
         return this._indexLists.density;
     }
 
