@@ -18,11 +18,14 @@ goog.require('lanyard.Globe');
  * @param {lanyard.ElevationModel} em the elevation model for this globe.
  */
 lanyard.globes.EllipsoidalGlobe = function (equatorialRadius, polarRadius, es, em) {
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.EllipsoidalGlobe');
+
     /** @private */ this.equatorialRadius = equatorialRadius;
     /** @private */ this.polarRadius = polarRadius;
     /** @private */ this.es = es; // assume it's consistent with the two radii
     /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
-    /** @protected */ this.elevationModel = em;
+
+    /** @public */ this.elevationModel = em;
 };
 goog.exportSymbol('lanyard.globes.EllipsoidalGlobe', lanyard.globes.EllipsoidalGlobe);
 
@@ -379,15 +382,23 @@ lanyard.globes.EllipsoidalGlobe.prototype.getIntersectionPosition = function (li
 lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
         function (latitude, longitude, metersElevation) {
 
+    this._logger.fine("Converting from geodetic to Cartesian with: " +
+        latitude + "; " + longitude + "; " + metersElevation);
+
     /** @type {number} */
     var cosLat = latitude.cos();
 
     /** @type {number} */
     var sinLat = latitude.sin();
 
+    this._logger.fine("Computing RPM with es = " + this.es +
+        "; sinLat = " + sinLat + "; equatorialRadius = " + this.equatorialRadius);
+
     /** @type {number} */
     var rpm = // getRadius (in meters) of vertical in prime meridian
         this.equatorialRadius / Math.sqrt(1.0 - this.es * sinLat * sinLat);
+
+    this._logger.fine("Radius of vertical in prime meridian: " + rpm);
 
     /** @type {number} */
     var sinLng = longitude.sin();

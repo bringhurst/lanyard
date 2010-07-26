@@ -5,38 +5,6 @@ goog.provide('lanyard.globes.Earth');
 
 goog.require('lanyard.globes.EllipsoidalGlobe');
 
-/*
- * A temporary object for prototype consts.
- * @type {Object}
- */
-lanyard.globes.Earth.prototype = {};
-
-/**
- * The WGS84 ellipsoid equatorial radius of the earth, in meters.
- *
- * @const
- * @type {number}
- */
-lanyard.globes.Earth.prototype.WGS84_EQUATORIAL_RADIUS = 6378137.0;
-
-/**
- * The WGS84 ellipsoid polar radius, in meters.
- *
- * @const
- * @type {number}
- */
-lanyard.globes.Earth.prototype.WGS84_POLAR_RADIUS = 6378137.0;
-
-/**
- * The WGS84 eccentricity squared, semi-major axis.
- *
- * Approximated from 0.00669437999013.
- *
- * @const
- * @type {number}
- */
-lanyard.globes.Earth.prototype.WGS84_ES = 0;
-
 /**
  * A representation of the earth.
  *
@@ -46,16 +14,40 @@ lanyard.globes.Earth.prototype.WGS84_ES = 0;
  */
 lanyard.globes.Earth = function () {
 
-    this.prototype = lanyard.globes.Earth.prototype;
+    /**
+     * The WGS84 ellipsoid equatorial radius of the earth, in meters.
+     *
+     * @type {number}
+     * @private
+     */
+    this.equatorialRadius = 6378137.0;
 
-    /** @private */ this.equatorialRadius = lanyard.globes.Earth.prototype.WGS84_EQUATORIAL_RADIUS;
-    /** @private */ this.polarRadius = lanyard.globes.Earth.prototype.WGS84_POLAR_RADIUS;
-    /** @private */ this.es = lanyard.globes.Earth.prototype.WGS84_ES;
+    /**
+     * The WGS84 ellipsoid polar radius, in meters.
+     *
+     * @type {number}
+     * @private
+     */
+    this.polarRadius = 6378137.0;
+
+    /**
+     * The WGS84 eccentricity squared, semi-major axis.
+     *
+     * Approximated from 0.00669437999013.
+     *
+     * @type {number}
+     * @private
+     */
+    this.es = 0;
+
     /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
 
-    // TODO: create an earth elevation model.
+    // FIXME: create an earth elevation model.
     // /** @private */ this.elevationModel = new lanyard.globes.EarthElevationModel();
+
     /** @private */ this.elevationModel = null;
+
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Earth');
 };
 goog.exportSymbol('lanyard.globes.Earth', lanyard.globes.Earth);
 goog.inherits(lanyard.globes.Earth, lanyard.globes.EllipsoidalGlobe);

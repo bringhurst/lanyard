@@ -369,13 +369,19 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
         this.focusLat, this.focusLon, 0
     );
 
+    this._logger.fine("Focus position is: " + focusPosition);
+
     /** @type {lanyard.geom.Point} */
     var focusPoint = globe.computePointFromPosition(focusPosition);
+
+    this._logger.fine("Focus point is: " + focusPoint);
 
     /** @type {lanyard.geom.MatrixFour} */
     var modelView = lanyard.BasicOrbitView.prototype.lookAt(
         this.focusLat, this.focusLon, focusPoint.length(),
         this.eyeDist, this.heading, this.pitch);
+
+    this._logger.fine("Lookat returned: " + modelView);
 
     /** @type {lanyard.geom.Point} */
     var eye = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
@@ -385,6 +391,8 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
 
     /** @type {lanyard.geom.Point} */
     var surfacePoint = this.computeSurfacePoint(dc, polarEye.getLatitude(), polarEye.getLongitude());
+
+    this._logger.fine("Surface point is: " + surfacePoint);
 
     if (surfacePoint) {
         /** @type {number} */ 
