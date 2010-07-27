@@ -351,7 +351,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     //gl.glColor4d(1.0, 1.0, 1.0, 0.2);
 
     if (showTriangles) {
-        this._logger.fine("Show triangles enabled.");
+        //this._logger.fine("Show triangles enabled.");
 
         //this._logger.fine("vertices = " + this._ri.vertices);
 

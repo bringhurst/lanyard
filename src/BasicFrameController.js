@@ -23,7 +23,7 @@ lanyard.BasicFrameController = function () {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
-    this._logger.fine("Initializing the frame.");
+    //this._logger.fine("Initializing the frame.");
 
     dc.getGLSL().startShader();
 
@@ -39,7 +39,7 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
-    this._logger.fine("Finalizing the frame.");
+    //this._logger.fine("Finalizing the frame.");
 
     dc.getGL().flush();
     dc.getGLSL().endShader();
@@ -86,7 +86,7 @@ lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
 lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
     this.clearFrame(dc);
 
-    this._logger.fine("Drawing the frame.");
+    //this._logger.fine("Drawing the frame.");
 
     // Perform some basic sanity checks.
 
@@ -137,7 +137,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
         dc.getModel().isShowWireframeInterior() ||
         dc.getModel().isShowTessellationBoundingVolumes()) {
 
-        this._logger.fine("Creating diagnostic displays.");
+        //this._logger.fine("Creating diagnostic displays.");
 
         /** @type {lanyard.Model} */
         var model = dc.getModel();
@@ -153,7 +153,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
 
         for (var j = 0; j < sgs.geometryList.length; j = j + 1) {
             if (model.isShowWireframeInterior() || model.isShowWireframeExterior()) {
-                this._logger.fine("Rendering wireframe for surface geometry.");
+                //this._logger.fine("Rendering wireframe for surface geometry.");
 
                 sgs.geometryList[j].renderWireframe(
                     dc, model.isShowWireframeInterior(), model.isShowWireframeExterior()
@@ -161,7 +161,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
             }
 
             if (model.isShowTessellationBoundingVolumes()) {
-                this._logger.fine("Displaying tessellation bounding volumes.");
+                //this._logger.fine("Displaying tessellation bounding volumes.");
 
                 // FIXME: set the color for the bounding volume
                 //dc.getGL().color(1, 0, 0);
@@ -204,9 +204,9 @@ lanyard.BasicFrameController.prototype.pick = function (dc, pickPoint) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
-    this._logger.fine("Finalizing picking.");
+    //this._logger.fine("Finalizing picking.");
 
-    // TODO: something
+    // FIXME: something
 };
 
 /**
@@ -216,7 +216,7 @@ lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
-    this._logger.fine("Clearing the frame.");
+    //this._logger.fine("Clearing the frame.");
 
     /** @type {lanyard.util.Color} */
     //var cc = dc.getClearColor();

@@ -1103,7 +1103,7 @@ lanyard.BasicOrbitView.prototype.getUpVector = function () {
  * @param {lanyard.DrawContext} dc the draw context.
  */
 lanyard.BasicOrbitView.prototype.popReferenceCenter = function (dc) {
-    this._logger.fine("Popping the reference center.");
+    //this._logger.fine("Popping the reference center.");
 
     this.modelView = this.modelViewStack.pop();
     dc.loadMatrix("uMVMatrix", this.modelView);
@@ -1306,24 +1306,24 @@ lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, pro
  * @param {lanyard.geom.Point} referenceCenter the reference center.
  */
 lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCenter) {
-    this._logger.fine("Pushing reference center of " + referenceCenter);
+    //this._logger.fine("Pushing reference center of " + referenceCenter);
 
     if (this.modelView) {
-        this._logger.fine("Found a current mvm.");
+        //this._logger.fine("Found a current mvm.");
         /** @type {lanyard.geom.MatrixFour} */
         var newModelView = new lanyard.geom.MatrixFour(this.modelView.getEntries());
 
-        this._logger.fine("Copy of mvm is " + newModelView);
+        //this._logger.fine("Copy of mvm is " + newModelView);
 
         /** @type {lanyard.geom.MatrixFour} */
         var reference = new lanyard.geom.MatrixFour(null);
         reference = reference.translatePoint(referenceCenter);
 
-        this._logger.fine("After translate: " + reference);
+        //this._logger.fine("After translate: " + reference);
 
         newModelView.multiply(reference);
 
-        this._logger.fine("After multiply: " + newModelView);
+        //this._logger.fine("After multiply: " + newModelView);
     } else {
         //this._logger.fine("New mvm.");
         /** @type {lanyard.geom.MatrixFour} */
@@ -1332,7 +1332,7 @@ lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCe
 
     var gl = dc.getGL();
 
-    this._logger.fine("get ent = " + newModelView.getEntries());
+    //this._logger.fine("get ent = " + newModelView.getEntries());
 
     this.modelViewStack.push(newModelView);
     dc.loadMatrix("uMVMatrix", newModelView);

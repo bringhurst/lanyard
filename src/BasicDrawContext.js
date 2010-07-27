@@ -126,7 +126,7 @@ lanyard.BasicDrawContext = function (canvasElement) {
     if (!this.gl) {
         this._logger.severe("The canvas specified does not seem to support WebGL.");
     } else {
-        this._logger.fine("A WebGL context was successfully obtained from the canvas.");
+        //this._logger.fine("A WebGL context was successfully obtained from the canvas.");
     }
 
     /** @type {lanyard.render.GLSL} */
