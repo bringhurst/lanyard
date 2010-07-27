@@ -220,7 +220,7 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
 
     /** @type {lanyard.util.Color} */
     //var cc = dc.getClearColor();
-    var cc = new lanyard.util.Color(0.75, 0.75, 0.75, 1.0, "");
+    var cc = lanyard.util.Color.prototype.BLUE;
 
     var gl = dc.getGL();
     
