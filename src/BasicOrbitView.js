@@ -1313,12 +1313,19 @@ lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCe
         /** @type {lanyard.geom.MatrixFour} */
         var newModelView = new lanyard.geom.MatrixFour(this.modelView.getEntries());
 
+        this._logger.fine("Copy of mvm is " + newModelView);
+
         /** @type {lanyard.geom.MatrixFour} */
         var reference = new lanyard.geom.MatrixFour(null);
-        reference.translate(referenceCenter);
+        reference = reference.translatePoint(referenceCenter);
+
+        this._logger.fine("After translate: " + reference);
+
         newModelView.multiply(reference);
+
+        this._logger.fine("After multiply: " + newModelView);
     } else {
-        this._logger.fine("New mvm.");
+        //this._logger.fine("New mvm.");
         /** @type {lanyard.geom.MatrixFour} */
         var newModelView = new lanyard.geom.MatrixFour(null);
     }
