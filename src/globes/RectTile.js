@@ -159,6 +159,10 @@ lanyard.globes.RectTile.prototype.makeVerts = function (dc) {
  * @return {lanyard.globes.RenderInfo} the render info.
  */
 lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution, makeSkirts) {
+    if(!density) {
+        density = 1;
+    }
+
     /** @type {number} */
     var numVertices = (density + 3) * (density + 3);
 
@@ -190,7 +194,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
     /** @type {number} */
     var dLon = (lonMax - lonMin) / density;
 
-    this._logger.fine("Tile contains degrees lat of " + dLat + "; lon of " + dLon);
+    //this._logger.fine("Tile contains degrees lat of " + dLat + "; lon of " + dLon);
 
     /** @type {number} */
     var iv = 0;
@@ -278,7 +282,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
         }
     }
 
-    this._logger.fine("Created vert of: " + verts);
+    //this._logger.fine("Created vert of: " + verts);
 
     /** @type {lanyard.globes.RenderInfo} */
     var retVal =
@@ -338,6 +342,8 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     /** @type {Array.<number>} */
     var indices = this.getIndices(this._ri.density);
 
+    this._logger.fine("Reference center is " + this._ri.referenceCenter);
+
     dc.getView().pushReferenceCenter(dc, this._ri.referenceCenter);
 
     var gl = dc.getGL();
@@ -347,7 +353,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     if (showTriangles) {
         this._logger.fine("Show triangles enabled.");
 
-        this._logger.fine("vertices = " + this._ri.vertices.length);
+        //this._logger.fine("vertices = " + this._ri.vertices);
 
         var vertexBuf = gl.createBuffer();
 
