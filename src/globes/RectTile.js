@@ -342,7 +342,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     /** @type {Array.<number>} */
     var indices = this.getIndices(this._ri.density);
 
-    this._logger.fine("Reference center is " + this._ri.referenceCenter);
+    //this._logger.fine("Reference center is " + this._ri.referenceCenter);
 
     dc.getView().pushReferenceCenter(dc, this._ri.referenceCenter);
 

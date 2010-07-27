@@ -5,6 +5,7 @@ goog.provide('lanyard.BasicOrbitView');
 
 goog.require('lanyard.geom.ViewFrustum');
 goog.require('lanyard.util.GLU');
+goog.require('lanyard.util.Stack');
 goog.require('lanyard.Globe');
 
 /**
@@ -283,6 +284,12 @@ lanyard.BasicOrbitView = function () {
      * @type {boolean}
      */
     this.isInitialized = false;
+
+    /**
+     * @private
+     * @type {lanyard.util.Stack}
+     */
+    this.modelViewStack = new lanyard.util.Stack();
 };
 
 /**
@@ -1096,27 +1103,10 @@ lanyard.BasicOrbitView.prototype.getUpVector = function () {
  * @param {lanyard.DrawContext} dc the draw context.
  */
 lanyard.BasicOrbitView.prototype.popReferenceCenter = function (dc) {
+    this._logger.fine("Popping the reference center.");
 
-/***
-
-    var gl = dc.getGL();
-
-    // Store the current matrix-mode state.
-    gl.glGetIntegerv(GL.GL_MATRIX_MODE, matrixMode, 0);
-
-    // Pop a model-view matrix off the current OpenGL context held by 'dc'.
-    if (matrixMode[0] != GL.GL_MODELVIEW) {
-        gl.glMatrixMode(GL.GL_MODELVIEW);
-    }
-
-    gl.glPopMatrix();
-
-    // Restore matrix-mode state.
-    if (matrixMode[0] != GL.GL_MODELVIEW) {
-        gl.glMatrixMode(matrixMode[0]);
-    }
-
-***/
+    this.modelView = this.modelViewStack.pop();
+    dc.loadMatrix("uMVMatrix", this.modelView);
 };
 
 /**
@@ -1293,14 +1283,14 @@ lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, pro
 
     // Apply the model-view matrix to the current OpenGL context held by 'dc'.
     if (!modelView) {
-        dc.loadMatrix("uMVMatrix", modelView.getEntries());
+        dc.loadMatrix("uMVMatrix", modelView);
     } else {
         dc.loadIdentity("uMVMatrix");
     }
 
     // Apply the projection matrix to the current OpenGL context held by 'dc'.
     if (!projection) {
-        dc.loadMatrix("uPMatrix", projection.getEntries());
+        dc.loadMatrix("uPMatrix", projection);
     } else {
         dc.loadIdentity("uPMatrix");
     }
@@ -1316,38 +1306,29 @@ lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, pro
  * @param {lanyard.geom.Point} referenceCenter the reference center.
  */
 lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCenter) {
+    this._logger.fine("Pushing reference center of " + referenceCenter);
 
-/***
-    Matrix4 newModelView;
+    if (this.modelView) {
+        this._logger.fine("Found a current mvm.");
+        /** @type {lanyard.geom.MatrixFour} */
+        var newModelView = new lanyard.geom.MatrixFour(this.modelView.getEntries());
 
-    if (this.modelView != null) {
-        newModelView = new Matrix4(this.modelView.getEntries());
-        Matrix4 reference = new Matrix4();
+        /** @type {lanyard.geom.MatrixFour} */
+        var reference = new lanyard.geom.MatrixFour(null);
         reference.translate(referenceCenter);
         newModelView.multiply(reference);
     } else {
-        newModelView = new Matrix4();
+        this._logger.fine("New mvm.");
+        /** @type {lanyard.geom.MatrixFour} */
+        var newModelView = new lanyard.geom.MatrixFour(null);
     }
 
-    GL gl = dc.getGL();
+    var gl = dc.getGL();
 
-    // Store the current matrix-mode state.
-    gl.glGetIntegerv(GL.GL_MATRIX_MODE, matrixMode, 0);
+    this._logger.fine("get ent = " + newModelView.getEntries());
 
-    // Push and load a new model-view matrix to the current OpenGL context held by 'dc'.
-    if (matrixMode[0] != GL.GL_MODELVIEW) {
-        gl.glMatrixMode(GL.GL_MODELVIEW);
-    }
-
-    gl.glPushMatrix();
-    gl.glLoadMatrixd(newModelView.getEntries(), 0);
-
-    // Restore matrix-mode state.
-    if (matrixMode[0] != GL.GL_MODELVIEW) {
-        gl.glMatrixMode(matrixMode[0]);
-    }
-
-****/
+    this.modelViewStack.push(newModelView);
+    dc.loadMatrix("uMVMatrix", newModelView);
 };
 
 /* EOF */
