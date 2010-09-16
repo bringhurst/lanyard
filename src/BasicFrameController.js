@@ -43,39 +43,6 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
 
     dc.getGL().flush();
     dc.getGLSL().endShader();
-    this.checkGLErrors(dc);
-};
-
-/**
- * Called to check for openGL errors. This method includes a "round-trip" between the application and renderer,
- * which is slow. Therefore, this method is excluded from the "normal" render pass. It is here as a matter of
- * convenience to developers, and is not part of the API.
- *
- * @param {lanyard.DrawContext} dc the relevant DrawContext.
- */
-lanyard.BasicFrameController.prototype.checkGLErrors = function (dc) {
-    var gl = dc.getGL();
-
-    /** @type {number} */
-    var err = gl.getError();
-
-    if (err === gl.NO_ERROR) {
-        this._logger.fine("No webgl errors detected.");
-    } else {
-        /** @type {Object.<number, string>} */
-        var errCodes = {
-            0x0500: "INVALID_ENUM",
-            0x0501: "INVALID_VALUE",
-            0x0502: "INVALID_OPERATION",
-            0x0505: "OUT_OF_MEMORY"
-        };
-
-        if(errCodes[err]) {
-            this._logger.severe("A GL error code of type " + errCodes[err] + " was reported.");
-        } else {
-            this._logger.severe("A GL error code of type " + err + " happened.");
-        }
-    }
 };
 
 /**

@@ -353,8 +353,6 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     if (showTriangles) {
         //this._logger.fine("Show triangles enabled.");
 
-        //this._logger.fine("vertices = " + this._ri.vertices);
-
         var vertexBuf = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuf);
@@ -364,6 +362,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
             this._ri.vertices.length, gl.FLOAT, false, 0, 0);
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, this._ri.vertices.length - 1);
+        
     }
 
     dc.getView().popReferenceCenter(dc);
