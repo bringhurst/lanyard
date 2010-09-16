@@ -5,6 +5,10 @@
         <link href="demo.css" media="screen" rel="stylesheet" type="text/css"/>
         <script src="../build/lanyard.js" type="text/javascript"></script>
         <script id="shader-fs" type="x-shader/x-fragment">
+            #ifdef GL_ES
+                precision highp float;
+            #endif
+
             uniform sampler2D uSamplerTileImage;
             uniform sampler2D uSamplerAlphaMask;
 
