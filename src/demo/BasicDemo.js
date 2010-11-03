@@ -33,7 +33,9 @@ lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
      * @private
      * @type {Array.<lanyard.Layer>}
      */
-    this._layerList = [];
+    this._layerList = [
+        new lanyard.layers.earth.BMNGOneImage()
+    ];
 };
 goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
 

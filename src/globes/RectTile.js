@@ -77,6 +77,10 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
      * @private
      */
     this._indexLists = {};
+
+
+    this._logger.fine("Creating a new renderable tile for sector: " + this._sector.toString());
+
 };
 
 /**
