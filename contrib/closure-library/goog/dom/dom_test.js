@@ -24,6 +24,8 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.testing.asserts');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
+goog.require('goog.userAgent.product.isVersion');
 
 var $ = goog.dom.getElement;
 
@@ -96,6 +98,24 @@ function testGetElementsByTagNameAndClass() {
       goog.dom.getElementsByTagNameAndClass);
 }
 
+function testGetElementsByClass() {
+  assertEquals(3, goog.dom.getElementsByClass('test1').length);
+  assertEquals(1, goog.dom.getElementsByClass('test2').length);
+  assertEquals(0, goog.dom.getElementsByClass('nonexistant').length);
+
+  var container = goog.dom.getElement('span-container');
+  assertEquals(3, goog.dom.getElementsByClass('test1', container).length);
+}
+
+function testGetElementByClass() {
+  assertNotNull(goog.dom.getElementByClass('test1'));
+  assertNotNull(goog.dom.getElementByClass('test2'));
+  // assertNull(goog.dom.getElementByClass('nonexistant'));
+
+  var container = goog.dom.getElement('span-container');
+  assertNotNull(goog.dom.getElementByClass('test1', container));
+}
+
 function testSetProperties() {
   var attrs = { 'name': 'test3', 'title': 'A title', 'random': 'woop' };
   var el = $('testEl');
@@ -152,8 +172,9 @@ function testGetDocumentHeightInIframe() {
   var doc = goog.dom.getDomHelper(myIframeDoc).getDocument();
   var height = goog.dom.getDomHelper(myIframeDoc).getDocumentHeight();
 
-  // Broken in webkit quirks mode.
-  if (goog.dom.isCss1CompatMode_(doc) || !goog.userAgent.WEBKIT) {
+  // Broken in webkit quirks mode and in IE8
+  if ((goog.dom.isCss1CompatMode_(doc) || !goog.userAgent.WEBKIT ) &&
+      !isIE8()) {
     assertEquals('height should be 65', 42 + 23, height);
   }
 }
@@ -269,6 +290,14 @@ function testCreateDomWithTypeAttribute() {
   assertNotNull('Button with type attribute was created successfully', el);
   assertEquals('Button has correct type attribute', 'reset', el.type);
   assertEquals('Button has correct id', 'cool-button', el.id);
+}
+
+function testCreateDomWithClassList() {
+  var el = goog.dom.createDom('div', ['foo', 'bar']);
+  assertEquals('foo bar', el.className);
+
+  el = goog.dom.createDom('div', ['foo', 'foo']);
+  assertEquals('foo', el.className);
 }
 
 function testContains() {
@@ -738,6 +767,8 @@ function testGetTextContent() {
   t(' \n&shy;<b>abcde &shy; </b>   \n\n\n&shy;', 'abcde ');
   t(' \n&shy;\n\n&shy;\na   ', 'a ');
   t(' \n<wbr></wbr><b>abcde <wbr></wbr> </b>   \n\n\n<wbr></wbr>', 'abcde ');
+  t('a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b',
+      goog.userAgent.IE ? 'a     b' : 'a\xA0\xA0\xA0\xA0\xA0b');
 }
 
 function testGetNodeTextLength() {
@@ -878,9 +909,6 @@ function testCanHaveChildren() {
     var expected = true;
     switch (tag) {
       case goog.dom.TagName.BASE:
-        // Before version 8, IE incorrectly reports that BASE can have children.
-        expected = goog.userAgent.IE && !goog.userAgent.isVersion('8');
-        break;
       case goog.dom.TagName.APPLET:
       case goog.dom.TagName.AREA:
       case goog.dom.TagName.BR:
@@ -902,9 +930,15 @@ function testCanHaveChildren() {
         expected = false;
         break;
     }
-    var node = goog.dom.createDom(tag);
+    var node = goog.dom.createDom(tag)
     assertEquals(tag + ' should ' + (expected ? '' : 'not ') +
         'have children', expected, goog.dom.canHaveChildren(node));
+
+    // Make sure we can _actually_ add a child if we identify the node as
+    // allowing children.
+    if (goog.dom.canHaveChildren(node)) {
+      node.appendChild(goog.dom.createDom('div', null, 'foo'));
+    }
   }
 }
 
@@ -1010,7 +1044,10 @@ function testHtmlToDocumentFragment() {
   var div = goog.dom.htmlToDocumentFragment('<div>3</div>');
   assertEquals('DIV', div.tagName);
 
-  if (goog.userAgent.IE) {
+  var script = goog.dom.htmlToDocumentFragment('<script></script>');
+  assertEquals('SCRIPT', script.tagName);
+
+  if (goog.userAgent.IE && !goog.userAgent.isVersion('9')) {
     // Removing an Element from a DOM tree in IE sets its parentNode to a new
     // DocumentFragment. Bizarre!
     assertEquals(goog.dom.NodeType.DOCUMENT_FRAGMENT,
@@ -1018,4 +1055,45 @@ function testHtmlToDocumentFragment() {
   } else {
     assertNull(div.parentNode);
   }
+}
+
+function testAppend() {
+  var div = document.createElement('div');
+  var b = document.createElement('b');
+  var c = document.createTextNode('c');
+  goog.dom.append(div, 'a', b, c);
+  assertEqualsCaseAndLeadingWhitespaceInsensitive('a<b></b>c', div.innerHTML);
+}
+
+function testAppend2() {
+  var div = myIframeDoc.createElement('div');
+  var b = myIframeDoc.createElement('b');
+  var c = myIframeDoc.createTextNode('c');
+  goog.dom.append(div, 'a', b, c);
+  assertEqualsCaseAndLeadingWhitespaceInsensitive('a<b></b>c', div.innerHTML);
+}
+
+function testAppend3() {
+  var div = document.createElement('div');
+  var b = document.createElement('b');
+  var c = document.createTextNode('c');
+  goog.dom.append(div, ['a', b, c]);
+  assertEqualsCaseAndLeadingWhitespaceInsensitive('a<b></b>c', div.innerHTML);
+}
+
+function testAppend4() {
+  var div = document.createElement('div');
+  var div2 = document.createElement('div');
+  div2.innerHTML = 'a<b></b>c';
+  goog.dom.append(div, div2.childNodes);
+  assertEqualsCaseAndLeadingWhitespaceInsensitive('a<b></b>c', div.innerHTML);
+  assertFalse(div2.hasChildNodes());
+}
+
+/**
+ * @return {boolean} Returns true if the userAgent is IE8.
+ */
+function isIE8() {
+  return goog.userAgent.IE && goog.userAgent.product.isVersion('8') &&
+      !goog.userAgent.product.isVersion('9');
 }

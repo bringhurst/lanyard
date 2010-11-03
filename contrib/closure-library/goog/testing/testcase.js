@@ -21,7 +21,6 @@
  * This file does not compile correctly with --collapse_properties. Use
  * --property_renaming=ALL_UNQUOTED instead.
  *
-*
  */
 
 goog.provide('goog.testing.TestCase');
@@ -117,6 +116,11 @@ goog.testing.TestCase = function(opt_name) {
    * @suppress {underscore}
    */
   this.result_ = new goog.testing.TestCase.Result(this);
+
+  // This silences a compiler warning from the legacy property check, which
+  // is deprecated. It idly writes to testRunner properties that are used
+  // in this file.
+  var testRunnerMethods = {isFinished: true, hasErrors: true};
 };
 
 
@@ -409,7 +413,7 @@ goog.testing.TestCase.prototype.isInsideMultiTestRunner = function() {
 
 /**
  * Logs an object to the console, if available.
- * @param {*} val The value to log. Will be ToString'd
+ * @param {*} val The value to log. Will be ToString'd.
  */
 goog.testing.TestCase.prototype.log = function(val) {
   if (!this.isInsideMultiTestRunner() && window.console) {
@@ -521,6 +525,33 @@ goog.testing.TestCase.prototype.orderTests_ = function(tests) {
 
 
 /**
+ * Gets the object with all globals.
+ * @param {string=} opt_prefix An optional prefix. If specified, only get things
+ *     under this prefix.
+ * @return {Object} An object with all globals starting with the prefix.
+ */
+goog.testing.TestCase.prototype.getGlobals = function(opt_prefix) {
+  return goog.testing.TestCase.getGlobals(opt_prefix);
+};
+
+
+/**
+ * Gets the object with all globals.
+ * @param {string=} opt_prefix An optional prefix. If specified, only get things
+ *     under this prefix.
+ * @return {Object} An object with all globals starting with the prefix.
+ */
+goog.testing.TestCase.getGlobals = function(opt_prefix) {
+  // Look in the global scope for most browsers, on IE we use the little known
+  // RuntimeObject which holds references to all globals. We reference this
+  // via goog.global so that there isn't an aliasing that throws an exception
+  // in Firefox.
+  return typeof goog.global['RuntimeObject'] != 'undefined' ?
+      goog.global['RuntimeObject']((opt_prefix || '') + '*') : goog.global;
+};
+
+
+/**
  * Gets called before any tests are executed.  Can be overridden to set up the
  * environment for the whole test case.
  */
@@ -558,6 +589,24 @@ goog.testing.TestCase.prototype.getAutoDiscoveryPrefix = function() {
 
 
 /**
+ * @return {number} Time since the last batch of tests was started.
+ * @protected
+ */
+goog.testing.TestCase.prototype.getBatchTime = function() {
+  return this.batchTime_;
+};
+
+
+/**
+ * @param {number} batchTime Time since the last batch of tests was started.
+ * @protected
+ */
+goog.testing.TestCase.prototype.setBatchTime = function(batchTime) {
+  this.batchTime_ = batchTime;
+};
+
+
+/**
  * Creates a {@code goog.testing.TestCase.Test} from an auto-discovered
  *     function.
  * @param {string} name The name of the function.
@@ -577,13 +626,8 @@ goog.testing.TestCase.prototype.createTestFromAutoDiscoveredFunction =
  * and runTests if they are defined.
  */
 goog.testing.TestCase.prototype.autoDiscoverTests = function() {
-  // Look in the global scope for most browsers, on IE we use the little known
-  // RuntimeObject which holds references to all globals. We reference this
-  // via goog.global so that there isn't an aliasing that throws an exception
-  // in Firefox.
   var prefix = this.getAutoDiscoveryPrefix();
-  var testSource = typeof goog.global['RuntimeObject'] != 'undefined' ?
-      goog.global['RuntimeObject'](prefix + '*') : goog.global;
+  var testSource = this.getGlobals(prefix);
 
   var foundTests = [];
 
@@ -630,7 +674,7 @@ goog.testing.TestCase.prototype.autoDiscoverTests = function() {
  * time has execeeded {@link #MAX_RUN_TIME}.
  */
 goog.testing.TestCase.prototype.cycleTests = function() {
-  this.saveMessage('Start')
+  this.saveMessage('Start');
   this.batchTime_ = this.now_();
   var nextTest;
   while ((nextTest = this.next()) && this.running) {

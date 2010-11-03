@@ -7,9 +7,9 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <!--
-Author: marcosalmeida@google.com (Marcos Almeida)
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>goog.ui.editor.LinkDialog Tests</title>
 <script src="../../base.js"></script>
 <script>
@@ -57,7 +57,7 @@ Author: marcosalmeida@google.com (Marcos Almeida)
   var ANCHOR_MAILTO = 'mailto:' + ANCHOR_EMAIL;
 
   function setUp() {
-    anchorElem = goog.dom.$dom(goog.dom.TagName.A);
+    anchorElem = goog.dom.createElement(goog.dom.TagName.A);
     goog.dom.appendChild(goog.dom.getDocument().body, anchorElem);
 
     mockCtrl = new goog.testing.MockControl();
@@ -109,8 +109,8 @@ Author: marcosalmeida@google.com (Marcos Almeida)
 
   /**
    * Creates and shows the dialog to be tested.
-   * @param {Document} opt_document Document to render the dialog into. Defaults
-   *     to the main window's document.
+   * @param {Document=} opt_document Document to render the dialog into.
+   *     Defaults to the main window's document.
    */
   function createAndShow(opt_document) {
     dialog = new goog.ui.editor.LinkDialog(new goog.dom.DomHelper(opt_document),
@@ -136,8 +136,8 @@ Author: marcosalmeida@google.com (Marcos Almeida)
   /**
    * Tests that when you show the dialog for a new link, the input fields are
    * empty, the web tab is selected and focus is in the url input field.
-   * @param {Document} opt_document Document to render the dialog into. Defaults
-   *     to the main window's document.
+   * @param {Document=} opt_document Document to render the dialog into.
+   *     Defaults to the main window's document.
    */
   function testShowForNewLink(opt_document) {
     mockCtrl.$replayAll();
@@ -167,7 +167,7 @@ Author: marcosalmeida@google.com (Marcos Almeida)
    * testShowForNewLink().
    */
   function testShowForNewLinkWithDiffAppWindow() {
-    testShowForNewLink(goog.dom.$('appWindowIframe').contentDocument);
+    testShowForNewLink(goog.dom.getElement('appWindowIframe').contentDocument);
   }
 
   /**
@@ -324,17 +324,24 @@ Author: marcosalmeida@google.com (Marcos Almeida)
       // TODO(robbyw): Figure out why this is flaky and fix it.
       return;
     }
-    var size = goog.dom.getViewportSize(window);
-    var width = Math.max(size.width - 50, 50);
-    var height = Math.max(size.height - 50, 50);
 
-    mockWindowOpen(ANCHOR_URL, '_blank', 'width=' + width + ',height=' +
-        height + ',toolbar=1,scrollbars=1,location=1,statusbar=0,' +
-        'menubar=1,resizable=1');
+    var width, height;
+    mockWindowOpen(ANCHOR_URL, '_blank',
+        new goog.testing.mockmatchers.ArgumentMatcher(function(str) {
+          return str == 'width=' + width + ',height=' + height +
+                        ',toolbar=1,scrollbars=1,location=1,statusbar=0,' +
+                        'menubar=1,resizable=1'
+        }, "3rd arg: (string) window.open() options"));
 
     mockCtrl.$replayAll();
     setUpAnchor(ANCHOR_URL, ANCHOR_TEXT);
     createAndShow();
+
+    // Measure viewport after opening dialog because that might cause scrollbars
+    // to appear and reduce the viewport size.
+    var size = goog.dom.getViewportSize(window);
+    width = Math.max(size.width - 50, 50);
+    height = Math.max(size.height - 50, 50);
 
     var testLink = goog.testing.dom.findTextNode(
         goog.ui.editor.messages.MSG_TEST_THIS_LINK,
@@ -389,7 +396,7 @@ Author: marcosalmeida@google.com (Marcos Almeida)
   }
 
   function getDisplayInput() {
-    return dialog.dom.$(goog.ui.editor.LinkDialog.Id_.TEXT_TO_DISPLAY);
+    return dialog.dom.getElement(goog.ui.editor.LinkDialog.Id_.TEXT_TO_DISPLAY);
   }
 
   function getDisplayInputText() {
@@ -405,7 +412,7 @@ Author: marcosalmeida@google.com (Marcos Almeida)
   }
 
   function getUrlInput() {
-    return dialog.dom.$(goog.ui.editor.LinkDialog.Id_.ON_WEB_INPUT);
+    return dialog.dom.getElement(goog.ui.editor.LinkDialog.Id_.ON_WEB_INPUT);
   }
 
   function getUrlInputText() {
@@ -416,12 +423,13 @@ Author: marcosalmeida@google.com (Marcos Almeida)
     var urlInput = getUrlInput();
     urlInput.value = text;
     // Fire event so that dialog behaves like when user types.
-    goog.testing.events.fireBrowserEvent(new goog.events.Event('input',
-                                                               urlInput));
+    dialog.urlInputHandler_.dispatchEvent(
+        goog.events.InputHandler.EventType.INPUT);
   }
 
   function getEmailInput() {
-    return dialog.dom.$(goog.ui.editor.LinkDialog.Id_.EMAIL_ADDRESS_INPUT);
+    return dialog.dom.getElement(
+        goog.ui.editor.LinkDialog.Id_.EMAIL_ADDRESS_INPUT);
   }
 
   function getEmailInputText() {
@@ -432,8 +440,8 @@ Author: marcosalmeida@google.com (Marcos Almeida)
     var emailInput = getEmailInput();
     emailInput.value = text;
     // Fire event so that dialog behaves like when user types.
-    goog.testing.events.fireBrowserEvent(new goog.events.Event('input',
-                                                               emailInput));
+    dialog.emailInputHandler_.dispatchEvent(
+        goog.events.InputHandler.EventType.INPUT);
   }
 
 </script>

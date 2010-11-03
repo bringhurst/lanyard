@@ -16,7 +16,7 @@
 /**
  * @fileoverview CanvasGraphics sub class that uses the canvas tag for drawing.
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author wcrosby@google.com (Wayne Crosby)
  */
 
 
@@ -24,6 +24,7 @@ goog.provide('goog.graphics.CanvasGraphics');
 
 
 goog.require('goog.dom');
+goog.require('goog.events.EventType');
 goog.require('goog.graphics.AbstractGraphics');
 goog.require('goog.graphics.CanvasEllipseElement');
 goog.require('goog.graphics.CanvasGroupElement');

@@ -7,9 +7,9 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <!--
-  Author: jschorr@google.com (Joseph Schorr)
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Closure Unit Tests - goog.proto2 - pbliteserializer.js</title>
 <script src="../base.js"></script>
 <script>
@@ -148,6 +148,13 @@ function testDeserializationFromExternalSource() {
     serializer.deserialize(proto2.TestAllTypes.getDescriptor(), pblite);
 
   assertDeserializationMatches(messageCopy);
+
+  // http://b/issue?id=2928075
+  assertFalse(messageCopy.hasRepeatedInt64());
+  assertEquals(0, messageCopy.repeatedInt64Count());
+  messageCopy.repeatedInt64Array();
+  assertFalse(messageCopy.hasRepeatedInt64());
+  assertEquals(0, messageCopy.repeatedInt64Count());
 }
 
 function assertDeserializationMatches(messageCopy) {

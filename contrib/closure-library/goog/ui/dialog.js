@@ -19,7 +19,6 @@
  *   * Standardize CSS class names with other components
  *   * Add functionality to "host" other components in content area
  *   * Abstract out ButtonSet and make it more general
-*
  * @see ../demos/dialog.html
  */
 
@@ -37,6 +36,7 @@ goog.require('goog.dom.a11y');
 goog.require('goog.dom.classes');
 goog.require('goog.dom.iframe');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.events.FocusHandler');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.fx.Dragger');
@@ -268,7 +268,7 @@ goog.ui.Dialog.prototype.buttonEl_ = null;
 
 /**
  * Sets the title.
- * @param {string} title Title HTML (escaped).
+ * @param {string} title The title text.
  */
 goog.ui.Dialog.prototype.setTitle = function(title) {
   this.title_ = title;
@@ -841,21 +841,16 @@ goog.ui.Dialog.prototype.setVisible = function(visible) {
     this.reposition();
     // Listen for keyboard and resize events while the dialog is visible.
     this.getHandler().
-        listen(this.getElement(), goog.events.EventType.KEYDOWN,
-            this.onKey_, true).
-        listen(this.getElement(), goog.events.EventType.KEYPRESS,
-            this.onKey_, true).
-        listen(win, goog.events.EventType.RESIZE,
-            this.onResize_, true);
+        listen(this.getElement(), goog.events.EventType.KEYDOWN, this.onKey_).
+        listen(this.getElement(), goog.events.EventType.KEYPRESS, this.onKey_).
+        listen(win, goog.events.EventType.RESIZE, this.onResize_);
   } else {
     // Stop listening for keyboard and resize events while the dialog is hidden.
     this.getHandler().
-        unlisten(this.getElement(), goog.events.EventType.KEYDOWN,
-            this.onKey_, true).
+        unlisten(this.getElement(), goog.events.EventType.KEYDOWN, this.onKey_).
         unlisten(this.getElement(), goog.events.EventType.KEYPRESS,
-            this.onKey_, true).
-        unlisten(win, goog.events.EventType.RESIZE,
-            this.onResize_, true);
+            this.onKey_).
+        unlisten(win, goog.events.EventType.RESIZE, this.onResize_);
   }
 
   // Show/hide the iframe mask (on IE), the background mask, and the dialog.
@@ -970,9 +965,9 @@ goog.ui.Dialog.prototype.resizeBackground_ = function() {
   var win = goog.dom.getWindow(doc) || window;
 
   // Take the max of scroll height and view height for cases in which document
-  // does not fill screen.  Don't worry about width.
+  // does not fill screen.
   var viewSize = goog.dom.getViewportSize(win);
-  var w = doc.body.scrollWidth;
+  var w = Math.max(doc.body.scrollWidth, viewSize.width);
   var h = Math.max(doc.body.scrollHeight, viewSize.height);
 
   if (this.bgIframeEl_) {
@@ -1411,7 +1406,7 @@ goog.ui.Dialog.ButtonSet.prototype.cancelButton_ = null;
  *    "set" calls and build new ButtonSets.
  */
 goog.ui.Dialog.ButtonSet.prototype.set = function(key, caption,
-      opt_isDefault, opt_isCancel) {
+    opt_isDefault, opt_isCancel) {
   goog.structs.Map.prototype.set.call(this, key, caption);
 
   if (opt_isDefault) {

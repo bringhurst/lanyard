@@ -16,12 +16,10 @@
  * @fileoverview Definition of the ErrorReporter class, which creates an error
  * handler that reports any errors raised to a URL.
  *
-*
-*
  */
 
 goog.provide('goog.debug.ErrorReporter');
-goog.provide('goog.debug.ErrorReporter.ExceptionEvent')
+goog.provide('goog.debug.ErrorReporter.ExceptionEvent');
 
 goog.require('goog.debug');
 goog.require('goog.debug.ErrorHandler');
@@ -43,16 +41,28 @@ goog.require('goog.uri.utils');
  *     opt_contextProvider When a report is to be sent to the server,
  *     this method will be called, and given an opportunity to modify the
  *     context object before submission to the server.
+ * @param {boolean=} opt_noAutoProtect Whether to automatically add handlers for
+ *     onerror and to protect entry points.  If apps have other error reporting
+ *     facilities, it may make sense for them to set these up themselves and use
+ *     the ErrorReporter just for transmission of reports.
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-goog.debug.ErrorReporter = function(handlerUrl, opt_contextProvider) {
+goog.debug.ErrorReporter = function(
+    handlerUrl, opt_contextProvider, opt_noAutoProtect) {
   /**
    * Context provider, if one was provided.
    * @type {?function(!Error, !Object.<string, string>)}
    * @private
    */
   this.contextProvider_ = opt_contextProvider || null;
+
+  /**
+   * XHR sender.
+   * @type {function(string, string, string, (Object|goog.structs.Map)=)}
+   * @private
+   */
+  this.xhrSender_ = goog.debug.ErrorReporter.defaultXhrSender;
 
   /**
    * The URL at which all errors caught by this handler will be logged.
@@ -62,7 +72,9 @@ goog.debug.ErrorReporter = function(handlerUrl, opt_contextProvider) {
    */
   this.handlerUrl_ = handlerUrl;
 
-  this.setup_();
+  if (!opt_noAutoProtect) {
+    this.setup_();
+  }
 };
 goog.inherits(goog.debug.ErrorReporter, goog.events.EventTarget);
 
@@ -137,12 +149,32 @@ goog.debug.ErrorReporter.logger_ =
  *     opt_contextProvider When a report is to be sent to the server,
  *     this method will be called, and given an opportunity to modify the
  *     context object before submission to the server.
+ * @param {boolean=} opt_noAutoProtect Whether to automatically add handlers for
+ *     onerror and to protect entry points.  If apps have other error reporting
+ *     facilities, it may make sense for them to set these up themselves and use
+ *     the ErrorReporter just for transmission of reports.
  * @return {goog.debug.ErrorReporter} The error reporter.
  */
-goog.debug.ErrorReporter.install = function(loggingUrl,
-    opt_contextProvider) {
-  var instance = new goog.debug.ErrorReporter(loggingUrl, opt_contextProvider);
+goog.debug.ErrorReporter.install = function(
+    loggingUrl, opt_contextProvider, opt_noAutoProtect) {
+  var instance = new goog.debug.ErrorReporter(
+      loggingUrl, opt_contextProvider, opt_noAutoProtect);
   return instance;
+};
+
+
+/**
+ * Default implemntation of XHR sender interface.
+ *
+ * @param {string} uri URI to make request to.
+ * @param {string} method Send method.
+ * @param {string} content Post data.
+ * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
+ *     request.
+ */
+goog.debug.ErrorReporter.defaultXhrSender = function(uri, method, content,
+    opt_headers) {
+  goog.net.XhrIo.send(uri, null, method, content, opt_headers);
 };
 
 
@@ -153,14 +185,12 @@ goog.debug.ErrorReporter.install = function(loggingUrl,
  * exceptions in that case.
  *
  * @param {Function} fn An entry point function to be protected.
- * @param {boolean=} opt_tracers Whether to install tracers around the fn.
  * @return {Function} A protected wrapper function that calls the entry point
  *     function or null if the entry point could not be protected.
  */
-goog.debug.ErrorReporter.prototype.protectAdditionalEntryPoint = function(fn,
-    opt_tracers) {
+goog.debug.ErrorReporter.prototype.protectAdditionalEntryPoint = function(fn) {
   if (this.errorHandler_) {
-    return this.errorHandler_.protectEntryPoint(fn, opt_tracers);
+    return this.errorHandler_.protectEntryPoint(fn);
   }
   return null;
 };
@@ -174,6 +204,18 @@ goog.debug.ErrorReporter.prototype.protectAdditionalEntryPoint = function(fn,
 goog.debug.ErrorReporter.prototype.setLoggingHeaders =
     function(loggingHeaders) {
   this.extraHeaders_ = loggingHeaders;
+};
+
+/**
+ * Set the function used to send error reports to the server.
+ * @param {function(string, string, string, (Object|goog.structs.Map)=)}
+ *     xhrSender If provided, this will be used to send a report to the
+ *     server instead of the default method. The function will be given the URI,
+ *     HTTP method request content, and (optionally) request headers to be
+ *     added.
+ */
+goog.debug.ErrorReporter.prototype.setXhrSender = function(xhrSender) {
+  this.xhrSender_ = xhrSender;
 };
 
 
@@ -194,8 +236,7 @@ goog.debug.ErrorReporter.prototype.setup_ = function() {
 
     this.errorHandler_.protectWindowSetTimeout();
     this.errorHandler_.protectWindowSetInterval();
-    goog.events.protectBrowserEventEntryPoint(this.errorHandler_);
-    goog.net.XhrIo.protectEntryPoints(this.errorHandler_);
+    goog.debug.entryPointRegistry.monitorAll(this.errorHandler_);
   }
 };
 
@@ -212,14 +253,6 @@ goog.debug.ErrorReporter.prototype.handleException = function(e,
     opt_context) {
   var error = (/** @type {!Error} */ goog.debug.normalizeErrorObject(e));
 
-  // Make sure when handling exceptions that the error file name contains only
-  // the basename (e.g. "file.js"). goog.debug.catchErrors does this stripping,
-  // but goog.debug.ErrorHandler.protectEntryPoint does not.
-  var baseName = String(error.fileName).split(/[\/\\]/).pop();
-
-  // Strip the query part of the URL.
-  baseName = String(baseName).split('?', 2)[0];
-
   // Construct the context, possibly from the one provided in the argument, and
   // pass it to the context provider if there is one.
   var context = opt_context ? goog.object.clone(opt_context) : {};
@@ -231,8 +264,8 @@ goog.debug.ErrorReporter.prototype.handleException = function(e,
           'exception: ' + err.message);
     }
   }
-  this.sendErrorReport(error.message, baseName, error.lineNumber, error.stack,
-      context);
+  this.sendErrorReport(error.message, error.fileName, error.lineNumber,
+      error.stack, context);
 
   try {
     this.dispatchEvent(
@@ -274,8 +307,7 @@ goog.debug.ErrorReporter.prototype.sendErrorReport =
     var queryData = goog.uri.utils.buildQueryDataFromMap(queryMap);
 
     // Send the request with the contents of the error.
-    goog.net.XhrIo.send(requestUrl, null, 'POST',
-        queryData, this.extraHeaders_);
+    this.xhrSender_(requestUrl, 'POST', queryData, this.extraHeaders_);
   } catch (e) {
     var logMessage = goog.string.buildString(
         'Error occurred in sending an error report.\n\n',

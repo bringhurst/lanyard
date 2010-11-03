@@ -27,10 +27,6 @@
  * internal representation is now of un-encoded parts, this will change the
  * behavior slightly.
  *
-*
-*
-*
-*
  */
 
 goog.provide('goog.Uri');
@@ -210,6 +206,9 @@ goog.Uri.prototype.toString = function() {
   }
 
   if (this.path_) {
+    if (this.hasDomain() && this.path_.charAt(0) != '/') {
+      out.push('/');
+    }
     out.push(goog.Uri.encodeSpecialChars_(
         this.path_, goog.Uri.reDisallowedInPath_));
   }
@@ -1099,7 +1098,7 @@ goog.Uri.QueryData.prototype.ensureKeyMapInitialized_ = function() {
  */
 goog.Uri.QueryData.createFromMap = function(map, opt_uri, opt_ignoreCase) {
   var keys = goog.structs.getKeys(map);
-  if (typeof keys == 'undefined'){
+  if (typeof keys == 'undefined') {
     throw Error('Keys are undefined');
   }
   return goog.Uri.QueryData.createFromKeysValues(

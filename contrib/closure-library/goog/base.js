@@ -19,8 +19,6 @@
  * global <code>CLOSURE_NO_DEPS</code> is set to true.  This allows projects to
  * include their own deps file(s) from different locations.
  *
-*
-*
  */
 
 /**
@@ -34,8 +32,10 @@ var COMPILED = false;
  * Base namespace for the Closure library.  Checks to see goog is
  * already defined in the current scope before assigning to prevent
  * clobbering if base.js is loaded more than once.
+ *
+ * @const
  */
-var goog = goog || {}; // Check to see if already defined in current scope
+var goog = goog || {};
 
 
 /**
@@ -111,6 +111,21 @@ goog.provide = function(name) {
   }
 
   goog.exportPath_(name);
+};
+
+
+/**
+ * Marks that the current file should only be used for testing, and never for
+ * live code in production.
+ * @param {string=} opt_message Optional message to add to the error that's
+ *     raised when used in production code.
+ */
+goog.setTestOnly = function(opt_message) {
+  if (COMPILED && !goog.DEBUG) {
+    opt_message = opt_message || '';
+    throw Error('Importing test-only code into non-debug environment' +
+                opt_message ? ': ' + opt_message : '.');
+  }
 };
 
 
@@ -239,7 +254,6 @@ goog.addDependency = function(relPath, provides, requires) {
 };
 
 
-
 /**
  * Implements a system for the dynamic resolution of dependencies
  * that works in parallel with the BUILD system. Note that all calls
@@ -269,9 +283,7 @@ goog.require = function(rule) {
         goog.global.console['error'](errorMessage);
       }
 
-      
         throw Error(errorMessage);
-        
     }
   }
 };
@@ -301,7 +313,7 @@ goog.global.CLOSURE_NO_DEPS;
 
 /**
  * Null function used for default values of callbacks, etc.
- * @type {!Function}
+ * @return {void} Nothing.
  */
 goog.nullFunction = function() {};
 
@@ -372,8 +384,9 @@ if (!COMPILED) {
     pathToNames: {}, // 1 to many
     nameToPath: {}, // 1 to 1
     requires: {}, // 1 to many
-    visited: {}, // used when resolving dependencies to prevent us from
-                 // visiting the file twice
+    // used when resolving dependencies to prevent us from
+    // visiting the file twice
+    visited: {},
     written: {} // used to keep track of script files we have written
   };
 
@@ -608,12 +621,12 @@ goog.typeOf = function(value) {
       return 'null';
     }
 
-  // In Safari typeof nodeList returns 'function', and on Firefox
-  // typeof behaves similarly for HTML{Applet,Embed,Object}Elements
-  // and RegExps.  We would like to return object for those and we can
-  // detect an invalid function by making sure that the function
-  // object has a call method.
   } else if (s == 'function' && typeof value.call == 'undefined') {
+    // In Safari typeof nodeList returns 'function', and on Firefox
+    // typeof behaves similarly for HTML{Applet,Embed,Object}Elements
+    // and RegExps.  We would like to return object for those and we can
+    // detect an invalid function by making sure that the function
+    // object has a call method.
     return 'object';
   }
   return s;
@@ -791,7 +804,8 @@ goog.isObject = function(val) {
  * calls with the same object as a parameter returns the same value. The unique
  * ID is guaranteed to be unique across the current session amongst objects that
  * are passed into {@code getUid}. There is no guarantee that the ID is unique
- * or consistent across sessions.
+ * or consistent across sessions. It is unsafe to generate unique ID for
+ * function prototypes.
  *
  * @param {Object} obj The object to get the unique ID for.
  * @return {number} The unique ID for the object.
@@ -799,15 +813,11 @@ goog.isObject = function(val) {
 goog.getUid = function(obj) {
   // TODO(user): Make the type stricter, do not accept null.
 
-  // In IE, DOM nodes do not extend Object so they do not have this method.
-  // we need to check hasOwnProperty because the proto might have this set.
-  if (obj.hasOwnProperty && obj.hasOwnProperty(goog.UID_PROPERTY_)) {
-    return obj[goog.UID_PROPERTY_];
-  }
-  if (!obj[goog.UID_PROPERTY_]) {
-    obj[goog.UID_PROPERTY_] = ++goog.uidCounter_;
-  }
-  return obj[goog.UID_PROPERTY_];
+  // In Opera window.hasOwnProperty exists but always returns false so we avoid
+  // using it. As a consequence the unique ID generated for BaseClass.prototype
+  // and SubClass.prototype will be the same.
+  return obj[goog.UID_PROPERTY_] ||
+      (obj[goog.UID_PROPERTY_] = ++goog.uidCounter_);
 };
 
 
@@ -1157,7 +1167,8 @@ goog.setCssNameMapping = function(mapping) {
 goog.getMsg = function(str, opt_values) {
   var values = opt_values || {};
   for (var key in values) {
-    str = str.replace(new RegExp('\\{\\$' + key + '\\}', 'gi'), values[key]);
+    var value = ('' + values[key]).replace(/\$/g, '$$$$');
+    str = str.replace(new RegExp('\\{\\$' + key + '\\}', 'gi'), value);
   }
   return str;
 };
@@ -1316,6 +1327,5 @@ goog.base = function(me, opt_methodName, var_args) {
 goog.scope = function(fn) {
   fn.call(goog.global);
 };
-
 
 

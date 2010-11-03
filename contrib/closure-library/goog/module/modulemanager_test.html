@@ -7,10 +7,9 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <!--
-Author: pupius@google.com (Daniel Pupius)
-Author: jananir@google.com (Janani Ravi) (Modified for Closure)
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Closure Unit Tests - goog.module.ModuleManager</title>
 <script src="../base.js"></script>
 <script src="../../../third_party/closure/goog/deps.js"></script>
@@ -49,10 +48,10 @@ Author: jananir@google.com (Janani Ravi) (Modified for Closure)
     return {
       loadModules: function(ids, moduleInfoMap, opt_successFn, opt_errFn,
           opt_timeoutFn) {
-        moduleMgr.beforeLoadModuleCode(ids[0]);
         setTimeout(goog.bind(this.onLoad, this, ids.concat(), 0), 5);
       },
       onLoad: function(ids, idxLoaded) {
+        moduleMgr.beforeLoadModuleCode(ids[0]);
         moduleMgr.setLoaded(ids[idxLoaded]);
         moduleMgr.afterLoadModuleCode(ids[idxLoaded]);
         var idx = idxLoaded + 1;
@@ -67,8 +66,8 @@ Author: jananir@google.com (Janani Ravi) (Modified for Closure)
     return {
       loadModules: function(ids, moduleInfoMap, opt_successFn, opt_errFn,
           opt_timeoutFn) {
-        moduleMgr.beforeLoadModuleCode(ids[0]);
         setTimeout(function() {
+          moduleMgr.beforeLoadModuleCode(ids[0]);
           moduleMgr.setLoaded(ids[0]);
           moduleMgr.afterLoadModuleCode(ids[0]);
           if (opt_successFn) {
@@ -1129,9 +1128,9 @@ Author: jananir@google.com (Janani Ravi) (Modified for Closure)
     return {
       loadModules: function(ids, moduleInfoMap, opt_successFn, opt_errFn,
           opt_timeoutFn) {
-        moduleMgr.beforeLoadModuleCode(ids[0]);
-        moduleMgr.setModuleConstructor(info[ids[0]].ctor);
         setTimeout(function() {
+          moduleMgr.beforeLoadModuleCode(ids[0]);
+          moduleMgr.setModuleConstructor(info[ids[0]].ctor);
           moduleMgr.setLoaded(ids[0]);
           moduleMgr.afterLoadModuleCode(ids[0]);
           if (opt_successFn) {
@@ -1139,6 +1138,50 @@ Author: jananir@google.com (Janani Ravi) (Modified for Closure)
           }
         }, 5);
       }};
+  }
+
+  function testInitCallbackInBaseModule() {
+    var mm = new goog.module.ModuleManager();
+    var called = false;
+    var context;
+    mm.registerInitializationCallback(function(mcontext) {
+      called = true;
+      context = mcontext;
+    });
+    mm.setAllModuleInfo({'a': [], 'b': ['a']});
+    assertTrue('Base initialization not called', called);
+    assertNull('Context should still be null', context);
+
+    var mm = new goog.module.ModuleManager();
+    called = false;
+    mm.registerInitializationCallback(function(mcontext) {
+      called = true;
+      context = mcontext;
+    });
+    var appContext = {};
+    mm.setModuleContext(appContext);
+    assertTrue('Base initialization not called after setModuleContext', called);
+    assertEquals('Did not receive module context', appContext, context);
+  }
+  
+  function testSetAllModuleInfoString() {
+    var info = 'base/one:0/two:0/three:0,1,2/four:0,3/five:';
+    var mm = new goog.module.ModuleManager();
+    mm.setAllModuleInfoString(info);
+
+    assertNotNull('Base should exist', mm.getModuleInfo('base'));
+    assertNotNull('One should exist', mm.getModuleInfo('one'));
+    assertNotNull('Two should exist', mm.getModuleInfo('two'));
+    assertNotNull('Three should exist', mm.getModuleInfo('three'));
+    assertNotNull('Four should exist', mm.getModuleInfo('four'));
+    assertNotNull('Five should exist', mm.getModuleInfo('five'));
+
+    assertArrayEquals(['base', 'one', 'two'],
+        mm.getModuleInfo('three').getDependencies());
+    assertArrayEquals(['base', 'three'],
+        mm.getModuleInfo('four').getDependencies());
+    assertArrayEquals([],
+        mm.getModuleInfo('five').getDependencies());
   }
 
 </script>

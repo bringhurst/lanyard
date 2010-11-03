@@ -15,7 +15,6 @@
 /**
  * @fileoverview Default renderer for {@link goog.ui.Button}s.
  *
-*
  */
 
 goog.provide('goog.ui.ButtonRenderer');
@@ -23,6 +22,7 @@ goog.provide('goog.ui.ButtonRenderer');
 goog.require('goog.dom.a11y');
 goog.require('goog.dom.a11y.Role');
 goog.require('goog.dom.a11y.State');
+goog.require('goog.ui.ButtonSide');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.ControlRenderer');
 
@@ -183,7 +183,7 @@ goog.ui.ButtonRenderer.prototype.setTooltip = function(element, tooltip) {
  * combined with the adjacent button(s), forming a single UI componenet with
  * multiple targets.
  * @param {goog.ui.Button} button Button to update.
- * @param {number} sides Bitmap of one or more {@link goog.ui.Button.Side}s for
+ * @param {number} sides Bitmap of one or more {@link goog.ui.ButtonSide}s for
  *     which borders should be collapsed.
  * @protected
  */
@@ -195,9 +195,9 @@ goog.ui.ButtonRenderer.prototype.setCollapsed = function(button, sides) {
       goog.getCssName(this.getStructuralCssClass(), 'collapse-right');
 
   button.enableClassName(isRtl ? collapseRightClassName : collapseLeftClassName,
-      !!(sides & goog.ui.Button.Side.START));
+      !!(sides & goog.ui.ButtonSide.START));
   button.enableClassName(isRtl ? collapseLeftClassName : collapseRightClassName,
-      !!(sides & goog.ui.Button.Side.END));
+      !!(sides & goog.ui.ButtonSide.END));
 };
 
 

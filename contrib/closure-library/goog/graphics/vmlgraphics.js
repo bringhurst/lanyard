@@ -15,8 +15,6 @@
 
 /**
  * @fileoverview VmlGraphics sub class that uses VML to draw the graphics.
-*
-*
  */
 
 
@@ -26,6 +24,7 @@ goog.provide('goog.graphics.VmlGraphics');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventType');
 goog.require('goog.graphics.AbstractGraphics');
 goog.require('goog.graphics.Font');
 goog.require('goog.graphics.LinearGradient');
@@ -468,8 +467,8 @@ goog.graphics.VmlGraphics.prototype.createDom = function() {
   var pixelHeight = this.height;
   var divElement = this.dom_.createDom('div', {
     'style': 'overflow:hidden;position:relative;width:' +
-             goog.graphics.VmlGraphics.toCssSize(pixelWidth) + ';height:' +
-             goog.graphics.VmlGraphics.toCssSize(pixelHeight)
+        goog.graphics.VmlGraphics.toCssSize(pixelWidth) + ';height:' +
+        goog.graphics.VmlGraphics.toCssSize(pixelHeight)
   });
 
   this.setElementInternal(divElement);

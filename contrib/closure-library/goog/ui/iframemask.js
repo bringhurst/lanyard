@@ -16,8 +16,6 @@
  * @fileoverview Iframe shims, to protect controls on the underlying page
  * from bleeding through popups.
  *
-*
- * @author nicksantos@google.com (Nick Santos) (Ported to Closure)
  */
 
 
@@ -129,7 +127,7 @@ goog.ui.IframeMask.prototype.disposeInternal = function() {
  * @private
  */
 goog.ui.IframeMask.HIDDEN_CSS_TEXT_ =
-    'position:absolute;display:none;z-index:1'
+    'position:absolute;display:none;z-index:1';
 
 
 /**

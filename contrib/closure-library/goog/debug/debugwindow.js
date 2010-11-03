@@ -17,7 +17,6 @@
  * dependencies this file has on other closure classes as any dependency it
  * takes won't be able to use the logging infrastructure.
  *
-*
  */
 
 goog.provide('goog.debug.DebugWindow');
@@ -294,13 +293,21 @@ goog.debug.DebugWindow.prototype.addSeparator = function() {
 
 
 /**
+ * @return {boolean} Whether there is an active window.
+ */
+goog.debug.DebugWindow.prototype.hasActiveWindow = function() {
+  return !!this.win_ && !this.win_.closed;
+};
+
+
+/**
  * Clears the contents of the debug window
  * @protected
  * @suppress {underscore}
  */
 goog.debug.DebugWindow.prototype.clear_ = function() {
   this.savedMessages_.clear();
-  if (this.win_) {
+  if (this.hasActiveWindow()) {
     this.writeInitialDocument_();
   }
 };
@@ -363,10 +370,10 @@ goog.debug.DebugWindow.prototype.writeToLog_ = function(html) {
  */
 goog.debug.DebugWindow.prototype.writeBufferToLog_ = function() {
   this.lastCall_ = goog.now();
-  if (this.win_) {
+  if (this.hasActiveWindow()) {
     var body = this.win_.document.body;
     var scroll = body &&
-               body.scrollHeight - (body.scrollTop + body.clientHeight) <= 100;
+        body.scrollHeight - (body.scrollTop + body.clientHeight) <= 100;
 
     this.win_.document.write(this.outputBuffer_.join(''));
     this.outputBuffer_.length = 0;
@@ -396,7 +403,7 @@ goog.debug.DebugWindow.prototype.writeSavedMessages_ = function() {
  * @private
  */
 goog.debug.DebugWindow.prototype.openWindow_ = function() {
-  if ((this.win_ && !this.win_.closed) || this.winOpening_) {
+  if (this.hasActiveWindow() || this.winOpening_) {
     return;
   }
 
@@ -461,7 +468,7 @@ goog.debug.DebugWindow.prototype.getStyleRules = function() {
  * @suppress {underscore}
  */
 goog.debug.DebugWindow.prototype.writeInitialDocument_ = function() {
-  if (!this.win_) {
+  if (this.hasActiveWindow()) {
     return;
   }
 
@@ -487,7 +494,7 @@ goog.debug.DebugWindow.prototype.writeInitialDocument_ = function() {
 goog.debug.DebugWindow.prototype.setCookie_ = function(key, value) {
   key += this.identifier_;
   document.cookie = key + '=' + encodeURIComponent(value) + ';expires=' +
-    (new Date(goog.now() + goog.debug.DebugWindow.COOKIE_TIME)).toUTCString();
+      (new Date(goog.now() + goog.debug.DebugWindow.COOKIE_TIME)).toUTCString();
 };
 
 
@@ -513,7 +520,7 @@ goog.debug.DebugWindow.prototype.getCookie_ = function(key, opt_default) {
  * @private
  */
 goog.debug.DebugWindow.getCookieValue_ = function(
-      identifier, key, opt_default) {
+    identifier, key, opt_default) {
   var fullKey = key + identifier;
   var cookie = String(document.cookie);
   var start = cookie.indexOf(fullKey + '=');
@@ -541,12 +548,12 @@ goog.debug.DebugWindow.isEnabled = function(identifier) {
  * @private
  */
 goog.debug.DebugWindow.prototype.saveWindowPositionSize_ = function() {
-  if (!this.win_ || this.win_.closed) {
+  if (!this.hasActiveWindow()) {
     return;
   }
   var x = this.win_.screenX || this.win_.screenLeft || 0;
   var y = this.win_.screenY || this.win_.screenTop || 0;
-  var w = this.win_.outerWidth || 800
+  var w = this.win_.outerWidth || 800;
   var h = this.win_.outerHeight || 500;
   this.setCookie_('dbg', x + ',' + y + ',' + w + ',' + h);
 };

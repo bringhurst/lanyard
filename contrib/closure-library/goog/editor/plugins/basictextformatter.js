@@ -15,9 +15,6 @@
 /**
  * @fileoverview Functions to style text.
  *
-*
- * @author nicksantos@google.com (Nick Santos)
-*
  */
 
 goog.provide('goog.editor.plugins.BasicTextFormatter');
@@ -451,9 +448,13 @@ goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsDom =
       image.removeAttribute('tabIndexSet');
       goog.removeUid(image);
 
+      // Declare oldTypeIndex for the compiler. The associated plugin may not be
+      // included in the compiled bundle.
+      /** @type {string} */ image.oldTabIndex;
+
       // oldTabIndex will only be set if
-      // goog.editor.BrowserFeature.TABS_THROUGH_IMAGES is true
-      // and we're on P-on-enter mode.
+      // goog.editor.BrowserFeature.TABS_THROUGH_IMAGES is true and we're in
+      // P-on-enter mode.
       if (image.oldTabIndex) {
         image.tabIndex = image.oldTabIndex;
       }
@@ -470,8 +471,8 @@ goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsHtml =
   if (goog.editor.BrowserFeature.MOVES_STYLE_TO_HEAD) {
     // Safari creates a new <head> element for <style> tags, so prepend their
     // contents to the output.
-    var heads = this.fieldObject.getEditableDomHelper().$$(
-        goog.dom.TagName.HEAD);
+    var heads = this.fieldObject.getEditableDomHelper().
+        getElementsByTagNameAndClass(goog.dom.TagName.HEAD);
     var stylesHtmlArr = [];
 
     // i starts at 1 so we don't copy in the original, legitimate <head>.
@@ -559,7 +560,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.convertBreaksToDivs_ =
   goog.editor.plugins.BasicTextFormatter.BR_REGEXP_.lastIndex = 0;
   // Only mess with the HTML/selection if it contains a BR.
   if (goog.editor.plugins.BasicTextFormatter.BR_REGEXP_.test(
-          parent.innerHTML)) {
+      parent.innerHTML)) {
     // Insert temporary markers to remember the selection.
     var savedRange = range.saveUsingCarets();
 
@@ -588,7 +589,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.convertBreaksToDivs_ =
         if (paragraph.getAttribute(attribute) == value) {
           paragraph.removeAttribute(attribute);
           if (goog.string.isBreakingWhitespace(
-                  goog.dom.getTextContent(paragraph))) {
+              goog.dom.getTextContent(paragraph))) {
             // Prevent the empty blocks from collapsing.
             // A <BR> is preferable because it doesn't result in any text being
             // added to the "blank" line. In IE, however, it is possible to
@@ -1041,8 +1042,7 @@ goog.editor.plugins.BasicTextFormatter.blockquoteHatingCommandsIE_ = {
  * @private
  */
 goog.editor.plugins.BasicTextFormatter.
-    prototype.applySubscriptSuperscriptWorkarounds_ =
-        function(command) {
+    prototype.applySubscriptSuperscriptWorkarounds_ = function(command) {
   if (!this.queryCommandValue(command)) {
     // The current selection doesn't currently have the requested
     // command, so we are applying it as opposed to removing it.

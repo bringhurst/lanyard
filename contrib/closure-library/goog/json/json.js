@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview JSON utility functions.
-*
  */
 
 
@@ -268,7 +267,7 @@ goog.json.Serializer.prototype.serializeArray_ = function(arr, sb) {
   sb.push('[');
   var sep = '';
   for (var i = 0; i < l; i++) {
-    sb.push(sep)
+    sb.push(sep);
     this.serialize_(arr[i], sb);
     sep = ',';
   }

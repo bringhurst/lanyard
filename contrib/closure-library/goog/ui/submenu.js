@@ -16,8 +16,6 @@
  * @fileoverview A class representing menu items that open a submenu.
  * @see goog.ui.Menu
  *
-*
-*
  * @see ../demos/submenus.html
  * @see ../demos/submenus2.html
  */
@@ -381,8 +379,14 @@ goog.ui.SubMenu.prototype.handleMouseOver = function(e) {
  */
 goog.ui.SubMenu.prototype.performActionInternal = function(e) {
   this.clearTimers();
-  this.showSubMenu();
-  return true;
+  var shouldHandleClick = this.isSupportedState(
+      goog.ui.Component.State.SELECTED);
+  if (shouldHandleClick) {
+    return goog.ui.SubMenu.superClass_.performActionInternal.call(this, e);
+  } else {
+    this.showSubMenu();
+    return true;
+  }
 };
 
 
@@ -495,7 +499,8 @@ goog.ui.SubMenu.prototype.positionSubMenu_ = function() {
 
 /**
  * Adds a new menu item at the end of the menu.
- * @param {goog.ui.MenuItem} item Menu item to add to the menu.
+ * @param {goog.ui.MenuHeader|goog.ui.MenuItem|goog.ui.MenuSeparator} item Menu
+ *     item to add to the menu.
  */
 goog.ui.SubMenu.prototype.addItem = function(item) {
   this.getMenu().addChild(item, true);
@@ -504,7 +509,8 @@ goog.ui.SubMenu.prototype.addItem = function(item) {
 
 /**
  * Adds a new menu item at a specific index in the menu.
- * @param {goog.ui.MenuItem} item Menu item to add to the menu.
+ * @param {goog.ui.MenuHeader|goog.ui.MenuItem|goog.ui.MenuSeparator} item Menu
+ *     item to add to the menu.
  * @param {number} n Index at which to insert the menu item.
  */
 goog.ui.SubMenu.prototype.addItemAt = function(item, n) {
@@ -650,5 +656,5 @@ goog.ui.SubMenu.prototype.isPositionAdjustable = function() {
 // Register a decorator factory function for goog.ui.SubMenus.
 goog.ui.registry.setDecoratorByClassName(goog.getCssName('goog-submenu'),
     function() {
-  return new goog.ui.SubMenu(null);
-});
+      return new goog.ui.SubMenu(null);
+    });

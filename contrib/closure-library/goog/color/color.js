@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Utilities related to color and color conversion.
-*
-*
  */
 
 goog.provide('goog.color');
@@ -331,7 +329,7 @@ goog.color.isNormalizedHexColor_ = function(str) {
  * @private
  */
 goog.color.rgbColorRe_ =
-   /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
+    /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
 
 /**
  * Checks if a string is a valid rgb color.  We expect strings of the format

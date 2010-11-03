@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Low level handling of XMLHttpRequest.
-*
-*
  */
 
 goog.provide('goog.net.DefaultXmlHttpFactory');
@@ -30,7 +28,7 @@ goog.require('goog.net.XmlHttpFactory');
 
 /**
  * Static class for creating XMLHttpRequest objects.
- * @return {goog.net.XmlHttp} A new XMLHttpRequest object.
+ * @return {!(XMLHttpRequest|GearsHttpRequest)} A new XMLHttpRequest object.
  */
 goog.net.XmlHttp = function() {
   return goog.net.XmlHttp.factory_.createInstance();
@@ -117,7 +115,7 @@ goog.net.XmlHttp.factory_;
  */
 goog.net.XmlHttp.setFactory = function(factory, optionsFactory) {
   goog.net.XmlHttp.setGlobalFactory(new goog.net.WrapperXmlHttpFactory(
-      (/** @type {function() : !goog.net.XmlHttp} */ factory),
+      (/** @type {function() : !(XMLHttpRequest|GearsHttpRequest)} */ factory),
       (/** @type {function() : !Object}*/ optionsFactory)));
 };
 

@@ -7,9 +7,9 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <!--
-  Author: ajp@google.com (Andy Perelson)
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Closure Unit Tests - goog.fx.Dragger</title>
 <script src="../base.js"></script>
 <script>
@@ -36,12 +36,12 @@ var HAS_SET_CAPTURE = goog.fx.Dragger.HAS_SET_CAPTURE_;
 var target;
 function setUp() {
   var sandbox = goog.dom.getElement('sandbox');
-  target = goog.dom.$dom('div', {
+  target = goog.dom.createDom('div', {
     'id': 'target',
     'style': 'display:none;position:absolute;top:15px;left:10px'
   });
   sandbox.appendChild(target);
-  sandbox.appendChild(goog.dom.$dom('div', {'id': 'handle'}));
+  sandbox.appendChild(goog.dom.createDom('div', {'id': 'handle'}));
 }
 
 function tearDown() {
@@ -311,7 +311,7 @@ function testOnWindowMouseOut() {
 
     dragCanceled = false;
     delete e.relatedTarget;
-    e.target = goog.dom.$dom('iframe');
+    e.target = goog.dom.createDom('iframe');
     dragger.onWindowMouseOut_(e);
     assertFalse('Drag is not canceled for mousing into iframe.',
         dragCanceled);

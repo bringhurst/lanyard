@@ -15,8 +15,6 @@
 /**
  * @fileoverview A toolbar select control.
  *
-*
-*
  */
 
 goog.provide('goog.ui.ToolbarSelect');
@@ -50,7 +48,7 @@ goog.inherits(goog.ui.ToolbarSelect, goog.ui.Select);
 
 
 // Registers a decorator factory function for select controls used in toolbars.
-goog.ui.registry.setDecoratorByClassName('goog-toolbar-select',
+goog.ui.registry.setDecoratorByClassName(goog.getCssName('goog-toolbar-select'),
     function() {
       return new goog.ui.ToolbarSelect(null);
     });

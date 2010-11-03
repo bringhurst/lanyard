@@ -11,6 +11,7 @@ See the COPYING file for details.
   @author nicksantos@google.com (Nick Santos)
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Closure Unit Tests - goog.ui.MenuButton</title>
 <style type='text/css'>
 .goog-menu {
@@ -24,6 +25,7 @@ See the COPYING file for details.
   goog.require('goog.dom');
   goog.require('goog.events');
   goog.require('goog.events.Event');
+  goog.require('goog.events.EventType');
   goog.require('goog.events.KeyCodes');
   goog.require('goog.positioning');
   goog.require('goog.positioning.Overflow');
@@ -31,6 +33,7 @@ See the COPYING file for details.
   goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.events');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.recordFunction');
   goog.require('goog.ui.Menu');
   goog.require('goog.ui.MenuButton');
 </script>
@@ -38,6 +41,7 @@ See the COPYING file for details.
 <body>
 <iframe id="iframe1" src="menubutton_test_frame.html" width="400" height="400">
 </iframe>
+<div id="positionElement" style="position: absolute; left: 205px"></div>
 <script>
 
 var menuButton;
@@ -190,7 +194,7 @@ function testOpenedMenuPositionCorrection() {
 
   var button = new goog.ui.MenuButton();
   iframeWindow.scrollTo(0, 0);
-  var node = iframeDom.$('demoMenuButton');
+  var node = iframeDom.getElement('demoMenuButton');
   button.decorate(node);
   var mockTimer = new goog.Timer();
   // Don't start the timer.  We manually dispatch the Tick event.
@@ -209,7 +213,7 @@ function testOpenedMenuPositionCorrection() {
   button.setOpen(true);
 
   // Confirm the menu position
-  var menuNode = iframeDom.$('demoMenu');
+  var menuNode = iframeDom.getElement('demoMenu');
   assertRoughlyEquals(menuNode.offsetTop, node.offsetTop + node.offsetHeight,
       20);
   assertRoughlyEquals(menuNode.offsetLeft, node.offsetLeft, 20);
@@ -220,9 +224,9 @@ function testOpenedMenuPositionCorrection() {
   assertFalse('positionMenu() shouldn\'t be called.', positionMenuCalled);
 
   // Move the menu button by DOM structure change
-  var p1 = iframeDom.$dom('p', null, iframeDom.createTextNode('foo'));
-  var p2 = iframeDom.$dom('p', null, iframeDom.createTextNode('foo'));
-  var p3 = iframeDom.$dom('p', null, iframeDom.createTextNode('foo'));
+  var p1 = iframeDom.createDom('p', null, iframeDom.createTextNode('foo'));
+  var p2 = iframeDom.createDom('p', null, iframeDom.createTextNode('foo'));
+  var p3 = iframeDom.createDom('p', null, iframeDom.createTextNode('foo'));
   iframeDom.insertSiblingBefore(p1, node);
   iframeDom.insertSiblingBefore(p2, node);
   iframeDom.insertSiblingBefore(p3, node);
@@ -242,7 +246,7 @@ function testOpenedMenuPositionCorrection() {
 
   // Make the frame page scrollable.
   var viewportHeight = iframeDom.getViewportSize().height;
-  var footer = iframeDom.$('footer');
+  var footer = iframeDom.getElement('footer');
   goog.style.setSize(footer, 1, viewportHeight * 2);
   // Change the viewport offset.
   iframeWindow.scrollTo(0, viewportHeight);
@@ -261,6 +265,27 @@ function testOpenedMenuPositionCorrection() {
 }
 
 /**
+ * Use a different button to position the menu and make sure it does so
+ * correctly.
+ */
+function testAlternatePositioningElement() {
+  var node = goog.dom.getElement('demoMenuButton');
+  menuButton.decorate(node);
+
+  var posElement = goog.dom.getElement('positionElement');
+  menuButton.setPositionElement(posElement);
+
+  // Show the menu.
+  menuButton.setOpen(true);
+
+  // Confirm the menu position
+  var menuNode = menuButton.getMenu().getElement();
+  assertRoughlyEquals(menuNode.offsetTop, posElement.offsetTop
+      + posElement.offsetHeight, 20);
+  assertRoughlyEquals(menuNode.offsetLeft, posElement.offsetLeft, 20);
+}
+
+/**
  * Tests that space, and only space, fire on key up.
  */
 function testSpaceFireOnKeyUp() {
@@ -268,10 +293,12 @@ function testSpaceFireOnKeyUp() {
   menuButton.decorate(node);
 
   e = new goog.events.Event(goog.events.KeyHandler.EventType.KEY, menuButton);
+  e.preventDefault = goog.testing.recordFunction();
   e.keyCode = goog.events.KeyCodes.SPACE;
   menuButton.handleKeyEvent(e);
   assertFalse('Menu must not have been triggered by Space keypress',
       menuButton.isOpen());
+  assertNotNull('Page scrolling is prevented', e.preventDefault.getLastCall());
 
   e = new goog.events.Event(goog.events.EventType.KEYUP, menuButton);
   e.keyCode = goog.events.KeyCodes.SPACE;

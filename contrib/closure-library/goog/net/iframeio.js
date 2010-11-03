@@ -130,7 +130,6 @@
  * io.sendFromForm(...);
  * </pre>
  *
-*
  */
 
 goog.provide('goog.net.IframeIo');
@@ -143,6 +142,7 @@ goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
@@ -792,18 +792,19 @@ goog.net.IframeIo.prototype.setTimeoutInterval = function(ms) {
 /**
  * Override of dispatchEvent, we ensure that the xhrMonitor is listening for
  * XmlHttpRequests that may be initiated as a result of the event.
- * @param {goog.events.Event|string} e Event to dispatch.
+ * @override
  */
 goog.net.IframeIo.prototype.dispatchEvent = function(e) {
   if (this.iframe_) {
     goog.net.xhrMonitor.pushContext(this.iframe_);
   }
   try {
-    goog.net.IframeIo.superClass_.dispatchEvent.call(this, e);
+    return goog.net.IframeIo.superClass_.dispatchEvent.call(this, e);
   } finally {
     if (this.iframe_) {
       goog.net.xhrMonitor.popContext();
     }
+    return true;
   }
 };
 
@@ -1289,7 +1290,9 @@ goog.net.IframeIo.prototype.testForFirefoxSilentError_ = function() {
         // This is a hack to test of the document has loaded with a page that
         // we can't access, such as a network error, that won't report onload
         // or onerror events.
-        var uri = doc['documentUri'];
+        // Exporting is really the only foolproof way to do this with
+        // the compiler.
+        doc['closure_export_'] = doc['documentUri'];
 
         // TODO: Is there a situation when this won't error?
 

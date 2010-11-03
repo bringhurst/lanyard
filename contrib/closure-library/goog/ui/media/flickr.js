@@ -51,7 +51,6 @@
  *   video.setSelected(true);
  * </pre>
  *
-*
  *
  * @supported IE6, FF2+, Safari. Requires flash to actually work.
  *
@@ -236,7 +235,7 @@ goog.ui.media.FlickrSetModel = function(userId,
     };
 
   var player = new goog.ui.media.MediaModel.Player(
-      goog.ui.media.FlickrSet.flashUrl_, flashVars)
+      goog.ui.media.FlickrSet.flashUrl_, flashVars);
 
   this.setPlayer(player);
 };

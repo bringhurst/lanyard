@@ -40,7 +40,6 @@
  * Children normally render into the document lazily, at the first
  * moment when all ancestors are expanded.
  *
-*
  * @see ../demos/drilldownrow.html
  */
 
@@ -153,7 +152,7 @@ goog.ui.DrilldownRow.sampleProperties = {
     });
     handler.listen(row, 'mouseout', function() {
       goog.dom.classes.remove(row, goog.getCssName('goog-drilldown-hover'));
-    })
+    });
   }
 };
 

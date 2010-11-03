@@ -16,8 +16,6 @@
 /**
  * @fileoverview A thin wrapper around the DOM element for elements with a
  * stroke and fill.
-*
-*
  */
 
 
@@ -52,9 +50,9 @@ goog.inherits(goog.graphics.StrokeAndFillElement, goog.graphics.Element);
 /**
  * The latest fill applied to this element.
  * @type {goog.graphics.Fill?}
- * @private
+ * @protected
  */
-goog.graphics.StrokeAndFillElement.prototype.fill_ = null;
+goog.graphics.StrokeAndFillElement.prototype.fill = null;
 
 
 /**
@@ -70,7 +68,7 @@ goog.graphics.StrokeAndFillElement.prototype.stroke_ = null;
  * @param {goog.graphics.Fill?} fill The fill object.
  */
 goog.graphics.StrokeAndFillElement.prototype.setFill = function(fill) {
-  this.fill_ = fill;
+  this.fill = fill;
   this.getGraphics().setElementFill(this, fill);
 };
 
@@ -79,7 +77,7 @@ goog.graphics.StrokeAndFillElement.prototype.setFill = function(fill) {
  * @return {goog.graphics.Fill?} fill The fill object.
  */
 goog.graphics.StrokeAndFillElement.prototype.getFill = function() {
-  return this.fill_;
+  return this.fill;
 };
 
 

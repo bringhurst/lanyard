@@ -15,7 +15,6 @@
 /**
  * @fileoverview A base class for event objects.
  *
-*
  */
 
 
@@ -30,7 +29,8 @@ goog.require('goog.Disposable');
  *
  * @param {string} type Event Type.
  * @param {Object=} opt_target Reference to the object that is the target of
- *     this event.
+ *     this event. It has to implement the {@code EventTarget} interface
+ *     declared at {@link http://developer.mozilla.org/en/DOM/EventTarget}.
  * @constructor
  * @extends {goog.Disposable}
  */
@@ -69,7 +69,8 @@ goog.events.Event.prototype.disposeInternal = function() {
 /**
  * Whether to cancel the event in internal capture/bubble processing for IE.
  * @type {boolean}
- * @private
+ * @suppress {underscore} Technically public, but referencing this outside
+ *     this package is strongly discouraged.
  */
 goog.events.Event.prototype.propagationStopped_ = false;
 
@@ -77,7 +78,8 @@ goog.events.Event.prototype.propagationStopped_ = false;
 /**
  * Return value for in internal capture/bubble processing for IE.
  * @type {boolean}
- * @private
+ * @suppress {underscore} Technically public, but referencing this outside
+ *     this package is strongly discouraged.
  */
 goog.events.Event.prototype.returnValue_ = true;
 

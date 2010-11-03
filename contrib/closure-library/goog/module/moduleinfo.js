@@ -15,19 +15,17 @@
 /**
  * @fileoverview Defines the goog.module.ModuleInfo class.
  *
-*
-*
-*
-*
  */
 
 goog.provide('goog.module.ModuleInfo');
 
 goog.require('goog.Disposable');
-goog.require('goog.Timer');
 goog.require('goog.functions');
 goog.require('goog.module.BaseModule');
 goog.require('goog.module.ModuleLoadCallback');
+// TODO(user): Circular dependency between ModuleManager and ModuleInfo.  Move
+// FailureType to goog.module.FailureType.
+// goog.require('goog.module.ModuleManager.FailureType');
 
 
 /**
@@ -37,10 +35,11 @@ goog.require('goog.module.ModuleLoadCallback');
  * @param {Array.<string>} deps Ids of the modules that must be loaded before
  *     this one. The ids must be in dependency order (i.e. if the ith module
  *     depends on the jth module, then i > j).
+ * @param {string} id The module's ID.
  * @constructor
  * @extends {goog.Disposable}
  */
-goog.module.ModuleInfo = function(deps) {
+goog.module.ModuleInfo = function(deps, id) {
   goog.Disposable.call(this);
 
   /**
@@ -49,6 +48,13 @@ goog.module.ModuleInfo = function(deps) {
    * @private
    */
   this.deps_ = deps;
+
+  /**
+   * The module's ID.
+   * @type {string}
+   * @private
+   */
+  this.id_ = id;
 
   /**
    * Callbacks to execute once this module is loaded.
@@ -107,6 +113,15 @@ goog.module.ModuleInfo.prototype.module_ = null;
  */
 goog.module.ModuleInfo.prototype.getDependencies = function() {
   return this.deps_;
+};
+
+
+/**
+ * Gets the ID of this module.
+ * @return {string} The ID.
+ */
+goog.module.ModuleInfo.prototype.getId = function() {
+  return this.id_;
 };
 
 
@@ -269,8 +284,8 @@ goog.module.ModuleInfo.prototype.onError = function(cause) {
   if (result) {
     // Throw an exception asynchronously. Do not let the exception leak
     // up to the caller, or it will blow up the module loading framework.
-    goog.Timer.callOnce(
-        goog.functions.error('Module errback failures: ' + result));
+    window.setTimeout(
+        goog.functions.error('Module errback failures: ' + result), 0);
   }
   this.earlyOnloadCallbacks_.length = 0;
   this.onloadCallbacks_.length = 0;

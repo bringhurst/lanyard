@@ -15,13 +15,13 @@
 /**
  * @fileoverview Functions for setting, getting and deleting cookies.
  *
-*
  */
 
 
 goog.provide('goog.net.cookies');
 
 goog.require('goog.userAgent');
+
 
 /**
  * Static constant for the size of cookies. Per the spec, there's a 4K limit
@@ -75,8 +75,57 @@ goog.net.cookies.isEnabled = function() {
 
 
 /**
+ * We do not allow '=', ';', or white space in the name.
+ *
+ * NOTE: The following are allowed by this method, but should be avoided for
+ * cookies handled by the server.
+ * - any name starting with '$'
+ * - 'Comment'
+ * - 'Domain'
+ * - 'Expires'
+ * - 'Max-Age'
+ * - 'Path'
+ * - 'Secure'
+ * - 'Version'
+ *
+ * @param {string} name Cookie name.
+ * @return {boolean} Whether name is valid.
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc2109">RFC 2109</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2965">RFC 2965</a>
+ */
+goog.net.cookies.isValidName = function(name) {
+  return !(/[;=\s]/.test(name));
+};
+
+
+/**
+ * We do not allow ';' or line break in the value.
+ *
+ * Spec does not mention any illegal characters, but in practice semi-colons
+ * break parsing and line breaks truncate the name.
+ *
+ * @param {string} value Cookie value.
+ * @return {boolean} Whether value is valid.
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc2109">RFC 2109</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2965">RFC 2965</a>
+ */
+goog.net.cookies.isValidValue = function(value) {
+  return !(/[;\r\n]/.test(value));
+};
+
+
+/**
  * Sets a cookie.  The max_age can be -1 to set a session cookie. To remove and
  * expire cookies, use remove() instead.
+ *
+ * Neither the {@code name} nor the {@code value} are encoded in any way. It is
+ * up to the callers of {@code get} and {@code set} (as well as all the other
+ * methods) to handle any possible encoding and decoding.
+ *
+ * @throws {!Error} If the {@code name} fails #goog.net.cookies.isValidName.
+ * @throws {!Error} If the {@code value} fails #goog.net.cookies.isValidValue.
  *
  * @param {string} name  The cookie name.
  * @param {string} value  The cookie value.
@@ -91,12 +140,10 @@ goog.net.cookies.isEnabled = function() {
  *     name).
  */
 goog.net.cookies.set = function(name, value, opt_maxAge, opt_path, opt_domain) {
-  // we do not allow '=' or ';' in the name
-  if (/[;=]/.test(name)) {
+  if (!goog.net.cookies.isValidName(name)) {
     throw Error('Invalid cookie name "' + name + '"');
   }
-  // we do not allow ';' in value
-  if (/;/.test(value)) {
+  if (!goog.net.cookies.isValidValue(value)) {
     throw Error('Invalid cookie value "' + value + '"');
   }
 
@@ -125,11 +172,12 @@ goog.net.cookies.set = function(name, value, opt_maxAge, opt_path, opt_domain) {
 
   // Case 3: Set a persistent cookie.
   } else {
-    var futureDate = new Date((new Date).getTime() + opt_maxAge * 1000);
+    var futureDate = new Date(goog.now() + opt_maxAge * 1000);
     expiresStr = ';expires=' + futureDate.toUTCString();
   }
 
-  document.cookie = name + '=' + value + domainStr + pathStr + expiresStr;
+  goog.net.cookies.setCookie_(name + '=' + value + domainStr + pathStr +
+                              expiresStr);
 };
 
 
@@ -142,7 +190,7 @@ goog.net.cookies.set = function(name, value, opt_maxAge, opt_path, opt_domain) {
  */
 goog.net.cookies.get = function(name, opt_default) {
   var nameEq = name + '=';
-  var parts = String(document.cookie).split(goog.net.cookies.SPLIT_RE_);
+  var parts = goog.net.cookies.getParts_();
   for (var i = 0, part; part = parts[i]; i++) {
     if (part.indexOf(nameEq) == 0) {
       return part.substr(nameEq.length);
@@ -171,39 +219,6 @@ goog.net.cookies.remove = function(name, opt_path, opt_domain) {
 
 
 /**
- * Returns navigator.cookieEnabled.  Overridden in unit tests.
- * @return {boolean} The value of navigator.cookieEnabled.
- * @private
- */
-goog.net.cookies.isNavigatorCookieEnabled_ = function() {
-  return navigator.cookieEnabled;
-};
-
-
-/**
- * Gets the names and values for all the cookies.
- * @return {Object} An object with keys and values.
- * @private
- */
-goog.net.cookies.getKeyValues_ = function() {
-  var parts = String(document.cookie).split(goog.net.cookies.SPLIT_RE_);
-  var keys = [], values = [], index, part;
-  for (var i = 0; part = parts[i]; i++) {
-    index = part.indexOf('=');
-
-    if (index == -1) { // empty name
-      keys.push('');
-      values.push(part);
-    } else {
-      keys.push(part.substring(0, index));
-      values.push(part.substring(index + 1));
-    }
-  }
-  return {keys: keys, values: values};
-};
-
-
-/**
  * Gets the names for all the cookies.
  * @return {Array.<string>} An array with the names of the cookies.
  */
@@ -225,7 +240,7 @@ goog.net.cookies.getValues = function() {
  * @return {boolean} Whether there are any cookies for this document.
  */
 goog.net.cookies.isEmpty = function() {
-  return document.cookie == '';
+  return !goog.net.cookies.getCookie_();
 };
 
 
@@ -233,11 +248,11 @@ goog.net.cookies.isEmpty = function() {
  * @return {number} The number of cookies for this document.
  */
 goog.net.cookies.getCount = function() {
-  var cookie = String(document.cookie);
-  if (cookie == '') {
+  var cookie = goog.net.cookies.getCookie_();
+  if (!cookie) {
     return 0;
   }
-  return cookie.split(goog.net.cookies.SPLIT_RE_).length;
+  return goog.net.cookies.getParts_().length;
 };
 
 
@@ -281,4 +296,68 @@ goog.net.cookies.clear = function() {
   for (var i = keys.length - 1; i >= 0; i--) {
     goog.net.cookies.remove(keys[i]);
   }
+};
+
+/**
+ * Private helper function to allow testing cookies without depending on the
+ * browser.
+ * @param {string} s The cookie string to set.
+ * @private
+ */
+goog.net.cookies.setCookie_ = function(s) {
+  document.cookie = s;
+};
+
+
+/**
+ * Private helper function to allow testing cookies without depending on the
+ * browser. IE6 can return null here.
+ * @return {?string} Returns the {@code document.cookie}.
+ * @private
+ */
+goog.net.cookies.getCookie_ = function() {
+  return document.cookie;
+};
+
+
+/**
+ * @return {!Array.<string>} The cookie split on semi colons.
+ * @private
+ */
+goog.net.cookies.getParts_ = function() {
+  return (goog.net.cookies.getCookie_() || '').
+      split(goog.net.cookies.SPLIT_RE_);
+};
+
+
+/**
+ * Returns navigator.cookieEnabled.  Overridden in unit tests.
+ * @return {boolean} The value of navigator.cookieEnabled.
+ * @private
+ */
+goog.net.cookies.isNavigatorCookieEnabled_ = function() {
+  return navigator.cookieEnabled;
+};
+
+
+/**
+ * Gets the names and values for all the cookies.
+ * @return {Object} An object with keys and values.
+ * @private
+ */
+goog.net.cookies.getKeyValues_ = function() {
+  var parts = goog.net.cookies.getParts_();
+  var keys = [], values = [], index, part;
+  for (var i = 0; part = parts[i]; i++) {
+    index = part.indexOf('=');
+
+    if (index == -1) { // empty name
+      keys.push('');
+      values.push(part);
+    } else {
+      keys.push(part.substring(0, index));
+      values.push(part.substring(index + 1));
+    }
+  }
+  return {keys: keys, values: values};
 };

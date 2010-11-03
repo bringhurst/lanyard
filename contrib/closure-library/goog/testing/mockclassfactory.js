@@ -33,7 +33,6 @@
  *
  * For examples, please see the unit test.
  *
-*
  */
 
 
@@ -44,6 +43,7 @@ goog.require('goog.array');
 goog.require('goog.object');
 goog.require('goog.testing.LooseMock');
 goog.require('goog.testing.StrictMock');
+goog.require('goog.testing.TestCase');
 goog.require('goog.testing.mockmatchers');
 
 
@@ -260,8 +260,8 @@ goog.testing.MockClassFactory.PROTOTYPE_FIELDS_ = [
  */
 goog.testing.MockClassFactory.prototype.getClassName_ = function(namespace,
     classToMock) {
-  if (namespace === goog.global && goog.global['RuntimeObject']) {
-    namespace = goog.global['RuntimeObject']('*');
+  if (namespace === goog.global) {
+    namespace = goog.testing.TestCase.getGlobals();
   }
   for (var prop in namespace) {
     if (namespace[prop] === classToMock) {
@@ -517,7 +517,7 @@ goog.testing.MockClassFactory.prototype.getStaticMock_ = function(namespace,
           isStrict);
       return mock;
     } else {
-      var mock = this.mockClassRecords_[className].getStaticMock()
+      var mock = this.mockClassRecords_[className].getStaticMock();
       var mockIsStrict = mock instanceof goog.testing.StrictMock;
 
       if (mockIsStrict != isStrict) {

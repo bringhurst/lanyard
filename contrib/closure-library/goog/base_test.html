@@ -7,6 +7,7 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Closure Unit Tests - goog.*</title>
 <script src="base.js"></script>
 <script>
@@ -85,6 +86,8 @@ function testProvide() {
   // ensure that providing 'goog.test.name' doesn't throw an exception
   goog.provide('goog.test');
   goog.provide('goog.test.name');
+
+  delete goog.test;
 }
 
 function testProvideStrictness() {
@@ -93,6 +96,9 @@ function testProvideStrictness() {
 
   window['goog']['xyz'] = 'Bob';
   assertProvideFails('goog.xyz');
+
+  delete goog.xy;
+  delete goog.xyz;
 }
 
 function assertProvideFails(namespace) {
@@ -124,15 +130,18 @@ function testExportSymbol() {
   assertTrue(typeof nodots == 'undefined');
   goog.exportSymbol('nodots', date);
   assertEquals(date, nodots);
+  nodots = undefined;
 
   assertTrue(typeof gotcher == 'undefined');
   goog.exportSymbol('gotcher.dots.right.Here', date);
   assertEquals(date, gotcher.dots.right.Here);
+  gotcher = undefined;
 
   goog.provide('an.existing.path');
   assertNotNull(an.existing.path);
   goog.exportSymbol('an.existing.path', date);
   assertEquals(date, an.existing.path);
+  an = undefined;
 
   var foo = {foo: 'foo'};
   var bar = {bar: 'bar'};
@@ -150,6 +159,7 @@ function testExportSymbol() {
   assertEquals(fooBar, win.one.two.four);
   assertTrue('four' in win.one.two);
   assertFalse('four' in one.two);
+  one = undefined;
 }
 
 goog.exportSymbol('exceptionTest', function() {
@@ -500,6 +510,13 @@ function testConstructorUid() {
       typeof subClassUid == 'number');
   assertNotEquals('Unique IDs of BaseClass and SubClass must differ',
       baseClassUid, subClassUid);
+  assertNotEquals('Unique IDs of BaseClass and SubClass instances must differ',
+      goog.getUid(new BaseClass), goog.getUid(new SubClass));
+
+  assertEquals('Unique IDs of BaseClass.prototype and SubClass.prototype ' +
+      'should differ, but to keep the implementation simple, we do not ' +
+      'handle this edge case.',
+      goog.getUid(BaseClass.prototype), goog.getUid(SubClass.prototype));
 }
 
 /**
@@ -516,6 +533,15 @@ function testUidNotUndefinedOnReusedElement() {
   div.innerHTML = '<form id="form"></form>';
   var span2 = div.getElementsByTagName('FORM')[0];
   assertNotUndefined(goog.getUid(span2));
+}
+
+function testWindowUid() {
+  var uid = goog.getUid(window);
+  assertTrue('window unique id is a number', goog.isNumber(uid));
+  assertEquals('returns the same id second time', uid, goog.getUid(window));
+  goog.removeUid(window);
+  assertNotEquals('generates new id after the old one is removed',
+      goog.getUid(window));
 }
 
 //=== tests for clone method ===
@@ -831,6 +857,26 @@ function testLoadInNonHtmlNotThrows() {
   }
 }
 
+//=== tests for getmsg ===
+function testGetMsgWithDollarSigns() {
+  var msg = goog.getMsg('{$amount} per minute',
+      {amount: '$0.15'});
+  assertEquals('$0.15 per minute', msg);
+  msg = goog.getMsg('{$amount} per minute',
+      {amount: '$0.$1$5'});
+  assertEquals('$0.$1$5 per minute', msg);
+
+  msg = goog.getMsg('This is a {$rate} sale!',
+      {rate: '$$$$$$$$$$10'});
+  assertEquals('This is a $$$$$$$$$$10 sale!', msg);
+  msg = goog.getMsg('{$name}! Hamburgers: {$hCost}, Hotdogs: {$dCost}.',
+      {name: 'Burger Bob',
+       hCost: '$0.50',
+       dCost: '$100'});
+  assertEquals('Burger Bob! Hamburgers: $0.50, Hotdogs: $100.',
+    msg);
+}
+
 
 //=== miscellaneous tests ===
 
@@ -853,8 +899,8 @@ function testPropertyIsEnumerable_() {
   assertTrue('Properties on the instance should be enumerable',
              goog.propertyIsEnumerable_(a, 'y'))
 
-  // TODO(user): This test failed on the farm in FF3 Linux and I no one was
-  // able to reproduce locally. Error:
+  // TODO(user): This test failed on the farm in FF3 Linux and no one was able to
+  // reproduce locally. Error:
   // Permission denied to get property Window.document
   // For now get the Closure build green by skipping for FF3, and look into
   // what is causing this to be a problem for the tests running on the farm.
@@ -870,7 +916,7 @@ function testPropertyIsEnumerable_() {
     // TODO(user): Find a way to test this behavior even when pop ups are
     // blocked, i.e., when childWindow doesn't exist. Using an iframe doesn't
     // seem to have the same problem.
-    if (childWindow) {
+    if (childWindow && childWindow.document) {
       var doc = childWindow.document;
       doc.open();
       doc.write('<script>' +
@@ -951,7 +997,10 @@ function testAddDependency() {
   // this used to throw an exception
   goog.require('testDep.foo');
 
-  assert(goog.isObject(testDep.bar));
+  assertTrue(goog.isObject(testDep.bar));
+
+  // Unset provided namespace so the test can be re-run.
+  testDep = undefined;
 }
 
 function testBaseMethod() {

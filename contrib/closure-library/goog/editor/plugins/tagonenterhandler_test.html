@@ -12,6 +12,7 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>goog.editor.plugins.TagOnEnterHandler jsunit tests</title>
 <script src="../../base.js"></script>
 <script>
@@ -337,7 +338,7 @@ function assertPreparedContents(expected, original, opt_tag) {
  * @return {boolean} Whether preventDefault was called on the event.
  */
 function selectNodeAndHitEnter(field, id) {
-  var cursor = field.getEditableDomHelper().$(id);
+  var cursor = field.getEditableDomHelper().getElement(id);
   goog.dom.Range.createFromNodeContents(cursor).select();
   return goog.testing.events.fireKeySequence(
       cursor, goog.events.KeyCodes.ENTER);
@@ -347,7 +348,7 @@ function selectNodeAndHitEnter(field, id) {
 /**
  * Creates a field with only the enter handler plugged in, for testing.
  * @param {string} id A DOM id.
- * @param {boolean} opt_tag The block tag to use.  Defaults to P.
+ * @param {boolean=} opt_tag The block tag to use.  Defaults to P.
  * @return {goog.editor.Field} A field.
  */
 function makeField(id, opt_tag) {

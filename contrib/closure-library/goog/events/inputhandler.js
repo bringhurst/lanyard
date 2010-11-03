@@ -14,27 +14,36 @@
 
 /**
  * @fileoverview An object that encapsulates text changed events for textareas
- * and input element of type text and password. This event only occurs when the
- * element is focused (which means that using drag and drop will not trigger
- * the event because the element does not have focus at that time).<br>
+ * and input element of type text and password. The event occurs after the value
+ * has been changed. The event does not occur if value was changed
+ * programmatically.<br>
  * <br>
  * Note: this does not guarantee the correctness of {@code keyCode} or
  * {@code charCode}, or attempt to unify them across browsers. See
  * {@code goog.events.KeyHandler} for that functionality.<br>
  * <br>
- * Known Issues: It does not trigger for drop events
- * Known Issues: WebKit does not fire input event in textareas.
-*
+ * Known issues:
+ * <ul>
+ * <li>Does not trigger for drop events on Opera due to browser bug.
+ * <li>IE doesn't have native support for input event. WebKit before version 531
+ *     doesn't have support for textareas. For those browsers an emulation mode
+ *     based on key, clipboard and drop events is used. Thus this event won't
+ *     trigger in emulation mode if text was modified by context menu commands
+ *     such as 'Undo' and 'Delete'.
+ * </ul>
  * @see ../demos/inputhandler.html
  */
 
 goog.provide('goog.events.InputHandler');
 goog.provide('goog.events.InputHandler.EventType');
 
+goog.require('goog.Timer');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
+goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.KeyCodes');
 goog.require('goog.userAgent');
 
 
@@ -56,13 +65,32 @@ goog.events.InputHandler = function(element) {
    */
   this.element_ = element;
 
-  // WebKit before version 531 did not support input events for textareas.
-  // keypress isn't as good (doesn't support copy/paste), but it's better than
-  // nothing
-  var type = goog.userAgent.IE ? 'propertychange' :
-      (goog.userAgent.WEBKIT && element.tagName == 'TEXTAREA' &&
-          !goog.userAgent.isVersion('531') ? 'keypress' : 'input');
-  this.listenKey_ = goog.events.listen(this.element_, type, this);
+  /**
+   * Whether input event is emulated.
+   * IE doesn't support input events. We could use property change events but
+   * they are broken in many ways:
+   * - Fire even if value was changed programmatically.
+   * - Aren't always delivered. For example, if you change value or even width
+   *   of input programmatically, next value change made by user won't fire an
+   *   event.
+   * WebKit before version 531 did not support input events for textareas.
+   * @type {boolean}
+   * @private
+   */
+  this.inputEventEmulation_ =
+      goog.userAgent.IE ||
+      (goog.userAgent.WEBKIT && !goog.userAgent.isVersion('531') &&
+          element.tagName == 'TEXTAREA');
+
+  /**
+   * @type {goog.events.EventHandler}
+   * @private
+   */
+  this.eventHandler_ = new goog.events.EventHandler();
+  this.eventHandler_.listen(
+      this.element_,
+      this.inputEventEmulation_ ? ['keydown', 'paste', 'cut', 'drop'] : 'input',
+      this);
 };
 goog.inherits(goog.events.InputHandler, goog.events.EventTarget);
 
@@ -75,30 +103,104 @@ goog.events.InputHandler.EventType = {
   INPUT: 'input'
 };
 
+/**
+ * Id of a timer used to postpone firing input event in emulation mode.
+ * @type {?number}
+ * @private
+ */
+goog.events.InputHandler.prototype.timer_ = null;
+
 
 /**
  * This handles the underlying events and dispatches a new event as needed.
  * @param {goog.events.BrowserEvent} e The underlying browser event.
  */
 goog.events.InputHandler.prototype.handleEvent = function(e) {
-  var be = e.getBrowserEvent();
-  if (be.type == 'propertychange' && be.propertyName == 'value' ||
-      be.type == 'input' ||
-      be.type == 'keypress') {
-    if (goog.userAgent.IE || goog.userAgent.OPERA) {
-      var inputEl = be.srcElement;
-      // only dispatch the event if the element currently has focus
-      if (inputEl != goog.dom.getOwnerDocument(inputEl).activeElement) {
-        return;
+  if (this.inputEventEmulation_) {
+    // Filter out key events that don't modify text.
+    if (e.type == 'keydown' &&
+        !goog.events.KeyCodes.isTextModifyingKeyEvent(e)) {
+      return;
+    }
+
+    // It is still possible that pressed key won't modify the value of an
+    // element. Storing old value will help us to detect modification but is
+    // also a little bit dangerous. If value is changed programmatically in
+    // another key down handler, we will detect it as user-initiated change.
+    var valueBeforeKey = e.type == 'keydown' ? this.element_.value : null;
+
+    // In IE on XP, IME the element's value has already changed when we get
+    // keydown events when the user is using an IME. In this case, we can't
+    // check the current value normally, so we assume that it's a modifying key
+    // event. This means that ENTER when used to commit will fire a spurious
+    // input event, but it's better to have a false positive than let some input
+    // slip through the cracks.
+    if (goog.userAgent.IE && e.keyCode == goog.events.KeyCodes.WIN_IME) {
+      valueBeforeKey = null;
+    }
+
+    // Create an input event now, because when we fire it on timer, the
+    // underlying event will already be disposed.
+    var inputEvent = this.createInputEvent_(e);
+
+    // Since key down, paste, cut and drop events are fired before actual value
+    // of the element has changed, we need to postpone dispatching input event
+    // until value is updated.
+    this.cancelTimerIfSet_();
+    this.timer_ = goog.Timer.callOnce(function() {
+      this.timer_ = null;
+      if (this.element_.value != valueBeforeKey) {
+        this.dispatchAndDisposeEvent_(inputEvent);
       }
+    }, 0, this);
+  } else {
+    // Unlike other browsers, Opera fires an extra input event when an element
+    // is blurred after the user has input into it. Since Opera doesn't fire
+    // input event on drop, it's enough to check whether element still has focus
+    // to suppress bogus notification.
+    if (!goog.userAgent.OPERA || this.element_ ==
+        goog.dom.getOwnerDocument(this.element_).activeElement) {
+      this.dispatchAndDisposeEvent_(this.createInputEvent_(e));
     }
-    var event = new goog.events.BrowserEvent(be);
-    event.type = goog.events.InputHandler.EventType.INPUT;
-    try {
-      this.dispatchEvent(event);
-    } finally {
-      event.dispose();
-    }
+  }
+};
+
+
+/**
+ * Cancels timer if it is set, does nothing otherwise.
+ * @private
+ */
+goog.events.InputHandler.prototype.cancelTimerIfSet_ = function() {
+  if (this.timer_ != null) {
+    goog.Timer.clear(this.timer_);
+    this.timer_ = null;
+  }
+};
+
+
+/**
+ * Creates an input event from the browser event.
+ * @param {goog.events.BrowserEvent} be A browser event.
+ * @return {goog.events.BrowserEvent} An input event.
+ * @private
+ */
+goog.events.InputHandler.prototype.createInputEvent_ = function(be) {
+  var e = new goog.events.BrowserEvent(be.getBrowserEvent());
+  e.type = goog.events.InputHandler.EventType.INPUT;
+  return e;
+};
+
+
+/**
+ * Dispatches and disposes an event.
+ * @param {goog.events.BrowserEvent} event Event to dispatch.
+ * @private
+ */
+goog.events.InputHandler.prototype.dispatchAndDisposeEvent_ = function(event) {
+  try {
+    this.dispatchEvent(event);
+  } finally {
+    event.dispose();
   }
 };
 
@@ -108,6 +210,7 @@ goog.events.InputHandler.prototype.handleEvent = function(e) {
  */
 goog.events.InputHandler.prototype.disposeInternal = function() {
   goog.events.InputHandler.superClass_.disposeInternal.call(this);
-  goog.events.unlistenByKey(this.listenKey_);
+  this.eventHandler_.dispose();
+  this.cancelTimerIfSet_();
   delete this.element_;
 };

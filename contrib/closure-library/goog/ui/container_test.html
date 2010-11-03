@@ -7,9 +7,9 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <!--
-Author:  attila@google.com (Attila Bodis)
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Closure Unit Tests - goog.ui.Container</title>
   <script src="../base.js"></script>
   <script>
@@ -19,6 +19,7 @@ Author:  attila@google.com (Attila Bodis)
     goog.require('goog.testing.events');
     goog.require('goog.testing.jsunit');
     goog.require('goog.ui.Container');
+    goog.require('goog.ui.Container.EventType');
     goog.require('goog.ui.Control');
   </script>
 </head>
@@ -190,18 +191,30 @@ Author:  attila@google.com (Attila Bodis)
       assertTrue('AFTER_SHOW event expected', eventFired);
     }
 
-    function testHideEvent() {
+    function testHideEvents() {
+      var events = [];
       container.decorate(containerElement);
       container.setVisible(true);
       var eventFired = false;
       goog.events.listen(container, goog.ui.Component.EventType.HIDE,
-          function() {
-            assertTrue('Container must be visible when HIDE event is fired',
-                       container.isVisible());
-            eventFired = true;
+          function(e) {
+            assertTrue(
+                'Container must be visible when HIDE event is fired',
+                container.isVisible());
+            events.push(e.type);
+          });
+      goog.events.listen(container, goog.ui.Container.EventType.AFTER_HIDE,
+          function(e) {
+            assertFalse(
+                'Container must not be visible when AFTER_HIDE event is fired',
+                container.isVisible());
+            events.push(e.type);
           });
       container.setVisible(false);
-      assertTrue('HIDE event expected', eventFired);
+      assertArrayEquals('HIDE event followed by AFTER_HIDE expected', [
+            goog.ui.Component.EventType.HIDE,
+            goog.ui.Container.EventType.AFTER_HIDE
+          ], events);
     }
 
     /**
@@ -299,7 +312,6 @@ Author:  attila@google.com (Attila Bodis)
       keyContainer.handleKeyEvent(new goog.events.Event());
       assertEquals('One key event should be handled',
           1, keyContainer.keyEventsHandled);
-
     }
 
     function testHandleKeyEvent_alwaysHandlesWithKeyEventTarget() {
@@ -311,6 +323,127 @@ Author:  attila@google.com (Attila Bodis)
       keyContainer.handleKeyEvent(new goog.events.Event());
       assertEquals('One key events should be handled',
           1, keyContainer.keyEventsHandled);
+    }
+
+    function testHandleKeyEventInternal_onlyHandlesUnmodified() {
+      container.setKeyEventTarget(sandbox);
+      var event = new goog.events.KeyEvent(
+          goog.events.KeyCodes.ESC, 0, false, null);
+
+      var propertyNames = [
+        'shiftKey',
+        'altKey',
+        'ctrlKey',
+        'metaKey'
+      ];
+
+      // Verify that the event is not handled whenever a modifier key is true.
+      for (var i = 0, propertyName; propertyName = propertyNames[i]; i++) {
+        assertTrue('Event should be handled when modifer key is not pressed.',
+            container.handleKeyEventInternal(event));
+        event[propertyName] = true;
+        assertFalse('Event should not be handled when modifer key is pressed.',
+            container.handleKeyEventInternal(event));
+        event[propertyName] = false;
+      }
+    }
+
+    function testOpenFollowsHighlight() {
+      container.decorate(containerElement);
+      container.setOpenFollowsHighlight(true);
+      assertTrue('isOpenFollowsHighlight should return true',
+          container.isOpenFollowsHighlight());
+
+      // Make the children openable.
+      container.forEachChild(function(child) {
+        child.setSupportedState(goog.ui.Component.State.OPENED, true);
+      });
+      // Open child 1 initially.
+      container.getChildAt(1).setOpen(true);
+
+      assertFalse('Child 0 should initially not be highlighted',
+          container.getChildAt(0).isHighlighted());
+      goog.testing.events.fireMouseOverEvent(
+          container.getChildAt(0).getElement(), sandbox);
+      assertTrue('Child 0 should become highlighted after a mouse over',
+          container.getChildAt(0).isHighlighted());
+      assertTrue('Child 0 should become open after higlighted',
+          container.getChildAt(0).isOpen());
+      assertFalse('Child 1 should become closed once 0 is open',
+          container.getChildAt(1).isOpen());
+      assertEquals('OpenItem should be child 0',
+          container.getChildAt(0), container.getOpenItem());
+    }
+
+    function testOpenNotFollowsHighlight() {
+      container.decorate(containerElement);
+      container.setOpenFollowsHighlight(false);
+      assertFalse('isOpenFollowsHighlight should return false',
+          container.isOpenFollowsHighlight());
+
+      // Make the children openable.
+      container.forEachChild(function(child) {
+        child.setSupportedState(goog.ui.Component.State.OPENED, true);
+      });
+      // Open child 1 initially.
+      container.getChildAt(1).setOpen(true);
+
+      assertFalse('Child 0 should initially not be highlighted',
+          container.getChildAt(0).isHighlighted());
+      goog.testing.events.fireMouseOverEvent(
+          container.getChildAt(0).getElement(), sandbox);
+      assertTrue('Child 0 should become highlighted after a mouse over',
+          container.getChildAt(0).isHighlighted());
+      assertFalse('Child 0 should remain closed after higlighted',
+          container.getChildAt(0).isOpen());
+      assertTrue('Child 1 should remain open',
+          container.getChildAt(1).isOpen());
+      assertEquals('OpenItem should be child 1',
+          container.getChildAt(1), container.getOpenItem());
+    }
+
+    function testRemoveChild() {
+      goog.dom.removeChildren(containerElement);
+      container.decorate(containerElement);
+
+      var a = new goog.ui.Control('A');
+      var b = new goog.ui.Control('B');
+      var c = new goog.ui.Control('C');
+
+      a.setId('a');
+      b.setId('b');
+      c.setId('c');
+
+      container.addChild(a, true);
+      container.addChild(b, true);
+      container.addChild(c, true);
+
+      container.setHighlightedIndex(2);
+
+      assertEquals('Parent must remove and return child by ID', b,
+          container.removeChild('b'));
+      assertNull('Parent must no longer contain this child',
+          container.getChild('b'));
+      assertEquals('Highlighted index must be decreased', 1,
+          container.getHighlightedIndex());
+      assertTrue('The removed control must handle its own mouse events',
+          b.isHandleMouseEvents());
+
+      assertEquals('Parent must remove and return child', c,
+          container.removeChild(c));
+      assertNull('Parent must no longer contain this child',
+          container.getChild('c'));
+      assertFalse('This child must no longer be highlighted',
+          c.isHighlighted());
+      assertTrue('The removed control must handle its own mouse events',
+          c.isHandleMouseEvents());
+
+      assertEquals('Parent must remove and return child by index', a,
+          container.removeChildAt(0));
+      assertNull('Parent must no longer contain this child',
+          container.getChild('a'));
+      assertTrue('The removed control must handle its own mouse events',
+          a.isHandleMouseEvents());
     }
   </script>
 </body>

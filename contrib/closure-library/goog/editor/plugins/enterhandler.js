@@ -15,9 +15,6 @@
 /**
  * @fileoverview Plugin to handle enter keys.
  *
-*
-*
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.EnterHandler');
@@ -240,16 +237,13 @@ goog.editor.plugins.EnterHandler.prototype.deleteBrGecko = function(e) {
 };
 
 
-/**
- * Handle keypress events.
- * @param {goog.events.BrowserEvent} e The key event.
- */
+/** @inheritDoc */
 goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
   // If a dialog doesn't have selectable field, Gecko grabs the event and
   // performs actions in editor window. This solves that problem and allows
   // the event to be passed on to proper handlers.
   if (goog.userAgent.GECKO && this.fieldObject.inModalMode()) {
-    return;
+    return false;
   }
 
   // Firefox will allow the first node in an iframe to be deleted
@@ -292,21 +286,21 @@ goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
   } else if (goog.userAgent.GECKO && e.keyCode == goog.events.KeyCodes.DELETE) {
     this.handleDeleteGecko(e);
   }
+
+  return false;
 };
 
 
-/**
- * Handle keyup events.
- * @param {goog.events.Event} e The key event.
- */
+/** @override */
 goog.editor.plugins.EnterHandler.prototype.handleKeyUp = function(e) {
   // If a dialog doesn't have selectable field, Gecko grabs the event and
   // performs actions in editor window. This solves that problem and allows
   // the event to be passed on to proper handlers.
   if (goog.userAgent.GECKO && this.fieldObject.inModalMode()) {
-    return;
+    return false;
   }
   this.handleKeyUpInternal(e);
+  return false;
 };
 
 
@@ -654,8 +648,8 @@ goog.editor.plugins.EnterHandler.deleteW3cRange_ = function(range) {
       */
       var rangeStart = goog.editor.style.getContainer(range.getStartNode());
       var redundantContainer = goog.editor.node.getNextSibling(rangeStart);
-      if (redundantContainer) {
-        goog.editor.node.transferChildren(rangeStart, redundantContainer);
+      if (rangeStart && redundantContainer) {
+        goog.dom.append(rangeStart, redundantContainer.childNodes);
         goog.dom.removeNode(redundantContainer);
       }
     }

@@ -358,10 +358,13 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuf);
         gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(this._ri.vertices), gl.STATIC_DRAW);
 
-        gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
-            this._ri.vertices.length, gl.FLOAT, false, 0, 0);
+        //gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+        //    this._ri.vertices.length, gl.FLOAT, false, 0, 0);
 
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, this._ri.vertices.length - 1);
+        gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+            3, gl.FLOAT, false, 0, 0);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, this._ri.vertices.length);
         
     }
 

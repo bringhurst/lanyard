@@ -26,7 +26,6 @@
  * event only once (when created or when it is changed) so if you move the DOM
  * node to another form it will not be cleared correctly before submitting.
  *
-*
  * @see ../demos/labelinput.html
  */
 
@@ -76,6 +75,13 @@ goog.ui.LabelInput.prototype.ffKeyRestoreValue_ = null;
  * @private
  */
 goog.ui.LabelInput.prototype.eventHandler_;
+
+
+/**
+ * @type {boolean}
+ * @private
+ */
+goog.ui.LabelInput.prototype.hasFocus_;
 
 
 /**
@@ -299,6 +305,14 @@ goog.ui.LabelInput.prototype.handleWindowLoad_ = function(e) {
 
 
 /**
+ * @return {boolean} Whether the control is currently focused on.
+ */
+goog.ui.LabelInput.prototype.hasFocus = function() {
+  return this.hasFocus_;
+};
+
+
+/**
  * @return {boolean} Whether the value has changed been changed by the user.
  */
 goog.ui.LabelInput.prototype.hasChanged = function() {
@@ -387,6 +401,18 @@ goog.ui.LabelInput.prototype.focusAndSelect = function() {
   this.getElement().select();
   // set to false in timer to let IE trigger the focus event
   goog.Timer.callOnce(this.focusAndSelect_, 10, this);
+};
+
+
+/**
+ * Enables/Disables the label input.
+ * @param {boolean} enabled Whether to enable (true) or disable (false) the
+ *     label input.
+ */
+goog.ui.LabelInput.prototype.setEnabled = function(enabled) {
+  this.getElement().disabled = !enabled;
+  goog.dom.classes.enable(this.getElement(),
+      goog.getCssName(this.LABEL_CLASS_NAME, 'disabled'), !enabled);
 };
 
 

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Python style iteration utilities.
-*
  */
 
 
@@ -150,7 +149,7 @@ goog.iter.forEach = function(iterable, f, opt_obj) {
                          opt_obj);
     } catch (ex) {
       if (ex !== goog.iter.StopIteration) {
-       throw ex;
+        throw ex;
       }
     }
   } else {

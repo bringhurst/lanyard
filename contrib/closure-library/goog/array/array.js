@@ -15,9 +15,6 @@
 /**
  * @fileoverview Utilities for manipulating arrays.
  *
-*
-*
-*
  */
 
 
@@ -71,8 +68,7 @@ goog.array.ARRAY_PROTOTYPE_ = Array.prototype;
  */
 goog.array.indexOf = goog.array.ARRAY_PROTOTYPE_.indexOf ?
     function(arr, obj, opt_fromIndex) {
-      goog.asserts.assert(arr || goog.isString(arr));
-      goog.asserts.assertNumber(arr.length);
+      goog.asserts.assert(arr.length != null);
 
       return goog.array.ARRAY_PROTOTYPE_.indexOf.call(arr, obj, opt_fromIndex);
     } :
@@ -111,8 +107,7 @@ goog.array.indexOf = goog.array.ARRAY_PROTOTYPE_.indexOf ?
  */
 goog.array.lastIndexOf = goog.array.ARRAY_PROTOTYPE_.lastIndexOf ?
     function(arr, obj, opt_fromIndex) {
-      goog.asserts.assert(arr || goog.isString(arr));
-      goog.asserts.assertNumber(arr.length);
+      goog.asserts.assert(arr.length != null);
 
       // Firefox treats undefined and null as 0 in the fromIndex argument which
       // leads it to always return -1
@@ -160,8 +155,7 @@ goog.array.lastIndexOf = goog.array.ARRAY_PROTOTYPE_.lastIndexOf ?
  */
 goog.array.forEach = goog.array.ARRAY_PROTOTYPE_.forEach ?
     function(arr, f, opt_obj) {
-      goog.asserts.assert(arr || goog.isString(arr));
-      goog.asserts.assertNumber(arr.length);
+      goog.asserts.assert(arr.length != null);
 
       goog.array.ARRAY_PROTOTYPE_.forEach.call(arr, f, opt_obj);
     } :
@@ -216,8 +210,7 @@ goog.array.forEachRight = function(arr, f, opt_obj) {
  */
 goog.array.filter = goog.array.ARRAY_PROTOTYPE_.filter ?
     function(arr, f, opt_obj) {
-      goog.asserts.assert(arr || goog.isString(arr));
-      goog.asserts.assertNumber(arr.length);
+      goog.asserts.assert(arr.length != null);
 
       return goog.array.ARRAY_PROTOTYPE_.filter.call(arr, f, opt_obj);
     } :
@@ -254,8 +247,7 @@ goog.array.filter = goog.array.ARRAY_PROTOTYPE_.filter ?
  */
 goog.array.map = goog.array.ARRAY_PROTOTYPE_.map ?
     function(arr, f, opt_obj) {
-      goog.asserts.assert(arr || goog.isString(arr));
-      goog.asserts.assertNumber(arr.length);
+      goog.asserts.assert(arr.length != null);
 
       return goog.array.ARRAY_PROTOTYPE_.map.call(arr, f, opt_obj);
     } :
@@ -365,8 +357,7 @@ goog.array.reduceRight = function(arr, f, val, opt_obj) {
  */
 goog.array.some = goog.array.ARRAY_PROTOTYPE_.some ?
     function(arr, f, opt_obj) {
-      goog.asserts.assert(arr || goog.isString(arr));
-      goog.asserts.assertNumber(arr.length);
+      goog.asserts.assert(arr.length != null);
 
       return goog.array.ARRAY_PROTOTYPE_.some.call(arr, f, opt_obj);
     } :
@@ -399,8 +390,7 @@ goog.array.some = goog.array.ARRAY_PROTOTYPE_.some ?
  */
 goog.array.every = goog.array.ARRAY_PROTOTYPE_.every ?
     function(arr, f, opt_obj) {
-      goog.asserts.assert(arr || goog.isString(arr));
-      goog.asserts.assertNumber(arr.length);
+      goog.asserts.assert(arr.length != null);
 
       return goog.array.ARRAY_PROTOTYPE_.every.call(arr, f, opt_obj);
     } :
@@ -611,8 +601,7 @@ goog.array.remove = function(arr, obj) {
  * @return {boolean} True if an element was removed.
  */
 goog.array.removeAt = function(arr, i) {
-  goog.asserts.assert(arr || goog.isString(arr));
-  goog.asserts.assertNumber(arr.length);
+  goog.asserts.assert(arr.length != null);
 
   // use generic form of splice
   // splice returns the removed items and if successful the length of that
@@ -742,8 +731,8 @@ goog.array.extend = function(arr1, var_args) {
             arr2.hasOwnProperty('callee')) {
       arr1.push.apply(arr1, arr2);
 
-    // Otherwise loop over arr2 to prevent copying the object.
     } else if (isArrayLike) {
+      // Otherwise loop over arr2 to prevent copying the object.
       var len1 = arr1.length;
       var len2 = arr2.length;
       for (var j = 0; j < len2; j++) {
@@ -772,8 +761,7 @@ goog.array.extend = function(arr1, var_args) {
  * @return {!Array} the removed elements.
  */
 goog.array.splice = function(arr, index, howMany, var_args) {
-  goog.asserts.assert(arr || goog.isString(arr));
-  goog.asserts.assertNumber(arr.length);
+  goog.asserts.assert(arr.length != null);
 
   return goog.array.ARRAY_PROTOTYPE_.splice.apply(
       arr, goog.array.slice(arguments, 1));
@@ -792,8 +780,7 @@ goog.array.splice = function(arr, index, howMany, var_args) {
  *     array.
  */
 goog.array.slice = function(arr, start, opt_end) {
-  goog.asserts.assert(arr || goog.isString(arr));
-  goog.asserts.assertNumber(arr.length);
+  goog.asserts.assert(arr.length != null);
 
   // passing 1 arg to slice is not the same as passing 2 where the second is
   // null or undefined (in that case the second argument is treated as 0).
@@ -863,8 +850,9 @@ goog.array.removeDuplicates = function(arr, opt_rv) {
  *     iff target is found.
  */
 goog.array.binarySearch = function(arr, target, opt_compareFn) {
-  return goog.array.binarySelect(arr,
-      goog.partial(opt_compareFn || goog.array.defaultCompare, target));
+  return goog.array.binarySearch_(arr,
+      opt_compareFn || goog.array.defaultCompare, false /* isEvaluator */,
+      target);
 };
 
 
@@ -891,18 +879,57 @@ goog.array.binarySearch = function(arr, target, opt_compareFn) {
  *     iff a match is found.
  */
 goog.array.binarySelect = function(arr, evaluator, opt_obj) {
+  return goog.array.binarySearch_(arr, evaluator, true /* isEvaluator */,
+      undefined /* opt_target */, opt_obj);
+};
+
+
+/**
+ * Implementation of a binary search algorithm which knows how to use both
+ * comparison functions and evaluators. If an evaluator is provided, will call
+ * the evaluator with the given optional data object, conforming to the
+ * interface defined in binarySelect. Otherwise, if a comparison function is
+ * provided, will call the comparison function against the given data object.
+ *
+ * This implementation purposefully does not use goog.bind or goog.partial for
+ * performance reasons.
+ *
+ * Runtime: O(log n)
+ *
+ * @param {goog.array.ArrayLike} arr The array to be searched.
+ * @param {Function} compareFn Either an evaluator or a comparison function,
+ *     as defined by binarySearch and binarySelect above.
+ * @param {boolean} isEvaluator Whether the function is an evaluator or a
+ *     comparison function.
+ * @param {*=} opt_target If the function is a comparison function, then this is
+ *     the target to binary search for.
+ * @param {Object=} opt_selfObj If the function is an evaluator, this is an
+  *    optional this object for the evaluator.
+ * @return {number} Lowest index of the target value if found, otherwise
+ *     (-(insertion point) - 1). The insertion point is where the value should
+ *     be inserted into arr to preserve the sorted property.  Return value >= 0
+ *     iff target is found.
+ * @private
+ */
+goog.array.binarySearch_ = function(arr, compareFn, isEvaluator, opt_target,
+    opt_selfObj) {
   var left = 0;  // inclusive
   var right = arr.length;  // exclusive
   var found;
   while (left < right) {
     var middle = (left + right) >> 1;
-    var evalResult = evaluator.call(opt_obj, arr[middle], middle, arr);
-    if (evalResult > 0) {
+    var compareResult;
+    if (isEvaluator) {
+      compareResult = compareFn.call(opt_selfObj, arr[middle], middle, arr);
+    } else {
+      compareResult = compareFn(opt_target, arr[middle]);
+    }
+    if (compareResult > 0) {
       left = middle + 1;
     } else {
       right = middle;
       // We are looking for the lowest index so we can't return immediately.
-      found = !evalResult;
+      found = !compareResult;
     }
   }
   // left is the index if found, or the insertion point otherwise.
@@ -916,7 +943,9 @@ goog.array.binarySelect = function(arr, evaluator, opt_obj) {
  * specified, elements are compared using
  * <code>goog.array.defaultCompare</code>, which compares the elements using
  * the built in < and > operators.  This will produce the expected behavior
- * for homogeneous arrays of String(s) and Number(s).
+ * for homogeneous arrays of String(s) and Number(s), unlike the native sort,
+ * but will give unpredictable results for heterogenous lists of strings and
+ * numbers with different numbers of digits.
  *
  * This sort is not guaranteed to be stable.
  *
@@ -930,8 +959,7 @@ goog.array.binarySelect = function(arr, evaluator, opt_obj) {
  */
 goog.array.sort = function(arr, opt_compareFn) {
   // TODO(user): Update type annotation since null is not accepted.
-  goog.asserts.assert(arr || goog.isString(arr));
-  goog.asserts.assertNumber(arr.length);
+  goog.asserts.assert(arr.length != null);
 
   goog.array.ARRAY_PROTOTYPE_.sort.call(
       arr, opt_compareFn || goog.array.defaultCompare);
@@ -1173,8 +1201,7 @@ goog.array.flatten = function(var_args) {
  * @return {!Array.<*>} The array.
  */
 goog.array.rotate = function(array, n) {
-  goog.asserts.assert(array || goog.isString(array));
-  goog.asserts.assertNumber(array.length);
+  goog.asserts.assert(array.length != null);
 
   if (array.length) {
     n %= array.length;
@@ -1185,4 +1212,36 @@ goog.array.rotate = function(array, n) {
     }
   }
   return array;
+};
+
+
+/**
+ * Creates a new array for which the element at position i is an array of the
+ * ith element of the provided arrays.  The returned array will only be as long
+ * as the shortest array provided; additional values are ignored.  For example,
+ * the result of zipping [1, 2] and [3, 4, 5] is [[1,3], [2, 4]].
+ *
+ * This is similar to the zip() function in Python.  See {@link
+ * http://docs.python.org/library/functions.html#zip}
+ *
+ * @param {...!goog.array.ArrayLike} var_args Arrays to be combined.
+ * @return {!Array.<!Array>} A new array of arrays created from provided arrays.
+ */
+goog.array.zip = function(var_args) {
+  if (!arguments.length) {
+    return [];
+  }
+  var result = [];
+  for (var i = 0; true; i++) {
+    var value = [];
+    for (var j = 0; j < arguments.length; j++) {
+      var arr = arguments[j];
+      // If i is larger than the array length, this is the shortest array.
+      if (i >= arr.length) {
+        return result;
+      }
+      value.push(arr[i]);
+    }
+    result.push(value);
+  }
 };

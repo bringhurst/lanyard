@@ -15,9 +15,11 @@ See the COPYING file for details.
     goog.require('goog.debug.LogManager');
     goog.require('goog.debug.Logger');
     goog.require('goog.events');
+    goog.require('goog.events.EventType');
     goog.require('goog.object');
     goog.require('goog.ui.Button');
     goog.require('goog.ui.ButtonRenderer');
+    goog.require('goog.ui.ButtonSide');
     goog.require('goog.ui.CustomButton');
     goog.require('goog.ui.CustomButtonRenderer');
     goog.require('goog.ui.FlatButtonRenderer');
@@ -306,9 +308,9 @@ See the COPYING file for details.
         rightButton = new goog.ui.CustomButton('Right'),
     ];
     disabledButton.setEnabled(false);
-    leftButton.setCollapsed(goog.ui.Button.Side.END);
-    centerButton.setCollapsed(goog.ui.Button.Side.BOTH);
-    rightButton.setCollapsed(goog.ui.Button.Side.START);
+    leftButton.setCollapsed(goog.ui.ButtonSide.END);
+    centerButton.setCollapsed(goog.ui.ButtonSide.BOTH);
+    rightButton.setCollapsed(goog.ui.ButtonSide.START);
     goog.array.forEach(customButtons, function(b) {
       b.render(goog.dom.getElement('cb1'));
       goog.events.listen(b, goog.ui.Component.EventType.ACTION,

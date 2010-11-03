@@ -17,7 +17,6 @@
  * animations.  AnimationParallelQueue and AnimationSerialQueue provide
  * specific implementations of the abstract class AnimationQueue.
  *
-*
  * @see ../demos/animationqueue.html
  */
 
@@ -275,7 +274,7 @@ goog.fx.AnimationSerialQueue.prototype.playNext_ = function() {
   // dispatch of a BEGIN event), then we know that we must be restarting, so we
   // should stop all animations in the queue, reset the listeners, and rezero
   // the counter
-  if (this.state_ == goog.fx.Animation.State.PAUSED) {
+  if (this.getStateInternal() == goog.fx.Animation.State.PAUSED) {
     this.reset_();
 
     goog.array.forEach(this.queue_, function(animation) {

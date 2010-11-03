@@ -7,6 +7,7 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Closure Unit Tests - goog.string</title>
 <script src="../base.js"></script>
 <script>
@@ -467,6 +468,24 @@ function testXssUnescapePureXmlEntities() {
   assertEquals('unescapePureXmlEntities_ is vulnarable to XSS', 0,
                globalXssVar);
 }
+
+
+function testUnescapeEntitiesPreservesWhitespace() {
+  // This tests that whitespace is preserved (primarily for IE)
+  // Also make sure leading and trailing whitespace are preserved.
+  var test = '\nTesting\n\twhitespace\n    preservation\n';
+  var expected = test;
+
+  assertEquals('Testing unescapeEntities', expected,
+               goog.string.unescapeEntities(test));
+
+  // Now with entities
+  test += ' &amp;&nbsp;\n';
+  expected += ' &\u00A0\n';
+  assertEquals('Testing unescapeEntities', expected,
+               goog.string.unescapeEntities(test));
+}
+
 
 // === tests for goog.string.whitespaceEscape ===
 function testWhiteSpaceEscape() {

@@ -18,13 +18,13 @@
  * handling and child management, based on a generalized version of
  * {@link goog.ui.Menu}.
  *
-*
  * @see ../demos/container.html
  */
 // TODO(user):  Fix code/logic duplication between this and goog.ui.Control.
 // TODO(user):  Maybe pull common stuff all the way up into Component...?
 
 goog.provide('goog.ui.Container');
+goog.provide('goog.ui.Container.EventType');
 goog.provide('goog.ui.Container.Orientation');
 
 goog.require('goog.dom');
@@ -81,7 +81,12 @@ goog.ui.Container.EventType = {
    * BEFORE_SHOW event for a long time, and too much code relies on that old
    * behavior to fix it now.
    */
-  AFTER_SHOW: 'aftershow'
+  AFTER_SHOW: 'aftershow',
+
+  /**
+   * Dispatched after a goog.ui.Container becomes invisible. Non-cancellable.
+   */
+  AFTER_HIDE: 'afterhide'
 };
 
 
@@ -182,12 +187,20 @@ goog.ui.Container.prototype.mouseButtonPressed_ = false;
 
 
 /**
- * Whether focus of child componenets should be allowed.  Only effective if
+ * Whether focus of child components should be allowed.  Only effective if
  * focusable_ is set to false.
  * @type {boolean}
  * @private
  */
 goog.ui.Container.prototype.allowFocusableChildren_ = false;
+
+
+/**
+ * Whether highlighting a child component should also open it.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Container.prototype.openFollowsHighlight_ = true;
 
 
 /**
@@ -241,9 +254,9 @@ goog.ui.Container.prototype.setKeyEventTarget = function(element) {
       this.enableFocusHandling_(true);
     }
   } else {
-   throw Error('Can\'t set key event target for container ' +
-       'that doesn\'t support keyboard focus!');
- }
+    throw Error('Can\'t set key event target for container ' +
+        'that doesn\'t support keyboard focus!');
+  }
 };
 
 
@@ -487,8 +500,9 @@ goog.ui.Container.prototype.handleHighlightItem = function(e) {
       item.setActive(true);
     }
 
-    // Open follows highlight.
-    if (this.openItem_ && item != this.openItem_) {
+    // Update open item if open item needs follow highlight.
+    if (this.openFollowsHighlight_ &&
+        this.openItem_ && item != this.openItem_) {
       if (item.isSupportedState(goog.ui.Component.State.OPENED)) {
         item.setOpen(true);
       } else {
@@ -511,7 +525,7 @@ goog.ui.Container.prototype.handleUnHighlightItem = function(e) {
     this.highlightedIndex_ = -1;
   }
   goog.dom.a11y.setState(this.getElement(),
-       goog.dom.a11y.State.ACTIVEDESCENDANT, '');
+      goog.dom.a11y.State.ACTIVEDESCENDANT, '');
 };
 
 
@@ -555,7 +569,7 @@ goog.ui.Container.prototype.handleMouseDown = function(e) {
   }
 
   var keyTarget = this.getKeyEventTarget();
-  if (this.renderer_.hasTabIndex(keyTarget)) {
+  if (keyTarget && goog.dom.isFocusableTabIndex(keyTarget)) {
     // The container is configured to receive keyboard focus.
     keyTarget.focus();
   } else {
@@ -617,7 +631,10 @@ goog.ui.Container.prototype.getOwnerControl = function(node) {
   // looking up the owner.
   if (this.childElementIdMap_) {
     var elem = this.getElement();
-    while (node && node.parentNode && node != elem) {
+    // See http://b/2964418 . IE9 appears to evaluate '!=' incorrectly, so
+    // using '!==' instead.
+    // TODO(user): Possibly revert this change if/when IE9 fixes the issue.
+    while (node && node !== elem) {
       var id = node.id;
       if (id in this.childElementIdMap_) {
         return this.childElementIdMap_[id];
@@ -695,6 +712,11 @@ goog.ui.Container.prototype.handleKeyEventInternal = function(e) {
       typeof this.openItem_.handleKeyEvent == 'function' &&
       this.openItem_.handleKeyEvent(e)) {
     return true;
+  }
+
+  // Do not handle the key event if any modifier key is pressed.
+  if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) {
+    return false;
   }
 
   // Either nothing is highlighted, or the highlighted control didn't handle
@@ -870,21 +892,23 @@ goog.ui.Container.prototype.addChildAt = function(control, index, opt_render) {
  * @return {goog.ui.Control} The removed control, if any.
  */
 goog.ui.Container.prototype.removeChild = function(control, opt_unrender) {
-  // TODO(user): Fix implementation so that it works if control is a string.
+  control = goog.isString(control) ? this.getChild(control) : control;
 
-  var index = this.indexOfChild(/** @type {goog.ui.Control} */ (control));
-  if (index != -1) {
-    if (index == this.highlightedIndex_) {
-      control.setHighlighted(false);
-    } else if (index < this.highlightedIndex_) {
-      this.highlightedIndex_--;
+  if (control) {
+    var index = this.indexOfChild(control);
+    if (index != -1) {
+      if (index == this.highlightedIndex_) {
+        control.setHighlighted(false);
+      } else if (index < this.highlightedIndex_) {
+        this.highlightedIndex_--;
+      }
     }
-  }
 
-  // Remove the mapping from the child element ID map.
-  var childElem = control.getElement();
-  if (childElem && childElem.id) {
-    goog.object.remove(this.childElementIdMap_, childElem.id);
+    // Remove the mapping from the child element ID map.
+    var childElem = control.getElement();
+    if (childElem && childElem.id) {
+      goog.object.remove(this.childElementIdMap_, childElem.id);
+    }
   }
 
   control = /** @type {goog.ui.Control} */ (
@@ -960,8 +984,10 @@ goog.ui.Container.prototype.setVisible = function(visible, opt_force) {
         this.renderer_.enableTabIndex(this.getKeyEventTarget(),
             this.enabled_ && this.visible_);
       }
-      if (this.visible_ && !opt_force) {
-        this.dispatchEvent(goog.ui.Container.EventType.AFTER_SHOW);
+      if (!opt_force) {
+        this.dispatchEvent(this.visible_ ?
+            goog.ui.Container.EventType.AFTER_SHOW :
+            goog.ui.Container.EventType.AFTER_HIDE);
       }
     }
 
@@ -1073,6 +1099,23 @@ goog.ui.Container.prototype.isFocusableChildrenAllowed = function() {
  */
 goog.ui.Container.prototype.setFocusableChildrenAllowed = function(focusable) {
   this.allowFocusableChildren_ = focusable;
+};
+
+
+/**
+ * @return {boolean} Whether highlighting a child component should also open it.
+ */
+goog.ui.Container.prototype.isOpenFollowsHighlight = function() {
+  return this.openFollowsHighlight_;
+};
+
+
+/**
+ * Sets whether highlighting a child component should also open it.
+ * @param {boolean} follow Whether highlighting a child component also opens it.
+ */
+goog.ui.Container.prototype.setOpenFollowsHighlight = function(follow) {
+  this.openFollowsHighlight_ = follow;
 };
 
 
@@ -1220,6 +1263,16 @@ goog.ui.Container.prototype.canHighlightItem = function(item) {
  */
 goog.ui.Container.prototype.setHighlightedIndexFromKeyEvent = function(index) {
   this.setHighlightedIndex(index);
+};
+
+
+/**
+ * Returns the currently open (expanded) control in the container (null if
+ * none).
+ * @return {goog.ui.Control?} The currently open control.
+ */
+goog.ui.Container.prototype.getOpenItem = function() {
+  return this.openItem_;
 };
 
 

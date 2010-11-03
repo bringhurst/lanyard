@@ -16,10 +16,6 @@
  * @fileoverview Abstract class for all UI components. This defines the standard
  * design pattern that all UI components should follow.
  *
-*
-*
-*
-*
  * @see ../demos/samplecomponent.html
  */
 
@@ -334,11 +330,11 @@ goog.ui.Component.prototype.id_ = null;
 /**
  * DomHelper used to interact with the document, allowing components to be
  * created in a different window.
- * @type {goog.dom.DomHelper?}
+ * @type {!goog.dom.DomHelper}
  * @protected
  * @suppress {underscore}
  */
-goog.ui.Component.prototype.dom_ = null;
+goog.ui.Component.prototype.dom_;
 
 
 /**
@@ -475,6 +471,11 @@ goog.ui.Component.prototype.getElement = function() {
 /**
  * Sets the component's root element to the given element.  Considered
  * protected and final.
+ *
+ * This should generally only be called during createDom. Setting the element
+ * does not actually change which element is rendered, only the element that is
+ * associated with this UI component.
+ *
  * @param {Element} element Root element for the component.
  * @protected
  */
@@ -535,8 +536,7 @@ goog.ui.Component.prototype.getParent = function() {
 /**
  * Overrides {@link goog.events.EventTarget#setParentEventTarget} to throw an
  * error if the parent component is set, and the argument is not the parent.
- *
- * @param {goog.events.EventTarget} parent Parent EventTarget (null if none).
+ * @override
  */
 goog.ui.Component.prototype.setParentEventTarget = function(parent) {
   if (this.parent_ && this.parent_ != parent) {
@@ -548,7 +548,7 @@ goog.ui.Component.prototype.setParentEventTarget = function(parent) {
 
 /**
  * Returns the dom helper that is being used on this component.
- * @return {goog.dom.DomHelper} The dom helper used on this component.
+ * @return {!goog.dom.DomHelper} The dom helper used on this component.
  */
 goog.ui.Component.prototype.getDomHelper = function() {
   return this.dom_;
@@ -574,10 +574,14 @@ goog.ui.Component.prototype.createDom = function() {
 
 
 /**
- * Renders the component.  If a parent element is supplied, it should already be
- * in the document and then the component's element will be appended to it.  If
- * there is no optional parent element and the element doesn't have a parentNode
- * then it will be appended to the document body.
+ * Renders the component.  If a parent element is supplied, the component's
+ * element will be appended to it.  If there is no optional parent element and
+ * the element doesn't have a parentNode then it will be appended to the
+ * document body.
+ *
+ * If this component has a parent component, and the parent component is
+ * not in the document already, then this will not call {@code enterDocument}
+ * on this component.
  *
  * Throws an Error if the component is already rendered.
  *
@@ -604,10 +608,14 @@ goog.ui.Component.prototype.renderBefore = function(siblingElement) {
 
 
 /**
- * Renders the component.  If a parent element is supplied, it should already be
- * in the document and then the component's element will be appended to it.  If
- * there is no optional parent element and the element doesn't have a parentNode
- * then it will be appended to the document body.
+ * Renders the component.  If a parent element is supplied, the component's
+ * element will be appended to it.  If there is no optional parent element and
+ * the element doesn't have a parentNode then it will be appended to the
+ * document body.
+ *
+ * If this component has a parent component, and the parent component is
+ * not in the document already, then this will not call {@code enterDocument}
+ * on this component.
  *
  * Throws an Error if the component is already rendered.
  *
@@ -781,6 +789,7 @@ goog.ui.Component.prototype.disposeInternal = function() {
   this.element_ = null;
   this.model_ = null;
   this.parent_ = null;
+  // TODO(user): delete this.dom_ breaks many unit tests.
 };
 
 
@@ -882,6 +891,10 @@ goog.ui.Component.prototype.addChild = function(child, opt_render) {
  *        parent's DOM state.
  *  </ul>
  *
+ * If {@code opt_render} is true and the parent component is not already
+ * in the document, {@code enterDocument} will not be called on this component
+ * at this point.
+ *
  * Finally, this method also throws an error if the new child already has a
  * different parent, or the given index is out of bounds.
  *
@@ -891,7 +904,7 @@ goog.ui.Component.prototype.addChild = function(child, opt_render) {
  *    added; must be between 0 and the current child count (inclusive).
  * @param {boolean=} opt_render If true, the child component will be rendered
  *    into the parent.
- * @return {void}
+ * @return {void} Nada.
  */
 goog.ui.Component.prototype.addChildAt = function(child, index, opt_render) {
   if (child.inDocument_ && (opt_render || !this.inDocument_)) {

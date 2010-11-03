@@ -19,9 +19,6 @@
  * This is a goog.editor.Field, but with blending and sizing capabilities,
  * and avoids using an iframe whenever possible.
  *
-*
- * @author nicksantos@google.com (Nick Santos)
-*
  * @see ../demos/editor/seamlessfield.html
  */
 
@@ -394,7 +391,8 @@ goog.editor.SeamlessField.prototype.inheritBlendedCSS = function() {
     return;
   }
   var field = this.getElement();
-  var head = goog.dom.getDomHelper(field).$$('head')[0];
+  var head = goog.dom.getDomHelper(field).getElementsByTagNameAndClass(
+      'head')[0];
   if (head) {
     // We created this <head>, and we know the only thing we put in there
     // is a <style> block.  So it's safe to blow away all the children

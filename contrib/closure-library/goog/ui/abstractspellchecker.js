@@ -31,13 +31,12 @@
  * so often so that the calling function could reschedule its execution on a
  * different stack (for example by calling setInterval(0)).
  *
-*
-*
  */
 
 goog.provide('goog.ui.AbstractSpellChecker');
 goog.provide('goog.ui.AbstractSpellChecker.AsyncResult');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.dom.selection');
@@ -649,7 +648,7 @@ goog.ui.AbstractSpellChecker.prototype.updateElement =
  */
 goog.ui.AbstractSpellChecker.prototype.makeElementId = function(opt_id) {
   return (opt_id ? opt_id : goog.ui.AbstractSpellChecker.nextId_++) +
-    '.' + goog.ui.AbstractSpellChecker.ID_SUFFIX_;
+      '.' + goog.ui.AbstractSpellChecker.ID_SUFFIX_;
 };
 
 
@@ -811,8 +810,8 @@ goog.ui.AbstractSpellChecker.prototype.populateDictionary = function(text,
  * @param {goog.spell.SpellCheck.WordStatus} status Status of the word.
  * @protected
  */
-goog.ui.AbstractSpellChecker.prototype.processWord = function(node, text,
-                                                               status) {
+goog.ui.AbstractSpellChecker.prototype.processWord = function(
+    node, text, status) {
   throw Error('Need to override processWord_ in derivative class');
 };
 
@@ -903,8 +902,8 @@ goog.ui.AbstractSpellChecker.prototype.unblockReadyEvents = function() {
  * @return {goog.ui.AbstractSpellChecker.AsyncResult} operation result.
  * @protected
  */
-goog.ui.AbstractSpellChecker.prototype.processTextAsync = function(node,
-                                                                    text) {
+goog.ui.AbstractSpellChecker.prototype.processTextAsync = function(
+    node, text) {
   if (!this.asyncMode_ || this.asyncText_ != null || this.asyncNode_) {
     throw Error('Not in async mode or previous text has not been processed.');
   }
@@ -962,6 +961,7 @@ goog.ui.AbstractSpellChecker.prototype.continueAsyncProcessing = function() {
   }
   var node = /** @type {Node} */ (this.asyncNode_);
   var stringSegmentStart = this.asyncRangeStart_;
+  goog.asserts.assertNumber(stringSegmentStart);
   var text = this.asyncText_;
 
   var result;
@@ -1038,10 +1038,10 @@ goog.ui.AbstractSpellChecker.AsyncResult = {
    * Caller must reschedule operation and call continueAsyncProcessing on the
    * new stack frame.
    */
-  PENDING : 1,
+  PENDING: 1,
   /**
    * Current element has been fully processed. Caller can call
    * processTextAsync or finishAsyncProcessing.
    */
-  DONE : 2
+  DONE: 2
 };

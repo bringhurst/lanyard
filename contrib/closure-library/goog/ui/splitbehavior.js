@@ -1,4 +1,4 @@
-// Copyright 2010 Google Inc. All Rights Reserved
+// Copyright 2010 The Closure Library Authors. All Rights Reserved
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 /**
  * @fileoverview Behavior for combining two controls.
  *
-*
  * @see ../demos/split.html
  */
 
@@ -32,7 +31,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.string');
-goog.require('goog.ui.Button.Side');
+goog.require('goog.ui.ButtonSide');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Component.Error');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
@@ -136,19 +135,19 @@ goog.ui.SplitBehavior.CSS_CLASS = goog.getCssName('goog-split-behavior');
  * @enum {function(goog.ui.Control,Event)}
  */
 goog.ui.SplitBehavior.DefaultHandlers = {
-  NONE: goog.nullFunction(),
+  NONE: goog.nullFunction,
   CAPTION: function(targetControl, e) {
     var item = (/** @type {goog.ui.MenuItem} */e.target);
     var value = (/** @type {string} */((item && item.getValue()) || ''));
     var button = (/** @type {goog.ui.Button} */targetControl);
     button.setCaption && button.setCaption(value);
-    button.setValue && button.setValue(value)
+    button.setValue && button.setValue(value);
   },
   VALUE: function(targetControl, e) {
     var item = (/** @type {goog.ui.MenuItem} */e.target);
     var value = (/** @type {string} */(item && item.getValue()) || '');
     var button = (/** @type {goog.ui.Button} */targetControl);
-    button.setValue && button.setValue(value)
+    button.setValue && button.setValue(value);
   }
 };
 
@@ -296,6 +295,7 @@ goog.ui.SplitBehavior.prototype.disposeInternal = function() {
   if (this.disposeSecond_) {
     goog.dispose(this.second_);
   }
+  goog.ui.SplitBehavior.superClass_.disposeInternal.call(this);
 };
 
 
@@ -332,8 +332,8 @@ goog.ui.SplitBehavior.prototype.decorateChildren_ = function(
 goog.ui.SplitBehavior.prototype.collapseSides_ = function(first, second) {
   if (goog.isFunction(first.setCollapsed) &&
       goog.isFunction(second.setCollapsed)) {
-    first.setCollapsed(goog.ui.Button.Side.END);
-    second.setCollapsed(goog.ui.Button.Side.START);
+    first.setCollapsed(goog.ui.ButtonSide.END);
+    second.setCollapsed(goog.ui.ButtonSide.START);
   }
 };
 

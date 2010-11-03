@@ -7,16 +7,29 @@ Use of this source code is governed by an Apache 2.0 License.
 See the COPYING file for details.
 -->
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Closure Unit Tests - goog.array</title>
 <script src="../base.js"></script>
 <script>
   goog.require('goog.array');
+  goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.jsunit');
   goog.require('goog.testing.recordFunction');
 </script>
 </head>
 <body>
 <script>
+
+var propertyReplacer;
+
+function setUp() {
+}
+
+function tearDown() {
+  if (propertyReplacer) {
+    propertyReplacer.reset();
+  }
+}
 
 function testArrayIndexOf() {
   assertEquals(goog.array.indexOf([0, 1, 2, 3], 1), 1);
@@ -1002,6 +1015,31 @@ function testBinarySearch() {
 }
 
 
+function testBinarySearchPerformance() {
+  // Ensure that Array#slice, Function#apply and Function#call are not called
+  // from within binarySearch, since they have performance implications in IE.
+
+  propertyReplacer = new goog.testing.PropertyReplacer();
+  propertyReplacer.replace(Array.prototype, 'slice', function() {
+    fail('Should not call Array#slice from binary search.');
+  });
+  propertyReplacer.replace(Function.prototype, 'apply', function() {
+    fail('Should not call Function#apply from binary search.');
+  });
+  propertyReplacer.replace(Function.prototype, 'call', function() {
+    fail('Should not call Function#call from binary search.');
+  });
+
+  var array = [1, 5, 7, 11, 13, 16, 19, 24, 28, 31, 33, 36, 40, 50, 52, 55];
+  // Test with the default comparison function.
+  goog.array.binarySearch(array, 48);
+  // Test with a custom comparison function.
+  goog.array.binarySearch(array, 13, function(a, b) {
+    return a > b ? 1 : a < b ? -1 : 0;
+  });
+}
+
+
 function testBinarySelect() {
   var insertionPoint = function(position) { return -(position + 1)};
   var numbers = [-897123.9, -321434.58758, -1321.3124, -324, -9, -3, 0, 0, 0,
@@ -1420,6 +1458,14 @@ function testConcatWithNull() {
   assertArrayEquals([1, 2, 3, null], a2);
 }
 
+function testZip() {
+  var a1 = goog.array.zip([1, 2, 3], [3, 2, 1]);
+  var a2 = goog.array.zip([1, 2], [3, 2, 1]);
+  var a3 = goog.array.zip();
+  assertArrayEquals([[1, 3], [2, 2], [3, 1]], a1);
+  assertArrayEquals([[1, 3], [2, 2]], a2);
+  assertArrayEquals([], a3);
+}
 
 </script>
 </body>

@@ -13,10 +13,9 @@
 // limitations under the License.
 
 /**
- * @fileoverview Provides the class CrossDomainChannel, the main class in
+ * @fileoverview Provides the class CrossPageChannel, the main class in
  * goog.net.xpc.
  *
-*
  * @see ../../demos/xpc/index.html
  */
 
@@ -26,7 +25,9 @@ goog.provide('goog.net.xpc.CrossPageChannel.Role');
 goog.require('goog.Disposable');
 goog.require('goog.Uri');
 goog.require('goog.dom');
+goog.require('goog.events');
 goog.require('goog.json');
+goog.require('goog.messaging.MessageChannel'); // interface
 goog.require('goog.net.xpc');
 goog.require('goog.net.xpc.FrameElementMethodTransport');
 goog.require('goog.net.xpc.IframePollingTransport');
@@ -43,10 +44,13 @@ goog.require('goog.userAgent');
  * Provides asynchronous messaging.
  *
  * @param {Object} cfg Channel configuration object.
+ * @param {goog.dom.DomHelper=} opt_domHelper The optional dom helper to
+ *     use for looking up elements in the dom.
  * @constructor
+ * @implements {goog.messaging.MessageChannel}
  * @extends {goog.Disposable}
  */
-goog.net.xpc.CrossPageChannel = function(cfg) {
+goog.net.xpc.CrossPageChannel = function(cfg, opt_domHelper) {
   goog.Disposable.call(this);
 
   /**
@@ -70,6 +74,13 @@ goog.net.xpc.CrossPageChannel = function(cfg) {
    * @private
    */
   this.services_ = {};
+
+  /**
+   * The dom helper to use for accessing the dom.
+   * @type {goog.dom.DomHelper}
+   * @private
+   */
+  this.domHelper_ = opt_domHelper || goog.dom.getDomHelper();
 
   goog.net.xpc.channels_[this.name] = this;
 
@@ -181,19 +192,23 @@ goog.net.xpc.CrossPageChannel.prototype.createTransport_ = function() {
     case goog.net.xpc.TransportTypes.NATIVE_MESSAGING:
       this.transport_ = new goog.net.xpc.NativeMessagingTransport(
           this,
-          this.cfg_[goog.net.xpc.CfgFields.PEER_HOSTNAME]);
+          this.cfg_[goog.net.xpc.CfgFields.PEER_HOSTNAME],
+          this.domHelper_);
       break;
     case goog.net.xpc.TransportTypes.NIX:
-      this.transport_ = new goog.net.xpc.NixTransport(this);
+      this.transport_ = new goog.net.xpc.NixTransport(this, this.domHelper_);
       break;
     case goog.net.xpc.TransportTypes.FRAME_ELEMENT_METHOD:
-      this.transport_ = new goog.net.xpc.FrameElementMethodTransport(this);
+      this.transport_ =
+          new goog.net.xpc.FrameElementMethodTransport(this, this.domHelper_);
       break;
     case goog.net.xpc.TransportTypes.IFRAME_RELAY:
-      this.transport_ = new goog.net.xpc.IframeRelayTransport(this);
+      this.transport_ =
+          new goog.net.xpc.IframeRelayTransport(this, this.domHelper_);
       break;
     case goog.net.xpc.TransportTypes.IFRAME_POLLING:
-      this.transport_ = new goog.net.xpc.IframePollingTransport(this);
+      this.transport_ =
+          new goog.net.xpc.IframePollingTransport(this, this.domHelper_);
       break;
   }
 
@@ -237,7 +252,7 @@ goog.net.xpc.CrossPageChannel.prototype.getPeerConfiguration = function() {
     peerCfg[goog.net.xpc.CfgFields.PEER_RELAY_URI] =
         this.cfg_[goog.net.xpc.CfgFields.LOCAL_RELAY_URI];
   }
-  if (this.cfg_[goog.net.xpc.CfgFields.LOCAL_POLL_URI]){
+  if (this.cfg_[goog.net.xpc.CfgFields.LOCAL_POLL_URI]) {
     peerCfg[goog.net.xpc.CfgFields.PEER_POLL_URI] =
         this.cfg_[goog.net.xpc.CfgFields.LOCAL_POLL_URI];
   }
@@ -358,7 +373,7 @@ goog.net.xpc.CrossPageChannel.prototype.connect = function(opt_connectCb) {
 
   goog.net.xpc.logger.info('connect()');
   if (this.cfg_[goog.net.xpc.CfgFields.IFRAME_ID]) {
-    this.iframeElement_ = goog.dom.getElement(
+    this.iframeElement_ = this.domHelper_.getElement(
         this.cfg_[goog.net.xpc.CfgFields.IFRAME_ID]);
   }
   if (this.iframeElement_) {
@@ -445,6 +460,19 @@ goog.net.xpc.CrossPageChannel.prototype.registerService = function(
 
 
 /**
+ * Registers a service to handle any messages that aren't handled by any other
+ * services.
+ *
+ * @param {function(string, (string|Object))} callback The callback responsible
+ *     for processing incoming messages that aren't processed by other services.
+ */
+goog.net.xpc.CrossPageChannel.prototype.registerDefaultService = function(
+    callback) {
+  this.defaultService_ = callback;
+};
+
+
+/**
  * Sends a msg over the channel.
  *
  * @param {string} serviceName The name of the service this message
@@ -483,8 +511,9 @@ goog.net.xpc.CrossPageChannel.prototype.send = function(serviceName, payload) {
 goog.net.xpc.CrossPageChannel.prototype.deliver_ = function(serviceName,
                                                             payload) {
 
-  // transport service?
-  if (!serviceName ||
+  if (this.isDisposed()) {
+    goog.net.xpc.logger.warning('CrossPageChannel::deliver_(): Disposed.');
+  } else if (!serviceName ||
       serviceName == goog.net.xpc.TRANSPORT_SERVICE_) {
     this.transport_.transportServiceHandler(payload);
   } else {
@@ -502,6 +531,8 @@ goog.net.xpc.CrossPageChannel.prototype.deliver_ = function(serviceName,
           }
         }
         service.callback(payload);
+      } else if (this.defaultService_) {
+        this.defaultService_.callback(payload);
       } else {
         goog.net.xpc.logger.info('CrossPageChannel::deliver_(): ' +
                                  'No such service: "' + serviceName + '" ' +
@@ -546,8 +577,7 @@ goog.net.xpc.CrossPageChannel.prototype.disposeInternal = function() {
   this.peerWindowObject_ = null;
   this.iframeElement_ = null;
   delete this.services_;
-
-  goog.net.xpc.channels_[this.name] = null;
+  delete goog.net.xpc.channels_[this.name];
 };
 
 

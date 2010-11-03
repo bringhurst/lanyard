@@ -15,8 +15,6 @@
 /**
  * @fileoverview Datastructure: Hash Map.
  *
-*
-*
  *
  * This file contains an implementation of a Map structure. It implements a lot
  * of the methods used in goog.structs so those functions work on hashes.  For
@@ -360,6 +358,20 @@ goog.structs.Map.prototype.transpose = function() {
   }
 
   return transposed;
+};
+
+
+/**
+ * @return {!Object} Object representation of the map.
+ */
+goog.structs.Map.prototype.toObject = function() {
+  this.cleanupKeysArray_();
+  var obj = {};
+  for (var i = 0; i < this.keys_.length; i++) {
+    var key = this.keys_[i];
+    obj[key] = this.map_[key];
+  }
+  return obj;
 };
 
 

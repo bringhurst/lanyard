@@ -15,7 +15,6 @@
 /**
  * @fileoverview An example of how to write a dialog plugin.
  *
-*
  */
 
 goog.provide('goog.demos.editor.HelloWorldDialogPlugin');
@@ -97,9 +96,9 @@ goog.demos.editor.HelloWorldDialogPlugin.prototype.handleOk_ = function(e) {
   var range = this.fieldObject.getRange();
   range.removeContents();
   // And replace it with a span containing our hello world message.
-  var createdNode = this.getFieldDomHelper().$dom(goog.dom.TagName.SPAN,
-                                                  null,
-                                                  e.message);
+  var createdNode = this.getFieldDomHelper().createDom(goog.dom.TagName.SPAN,
+                                                       null,
+                                                       e.message);
   createdNode = range.insertNode(createdNode, false);
   // Place the cursor at the end of the new text node (false == to the right).
   goog.editor.range.placeCursorNextTo(createdNode, false);

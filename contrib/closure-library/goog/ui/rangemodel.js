@@ -23,7 +23,6 @@
  *
  * Based on http://webfx.eae.net/dhtml/slider/js/range.js
  *
-*
  */
 
 goog.provide('goog.ui.RangeModel');
@@ -184,7 +183,7 @@ goog.ui.RangeModel.prototype.setMinimum = function(minimum) {
     if (minimum > this.maximum_) {
       this.extent_ = 0;
       this.setMaximum(minimum);
-      this.setValue(minimum)
+      this.setValue(minimum);
     }
 
 

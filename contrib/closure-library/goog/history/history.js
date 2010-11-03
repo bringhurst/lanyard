@@ -48,7 +48,6 @@
  * history states for going backward. Unfortunately, replacing the location
  * does not seem to help, the history states are created anyway.
  *
-*
  * @see ../demos/history1.html
  * @see ../demos/history2.html
  */
@@ -169,6 +168,8 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('goog.history.Event');
+goog.require('goog.history.EventType');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 
@@ -188,7 +189,7 @@ goog.require('goog.userAgent');
  * <pre>
  * // Instantiate history to use the address bar for state.
  * var h = new goog.History();
- * goog.events.listen(h, goog.History.EventType.NAVIGATE, navCallback);
+ * goog.events.listen(h, goog.history.EventType.NAVIGATE, navCallback);
  * h.setEnabled(true);
  *
  * // Any changes to the location hash will call the following function.
@@ -400,10 +401,9 @@ goog.History.prototype.lastToken_ = null;
 
 
 /**
- * Whether the browser supports HTML5 history  management.
+ * Whether the browser supports HTML5 history management.
  * {@link http://www.w3.org/TR/html5/history.html}.
  * @type {boolean}
- * @protected
  */
 goog.History.HAS_ONHASHCHANGE =
     goog.userAgent.IE && document.documentMode >= 8 ||
@@ -477,11 +477,12 @@ goog.History.prototype.setEnabled = function(enable) {
       this.eventHandler_.listen(
           this.window_, goog.events.EventType.HASHCHANGE, this.onHashChange_);
       this.enabled_ = true;
-      this.dispatchEvent(new goog.History.Event(this.getToken()));
+      this.dispatchEvent(new goog.history.Event(this.getToken(), false));
     } else if (!goog.userAgent.IE || this.documentLoaded) {
       // Start dispatching history events if all necessary loading has
       // completed (always true for browsers other than IE.)
-      this.eventHandler_.listen(this.timer_, goog.Timer.TICK, this.check_);
+      this.eventHandler_.listen(this.timer_, goog.Timer.TICK,
+          goog.bind(this.check_, this, true));
 
       this.enabled_ = true;
 
@@ -492,7 +493,7 @@ goog.History.prototype.setEnabled = function(enable) {
       }
 
       this.timer_.start();
-      this.dispatchEvent(new goog.History.Event(this.getToken()));
+      this.dispatchEvent(new goog.history.Event(this.getToken(), false));
     }
 
   } else {
@@ -554,7 +555,7 @@ goog.History.prototype.onShow_ = function(e) {
 goog.History.prototype.onHashChange_ = function(e) {
   var hash = this.getLocationFragment_(this.window_);
   if (hash != this.lastToken_) {
-    this.update_(hash);
+    this.update_(hash, true);
   }
 };
 
@@ -563,9 +564,8 @@ goog.History.prototype.onHashChange_ = function(e) {
  * @return {string} The current token.
  */
 goog.History.prototype.getToken = function() {
-  if (this.lockedToken_ !== null) {
-    // XXX(user): type checker bug!
-    return /** @type {string} */ (this.lockedToken_);
+  if (this.lockedToken_ != null) {
+    return this.lockedToken_;
   } else if (this.userVisible_) {
     return this.getLocationFragment_(this.window_);
   } else {
@@ -646,14 +646,14 @@ goog.History.prototype.setHistoryState_ = function(token, replace, opt_title) {
       // goog.History.HAS_ONHASHCHANGE is true so the NAVIGATE event fires
       // sychronously.
       if (this.enabled_) {
-        this.check_();
+        this.check_(false);
       }
     } else {
       // Fire the event immediately so that setting history is synchronous, but
       // set a suspendToken so that polling doesn't trigger a 'back'.
       this.setIframeToken_(token, replace);
       this.lockedToken_ = this.lastToken_ = this.hiddenInput_.value = token;
-      this.dispatchEvent(new goog.History.Event(token));
+      this.dispatchEvent(new goog.history.Event(token, false));
     }
   }
 };
@@ -725,11 +725,11 @@ goog.History.prototype.setIframeToken_ = function(token,
       var doc = goog.dom.getFrameContentDocument(this.iframe_);
 
       doc.open('text/html', opt_replace ? 'replace' : undefined);
-      doc.write(
-          goog.string.subs(goog.History.IFRAME_SOURCE_TEMPLATE_,
-                           goog.string.htmlEscape((/** @type {string} */
-                               opt_title || this.window_.document.title)),
-                               token));
+      doc.write(goog.string.subs(
+          goog.History.IFRAME_SOURCE_TEMPLATE_,
+          goog.string.htmlEscape(
+              /** @type {string} */ (opt_title || this.window_.document.title)),
+          token));
       doc.close();
     } else {
       var url = this.iframeSrc_ + '#' + token;
@@ -788,7 +788,7 @@ goog.History.prototype.getIframeToken_ = function() {
         // state, and (c) the token is still in the history and
         // accesible on forward/back.
         if (!this.longerPolling_) {
-          this.setLongerPolling_(true)
+          this.setLongerPolling_(true);
         }
 
         return null;
@@ -812,13 +812,16 @@ goog.History.prototype.getIframeToken_ = function() {
  * Checks the state of the document fragment and the iframe title to detect
  * navigation changes. If {@code goog.History.HAS_ONHASHCHANGE} is
  * {@code false}, then this runs approximately twenty times per second.
+ * @param {boolean} isNavigation True if the event was initiated by a browser
+ *     action, false if it was caused by a setToken call. See
+ *     {@link goog.history.Event}.
  * @private
  */
-goog.History.prototype.check_ = function() {
+goog.History.prototype.check_ = function(isNavigation) {
   if (this.userVisible_) {
     var hash = this.getLocationFragment_(this.window_);
     if (hash != this.lastToken_) {
-      this.update_(hash);
+      this.update_(hash, isNavigation);
     }
   }
 
@@ -829,7 +832,7 @@ goog.History.prototype.check_ = function() {
     if (this.lockedToken_ == null || token == this.lockedToken_) {
       this.lockedToken_ = null;
       if (token != this.lastToken_) {
-        this.update_(token);
+        this.update_(token, isNavigation);
       }
     }
   }
@@ -841,9 +844,12 @@ goog.History.prototype.check_ = function() {
  * to the location or the iframe state is detected by poll_.
  *
  * @param {string} token The new history state.
+ * @param {boolean} isNavigation True if the event was initiated by a browser
+ *     action, false if it was caused by a setToken call. See
+ *     {@link goog.history.Event}.
  * @private
  */
-goog.History.prototype.update_ = function(token) {
+goog.History.prototype.update_ = function(token, isNavigation) {
   this.lastToken_ = this.hiddenInput_.value = token;
 
   if (this.userVisible_) {
@@ -856,7 +862,7 @@ goog.History.prototype.update_ = function(token) {
     this.setIframeToken_(token);
   }
 
-  this.dispatchEvent(new goog.History.Event(this.getToken()));
+  this.dispatchEvent(new goog.history.Event(this.getToken(), isNavigation));
 };
 
 
@@ -899,9 +905,11 @@ goog.History.prototype.operaDefibrillator_ = function() {
  * @type {Array.<string>}
  * @private
  */
-goog.History.INPUT_EVENTS_ = [goog.events.EventType.MOUSEDOWN,
-                              goog.events.EventType.KEYDOWN,
-                              goog.events.EventType.MOUSEMOVE];
+goog.History.INPUT_EVENTS_ = [
+  goog.events.EventType.MOUSEDOWN,
+  goog.events.EventType.KEYDOWN,
+  goog.events.EventType.MOUSEMOVE
+];
 
 
 /**
@@ -953,25 +961,16 @@ goog.History.PollingType = {
 /**
  * Constant for the history change event type.
  * @enum {string}
+ * @deprecated Use goog.history.EventType.
  */
-goog.History.EventType = {
-  NAVIGATE: 'navigate'
-};
+goog.History.EventType = goog.history.EventType;
 
 
 /**
- * Event object dispatched after navigation events.
+ * Constant for the history change event type.
  * @param {string} token The string identifying the new history state.
- * @constructor
  * @extends {goog.events.Event}
+ * @constructor
+ * @deprecated Use goog.history.Event.
  */
-goog.History.Event = function(token) {
-  goog.events.Event.call(this, goog.History.EventType.NAVIGATE);
-
-  /**
-   * The current history state.
-   * @type {string}
-   */
-  this.token = token;
-};
-goog.inherits(goog.History.Event, goog.events.Event);
+goog.History.Event = goog.history.Event;

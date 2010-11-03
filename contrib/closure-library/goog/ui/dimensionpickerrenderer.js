@@ -19,7 +19,7 @@
  * using CSS background tiling instead of as a grid of nodes.
  *
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author abefettig@google.com (Abe Fettig)
  */
 
 goog.provide('goog.ui.DimensionPickerRenderer');
@@ -301,7 +301,7 @@ goog.ui.DimensionPickerRenderer.prototype.positionMouseCatcher = function(
 
   // Compute the maximum size the catcher can be without introducing scrolling.
   var xAvailableEm = (palette.isRightToLeft() && position.x > 0) ?
-      Math.floor(position.x / 18):
+      Math.floor(position.x / 18) :
       Math.floor((body.scrollWidth - position.x) / 18);
 
   // Computing available height is more complicated - we need to check the

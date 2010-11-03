@@ -16,7 +16,6 @@
  * @fileoverview Menu where items can be filtered based on user keyboard input.
  * If a filter is specified only the items matching it will be displayed.
  *
-*
  * @see ../demos/filteredmenu.html
  */
 
@@ -24,6 +23,7 @@
 goog.provide('goog.ui.FilteredMenu');
 
 goog.require('goog.dom');
+goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.string');
@@ -272,7 +272,7 @@ goog.ui.FilteredMenu.prototype.setFilter = function(str) {
  */
 goog.ui.FilteredMenu.prototype.getFilter = function() {
   return this.filterInput_ && goog.isString(this.filterInput_.value) ?
-    this.filterInput_.value : '';
+      this.filterInput_.value : '';
 };
 
 
@@ -325,8 +325,8 @@ goog.ui.FilteredMenu.prototype.getAllowMultiple = function() {
 /**
  * Sets whether the specified child should be affected (shown/hidden) by the
  * filter criteria.
- * @param {goog.ui.MenuItem} child Menu item to change.
- * @param {boolean} persistent Whether the menu item should be persistent.
+ * @param {goog.ui.Component} child Child to change.
+ * @param {boolean} persistent Whether the child should be persistent.
  */
 goog.ui.FilteredMenu.prototype.setPersistentVisibility = function(child,
                                                                   persistent) {
@@ -410,7 +410,7 @@ goog.ui.FilteredMenu.prototype.filterItems_ = function(str) {
 
     if (matches) {
       str = matches.length > 2 ? goog.string.trim(matches[2]) : '';
-   }
+    }
   }
 
   var matcher = new RegExp('(^|[- ,_/.:])' +
@@ -537,42 +537,19 @@ goog.ui.FilteredMenu.prototype.getFilterInputElement = function() {
 goog.ui.FilteredMenu.prototype.decorateInternal = function(element) {
   this.setElementInternal(element);
 
-  // Filter element.
+  // Decorate the menu content.
+  this.decorateContent(element);
+
+  // Locate internally managed elements.
   var el = this.getDomHelper().getElementsByTagNameAndClass('div',
       goog.getCssName(this.getRenderer().getCssClass(), 'filter'), element)[0];
   this.labelEl_ = goog.dom.getFirstElementChild(el);
   this.filterInput_ = goog.dom.getNextElementSibling(this.labelEl_);
+  this.contentElement_ = goog.dom.getNextElementSibling(el);
 
-  // Content element.
-  el = goog.dom.getNextElementSibling(el);
-  this.contentElement_ = el && goog.dom.classes.has(el,
-      goog.getCssName(this.getRenderer().getCssClass(), 'content')) ? el : null;
-
-  if (this.contentElement_) {
-    this.decorateChildren_(goog.dom.getFirstElementChild(this.contentElement_));
-  }
-  this.decorateChildren_(goog.dom.getNextElementSibling(el));
+  // Decorate additional menu items (like 'apply').
+  this.getRenderer().decorateChildren(this, el.parentNode,
+      this.contentElement_);
 
   this.initFilterInput_();
-};
-
-
-/**
- * Decorates child nodes.
- * @param {Element} firstChild First child to decorate.
- * @private
- */
-goog.ui.FilteredMenu.prototype.decorateChildren_ = function(firstChild) {
-  var childElem = firstChild;
-  while (childElem) {
-    // Get the next sibling here, in case decorate() creates or removes nodes.
-    var nextChild = goog.dom.getNextElementSibling(childElem);
-    var child = this.getRenderer().getDecoratorForChild(childElem);
-    if (child) {
-      child.setElementInternal(childElem);
-      this.addChild(child);
-      child.decorate(childElem);
-    }
-    childElem = nextChild;
-  }
 };

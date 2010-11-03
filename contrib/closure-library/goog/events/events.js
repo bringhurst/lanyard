@@ -34,10 +34,7 @@
  * goog.events.removeAll();
  * </pre>
  *
-*
-*
  *                                            in IE and event object patching]
-*
  *
  * @supported IE6+, FF1.5+, WebKit, Opera.
  * @see ../demos/events.html
@@ -57,9 +54,9 @@
 
 
 goog.provide('goog.events');
-goog.provide('goog.events.EventType');
 
 goog.require('goog.array');
+goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.debug.errorHandlerWeakDep');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
@@ -67,7 +64,6 @@ goog.require('goog.events.EventWrapper');
 goog.require('goog.events.pools');
 goog.require('goog.object');
 goog.require('goog.userAgent');
-
 
 
 /**
@@ -127,6 +123,14 @@ goog.events.keySeparator_ = '_';
  * @private
  */
 goog.events.requiresSyntheticEventPropagation_;
+
+
+/**
+ * Return value for marking an event in IE.
+ * @type {string}
+ * @private
+ */
+goog.events.RETURN_VALUE_ = 'marked_closure';
 
 
 /**
@@ -548,7 +552,7 @@ goog.events.getListeners = function(obj, type, capture) {
  * @param {?string} type Event type.
  * @param {boolean} capture Capture phase?.
  * @return {Array.<goog.events.Listener>?} Array of listener objects.
- *     Returns null if object has no lsiteners of that type.
+ *     Returns null if object has no listeners of that type.
  * @private
  */
 goog.events.getListeners_ = function(obj, type, capture) {
@@ -572,10 +576,10 @@ goog.events.getListeners_ = function(obj, type, capture) {
  * Gets the goog.events.Listener for the event or null if no such listener is
  * in use.
  *
- * @param {EventTarget|goog.events.EventTarget} src The node to stop
- *     listening to events on.
+ * @param {EventTarget|goog.events.EventTarget} src The node from which to get
+ *     listeners.
  * @param {?string} type The name of the event without the 'on' prefix.
- * @param {Function|Object} listener The listener function to remove.
+ * @param {Function|Object} listener The listener function to get.
  * @param {boolean=} opt_capt In DOM-compliant browsers, this determines
  *                            whether the listener is fired during the
  *                            capture or bubble phase of the event.
@@ -612,7 +616,7 @@ goog.events.getListener = function(src, type, listener, opt_capt, opt_handler) {
  *     the requested type and/or capture phase.
  */
 goog.events.hasListener = function(obj, opt_type, opt_capture) {
-  var objUid = goog.getUid(obj)
+  var objUid = goog.getUid(obj);
   var listeners = goog.events.sources_[objUid];
 
   if (listeners) {
@@ -621,7 +625,7 @@ goog.events.hasListener = function(obj, opt_type, opt_capture) {
 
     if (hasType && hasCapture) {
       // Lookup in the listener tree whether the specified listener exists.
-      var map = goog.events.listenerTree_[opt_type]
+      var map = goog.events.listenerTree_[opt_type];
       return !!map && !!map[opt_capture] && objUid in map[opt_capture];
 
     } else if (!(hasType || hasCapture)) {
@@ -631,8 +635,8 @@ goog.events.hasListener = function(obj, opt_type, opt_capture) {
     } else {
       // Iterate through the listeners for the event target to find a match.
       return goog.array.some(listeners, function(listener) {
-          return (hasType && listener.type == opt_type) ||
-            (hasCapture && listener.capture == opt_capture);
+        return (hasType && listener.type == opt_type) ||
+               (hasCapture && listener.capture == opt_capture);
       });
     }
   }
@@ -656,62 +660,6 @@ goog.events.expose = function(e) {
     }
   }
   return str.join('\n');
-};
-
-
-/**
- * Constants for event names.
- * @enum {string}
- */
-// TODO(user): Move to its own file.
-goog.events.EventType = {
-  // Mouse events
-  CLICK: 'click',
-  DBLCLICK: 'dblclick',
-  MOUSEDOWN: 'mousedown',
-  MOUSEUP: 'mouseup',
-  MOUSEOVER: 'mouseover',
-  MOUSEOUT: 'mouseout',
-  MOUSEMOVE: 'mousemove',
-  SELECTSTART: 'selectstart', // IE, Safari, Chrome
-
-  // Key events
-  KEYPRESS: 'keypress',
-  KEYDOWN: 'keydown',
-  KEYUP: 'keyup',
-
-  // Focus
-  BLUR: 'blur',
-  FOCUS: 'focus',
-  DEACTIVATE: 'deactivate', // IE only
-  // TODO(user): Test these. I experienced problems with DOMFocusIn, the event
-  // just wasn't firing.
-  FOCUSIN: goog.userAgent.IE ? 'focusin' : 'DOMFocusIn',
-  FOCUSOUT: goog.userAgent.IE ? 'focusout' : 'DOMFocusOut',
-
-  // Forms
-  CHANGE: 'change',
-  SELECT: 'select',
-  SUBMIT: 'submit',
-
-  // Drag and drop
-  DRAGSTART: 'dragstart',
-  DRAGENTER: 'dragenter',
-  DRAGOVER: 'dragover',
-  DRAGLEAVE: 'dragleave',
-  DROP: 'drop',
-
-  // Misc
-  CONTEXTMENU: 'contextmenu',
-  ERROR: 'error',
-  HASHCHANGE: 'hashchange',
-  HELP: 'help',
-  LOAD: 'load',
-  LOSECAPTURE: 'losecapture',
-  READYSTATECHANGE: 'readystatechange',
-  RESIZE: 'resize',
-  SCROLL: 'scroll',
-  UNLOAD: 'unload'
 };
 
 
@@ -931,13 +879,10 @@ goog.events.dispatchEvent = function(src, e) {
  *
  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
  *     protect the entry point.
- * @param {boolean=} opt_tracers Whether to install tracers around the browser
- *     event entry point.
  */
-goog.events.protectBrowserEventEntryPoint = function(
-    errorHandler, opt_tracers) {
+goog.events.protectBrowserEventEntryPoint = function(errorHandler) {
   goog.events.handleBrowserEvent_ = errorHandler.protectEntryPoint(
-      goog.events.handleBrowserEvent_, opt_tracers);
+      goog.events.handleBrowserEvent_);
   goog.events.pools.setProxyCallbackFunction(goog.events.handleBrowserEvent_);
 };
 
@@ -1091,9 +1036,8 @@ goog.events.markIeEvent_ = function(e) {
     }
   }
 
-  if (useReturnValue ||
-      /** @type {boolean|undefined} */ (e.returnValue) == undefined) {
-    e.returnValue = true;
+  if (useReturnValue || e.returnValue != goog.events.RETURN_VALUE_) {
+    e.returnValue = goog.events.RETURN_VALUE_;
   }
 };
 
@@ -1107,7 +1051,7 @@ goog.events.markIeEvent_ = function(e) {
  * @notypecheck TODO(nicksantos): Fix this.
  */
 goog.events.isMarkedIeEvent_ = function(e) {
-  return e.keyCode < 0 || e.returnValue != undefined;
+  return e.keyCode < 0 || e.returnValue == goog.events.RETURN_VALUE_;
 };
 
 
@@ -1148,3 +1092,18 @@ goog.events.synthesizeEventPropagation_ = function() {
   }
   return goog.events.requiresSyntheticEventPropagation_;
 };
+
+
+// Register the browser event handler as an entry point, so that
+// it can be monitored for exception handling, etc.
+goog.debug.entryPointRegistry.register(
+    /**
+     * @param {function(!Function): !Function} transformer The transforming
+     *     function.
+     */
+    function(transformer) {
+      goog.events.handleBrowserEvent_ = transformer(
+          goog.events.handleBrowserEvent_);
+      goog.events.pools.setProxyCallbackFunction(
+          goog.events.handleBrowserEvent_);
+    });
