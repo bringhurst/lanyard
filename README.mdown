@@ -4,4 +4,10 @@ Lanyard is a WebGL based map.
 
 ## Requirements
 
-Lanyard requires a WebGL enabled browser. At the time of this writing, there are no final release WebGL browsers. You will need to obtain a nightly build of Firefox (Minefield), Chrome (Canary Build), or Webkit. Keep in mind that Lanyard is not a completed product and you will probably not be able to see any eye candy at the moment.
+Lanyard requires a WebGL enabled browser. At the time of this writing, there are no final release WebGL browsers. You will need to obtain and properly configure WebGL in a nightly build of Firefox (Minefield), Chrome (Canary Build), or Safari (Webkit).
+
+Support is not planned for any version of Microsoft Internet Explorer in the foreseeable future. This may change if Microsoft implements WebGL according to the specification outlined by the Khronos Group.
+
+## Notes
+
+Keep in mind that Lanyard is not a completed product and you will probably not be able to see any eye candy at the moment. Unless you're a developer who's interested in tweaking out a fragment shader or writing tests, you may want to wait for a release version of Lanyard.
