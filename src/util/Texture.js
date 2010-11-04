@@ -28,6 +28,22 @@ lanyard.util.Texture.prototype.bind = function () {
  */
 lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, textureCanvas);
+    this.createMipmap();
+};
+
+/**
+ * Sets this texture to the image.
+ *
+ * @param {Image} imagee the image to use for this texture.
+ */
+lanyard.util.Texture.prototype.setImage = function (image) {
+    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, image, true);
+};
+
+/**
+ * Generate a mipmap for this texture.
+ */
+lanyard.util.Texture.prototype.createMipmap = function () {
     this.gl.generateMipmap(this.gl.TEXTURE_2D);
 };
 
