@@ -3,6 +3,9 @@
 
 goog.provide('lanyard.layers.earth.BMNGOneImage');
 
+goog.require('lanyard.render.SurfaceImage');
+goog.require('lanyard.layers.RenderableLayer');
+
 /**
  * An layer to provide a non-tiled blue marble image to display on the globe.
  *
@@ -22,9 +25,9 @@ lanyard.layers.earth.BMNGOneImage = function () {
     );
 
     // Disable picking for the layer because it covers the full sphere and will override a terrain pick.
-    this.setPickEnabled(false);
+    //this.setPickEnabled(false);
 };
-goog.object.extend(lanyard.layers.earth.BMNGOneImage, lanyard.layers.RenderableLayer);
+goog.object.extend(lanyard.layers.earth.BMNGOneImage.prototype, lanyard.layers.RenderableLayer.prototype);
 
 /**
  * A description of this object.

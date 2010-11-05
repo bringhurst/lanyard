@@ -3,21 +3,24 @@
 
 goog.provide('lanyard.layers.RenderableLayer');
 
+goog.require('lanyard.layers.AbstractLayer');
+
 /**
  * Creates a new RenderableLayer with the specified delegateOwner.
  *
+ * @extends {lanyard.layers.AbstractLayer}
  * @param {lanyard.Layer|null} delegateOwner a layer that is this layer's delegate owner.
  */
 lanyard.layers.RenderableLayer = function (delegateOwner) {
     /**
      * @private
-     * @type {Array<lanyard.Renderable>}
+     * @type {Array.<lanyard.Renderable>}
      */
     this.renderables = [];
 
     /**
      * @private
-     * @type {Array<lanyard.Renderable>}
+     * @type {Array.<lanyard.Renderable>}
      */
     this.renderablesOverride = [];
 
@@ -32,7 +35,7 @@ lanyard.layers.RenderableLayer = function (delegateOwner) {
 
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
 };
-goog.object.extend(lanyard.layers.RenderableLayer, lanyard.layers.AbstractLayer);
+goog.object.extend(lanyard.layers.RenderableLayer.prototype, lanyard.layers.AbstractLayer.prototype);
 
 /**
  * Adds the specified renderable to this layer's internal collection.
@@ -48,13 +51,17 @@ lanyard.layers.RenderableLayer.prototype.addRenderable = function (renderable) {
         this._logger.severe("Layer is already using a custom iterable.");
     }
 
+    if(!this.renderables) {
+        this.renderables = [];
+    }
+
     this.renderables.push(renderable);
 };
 
 /**
  * Adds the contents of the specified renderables to this layer's internal collection.
  *
- * @param {Array<lanyard.Renderable>} renderables Renderables to add.
+ * @param {Array.<lanyard.Renderable>} renderables Renderables to add.
  */
 lanyard.layers.RenderableLayer.prototype.addRenderables = function (rables) {
     if (!rables) {
@@ -86,7 +93,7 @@ lanyard.layers.RenderableLayer.prototype.removeAllRenderables = function () {
 /**
  * Returns the Iterable of Renderables currently in use by this layer.
  *
- * @return {Array<lanyard.Renderable>} currently active Renderables.
+ * @return {Array.<lanyard.Renderable>} currently active Renderables.
  */
 lanyard.layers.RenderableLayer.prototype.getRenderables = function () {
     return this.getActiveRenderables();
@@ -96,7 +103,7 @@ lanyard.layers.RenderableLayer.prototype.getRenderables = function () {
  * Returns the Iterable of currently active Renderables.
  *
  * @private
- * @return {Array<lanyard.Renderable>} the currently active Renderables.
+ * @return {Array.<lanyard.Renderable>} the currently active Renderables.
  */
 lanyard.layers.RenderableLayer.prototype.getActiveRenderables = function () {
     if (this.renderablesOverride) {
@@ -128,7 +135,7 @@ lanyard.layers.RenderableLayer.prototype.setRenderables = function (renderableIt
  * @param {lanyard.DrawContext} dc the currently active draw context.
  */
 lanyard.layers.RenderableLayer.prototype.doRender = function (dc) {
-    /** @type {Array<lanyard.Renderable>} */
+    /** @type {Array.<lanyard.Renderable>} */
     var activeRenderables = this.getActiveRenderables();
 
     for (var r in activeRenderables) {

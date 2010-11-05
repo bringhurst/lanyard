@@ -14,6 +14,8 @@ goog.require('lanyard.Model');
 goog.require('lanyard.Layer');
 goog.require('lanyard.BasicOrbitView');
 
+goog.require('lanyard.layers.earth.BMNGOneImage');
+
 /**
  * A basic demo of Lanyard.
  *

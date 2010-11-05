@@ -271,32 +271,31 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
     /** @type {*} */
     var gl = dc.getGL();
 
-/**** FIXME
-
     if (!dc.isPickingMode()) {
-        double opacity = this.layer != null ? this.opacity * this.layer.opacity : this.opacity;
+
+        /** @type {number} */
+        var opacity = this.layer ? this.opacity * this.layer.opacity : this.opacity;
 
         if (opacity < 1) {
-            gl.glPushAttrib(GL.GL_COLOR_BUFFER_BIT | GL.GL_POLYGON_BIT | GL.GL_CURRENT_BIT);
-            gl.glColor4d(1d, 1d, 1d, opacity);
+            //gl.pushAttrib(gl.COLOR_BUFFER_BIT | gl.GL_POLYGON_BIT | gl.GL_CURRENT_BIT);
+            //gl.color4d(1.0, 1.0, 1.0, opacity);
         } else {
-            gl.glPushAttrib(GL.GL_COLOR_BUFFER_BIT | GL.GL_POLYGON_BIT);
+            //gl.pushAttrib(gl.COLOR_BUFFER_BIT | gl.GL_POLYGON_BIT);
         }
 
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+        //gl.enable(gl.BLEND);
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     } else {
-        gl.glPushAttrib(GL.GL_POLYGON_BIT);
+        gl.pushAttrib(gl.POLYGON_BIT);
     }
 
-    gl.glPolygonMode(GL.GL_FRONT, GL.GL_FILL);
-    gl.glEnable(GL.GL_CULL_FACE);
-    gl.glCullFace(GL.GL_BACK);
+    gl.polygonMode(gl.FRONT, gl.FILL);
+    gl.enable(gl.CULL_FACE);
+    gl.cullFace(gl.BACK);
 
-    dc.getGeographicSurfaceTileRenderer().renderTile(dc, this);
+    dc.getSurfaceTileRenderer().renderTile(dc, this);
 
     gl.glPopAttrib();
-*****/
 };
 
 /**
