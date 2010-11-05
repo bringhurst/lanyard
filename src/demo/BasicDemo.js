@@ -8,6 +8,9 @@ goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 
+goog.require('goog.ui.Checkbox');
+goog.require('goog.ui.Checkbox.State');
+
 goog.require('lanyard.BasicModel');
 goog.require('lanyard.LanyardCanvas');
 goog.require('lanyard.Model');
@@ -111,6 +114,14 @@ lanyard.demo.BasicDemo.prototype.setupLayerList = function () {
     var i;
     for(i = 0; i < this._layerList.length; i = i + 1) {
         this._logger.fine("Adding layer with name = " + this._layerList[i].toString());
+
+        var layerLabel = goog.dom.createDom('p', {'style': 'background-color:#EEE'},
+            this._layerList[i].getName());
+        goog.dom.appendChild(this._layerListDiv, layerLabel);
+
+        //var layerCheckbox = new goog.ui.Checkbox();
+        //layerCheckbox.setLabel(layerLabel);
+
         // TODO: add layer checkbox and setup listener
     }
 };
