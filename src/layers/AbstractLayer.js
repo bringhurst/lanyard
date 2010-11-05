@@ -11,6 +11,9 @@ goog.provide('lanyard.layers.AbstractLayer');
  * @this {lanyard.layers.AbstractLayer}
  */
 lanyard.layers.AbstractLayer = function () {
+    /** @private */
+    this._logger = goog.debug.Logger.getLogger('lanyard.layers.AbstractLayer');
+
     /**
      * @private
      * @type {boolean}
@@ -191,6 +194,8 @@ lanyard.layers.AbstractLayer.prototype.isLayerActive = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.layers.AbstractLayer.prototype.render = function (dc) {
+    //this._logger.fine("Abstract layer render was called.");
+
     if (!this.enabled) {
         return;
     }

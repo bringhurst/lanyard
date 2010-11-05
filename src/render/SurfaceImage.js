@@ -264,6 +264,8 @@ lanyard.render.SurfaceImage.prototype.applyInternalTransform = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.render.SurfaceImage.prototype.render = function (dc) {
+    this._logger.fine("The surface image render was called.");
+
     if (!dc) {
         this._logger.severe("The draw context is null.");
     }

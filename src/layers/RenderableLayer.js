@@ -35,7 +35,7 @@ lanyard.layers.RenderableLayer = function (delegateOwner) {
 
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
 };
-goog.object.extend(lanyard.layers.RenderableLayer.prototype, lanyard.layers.AbstractLayer.prototype);
+goog.object.extend(lanyard.layers.RenderableLayer.prototype, new lanyard.layers.AbstractLayer());
 
 /**
  * Adds the specified renderable to this layer's internal collection.
@@ -43,16 +43,14 @@ goog.object.extend(lanyard.layers.RenderableLayer.prototype, lanyard.layers.Abst
  * @param {lanyard.Renderable} renderable the renderable to add.
  */
 lanyard.layers.RenderableLayer.prototype.addRenderable = function (renderable) {
+    this._logger.fine("A renderable was added: " + renderable.toString());
+
     if (!renderable) {
         this._logger.severe("Renderable is null.");
     }
 
     if (this.renderablesOverride) {
         this._logger.severe("Layer is already using a custom iterable.");
-    }
-
-    if(!this.renderables) {
-        this.renderables = [];
     }
 
     this.renderables.push(renderable);
@@ -64,6 +62,8 @@ lanyard.layers.RenderableLayer.prototype.addRenderable = function (renderable) {
  * @param {Array.<lanyard.Renderable>} renderables Renderables to add.
  */
 lanyard.layers.RenderableLayer.prototype.addRenderables = function (rables) {
+    this._logger.fine("Several renderables were added.");
+
     if (!rables) {
         this._logger.severe("The new interable is null.");
     }
@@ -135,8 +135,12 @@ lanyard.layers.RenderableLayer.prototype.setRenderables = function (renderableIt
  * @param {lanyard.DrawContext} dc the currently active draw context.
  */
 lanyard.layers.RenderableLayer.prototype.doRender = function (dc) {
+    this._logger.fine("Renderable layer render was called.");
+
     /** @type {Array.<lanyard.Renderable>} */
     var activeRenderables = this.getActiveRenderables();
+
+    this._logger.fine("Found " + activeRenderables.length + " active renderables.");
 
     for (var r in activeRenderables) {
         if (activeRenderables.hasOwnProperty(r)) { 

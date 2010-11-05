@@ -14,21 +14,27 @@ goog.require('lanyard.layers.RenderableLayer');
  * @this {lanyard.layers.earth.BMNGOneImage}
  */
 lanyard.layers.earth.BMNGOneImage = function () {
+    /** @private */
+    this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
+
     /** @type {String} */
     this.path = "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg";
 
     // This name will appear to the user in the layer list.
     this.setName("The Blue Marble, single image");
 
-    this.addRenderable(new lanyard.render.SurfaceImage(
-        this.path,
-        lanyard.geom.Sector.prototype.FULL_SPHERE)
+    this._logger.fine("Adding the surface image renderable.");
+    this.addRenderable(
+        new lanyard.render.SurfaceImage(
+            this.path,
+            lanyard.geom.Sector.prototype.FULL_SPHERE
+        )
     );
 
     // Disable picking for the layer because it covers the full sphere and will override a terrain pick.
     //this.setPickEnabled(false);
 };
-goog.object.extend(lanyard.layers.earth.BMNGOneImage.prototype, lanyard.layers.RenderableLayer.prototype);
+goog.object.extend(lanyard.layers.earth.BMNGOneImage.prototype, new lanyard.layers.RenderableLayer());
 
 /**
  * A description of this object.
