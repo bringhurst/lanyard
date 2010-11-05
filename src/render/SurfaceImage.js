@@ -142,6 +142,8 @@ lanyard.render.SurfaceImage.prototype.getExtent = function (dc) {
  * @return {lanyard.util.Texture} the texture.
  */
 lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
+    this._logger.fine("Initializing a texture.");
+
     if (!dc) {
         this._logger.severe("The draw context was null.");
     }
@@ -198,6 +200,8 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
  * @return {boolean} if the bind was a success.
  */
 lanyard.render.SurfaceImage.prototype.bind = function (dc) {
+    this._logger.fine("Surface image bind was called.");
+
     if (!dc) {
         this._logger.severe("The draw context is null.");
     }

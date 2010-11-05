@@ -15,8 +15,9 @@ goog.require('lanyard.layers.RenderableLayer');
  */
 lanyard.layers.earth.BMNGOneImage = function () {
     /** @type {String} */
-    this.path = "./blueMarbleOne.png";
+    this.path = "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg";
 
+    // This name will appear to the user in the layer list.
     this.setName("The Blue Marble, single image");
 
     this.addRenderable(new lanyard.render.SurfaceImage(

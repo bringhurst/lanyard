@@ -86,11 +86,14 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
     /** @type {Array.<lanyard.Layer>} */
     var layers = dc.getLayers();
 
+    this._logger.fine("The frame controller is rendering " + layers.length + " layers.");
+
     for(var i = 0; i < layers.length; i = i + 1) {
         /** @type {lanyard.Layer} */
         var layer = layers[i];
 
         if(layer) {
+            this._logger.fine("Rendering layer: " + layer.toString());
             layer.render(dc);
         }
     }
