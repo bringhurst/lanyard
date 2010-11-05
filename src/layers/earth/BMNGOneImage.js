@@ -17,7 +17,7 @@ lanyard.layers.earth.BMNGOneImage = function () {
     /** @type {String} */
     this.path = "./blueMarbleOne.png";
 
-    this.setName("BlueMarbleOneLayer");
+    this.setName("The Blue Marble, single image");
 
     this.addRenderable(new lanyard.render.SurfaceImage(
         this.path,
