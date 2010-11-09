@@ -14,6 +14,8 @@ lanyard.layers.AbstractLayer = function () {
     /** @private */
     this._logger = goog.debug.Logger.getLogger('lanyard.layers.AbstractLayer');
 
+    this._logger.fine("AbstractLayer constructor was called.");
+
     /**
      * @private
      * @type {boolean}

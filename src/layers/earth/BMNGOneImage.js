@@ -14,8 +14,12 @@ goog.require('lanyard.layers.RenderableLayer');
  * @this {lanyard.layers.earth.BMNGOneImage}
  */
 lanyard.layers.earth.BMNGOneImage = function () {
+    lanyard.layers.RenderableLayer.call(this, null);
+
     /** @private */
     this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
+
+    this._logger.fine("Called BMNGOneImage constructor");
 
     /** @type {String} */
     this.path = "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg";
@@ -27,14 +31,13 @@ lanyard.layers.earth.BMNGOneImage = function () {
     this.addRenderable(
         new lanyard.render.SurfaceImage(
             this.path,
-            lanyard.geom.Sector.prototype.FULL_SPHERE
-        )
+            lanyard.geom.Sector.prototype.FULL_SPHERE)
     );
 
     // Disable picking for the layer because it covers the full sphere and will override a terrain pick.
     //this.setPickEnabled(false);
 };
-goog.object.extend(lanyard.layers.earth.BMNGOneImage.prototype, new lanyard.layers.RenderableLayer());
+goog.inherits(lanyard.layers.earth.BMNGOneImage, lanyard.layers.RenderableLayer);
 
 /**
  * A description of this object.

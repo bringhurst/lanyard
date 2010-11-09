@@ -29,18 +29,25 @@ goog.require('lanyard.layers.earth.BMNGOneImage');
  * @param {Element} eventLogDiv The div where the event log is at.
  */
 lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
+
+    /*
+     * Keep in mind that stuff that goes on in this constructor will not
+     * be logged using the standard logger. You'll need to use another method
+     * or put your logic somewhere after the logger has been setup properly.
+     */
+
     /** @private */ this._webGLCanvas = webGLCanvas;
     /** @private */ this._layerListDiv = layerListDiv;
     /** @private */ this._eventLogDiv = eventLogDiv;
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.BasicDemo');
 
+    this._logger.fine("Called BasicDemo constructor");
+
     /**
      * @private
      * @type {Array.<lanyard.Layer>}
      */
-    this._layerList = [
-        new lanyard.layers.earth.BMNGOneImage()
-    ];
+    this._layerList = [];
 };
 goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
 
@@ -111,6 +118,9 @@ goog.exportSymbol('lanyard.demo.BasicDemo.prototype.setupEventLog',
  * @this {lanyard.demo.BasicDemo}
  */
 lanyard.demo.BasicDemo.prototype.setupLayerList = function () {
+    // Add a basic blue marble layer
+    this._layerList.push(new lanyard.layers.earth.BMNGOneImage());
+
     var i;
     for(i = 0; i < this._layerList.length; i = i + 1) {
         this._logger.fine("Adding layer with name = " + this._layerList[i].toString());

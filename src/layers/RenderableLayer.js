@@ -12,6 +12,12 @@ goog.require('lanyard.layers.AbstractLayer');
  * @param {lanyard.Layer|null} delegateOwner a layer that is this layer's delegate owner.
  */
 lanyard.layers.RenderableLayer = function (delegateOwner) {
+    lanyard.layers.AbstractLayer.call(this);
+
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
+
+    this._logger.fine("RenderableLayer constructor was called.");
+
     /**
      * @private
      * @type {Array.<lanyard.Renderable>}
@@ -32,10 +38,8 @@ lanyard.layers.RenderableLayer = function (delegateOwner) {
      * @type {lanyard.Layer}
      */
     this.delegateOwner = delegateOwner;
-
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
 };
-goog.object.extend(lanyard.layers.RenderableLayer.prototype, new lanyard.layers.AbstractLayer());
+goog.inherits(lanyard.layers.RenderableLayer, lanyard.layers.AbstractLayer);
 
 /**
  * Adds the specified renderable to this layer's internal collection.
@@ -96,6 +100,8 @@ lanyard.layers.RenderableLayer.prototype.removeAllRenderables = function () {
  * @return {Array.<lanyard.Renderable>} currently active Renderables.
  */
 lanyard.layers.RenderableLayer.prototype.getRenderables = function () {
+    this._logger.fine("getRenderables was called");
+
     return this.getActiveRenderables();
 };
 
@@ -106,6 +112,8 @@ lanyard.layers.RenderableLayer.prototype.getRenderables = function () {
  * @return {Array.<lanyard.Renderable>} the currently active Renderables.
  */
 lanyard.layers.RenderableLayer.prototype.getActiveRenderables = function () {
+    this._logger.fine("getActiveRenderables was called");
+    
     if (this.renderablesOverride) {
         return this.renderablesOverride;
     } else {
@@ -139,6 +147,10 @@ lanyard.layers.RenderableLayer.prototype.doRender = function (dc) {
 
     /** @type {Array.<lanyard.Renderable>} */
     var activeRenderables = this.getActiveRenderables();
+
+    if(!activeRenderables) {
+        this._logger.fine("Active renderable array is not correct.");
+    }
 
     this._logger.fine("Found " + activeRenderables.length + " active renderables.");
 
