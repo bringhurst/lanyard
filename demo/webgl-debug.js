@@ -205,11 +205,15 @@ function makeDebugContext(ctx, opt_onErrorFunc) {
   // Makes a function that calls a WebGL function and then calls getError.
   function makeErrorWrapper(ctx, functionName) {
     return function() {
-      var result = ctx[functionName].apply(ctx, arguments);
-      var err = ctx.getError();
-      if (err != 0) {
-        glErrorShadow[err] = true;
-        opt_onErrorFunc(err, functionName, arguments);
+      try {
+        var result = ctx[functionName].apply(ctx, arguments);
+        var err = ctx.getError();
+        if (err != 0) {
+          glErrorShadow[err] = true;
+          opt_onErrorFunc(err, functionName, arguments);
+        }
+      } catch (e) {
+        log("Error wrapper: " + functionName + ": " + e.message);
       }
       return result;
     };
