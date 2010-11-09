@@ -51,14 +51,6 @@ lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
      */
     this.hasProblem = false; // True when download failed
 
-    if (!this.imageSource) {
-        this._logger.severe("The image source is null.");
-    }
-
-    if (!this.sector) {
-        this._logger.severe("The sector is null.");
-    }
-
     /**
      * @private
      * @type {String}
@@ -82,6 +74,14 @@ lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
      * @type {lanyard.Layer}
      */
     this.layer = layer;
+
+    if (!this.imageSource) {
+        this._logger.severe("The image source is null.");
+    }
+
+    if (!this.sector) {
+        this._logger.severe("The sector is null.");
+    }
 };
 
 /**

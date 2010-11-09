@@ -28,7 +28,7 @@ lanyard.layers.RenderableLayer = function (delegateOwner) {
      * @private
      * @type {Array.<lanyard.Renderable>}
      */
-    this.renderablesOverride = [];
+    this.renderablesOverride = null;
 
     // TODO
     // this.pickSupport = new PickSupport();

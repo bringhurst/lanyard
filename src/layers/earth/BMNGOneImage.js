@@ -21,17 +21,15 @@ lanyard.layers.earth.BMNGOneImage = function () {
 
     this._logger.fine("Called BMNGOneImage constructor");
 
-    /** @type {String} */
-    this.path = "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg";
-
     // This name will appear to the user in the layer list.
     this.setName("The Blue Marble, single image");
 
     this._logger.fine("Adding the surface image renderable.");
     this.addRenderable(
         new lanyard.render.SurfaceImage(
-            this.path,
-            lanyard.geom.Sector.prototype.FULL_SPHERE)
+            "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg",
+            lanyard.geom.Sector.prototype.FULL_SPHERE,
+            this)
     );
 
     // Disable picking for the layer because it covers the full sphere and will override a terrain pick.
