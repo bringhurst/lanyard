@@ -152,11 +152,11 @@ lanyard.layers.RenderableLayer.prototype.doRender = function (dc) {
         this._logger.fine("Active renderable array is not correct.");
     }
 
-    this._logger.fine("Found " + activeRenderables.length + " active renderables.");
-
     for (var r in activeRenderables) {
-        if (activeRenderables.hasOwnProperty(r)) { 
-            r.render(dc);
+        if (activeRenderables.hasOwnProperty(r)) {
+            this._logger.fine("Calling render on a renderable: " +
+                activeRenderables[r].toString());
+            activeRenderables[r].render(dc);
         }
     }
 };

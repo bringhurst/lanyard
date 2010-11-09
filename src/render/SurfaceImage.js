@@ -161,7 +161,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
     var surfaceImage = new Image();
 
     surfaceImage.onload = function () {
-        thix._logger.fine("Loaded image at: " + thix.imageSource);
+        thix._logger.fine("Loaded image at: " + thix.imageSource + "<img src=" + thix.imageSource + ">");
 
         surfaceTexture.bind();
         surfaceTexture.setImage(surfaceImage);
@@ -271,6 +271,7 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
     }
 
     if (!this.sector.intersects(dc.getVisibleSector())) {
+        this._logger.fine("The surface image does not intersect with a visible sector.");
         return;
     }
 
@@ -299,6 +300,7 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
 
+    this._logger.fine("Passing things along to the surface tile renderer.");
     dc.getSurfaceTileRenderer().renderTile(dc, this);
 
     gl.glPopAttrib();
@@ -402,6 +404,15 @@ lanyard.render.SurfaceImage.prototype.moveTo = function (position) {
  */
 lanyard.render.SurfaceImage.prototype.getReferencePosition = function () {
     return this.referencePosition;
+};
+
+/**
+ * Return the type and path of this surface image.
+ *
+ * @return {String} the string representation of this object.
+ */
+lanyard.render.SurfaceImage.prototype.toString = function () {
+    return "A SurfaceImage with a path of: " + this.imageSource;
 };
 
 /* EOF */

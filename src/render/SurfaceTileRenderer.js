@@ -125,6 +125,8 @@ lanyard.render.SurfaceTileRenderer.prototype.setShowImageTileOutlines = function
  * @param {lanyard.render.SurfaceTile} tile the tile to render.
  */
 lanyard.render.SurfaceTileRenderer.prototype.renderTile = function (dc, tile) {
+    this._logger.fine("renderTile was called.");
+
     if(!tile) {
         this._logger.fine("Attempted to render a null tile.");
         return;
@@ -140,6 +142,8 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTile = function (dc, tile) {
  * @param {Array.<lanyard.render.SurfaceTile>} tiles the tiles to render.
  */
 lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) {
+    this._logger.fine("renderTiles was called.");
+
     try {
         if (!this.alphaTexture) {
             this.initAlphaTexture(
