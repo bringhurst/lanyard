@@ -296,14 +296,14 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
         gl.pushAttrib(gl.POLYGON_BIT);
     }
 
-    gl.polygonMode(gl.FRONT, gl.FILL);
-    gl.enable(gl.CULL_FACE);
-    gl.cullFace(gl.BACK);
+    //gl.polygonMode(gl.FRONT, gl.FILL);
+    //gl.enable(gl.CULL_FACE);
+    //gl.cullFace(gl.BACK);
 
     this._logger.fine("Passing things along to the surface tile renderer.");
     dc.getSurfaceTileRenderer().renderTile(dc, this);
 
-    gl.glPopAttrib();
+    //gl.popAttrib();
 };
 
 /**

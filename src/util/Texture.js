@@ -10,6 +10,12 @@ goog.provide('lanyard.util.Texture');
  * @param {*} gl the current webgl context.
  */
 lanyard.util.Texture = function (gl) {
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.util.Texture');
+
+    if(!gl) {
+        this._logger.severe("Creation of a texture was attempted without a valid gl context.");
+    }
+
     this.gl = gl;
     this.tex = gl.createTexture(); 
 };

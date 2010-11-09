@@ -88,12 +88,6 @@ lanyard.BasicDrawContext = function (canvasElement) {
     this.numTextureUnits = -1;
 
     /**
-     * private
-     * type {lanyard.SurfaceTileRenderer}
-     */
-    this.surfaceTileRenderer = new lanyard.render.SurfaceTileRenderer();
-
-    /**
      * The ordered renderable queue.
      *
      * @private
@@ -129,6 +123,12 @@ lanyard.BasicDrawContext = function (canvasElement) {
     } else {
         //this._logger.fine("A WebGL context was successfully obtained from the canvas.");
     }
+
+    /**
+     * private
+     * type {lanyard.SurfaceTileRenderer}
+     */
+    this.surfaceTileRenderer = new lanyard.render.SurfaceTileRenderer(this.gl);
 
     /** @type {lanyard.render.GLSL} */
     this.glsl = null;

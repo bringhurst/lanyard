@@ -12,8 +12,9 @@ goog.require('lanyard.render.SurfaceTile');
  * A surface tile renderer.
  *
  * @constructor
+ * @param {*} gl the current gl context.
  */
-lanyard.render.SurfaceTileRenderer = function () {
+lanyard.render.SurfaceTileRenderer = function (gl) {
     /** @type {lanyard.util.Texture} */
     this.alphaTexture = null;
    
@@ -23,7 +24,8 @@ lanyard.render.SurfaceTileRenderer = function () {
     /** @type {boolean} */
     this.showImageTileOutlines = true;
 
-    this.gl = null;
+    /** @type {*} */
+    this.gl = gl;
 
     /** @type {Object} */
     this.transform = {
@@ -144,100 +146,98 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTile = function (dc, tile) {
 lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) {
     this._logger.fine("renderTiles was called.");
 
-    try {
-        if (!this.alphaTexture) {
-            this.initAlphaTexture(
-                lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE
-            );
+    /** @type {*} */
+    var gl = dc.getGL();
+
+    if (!this.alphaTexture) {
+        this.initAlphaTexture(
+            lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE
+        );
+    }
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.enable(gl.TEXTURE_2D);
+
+    /** @type {lanyard.SectorGeometryList} */
+    var sectorGeoms = dc.getSurfaceGeometry();
+
+    /** @type {number} */
+    var i;
+
+    for(i = 0; i < sectorGeoms.geometryList.length; i = i + 1) {
+        /** @type {Array.<lanyard.render.SurfaceTile>} */
+        var tilesToRender = this.getIntersectingTiles(sectorGeoms.geometryList[i], tiles);
+
+        if (!tilesToRender) {
+            continue;
         }
 
-        this.gl.enable(this.gl.DEPTH_TEST);
-        this.gl.depthFunc(this.gl.LEQUAL);
+        // Pre-load info to compute the texture transform below
+        this.preComputeTransform(dc, sectorGeoms.geometryList[i]);
 
-        this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.enable(this.gl.TEXTURE_2D);
+        // For each interesecting tile, establish the texture transform necessary to map the image tile
+        // into the geometry tile's texture space. Use an alpha texture as a mask to prevent changing the
+        // frame buffer where the image tile does not overlap the geometry tile. Render both the image and
+        // alpha textures via multi-texture rendering.
 
-        /** @type {lanyard.SectorGeometryList} */
-        var sectorGeoms = dc.getSurfaceGeometry();
+        // TODO: Figure out how to apply multi-texture to more than one tile at a time, most likely via a
+        // fragment shader.
 
         /** @type {number} */
-        var i;
+        var j;
 
-        for(i = 0; i < sectorGeoms.geometryList.length; i = i + 1) {
-            /** @type {Array.<lanyard.render.SurfaceTile>} */
-            var tilesToRender = this.getIntersectingTiles(sectorGeoms.geometryList[i], tiles);
+        for (j = 0; j < tilesToRender.length; j = j + 1) {
+            gl.activeTexture(gl.TEXTURE0);
 
-            if (!tilesToRender) {
-                continue;
-            }
+            if (tilesToRender[j].bind(dc)) {
+                // Pass some uniform values to fragment shader.
+                gl.uniform1i(dc.getGLSL().getUniformLocation("tile_image"), 0); // Use texture unit 0.
+                gl.uniform1i(dc.getGLSL().getUniformLocation("alpha_mask"), 1); // Use texture unit 1.
 
-            // Pre-load info to compute the texture transform below
-            this.preComputeTransform(dc, sectorGeoms.geometryList[i]);
+                /** @type {number} */
+                var so = 0;
 
-            // For each interesecting tile, establish the texture transform necessary to map the image tile
-            // into the geometry tile's texture space. Use an alpha texture as a mask to prevent changing the
-            // frame buffer where the image tile does not overlap the geometry tile. Render both the image and
-            // alpha textures via multi-texture rendering.
-
-            // TODO: Figure out how to apply multi-texture to more than one tile at a time, most likely via a
-            // fragment shader.
-
-            /** @type {number} */
-            var j;
-
-            for (j = 0; j < tilesToRender.length; j = j + 1) {
-                this.gl.activeTexture(this.gl.TEXTURE0);
-
-                if (tilesToRender[j].bind(dc)) {
-                    // Pass some uniform values to fragment shader.
-                    this.gl.uniform1i(dc.getGLSL().getUniformLocation("tile_image"), 0); // Use texture unit 0.
-                    this.gl.uniform1i(dc.getGLSL().getUniformLocation("alpha_mask"), 1); // Use texture unit 1.
-
-                    /** @type {number} */
-                    var so = 0;
-
-                    if(this.showImageTileOutlines) {
-                        so = 1;
-                    }
-
-                    // Flag for fragment shader.
-                    this.gl.uniform1i(dc.getGLSL().getUniformLocation("showoutlines"), so);
-
-                    tilesToRender[j].applyInternalTransform(dc);
-
-                    // Determine and apply texture transform to map image tile into geometry tile's texture space
-                    this.computeTransform(dc, tilesToRender[j], this.transform);
-                    this.gl.glScaled(this.transform.HScale, this.transform.VScale, 1.0);
-                    this.gl.glTranslated(this.transform.HShift, this.transform.VShift, 0.0);
-
-                    this.gl.glUniform1f(
-                        dc.getGLSL().getUniformLocation("latitude"),
-                        tilesToRender[j].getSector().getCentroid().getLatitude().getDegrees()
-                    );
-
-                    this.gl.glUniform1f(
-                        dc.getGLSL().getUniformLocation("longitude"),
-                        tilesToRender[j].getSector().getCentroid().getLongitude().getDegrees()
-                    );
-
-                    //we will apply the transform to alpha mask in the vertex shader using texture 0 matrix 
-                    this.gl.activeTexture(this.gl.TEXTURE1);
-                    this.alphaTexture.bind();
-
-                    var numTexUnitsUsed = 2;
-
-                    // Render the geometry tile
-                    sectorGeoms.geometryList[i].render(dc);
+                if(this.showImageTileOutlines) {
+                    so = 1;
                 }
+
+                // Flag for fragment shader.
+                gl.uniform1i(dc.getGLSL().getUniformLocation("showoutlines"), so);
+
+                tilesToRender[j].applyInternalTransform(dc);
+
+                // Determine and apply texture transform to map image tile into geometry tile's texture space
+                this.computeTransform(dc, tilesToRender[j], this.transform);
+                gl.glScaled(this.transform.HScale, this.transform.VScale, 1.0);
+                gl.glTranslated(this.transform.HShift, this.transform.VShift, 0.0);
+
+                gl.glUniform1f(
+                    dc.getGLSL().getUniformLocation("latitude"),
+                    tilesToRender[j].getSector().getCentroid().getLatitude().getDegrees()
+                );
+
+                gl.glUniform1f(
+                    dc.getGLSL().getUniformLocation("longitude"),
+                    tilesToRender[j].getSector().getCentroid().getLongitude().getDegrees()
+                );
+
+                //we will apply the transform to alpha mask in the vertex shader using texture 0 matrix 
+                gl.activeTexture(gl.TEXTURE1);
+                this.alphaTexture.bind();
+
+                var numTexUnitsUsed = 2;
+
+                // Render the geometry tile
+                sectorGeoms.geometryList[i].render(dc);
             }
         }
-
-        this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.disable(this.gl.TEXTURE_2D);
-
-    } catch (e) {
-        this._logger.fine("Exception while rendering layer. " + e.message);
     }
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.disable(gl.TEXTURE_2D);
 };
 
 /**
