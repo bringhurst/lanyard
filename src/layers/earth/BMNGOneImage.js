@@ -19,12 +19,12 @@ lanyard.layers.earth.BMNGOneImage = function () {
     /** @private */
     this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
 
-    this._logger.fine("Called BMNGOneImage constructor");
+    //this._logger.fine("Called BMNGOneImage constructor");
 
     // This name will appear to the user in the layer list.
     this.setName("The Blue Marble, single image");
 
-    this._logger.fine("Adding the surface image renderable.");
+    //this._logger.fine("Adding the surface image renderable.");
     this.addRenderable(
         new lanyard.render.SurfaceImage(
             "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg",

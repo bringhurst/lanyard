@@ -16,7 +16,7 @@ lanyard.layers.RenderableLayer = function (delegateOwner) {
 
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
 
-    this._logger.fine("RenderableLayer constructor was called.");
+    //this._logger.fine("RenderableLayer constructor was called.");
 
     /**
      * @private
@@ -47,7 +47,7 @@ goog.inherits(lanyard.layers.RenderableLayer, lanyard.layers.AbstractLayer);
  * @param {lanyard.Renderable} renderable the renderable to add.
  */
 lanyard.layers.RenderableLayer.prototype.addRenderable = function (renderable) {
-    this._logger.fine("A renderable was added: " + renderable.toString());
+    //this._logger.fine("A renderable was added: " + renderable.toString());
 
     if (!renderable) {
         this._logger.severe("Renderable is null.");
@@ -66,7 +66,7 @@ lanyard.layers.RenderableLayer.prototype.addRenderable = function (renderable) {
  * @param {Array.<lanyard.Renderable>} renderables Renderables to add.
  */
 lanyard.layers.RenderableLayer.prototype.addRenderables = function (rables) {
-    this._logger.fine("Several renderables were added.");
+    //this._logger.fine("Several renderables were added.");
 
     if (!rables) {
         this._logger.severe("The new interable is null.");
@@ -100,7 +100,7 @@ lanyard.layers.RenderableLayer.prototype.removeAllRenderables = function () {
  * @return {Array.<lanyard.Renderable>} currently active Renderables.
  */
 lanyard.layers.RenderableLayer.prototype.getRenderables = function () {
-    this._logger.fine("getRenderables was called");
+    //this._logger.fine("getRenderables was called");
 
     return this.getActiveRenderables();
 };
@@ -112,7 +112,7 @@ lanyard.layers.RenderableLayer.prototype.getRenderables = function () {
  * @return {Array.<lanyard.Renderable>} the currently active Renderables.
  */
 lanyard.layers.RenderableLayer.prototype.getActiveRenderables = function () {
-    this._logger.fine("getActiveRenderables was called");
+    //this._logger.fine("getActiveRenderables was called");
     
     if (this.renderablesOverride) {
         return this.renderablesOverride;
