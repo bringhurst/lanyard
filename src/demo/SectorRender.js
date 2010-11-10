@@ -8,7 +8,7 @@ goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 
-goog.require('lanyard.LanyardCanvas');
+goog.require('lanyard.geom.Sector');
 
 /**
  * A basic test for rendering a single sector.
@@ -40,7 +40,89 @@ goog.exportSymbol('lanyard.demo.SectorRender', lanyard.demo.SectorRender);
 lanyard.demo.SectorRender.prototype.run = function () {
     this.setupEventLog();
 
-    // TODO: render a single sector to this._webGLCanvas
+    // Create a sector to render
+    var minLatitude = 70.0;
+    var maxLatitude = 12.0;
+    var minLongitude = -150.0;
+    var maxLongitude = -10.0;
+    var sector = lanyard.geom.Sector.prototype.fromDegrees(
+        minLatitude, maxLatitude, minLongitude, maxLongitude);
+
+    // Get the corner points of the sector in xyz space
+    var corners = sector.computeCornerPoints(new lanyard.globes.Earth());
+
+    this._logger.fine("Generated corners of: " + corners[0] + ", " + corners[1] + ", " +
+        corners[2] + ", " + corners[3] + ".");
+/**
+    // Get the gl context
+    var gl = WebGLDebugUtils.makeDebugContext(this._webGLCanvas.getContext("experimental-webgl"));
+
+    // Setup the shaders
+    var glsl = new lanyard.render.GLSL(this.gl);
+    glsl.loadVertexShader("shader-vs");
+    glsl.loadFragmentShader("shader-fs");
+    glsl.useShaders();
+
+    // Init the buffers
+    var vertexPositionBuffer = gl.createBuffer();
+    var vertexTextureCoordBuffer = gl.createBuffer();
+    var vertexIndexBuffer = gl.createBuffer();
+
+    // Init the texture
+    function handleLoadedTexture(texture) {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+    }
+
+    var texture;
+    texture = gl.createTexture();
+    texture.image = new Image();
+
+    texture.image.onload = function() {
+        handleLoadedTexture(texture)
+    }
+
+    texture.image.src = "sector_test.gif";
+
+    // Clear the canvas
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearDepth(1.0);
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+
+    // Draw the scene
+    gl.viewport(0, 0, 500, 500);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    perspective(45, 500 / 500, 0.1, 100.0);
+    loadIdentity();
+
+    mvTranslate([0.0, 0.0, -5.0])
+
+    mvRotate(xRot, [1, 0, 0]);
+    mvRotate(yRot, [0, 1, 0]);
+    mvRotate(zRot, [0, 0, 1]);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexTextureCoordBuffer);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
+    setMatrixUniforms();
+    gl.drawElements(gl.TRIANGLES, vertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
+**/
 };
 goog.exportSymbol('lanyard.demo.SectorRender.prototype.run',
     lanyard.demo.SectorRender.prototype.run);

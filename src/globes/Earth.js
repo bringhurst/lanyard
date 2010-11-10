@@ -47,6 +47,10 @@ lanyard.globes.Earth = function () {
 
     /** @private */ this.elevationModel = null;
 
+    // call super
+    lanyard.globes.EllipsoidalGlobe.call(
+        this, this.equatorialRadius, this.polarRadius, this.es, this.elevationModel);
+
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Earth');
 };
 goog.exportSymbol('lanyard.globes.Earth', lanyard.globes.Earth);
