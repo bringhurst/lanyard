@@ -12,6 +12,12 @@ goog.require('goog.debug.Logger');
  * @param {*} gl the WebGL rendering context.
  */
 lanyard.render.GLSL = function (gl) {
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.GLSL');
+
+    if(!gl) {
+        this._logger.severe("Attempted to create a program object without a valid GL context.");
+    }
+
     this.gl = gl;
 
     /** @type {string|null} */
@@ -21,8 +27,6 @@ lanyard.render.GLSL = function (gl) {
     this.fshaderSource = null;
 
     this.programObject = gl.createProgram();
-
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.GLSL');
 };
 
 /**

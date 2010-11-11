@@ -53,76 +53,85 @@ lanyard.demo.SectorRender.prototype.run = function () {
 
     this._logger.fine("Generated corners of: " + corners[0] + ", " + corners[1] + ", " +
         corners[2] + ", " + corners[3] + ".");
-/**
+
     // Get the gl context
     var gl = WebGLDebugUtils.makeDebugContext(this._webGLCanvas.getContext("experimental-webgl"));
 
     // Setup the shaders
-    var glsl = new lanyard.render.GLSL(this.gl);
+    this._logger.fine("Setting up the shaders.");
+    var glsl = new lanyard.render.GLSL(gl);
+
+    this._logger.fine("Loading the vertex shader.");
     glsl.loadVertexShader("shader-vs");
+
+    this._logger.fine("Loading the fragment shader.");
     glsl.loadFragmentShader("shader-fs");
+
+    this._logger.fine("Linking available shaders.");
     glsl.useShaders();
 
-    // Init the buffers
+    // Init the position buffer
+    this._logger.fine("Setting up the position buffer.");
     var vertexPositionBuffer = gl.createBuffer();
-    var vertexTextureCoordBuffer = gl.createBuffer();
-    var vertexIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
+    var vertices = [
+        corners[0].getX(), corners[0].getY(), corners[0].getZ(),
+        corners[1].getX(), corners[1].getY(), corners[1].getZ(),
+        corners[2].getX(), corners[2].getY(), corners[2].getZ(),
+        corners[3].getX(), corners[3].getY(), corners[3].getZ()
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-    // Init the texture
-    function handleLoadedTexture(texture) {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-    }
+    // Init the color buffer
+    this._logger.fine("Setting up the color buffer.");
+    var vertexColorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
+    var colors = [
+        1.0, 0.0, 0.0, 1.0,
+        0.5, 0.5, 0.0, 1.0,
+        0.0, 0.5, 0.5, 1.0,
+        0.0, 0.0, 1.0, 1.0
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
-    var texture;
-    texture = gl.createTexture();
-    texture.image = new Image();
-
-    texture.image.onload = function() {
-        handleLoadedTexture(texture)
-    }
-
-    texture.image.src = "sector_test.gif";
-
-    // Clear the canvas
+    // Setup the canvas
+    this._logger.fine("Setting up the canvas.");
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
-
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
-
-    // Draw the scene
     gl.viewport(0, 0, 500, 500);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    perspective(45, 500 / 500, 0.1, 100.0);
-    loadIdentity();
+    // Setup the perspective matrix
+    this._logger.fine("Setting up the perspective matrix.");
+    var pMatrix = lanyard.geom.MatrixFour.prototype.makePerspective(45, 500 / 500, 0.1, 6243978.0);
 
-    mvTranslate([0.0, 0.0, -5.0])
+    // Setup the model-view matrix
+    this._logger.fine("Setting up the model-view matrix.");
+    var mvMatrix = new lanyard.geom.MatrixFour(null); // identity
+    mvMatrix.translate(-1.5, 0.0, -7.0);
 
-    mvRotate(xRot, [1, 0, 0]);
-    mvRotate(yRot, [0, 1, 0]);
-    mvRotate(zRot, [0, 0, 1]);
-
+    // Send our position buffer to the shader
+    this._logger.fine("Sending the position buffer to the shader.");
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(glsl.getAttribLocation("aVertexPosition"),
+        3, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexTextureCoordBuffer);
-    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    // Send our color buffer to the shader
+    this._logger.fine("Sending the color buffer to the shader.");
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
+    gl.vertexAttribPointer(glsl.getAttribLocation("aVertexColor"),
+        4, gl.FLOAT, false, 0, 0);
 
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.uniform1i(shaderProgram.samplerUniform, 0);
+    // Send the uniform matrices (mv/p) to the shader
+    this._logger.fine("Sending the MV/P matrices to the shader.");
+    gl.uniformMatrix4fv(glsl.getUniformLocation("uPMatrix"), false, pMatrix.getEntries());
+    gl.uniformMatrix4fv(glsl.getUniformLocation("uMVMatrix"), false, mvMatrix.getEntries());
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
-    setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, vertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
-
-**/
+    // Draw the scene
+    this._logger.fine("Drawing the scene.");
+    gl.drawArrays(gl.TRIANGLES, 0, 4);
 };
 goog.exportSymbol('lanyard.demo.SectorRender.prototype.run',
     lanyard.demo.SectorRender.prototype.run);

@@ -146,6 +146,38 @@ lanyard.geom.MatrixFour.prototype.setToIdentity = function () {
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.setToIdentity', lanyard.geom.MatrixFour.prototype.setToIdentity);
 
 /**
+ * A helper to create a perspective matrix from the given frustum coorinates.
+ *
+ * @param {number} fovy the field of view.
+ * @param {number} aspect the aspect ratio.
+ * @param {number} znear the near plane.
+ * @param {number} zfar the far plane.
+ * @return {lanyard.geom.MatrixFour} the new perspective matrix.
+ */
+lanyard.geom.MatrixFour.prototype.makePerspective = function (fovy, aspect, znear, zfar) {
+    var ymax = znear * Math.tan(fovy * Math.PI / 360.0);
+    var ymin = -ymax;
+    var xmin = ymin * aspect;
+    var xmax = ymax * aspect;
+
+    var X = 2 * znear / (xmax - xmin);
+    var Y = 2 * znear / (ymax - ymin);
+    var A = (xmax + xmin) / (xmax - xmin);
+    var B = (ymax + ymin) / (ymax - ymin);
+    var C = -(zfar + znear) / (zfar - znear);
+    var D = -2 * zfar * znear / (zfar - znear);
+
+    return new lanyard.geom.MatrixFour(
+        [X, 0, A, 0,
+         0, Y, B, 0,
+         0, 0, C, D,
+         0, 0, -1, 0]
+    );
+};
+goog.exportSymbol('lanyard.geom.MatrixFour.prototype.makePerspective',
+    lanyard.geom.MatrixFour.prototype.makePerspective);
+
+/**
  * Obtains whether or not this MatrixFour is orthonormal.
  * @return {boolean} if this._matrix is orthonormal.
  */
