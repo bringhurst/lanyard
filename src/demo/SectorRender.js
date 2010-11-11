@@ -60,15 +60,10 @@ lanyard.demo.SectorRender.prototype.run = function () {
     // Setup the shaders
     this._logger.fine("Setting up the shaders.");
     var glsl = new lanyard.render.GLSL(gl);
-
-    this._logger.fine("Loading the vertex shader.");
     glsl.loadVertexShader("shader-vs");
-
-    this._logger.fine("Loading the fragment shader.");
     glsl.loadFragmentShader("shader-fs");
-
-    this._logger.fine("Linking available shaders.");
     glsl.useShaders();
+    glsl.startShader();
 
     // Init the position buffer
     this._logger.fine("Setting up the position buffer.");
@@ -124,10 +119,19 @@ lanyard.demo.SectorRender.prototype.run = function () {
     gl.vertexAttribPointer(glsl.getAttribLocation("aVertexColor"),
         4, gl.FLOAT, false, 0, 0);
 
-    // Send the uniform matrices (mv/p) to the shader
-    this._logger.fine("Sending the MV/P matrices to the shader.");
-    gl.uniformMatrix4fv(glsl.getUniformLocation("uPMatrix"), false, pMatrix.getEntries());
-    gl.uniformMatrix4fv(glsl.getUniformLocation("uMVMatrix"), false, mvMatrix.getEntries());
+    // Send the perspective matrix to the shader
+    this._logger.fine("Sending the perspective matrix to the shader (" +
+        glsl.getUniformLocation("uPMatrix") + ").");
+    this._logger.fine("Perspective matrix has contents of: " + pMatrix.toString());
+    this._logger.fine("Perspective matrix has length of: " + pMatrix.getEntries().length);
+    gl.uniformMatrix4fv(glsl.getUniformLocation("uPMatrix"), false, new Float32Array(pMatrix.getEntries()));
+
+    // Send the model-view matrix to the shader
+    this._logger.fine("Sending the model-view matrix to the shader (" +
+        glsl.getUniformLocation("uMVMatrix") + ").");
+    this._logger.fine("Model-view matrix has contents of: " + mvMatrix.toString());
+    this._logger.fine("Model-view matrix has length of: " + mvMatrix.getEntries().length);
+    gl.uniformMatrix4fv(glsl.getUniformLocation("uMVMatrix"), false, new Float32Array(mvMatrix.getEntries()));
 
     // Draw the scene
     this._logger.fine("Drawing the scene.");
