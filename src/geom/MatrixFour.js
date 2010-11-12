@@ -23,26 +23,26 @@ goog.require('lanyard.geom.Matrix');
  */
 lanyard.geom.MatrixFour = function (entries) {
     // default to identity matrix
-    /** @private */ this._m11 = 1;
-    /** @private */ this._m22 = 1;
-    /** @private */ this._m33 = 1;
-    /** @private */ this._m44 = 1;
+    /** @private */ this._m11 = 1.0;
+    /** @private */ this._m22 = 1.0;
+    /** @private */ this._m33 = 1.0;
+    /** @private */ this._m44 = 1.0;
 
-    /** @private */ this._m12 = 0;
-    /** @private */ this._m13 = 0;
-    /** @private */ this._m14 = 0;
+    /** @private */ this._m12 = 0.0;
+    /** @private */ this._m13 = 0.0;
+    /** @private */ this._m14 = 1.0;
 
-    /** @private */ this._m21 = 0;
-    /** @private */ this._m23 = 0;
-    /** @private */ this._m24 = 0;
+    /** @private */ this._m21 = 0.0;
+    /** @private */ this._m23 = 0.0;
+    /** @private */ this._m24 = 1.0;
 
-    /** @private */ this._m31 = 0;
-    /** @private */ this._m32 = 0;
-    /** @private */ this._m34 = 0;
+    /** @private */ this._m31 = 0.0;
+    /** @private */ this._m32 = 0.0;
+    /** @private */ this._m34 = 1.0;
 
-    /** @private */ this._m41 = 0;
-    /** @private */ this._m42 = 0;
-    /** @private */ this._m43 = 0;
+    /** @private */ this._m41 = 0.0;
+    /** @private */ this._m42 = 0.0;
+    /** @private */ this._m43 = 0.0;
 
     /** @private */ this._isOrthonormal = true;
 
@@ -77,10 +77,16 @@ goog.exportSymbol('lanyard.geom.MatrixFour', lanyard.geom.MatrixFour);
  * @return {string} the string representing this._matrix.
  */
 lanyard.geom.MatrixFour.prototype.toString = function () {
-    return "MatrixFour :\n[ " + this._m11 + ", " + this._m12 + ", " + this._m13 + ", " + this._m14 + ",\n " +
-        this._m21 + ", " + this._m22 + ", " + this._m23 + ", " + this._m24 + ",\n " +
-        this._m31 + ", " + this._m32 + ", " + this._m33 + ", " + this._m34 + ",\n " +
-        this._m41 + ", " + this._m42 + ", " + this._m43 + ", " + this._m44 + " ]";
+    var ents = this.getEntries();
+    var msg = "MatrixFour : \n[ ";
+
+    var i;
+    for(i = 0; i < ents.length; i++) {
+        msg += ents[i] + ", ";
+    }
+
+    msg += " ]";
+    return msg;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.toString', lanyard.geom.MatrixFour.prototype.toString);
 
@@ -168,10 +174,10 @@ lanyard.geom.MatrixFour.prototype.makePerspective = function (fovy, aspect, znea
     var D = -2 * zfar * znear / (zfar - znear);
 
     return new lanyard.geom.MatrixFour(
-        [X, 0, A, 0,
-         0, Y, B, 0,
-         0, 0, C, D,
-         0, 0, -1, 0]
+        [X, 0, 0, 0,
+         0, Y, 0, 0,
+         A, B, C, -1,
+         0, 0, D, 0]
     );
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.makePerspective',
@@ -358,10 +364,16 @@ lanyard.geom.MatrixFour.prototype.rotateZ = function (rotation) {
  * @return {lanyard.geom.MatrixFour} this matrix, translated by (x, y, z)
  */
 lanyard.geom.MatrixFour.prototype.translate = function (x, y, z) {
+    /***
     this._m14 = this._m11 * x + this._m12 * y + this._m13 * z + this._m14;
     this._m24 = this._m21 * x + this._m22 * y + this._m23 * z + this._m24;
     this._m34 = this._m31 * x + this._m32 * y + this._m33 * z + this._m34;
     this._m44 = this._m41 * x + this._m42 * y + this._m43 * z + this._m44;
+    **/
+
+    this._m14 *= x;
+    this._m24 *= y;
+    this._m34 *= z;
 
     return this;
 };
