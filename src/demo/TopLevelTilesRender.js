@@ -38,6 +38,12 @@ goog.exportSymbol('lanyard.demo.TopLevelTilesRender', lanyard.demo.TopLevelTiles
 lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     this.setupEventLog();
 
+    /** @type {lanyard.globes.EllipsoidRectangularTessellator} */
+    var tessellator = lanyard.globes.EllipsoidRectangularTessellator(new lanyard.globes.Earth());
+
+    /** @type {Array.<lanyard.globes.RectTile>} */
+    var topLevels = tessellator.topLevels;
+
     // TODO: render some sample top level tiles here
 };
 goog.exportSymbol('lanyard.demo.TopLevelTilesRender.prototype.run',
