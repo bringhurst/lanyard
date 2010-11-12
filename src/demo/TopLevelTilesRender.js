@@ -38,13 +38,33 @@ goog.exportSymbol('lanyard.demo.TopLevelTilesRender', lanyard.demo.TopLevelTiles
 lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     this.setupEventLog();
 
+    /** @type {lanyard.BasicDrawContext} */
+    var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
+    dc.setModel(new lanyard.BasicModel());
+
     /** @type {lanyard.globes.EllipsoidRectangularTessellator} */
-    var tessellator = lanyard.globes.EllipsoidRectangularTessellator(new lanyard.globes.Earth());
+    var tess = new lanyard.globes.EllipsoidRectangularTessellator(new lanyard.globes.Earth());
 
     /** @type {Array.<lanyard.globes.RectTile>} */
-    var topLevels = tessellator.topLevels;
+    var topLevels = tess.topLevels;
 
-    // TODO: render some sample top level tiles here
+    this._logger.fine("Generated top level tiles (count: " + topLevels.length + ").");
+
+    for(var i = 0; i < topLevels.length; i = i + 1) {
+        var tile = topLevels[i];
+        tile.makeVerts(dc);
+
+        var refCenter = tile._ri.referenceCenter;
+        this._logger.fine("For this tile, using reference center of: " + refCenter.toString());
+
+        var verts = tile._ri.vertices;
+
+        // TODO:
+            // Save mvMatrix
+            // translate mvMatrix to refCenter
+            // render tile
+            // restore mvMatrix
+    }
 };
 goog.exportSymbol('lanyard.demo.TopLevelTilesRender.prototype.run',
     lanyard.demo.TopLevelTilesRender.prototype.run);

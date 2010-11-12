@@ -27,7 +27,8 @@ lanyard.globes.EllipsoidRectangularTessellator = function (globe) {
      * @private
      * @type {Array.<lanyard.globes.RectTile>}
      */
-    this.topLevels = this.createTopLevelTiles(globe, 5, 10);
+    this.topLevels =
+        lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles(globe, 5, 10);
 
     /**
      * @private
@@ -151,7 +152,9 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
 
             /** @type {lanyard.globes.RectTile} */
             var newTile = new lanyard.globes.RectTile(
-                globe, 0, this.density, new lanyard.geom.Sector(lastLat, lat, lastLon, lon)
+                globe, 0, 
+                lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_DENSITY,
+                new lanyard.geom.Sector(lastLat, lat, lastLon, lon)
             );
 
             tops.push(newTile);
