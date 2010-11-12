@@ -88,7 +88,7 @@ lanyard.demo.SectorRender.prototype.run = function () {
     var vertexColorBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
 
-    var colors = []
+    var colors = [];
     for (var i=0; i < 5; i++) {
       colors = colors.concat([0.5, 0.5, 1.0, 1.0]);
     }
@@ -111,8 +111,18 @@ lanyard.demo.SectorRender.prototype.run = function () {
 
         // Setup the perspective matrix
         //self._logger.fine("Setting up the perspective matrix.");
-        var pMatrix =
-            lanyard.geom.MatrixFour.prototype.makePerspective(45, 500 / 500, 0.1, 6400000 * 10);
+
+        /** @type {lanyard.geom.Angle} */
+        var fieldOfView = lanyard.geom.Angle.prototype.fromDegrees(45);
+
+        /** @type {lanyard.geom.ViewFrustum} */
+        var viewFrustum =
+            lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView(
+                fieldOfView, 500, 500, 0.1, 6400000 * 10
+            );
+
+        /** @type {lanyard.geom.MatrixFour} */
+        var pMatrix = viewFrustum.getProjectionMatrix();
 
         // Setup the model-view matrix
         //self._logger.fine("Setting up the model-view matrix.");
