@@ -161,10 +161,6 @@ lanyard.globes.RectTile.prototype.makeVerts = function (dc) {
  * @return {lanyard.globes.RenderInfo} the render info.
  */
 lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution, makeSkirts) {
-    if(!density) {
-        density = 1;
-    }
-
     /** @type {number} */
     var numVertices = (density + 3) * (density + 3);
 

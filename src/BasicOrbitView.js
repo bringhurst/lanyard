@@ -38,7 +38,7 @@ lanyard.BasicOrbitView = function () {
      * @private
      * @type {number}
      */
-    this.DefaultZoom = 0.0;
+    this.DefaultZoom = 6000000.0;
 
     /**
      * @private

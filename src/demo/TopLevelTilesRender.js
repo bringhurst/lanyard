@@ -38,6 +38,25 @@ goog.exportSymbol('lanyard.demo.TopLevelTilesRender', lanyard.demo.TopLevelTiles
 lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     this.setupEventLog();
 
+    // Get the gl context
+    var gl = WebGLDebugUtils.makeDebugContext(this._webGLCanvas.getContext("experimental-webgl"));
+    //var gl = this._webGLCanvas.getContext("experimental-webgl");
+
+    // Setup the shaders
+    this._logger.fine("Setting up the shaders.");
+    var glsl = new lanyard.render.GLSL(gl);
+    glsl.loadVertexShader("shader-vs");
+    glsl.loadFragmentShader("shader-fs");
+    glsl.useShaders();
+    glsl.startShader();
+
+    // Setup the canvas
+    this._logger.fine("Setting up the canvas.");
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearDepth(1.0);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+
     /** @type {lanyard.BasicDrawContext} */
     var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
     dc.setModel(new lanyard.BasicModel());
@@ -47,8 +66,12 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
 
     /** @type {Array.<lanyard.globes.RectTile>} */
     var topLevels = tess.topLevels;
-
     this._logger.fine("Generated top level tiles (count: " + topLevels.length + ").");
+
+    // Init the position buffer
+    this._logger.fine("Setting up the position buffer.");
+    var vertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
 
     for(var i = 0; i < topLevels.length; i = i + 1) {
         var tile = topLevels[i];
@@ -57,7 +80,9 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
         var refCenter = tile._ri.referenceCenter;
         this._logger.fine("For this tile, using reference center of: " + refCenter.toString());
 
-        var verts = tile._ri.vertices;
+        this._logger.fine("Vert count for this tile: " + tile._ri.vertices.length);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tile._ri.vertices), gl.STATIC_DRAW);
+
 
         // TODO:
             // Save mvMatrix

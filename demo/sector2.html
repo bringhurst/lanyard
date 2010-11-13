@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sector render test, part 2</title>
+        <link href="demo.css" media="screen" rel="stylesheet" type="text/css"/>
+        <script src="webgl-debug.js"></script>
+        <script src="../build/lanyard.js"></script>
+        <script id="shader-fs" type="x-shader/x-fragment">
+            #ifdef GL_ES
+                precision highp float;
+            #endif
+
+            varying vec4 vColor;
+
+            void main(void) {
+                gl_FragColor = vColor;
+            }
+        </script>
+        <script id="shader-vs" type="x-shader/x-vertex">
+            attribute vec3 aVertexPosition;
+            attribute vec4 aVertexColor;
+
+            uniform mat4 uMVMatrix;
+            uniform mat4 uPMatrix;
+
+            varying vec4 vColor;
+
+            void main(void) {
+                gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+                vColor = aVertexColor;
+            }
+        </script>
+    </head>
+    <body>
+        <div class="column-container">
+            <div class="map-canvas-column">
+                <!-- Map canvas start -->
+                <fieldset>
+                    <legend>Sector render test, part 2</legend>
+                    <canvas id="lanyard-demo-canvas" width="500" height="500">
+                        Your browser doesn't appear to support the HTML5 canvas element.
+                    </canvas>
+                </fieldset>
+                <!-- Map canvas end -->
+            </div>
+            <div class="map-console-column">
+                <!-- Map console start -->
+                <fieldset>
+                    <legend>Event Log</legend>
+                    <div id="lanyard-demo-log"></div>
+                </fieldset>
+                <!-- Map console end -->
+            </div>
+        </div>
+        <script>
+            var sectorRenderTest = new lanyard.demo.SectorRender2(
+                document.getElementById("lanyard-demo-canvas"),
+                document.getElementById("lanyard-demo-log")
+            );
+            sectorRenderTest.run();
+        </script>
+    </body>
+</html>
