@@ -52,28 +52,27 @@ lanyard.demo.SectorRender2.prototype.run = function () {
     var sector = lanyard.geom.Sector.prototype.fromDegrees(
         minLatitude, maxLatitude, minLongitude, maxLongitude);
 
+    // Setup a model (the earth)
+    var model = new lanyard.BasicModel();
+
+    // Setup a draw context
+    var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
+    dc.setModel(model);
+
     // Get the corner points of the sector in xyz space
-    var corners = sector.computeCornerPoints(new lanyard.globes.Earth());
+    var corners = sector.computeCornerPoints(model.getGlobe());
     this._logger.fine("Generated a sector with corners of: " +
         corners[0] + ", " + corners[1] + ", " +
         corners[2] + ", " + corners[3] + ".");
 
-    // Get the gl context
-    var gl = WebGLDebugUtils.makeDebugContext(this._webGLCanvas.getContext("experimental-webgl"));
-    //var gl = this._webGLCanvas.getContext("experimental-webgl");
-
     // Setup the shaders
-    this._logger.fine("Setting up the shaders.");
-    var glsl = new lanyard.render.GLSL(gl);
-    glsl.loadVertexShader("shader-vs");
-    glsl.loadFragmentShader("shader-fs");
-    glsl.useShaders();
-    glsl.startShader();
+    dc.loadShaders("shader-vs", "shader-fs");
+    dc.setupShaders();
 
     // Init the position buffer
     this._logger.fine("Setting up the position buffer.");
-    var vertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
+    var vertexPositionBuffer = dc.getGL().createBuffer();
+    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
     var vertices = [
         corners[0].getX(), corners[0].getY(), corners[0].getZ(),
         corners[1].getX(), corners[1].getY(), corners[1].getZ(),
@@ -81,85 +80,62 @@ lanyard.demo.SectorRender2.prototype.run = function () {
         corners[3].getX(), corners[3].getY(), corners[3].getZ(),
         corners[0].getX(), corners[0].getY(), corners[0].getZ()
     ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(vertices), dc.getGL().STATIC_DRAW);
 
     // Init the color buffer
     this._logger.fine("Setting up the color buffer.");
-    var vertexColorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
+    var vertexColorBuffer = dc.getGL().createBuffer();
+    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
 
     var colors = [];
     for (var i=0; i < 5; i++) {
       colors = colors.concat([0.5, 0.5, 1.0, 1.0]);
     }
 
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
 
     // Setup the canvas
     this._logger.fine("Setting up the canvas.");
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clearDepth(1.0);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
+    dc.getGL().clearColor(0.0, 0.0, 0.0, 1.0);
+    dc.getGL().clearDepth(1.0);
+    dc.getGL().enable(dc.getGL().DEPTH_TEST);
+    dc.getGL().depthFunc(dc.getGL().LEQUAL);
+
+    // Setup the view
+    var view = new lanyard.BasicOrbitView();
+    view.setViewport(
+        new lanyard.util.Rectangle(
+            0, 0, this._webGLCanvas.width, this._webGLCanvas.height
+        )
+    );
 
     var self = this;
     setInterval(function () {
         //self._logger.fine("Beginning draw loop.");
 
-        gl.viewport(0, 0, 500, 500);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        dc.getGL().viewport(0, 0, 500, 500);
+        dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
 
-        // Setup the perspective matrix
-        //self._logger.fine("Setting up the perspective matrix.");
-
-        /** @type {lanyard.geom.Angle} */
-        var fieldOfView = lanyard.geom.Angle.prototype.fromDegrees(45);
-
-        /** @type {lanyard.geom.ViewFrustum} */
-        var viewFrustum =
-            lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView(
-                fieldOfView, 500, 500, 0.1, 6400000 * 10
-            );
-
-        /** @type {lanyard.geom.MatrixFour} */
-        var pMatrix = viewFrustum.getProjectionMatrix();
-
-        // Setup the model-view matrix
-        //self._logger.fine("Setting up the model-view matrix.");
-        var mvMatrix = new lanyard.geom.MatrixFour(null); // identity
-        mvMatrix.translate(0.0, 0.0, -6400000.0 * 4);
+        // Apply default view state
+        view.doApply(dc);
 
         // Send our position buffer to the shader
         //self._logger.fine("Sending the position buffer to the shader.");
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
-        gl.enableVertexAttribArray(glsl.getAttribLocation("aVertexPosition"));
-        gl.vertexAttribPointer(glsl.getAttribLocation("aVertexPosition"),
-            3, gl.FLOAT, false, 0, 0);
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
+        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
+        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+            3, dc.getGL().FLOAT, false, 0, 0);
 
         // Send our color buffer to the shader
         //self._logger.fine("Sending the color buffer to the shader.");
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
-        gl.enableVertexAttribArray(glsl.getAttribLocation("aVertexColor"));
-        gl.vertexAttribPointer(glsl.getAttribLocation("aVertexColor"),
-            4, gl.FLOAT, false, 0, 0);
-
-        // Send the perspective matrix to the shader
-        //self._logger.fine("Sending the perspective matrix to the shader (" +
-        //    glsl.getUniformLocation("uPMatrix") + ").");
-        //self._logger.fine("Perspective matrix has contents of: " + pMatrix.toString());
-        //self._logger.fine("Perspective matrix has length of: " + pMatrix.getEntries().length);
-        gl.uniformMatrix4fv(glsl.getUniformLocation("uPMatrix"), false, new Float32Array(pMatrix.getEntries()));
-
-        // Send the model-view matrix to the shader
-        //self._logger.fine("Sending the model-view matrix to the shader (" +
-        //    glsl.getUniformLocation("uMVMatrix") + ").");
-        //self._logger.fine("Model-view matrix has contents of: " + mvMatrix.toString());
-        //self._logger.fine("Model-view matrix has length of: " + mvMatrix.getEntries().length);
-        gl.uniformMatrix4fv(glsl.getUniformLocation("uMVMatrix"), false, new Float32Array(mvMatrix.getEntries()));
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
+        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
+        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
+            4, dc.getGL().FLOAT, false, 0, 0);
 
         // Draw the scene
         //self._logger.fine("Drawing the scene.");
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 5);
+        dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 5);
 
         //self._logger.fine("Finishing draw loop.");
     }, 500); // end setInterval

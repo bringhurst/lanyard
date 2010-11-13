@@ -177,6 +177,7 @@ lanyard.BasicDrawContext.prototype.setupShaders = function () {
         this.glsl.loadFragmentShader(this.fshaderId);
 
         this.glsl.useShaders();
+        this.glsl.startShader();
     }
 };
 
