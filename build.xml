@@ -30,6 +30,7 @@
         <!-- List of demo files begins here. -->
         <arg line='-i "${basedir}/src/demo/BasicDemo.js"' />
         <arg line='-i "${basedir}/src/demo/SectorRender.js"' />
+        <arg line='-i "${basedir}/src/demo/SectorRender2.js"' />
         <arg line='-i "${basedir}/src/demo/TopLevelTilesRender.js"' />
 
         <arg line='-p "${src.dir}"' />
