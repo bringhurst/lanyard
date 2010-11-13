@@ -55,6 +55,14 @@ lanyard.demo.SectorRender2.prototype.run = function () {
     // Setup a model (the earth)
     var model = new lanyard.BasicModel();
 
+    // Setup a view (don't worry about texture units for this test)
+    var view = new lanyard.BasicOrbitView();
+    view.setViewport(
+        new lanyard.util.Rectangle(
+            0, 0, this._webGLCanvas.width, this._webGLCanvas.height
+        )
+    );
+
     // Setup a draw context
     var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
     dc.setModel(model);
@@ -100,14 +108,6 @@ lanyard.demo.SectorRender2.prototype.run = function () {
     dc.getGL().clearDepth(1.0);
     dc.getGL().enable(dc.getGL().DEPTH_TEST);
     dc.getGL().depthFunc(dc.getGL().LEQUAL);
-
-    // Setup the view
-    var view = new lanyard.BasicOrbitView();
-    view.setViewport(
-        new lanyard.util.Rectangle(
-            0, 0, this._webGLCanvas.width, this._webGLCanvas.height
-        )
-    );
 
     var self = this;
     setInterval(function () {
