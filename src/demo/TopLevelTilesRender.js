@@ -8,6 +8,10 @@ goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 
+goog.require('lanyard.geom.Sector');
+goog.require('lanyard.globes.Earth');
+goog.require('lanyard.geom.MatrixFour');
+
 /**
  * A basic test for rendering the top level tiles.
  *
@@ -38,58 +42,70 @@ goog.exportSymbol('lanyard.demo.TopLevelTilesRender', lanyard.demo.TopLevelTiles
 lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     this.setupEventLog();
 
-    // Get the gl context
-    var gl = WebGLDebugUtils.makeDebugContext(this._webGLCanvas.getContext("experimental-webgl"));
-    //var gl = this._webGLCanvas.getContext("experimental-webgl");
+    // Setup a model (the earth)
+    var model = new lanyard.BasicModel();
+
+    // Setup a view
+    var view = new lanyard.BasicOrbitView();
+    view.setViewport(
+        new lanyard.util.Rectangle(
+            0, 0, this._webGLCanvas.width, this._webGLCanvas.height
+        )
+    );
+
+    // Setup a draw context
+    var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
+    dc.setModel(model);
+    dc.setView(view);
 
     // Setup the shaders
-    this._logger.fine("Setting up the shaders.");
-    var glsl = new lanyard.render.GLSL(gl);
-    glsl.loadVertexShader("shader-vs");
-    glsl.loadFragmentShader("shader-fs");
-    glsl.useShaders();
-    glsl.startShader();
+    dc.loadShaders("shader-vs", "shader-fs");
+    dc.setupShaders();
 
-    // Setup the canvas
-    this._logger.fine("Setting up the canvas.");
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clearDepth(1.0);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
-
-    /** @type {lanyard.BasicDrawContext} */
-    var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
-    dc.setModel(new lanyard.BasicModel());
+    // Get the top level tile geometry
 
     /** @type {lanyard.globes.EllipsoidRectangularTessellator} */
-    var tess = new lanyard.globes.EllipsoidRectangularTessellator(new lanyard.globes.Earth());
+    var tess = model.getTessellator();
 
     /** @type {Array.<lanyard.globes.RectTile>} */
     var topLevels = tess.topLevels;
     this._logger.fine("Generated top level tiles (count: " + topLevels.length + ").");
-
-    // Init the position buffer
-    this._logger.fine("Setting up the position buffer.");
-    var vertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
 
     for(var i = 0; i < topLevels.length; i = i + 1) {
         var tile = topLevels[i];
         tile.makeVerts(dc);
 
         var refCenter = tile._ri.referenceCenter;
+
         this._logger.fine("For this tile, using reference center of: " + refCenter.toString());
-
         this._logger.fine("Vert count for this tile: " + tile._ri.vertices.length);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tile._ri.vertices), gl.STATIC_DRAW);
-
-
-        // TODO:
-            // Save mvMatrix
-            // translate mvMatrix to refCenter
-            // render tile
-            // restore mvMatrix
     }
+
+    // Setup the canvas
+    //this._logger.fine("Setting up the canvas.");
+    dc.getGL().clearColor(0.0, 0.0, 0.0, 1.0);
+    dc.getGL().clearDepth(1.0);
+    dc.getGL().enable(dc.getGL().DEPTH_TEST);
+    dc.getGL().depthFunc(dc.getGL().LEQUAL);
+
+    var self = this;
+   // setInterval(function () {
+        //self._logger.fine("Beginning draw loop.");
+
+        dc.getGL().viewport(0, 0, 500, 500);
+        dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
+
+        // Apply default view state
+        view.doApply(dc);
+
+        // TODO: send position and color buffers to the shader
+
+        // Draw the scene
+        //self._logger.fine("Drawing the scene.");
+        dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 5);
+
+        //self._logger.fine("Finishing draw loop.");
+   // }, 500); // end setInterval
 };
 goog.exportSymbol('lanyard.demo.TopLevelTilesRender.prototype.run',
     lanyard.demo.TopLevelTilesRender.prototype.run);
