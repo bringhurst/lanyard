@@ -189,7 +189,7 @@ lanyard.dom.InputHandler.prototype.mouseWheelMoved = function (mouseWheelEvent) 
     }
 
     // Prevent the mouse wheel from moving the window.
-    mouseWheelEvent.stopPropagation();
+    mouseWheelEvent.preventDefault();
 
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();
