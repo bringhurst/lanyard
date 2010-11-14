@@ -32,6 +32,7 @@
         <arg line='-i "${basedir}/src/demo/SectorRender.js"' />
         <arg line='-i "${basedir}/src/demo/SectorRender2.js"' />
         <arg line='-i "${basedir}/src/demo/TopLevelTilesRender.js"' />
+        <arg line='-i "${basedir}/src/demo/HandleInput.js"' />
 
         <arg line='-p "${src.dir}"' />
         <arg line='-p "${closure-library.dir}"' />
