@@ -280,7 +280,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
         }
     }
 
-    //this._logger.fine("Created vert of: " + verts);
+    this._logger.fine("Created vert of: " + verts);
 
     /** @type {lanyard.globes.RenderInfo} */
     var retVal =
@@ -676,7 +676,8 @@ lanyard.globes.RectTile.prototype.getParameterization = function (density) {
     /** @type {number} */
     var one = 0.999999;
 
-    if(this._parameterizations.density) {
+
+    if(this && this._parameterizations && this._parameterizations.density) {
         return this._parameterizations.density;
     }
 
@@ -759,7 +760,10 @@ lanyard.globes.RectTile.prototype.getParameterization = function (density) {
         p[k++] = p[kk++];
     }
 
-    this._parameterizations.density = p;
+    if(this._parameterizations) {
+        this._parameterizations.density = p;
+    }
+
     return p;
 };
 
@@ -824,7 +828,10 @@ lanyard.globes.RectTile.prototype.getIndices = function (density) {
         }
     }
 
-    this._indexLists.density = buffer;
+    if(this._indexLists) {
+        this._indexLists.density = buffer;
+    }
+
     return buffer;
 };
 

@@ -750,7 +750,7 @@ lanyard.geom.Sector.prototype.subdivide = function () {
  */
 lanyard.geom.Sector.prototype.toString = function () {
     /** @type {string} */
-    var ret = "(" + this._minLatitude.toString() + ", " + this._minLongitude.toString() + ")" +
+    var ret = "A Sector with angles: (" + this._minLatitude.toString() + ", " + this._minLongitude.toString() + ")" +
         ", (" + this._maxLatitude.toString() + ", " + this._maxLongitude.toString() + ")";
 
     return ret;

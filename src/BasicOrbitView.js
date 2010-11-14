@@ -311,7 +311,7 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
     /** @type {lanyard.geom.MatrixFour} */
     var modelView = this.computeModelViewMatrix(dc);
 
-    this._logger.fine("Initial model-view matrix is: " + modelView.toString());
+    //this._logger.fine("Initial model-view matrix is: " + modelView.toString());
 
     /** @type {lanyard.geom.Point} */
     var eyePoint = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
@@ -391,11 +391,11 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
         this.focusLat, this.focusLon, focusPoint.length(),
         this.eyeDist, this.heading, this.pitch);
 
-    this._logger.fine("Lookat returned: " + modelView.toString());
+    //this._logger.fine("Lookat returned: " + modelView.toString());
 
     /** @type {lanyard.geom.Point} */
     var eye = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
-    this._logger.fine("Eye is: " + eye.toString());
+    //this._logger.fine("Eye is: " + eye.toString());
 
 
 
@@ -549,6 +549,7 @@ lanyard.BasicOrbitView.prototype.computeSurfacePoint = function (dc, lat, lon) {
  */
 lanyard.BasicOrbitView.prototype.getFrustum = function () {
     if (!this.viewFrustum) {
+        this._logger.severe("Attempted to get a null frustum from the view.");
         return null;
     }
 
@@ -1168,6 +1169,11 @@ lanyard.BasicOrbitView.prototype.getEyePoint = function () {
  * @return {lanyard.geom.Frustum} the view frustum in model coords.
  */
 lanyard.BasicOrbitView.prototype.getFrustumInModelCoordinates = function () {
+
+    if(!this.modelView) {
+        this._logger.severe("Attempted to compute a model-view coordinate frustum without a valid state matrix.");
+    }
+
     if (!this.frustumInModelCoords && this.modelView) {
         // Compute the current model-view coordinate frustum.
         /** @type {lanyard.geom.Frustum} */
@@ -1175,6 +1181,8 @@ lanyard.BasicOrbitView.prototype.getFrustumInModelCoordinates = function () {
 
         if (frust) {
             this.frustumInModelCoords = frust.getInverseTransformed(this.modelView);
+        } else {
+            this._logger.severe("Frustum for conversion to model coordinates was invalid.");
         }
     }
 
@@ -1234,6 +1242,18 @@ lanyard.BasicOrbitView.prototype.getViewport = function () {
 lanyard.BasicOrbitView.prototype.setViewport = function (vp) {
     this.viewport = vp;
 };
+
+/**
+ * Mutator for the viewport using a specified canvas.
+ *
+ * @param {Element} canvas the canvas to use.
+ */
+lanyard.BasicOrbitView.prototype.setViewportFromCanvas = function (canvas) {
+    this.viewport = new lanyard.util.Rectangle(
+            0, 0, canvas.width, canvas.height
+    );
+};
+
 
 /**
  * Apply this view to the current draw context.

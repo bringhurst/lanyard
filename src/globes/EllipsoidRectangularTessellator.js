@@ -173,16 +173,20 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
  * @return {lanyard.SectorGeometryList} the sector geometries.
  */
 lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (dc) {
-    //this._logger.fine("Tessellating the draw context geometries.");
+    this._logger.fine("Tessellating the draw context geometries.");
+
+    if(!dc) {
+        this._logger.severe("Attempted to tessellate without a valid draw context.");
+    }
 
     this.currentTiles.clear();
     this.currentLevel = 0;
     this.sector = null;
     this.currentFrustum = dc.getView().getFrustumInModelCoordinates();
 
-    //this._logger.fine("Current frustum is: " + this.currentFrustum);
+    this._logger.fine("Current frustum is: " + this.currentFrustum);
 
-    //this._logger.fine("Number of top level tiles: " + this.topLevels.length);
+    this._logger.fine("Number of top level tiles: " + this.topLevels.length);
 
     for(var i = 0; i < this.topLevels.length; i = i + 1) {
         this.selectVisibleTiles(dc, this.topLevels[i]);
@@ -190,13 +194,13 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
 
     dc.setVisibleSector(this.getSector());
 
-    //this._logger.fine("Number of current tiles: " + this.currentTiles.length());
+    this._logger.fine("Number of current tiles: " + this.currentTiles.length());
 
     for(var j = 0; j < this.currentTiles.length(); j = j + 1) {
         /** @type {lanyard.SectorGeometry} */
         var t = this.currentTiles.at(j);
 
-        //this._logger.fine("Creating vertices for tile: " + t);
+        this._logger.fine("Creating vertices for tile: " + t);
 
         t.makeVerts(dc);
     }

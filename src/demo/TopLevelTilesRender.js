@@ -43,11 +43,7 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
 
     // Setup a view
     var view = new lanyard.BasicOrbitView();
-    view.setViewport(
-        new lanyard.util.Rectangle(
-            0, 0, this._webGLCanvas.width, this._webGLCanvas.height
-        )
-    );
+    view.setViewportFromCanvas(this._webGLCanvas);
 
     // Setup a draw context
     var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
@@ -58,82 +54,74 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     dc.loadShaders("shader-vs", "shader-fs");
     dc.setupShaders();
 
-    // Get the top level tile geometry
-
-    /** @type {lanyard.globes.EllipsoidRectangularTessellator} */
-    var tess = model.getTessellator();
-
-    /** @type {Array.<lanyard.globes.RectTile>} */
-    var topLevels = tess.topLevels;
-    this._logger.fine("Generated top level tiles (count: " + topLevels.length + ").");
-
     // Setup the canvas
-    //this._logger.fine("Setting up the canvas.");
     dc.getGL().clearColor(0.0, 0.0, 0.0, 1.0);
     dc.getGL().clearDepth(1.0);
     dc.getGL().enable(dc.getGL().DEPTH_TEST);
     dc.getGL().depthFunc(dc.getGL().LEQUAL);
 
+    // Make sure we have valid state matrices
+    view.doApply(dc);
+
+    /** @type {lanyard.SectorGeometryList} */
+    var sgl = dc.getModel().getTessellator().tessellate(dc);
+    this._logger.fine("Generated top level sectors (count: " + sgl.length() + ").");
+
+    // Begin drawing the scene
     dc.getGL().viewport(0, 0, 500, 500);
     dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
 
+    var vertexPositionBuffer = dc.getGL().createBuffer();
+    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
 
-    // apply the default matrix state
-    view.doApply(dc);
+    var vertices = [];
 
-    for(var i = 0; i < topLevels.length; i = i + 1) {
-        this._logger.fine("Started tile.");
+    for(var i = 0; i < sgl.length(); i = i + 1) {
+        var sector = sgl.at(i).getSector();
+        var corners = sector.computeCornerPoints(model.getGlobe());
 
-        var tile = topLevels[i];
+        // Init the position buffer
+        //this._logger.fine("Setting up the position buffer.");
+        vertices = vertices.concat([
+            corners[0].getX(), corners[0].getY(), corners[0].getZ(),
+            corners[1].getX(), corners[1].getY(), corners[1].getZ(),
+            corners[2].getX(), corners[2].getY(), corners[2].getZ(),
+            corners[3].getX(), corners[3].getY(), corners[3].getZ()
+        ]);
+    }
+    dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(vertices), dc.getGL().STATIC_DRAW);
 
-        tile.makeVerts(dc);
-        var refCenter = tile._ri.referenceCenter;
+    this._logger.fine("Size of vertices is: " + vertices.length);
 
-        this._logger.fine("For this tile, using reference center of: " + refCenter.toString());
-        this._logger.fine("Vert count for this tile: " + tile._ri.vertices.length);
 
-        // Setup position buffer
-        var vertexPositionBuffer = dc.getGL().createBuffer();
-        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
-        dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(tile._ri.vertices),
-            dc.getGL().STATIC_DRAW);
+    // Init the color buffer
+    //this._logger.fine("Setting up the color buffer.");
+    var vertexColorBuffer = dc.getGL().createBuffer();
+    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
 
-        // Setup color buffer
-        var vertexColorBuffer = dc.getGL().createBuffer();
-        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
-        var colors = [];
-        for (var j=0; j < tile._ri.vertices.length / 3; j++) {
-            colors = colors.concat([0.5, 0.5, 1.0, 1.0]);
-        }
-        dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
+    var colors = [];
+    for (var i=0; i < vertices.length / 3; i++) {
+        colors = colors.concat([0.5, 0.5, 1.0, 1.0]);
+    }
+    dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
 
-        // Send our position buffer to the shader
-        //this._logger.fine("Sending the position buffer to the shader.");
-        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
-        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
-        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
-            3, dc.getGL().FLOAT, false, 0, 0);
+    // Send our position buffer to the shader
+    //self._logger.fine("Sending the position buffer to the shader.");
+    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
+    dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
+    dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+        3, dc.getGL().FLOAT, false, 0, 0);
 
-        // Send our color buffer to the shader
-        //self._logger.fine("Sending the color buffer to the shader.");
-        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
-        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
-        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
-            4, dc.getGL().FLOAT, false, 0, 0);
+    // Send our color buffer to the shader
+    //self._logger.fine("Sending the color buffer to the shader.");
+    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
+    dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
+    dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
+        4, dc.getGL().FLOAT, false, 0, 0);
 
-        // Push reference center state for this tile
-        var refCenter = tile._ri.referenceCenter;
-        view.pushReferenceCenter(dc, refCenter)
-
-        // Draw the scene
-        this._logger.fine("Drawing the scene.");
-        dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, tile._ri.vertices.length / 3);
-
-        // Pop off the reference center
-        view.popReferenceCenter(dc);
-
-        this._logger.fine("Finished tile.");
-   }
+    // Draw the scene
+    //self._logger.fine("Drawing the scene.");
+    dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 4 * sgl.length());
 };
 goog.exportSymbol('lanyard.demo.TopLevelTilesRender.prototype.run',
     lanyard.demo.TopLevelTilesRender.prototype.run);
