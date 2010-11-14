@@ -74,10 +74,16 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     dc.getGL().enable(dc.getGL().DEPTH_TEST);
     dc.getGL().depthFunc(dc.getGL().LEQUAL);
 
+    dc.getGL().viewport(0, 0, 500, 500);
+    dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
+
+
     // apply the default matrix state
     view.doApply(dc);
 
     for(var i = 0; i < topLevels.length; i = i + 1) {
+        this._logger.fine("Started tile.");
+
         var tile = topLevels[i];
 
         tile.makeVerts(dc);
@@ -96,13 +102,10 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
         var vertexColorBuffer = dc.getGL().createBuffer();
         dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
         var colors = [];
-        for (var i=0; i < tile._ri.vertices.length / 3; i++) {
+        for (var j=0; j < tile._ri.vertices.length / 3; j++) {
             colors = colors.concat([0.5, 0.5, 1.0, 1.0]);
         }
         dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
-
-        dc.getGL().viewport(0, 0, 500, 500);
-        dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
 
         // Send our position buffer to the shader
         //this._logger.fine("Sending the position buffer to the shader.");
@@ -128,6 +131,8 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
 
         // Pop off the reference center
         view.popReferenceCenter(dc);
+
+        this._logger.fine("Finished tile.");
    }
 };
 goog.exportSymbol('lanyard.demo.TopLevelTilesRender.prototype.run',
