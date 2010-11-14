@@ -223,17 +223,17 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
     }
 
     /** @type {lanyard.util.Point} */
-    var mouseMove = new lanyard.util.Point(mouseEvent.getPoint().x - this.lastMousePoint.x,
-        mouseEvent.getPoint().y - this.lastMousePoint.y);
+    var mouseMove = new lanyard.util.Point(mouseEvent.clientX - this.lastMousePoint.getX(),
+        mouseEvent.clientY - this.lastMousePoint.getY());
 
     /** @type {lanyard.geom.LatLon} */
     var latLonChange = null;
 
     /** @type {lanyard.geom.Position} */
-    var prev = view.computePositionFromScreenPoint(this.lastMousePoint.x, this.lastMousePoint.y);
+    var prev = view.computePositionFromScreenPoint(this.lastMousePoint.getX(), this.lastMousePoint.getY());
 
     /** @type {lanyard.geom.Position} */
-    var cur = view.computePositionFromScreenPoint(mouseEvent.getPoint().x, mouseEvent.getPoint().y);
+    var cur = view.computePositionFromScreenPoint(mouseEvent.clientX, mouseEvent.clientY);
 
     if (prev && cur) {
         latLonChange = new lanyard.geom.LatLon(prev.getLatitude().subtract(cur.getLatitude()),
@@ -250,10 +250,10 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
             var cosHeading = view.getHeading().cos();
 
             /** @type {number} */
-            var latFactor = cosHeading * mouseMove.y + sinHeading * mouseMove.x;
+            var latFactor = cosHeading * mouseMove.getY() + sinHeading * mouseMove.getX();
 
             /** @type {number} */
-            var lonFactor = sinHeading * mouseMove.y - cosHeading * mouseMove.x;
+            var lonFactor = sinHeading * mouseMove.getY() - cosHeading * mouseMove.getX();
 
             latLonChange = this.computeViewLatLonChange(view, globe, latFactor, lonFactor, false);
         } else {
@@ -288,7 +288,7 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
 
     ****/
 
-    this.lastMousePoint = mouseEvent.getPoint();
+    this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
 };
 
 /**
