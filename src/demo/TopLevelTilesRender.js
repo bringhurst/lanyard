@@ -99,9 +99,28 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     var vertexColorBuffer = dc.getGL().createBuffer();
     dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
 
+    var perChannelColor = (vertices.length / 3) + 2;
+    var colorDelta = 1.0 / perChannelColor;
+
+    var r = colorDelta;
+    var g = colorDelta;
+    var b = colorDelta;
+
     var colors = [];
     for (var i=0; i < vertices.length / 3; i++) {
-        colors = colors.concat([0.5, 0.5, 1.0, 1.0]);
+        colors = colors.concat([r, g, b, 1.0]);
+
+        if(i <= (vertices.length / 3) / 3) {
+            r += colorDelta;
+        }
+
+        if(i > (((vertices.length / 3) / 3) * 2) || i < vertices.length / 3) {
+            g += colorDelta;
+        }
+
+        if(i >= ((vertices.length / 3) / 3) * 2) {
+            b += colorDelta;
+        }
     }
     dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
 
