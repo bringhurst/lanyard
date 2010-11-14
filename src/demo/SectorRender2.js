@@ -66,19 +66,20 @@ lanyard.demo.SectorRender2.prototype.run = function () {
     // Setup a draw context
     var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
     dc.setModel(model);
+    dc.setView(view);
 
     // Get the corner points of the sector in xyz space
     var corners = sector.computeCornerPoints(model.getGlobe());
-    this._logger.fine("Generated a sector with corners of: " +
-        corners[0] + ", " + corners[1] + ", " +
-        corners[2] + ", " + corners[3] + ".");
+    //this._logger.fine("Generated a sector with corners of: " +
+    //    corners[0] + ", " + corners[1] + ", " +
+    //    corners[2] + ", " + corners[3] + ".");
 
     // Setup the shaders
     dc.loadShaders("shader-vs", "shader-fs");
     dc.setupShaders();
 
     // Init the position buffer
-    this._logger.fine("Setting up the position buffer.");
+    //this._logger.fine("Setting up the position buffer.");
     var vertexPositionBuffer = dc.getGL().createBuffer();
     dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
     var vertices = [
@@ -91,7 +92,7 @@ lanyard.demo.SectorRender2.prototype.run = function () {
     dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(vertices), dc.getGL().STATIC_DRAW);
 
     // Init the color buffer
-    this._logger.fine("Setting up the color buffer.");
+    //this._logger.fine("Setting up the color buffer.");
     var vertexColorBuffer = dc.getGL().createBuffer();
     dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
 
@@ -103,7 +104,7 @@ lanyard.demo.SectorRender2.prototype.run = function () {
     dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
 
     // Setup the canvas
-    this._logger.fine("Setting up the canvas.");
+    //this._logger.fine("Setting up the canvas.");
     dc.getGL().clearColor(0.0, 0.0, 0.0, 1.0);
     dc.getGL().clearDepth(1.0);
     dc.getGL().enable(dc.getGL().DEPTH_TEST);

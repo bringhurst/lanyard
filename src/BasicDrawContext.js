@@ -178,6 +178,8 @@ lanyard.BasicDrawContext.prototype.setupShaders = function () {
 
         this.glsl.useShaders();
         this.glsl.startShader();
+    } else {
+        this._logger.fine("Attempted to reload shaders when shaders were already loaded.");
     }
 };
 
@@ -581,7 +583,7 @@ lanyard.BasicDrawContext.prototype.loadMatrix = function (name, matrix) {
     this.gl.uniformMatrix4fv(
         this.glsl.getUniformLocation(name),
         false,
-        matrix.getEntries()
+        new Float32Array(matrix.getEntries())
     );
 };
 

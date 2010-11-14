@@ -103,7 +103,7 @@ lanyard.demo.SectorRender.prototype.run = function () {
     gl.depthFunc(gl.LEQUAL);
 
     var self = this;
-    setInterval(function () {
+    //setInterval(function () {
         //self._logger.fine("Beginning draw loop.");
 
         gl.viewport(0, 0, 500, 500);
@@ -146,14 +146,14 @@ lanyard.demo.SectorRender.prototype.run = function () {
         // Send the perspective matrix to the shader
         //self._logger.fine("Sending the perspective matrix to the shader (" +
         //    glsl.getUniformLocation("uPMatrix") + ").");
-        //self._logger.fine("Perspective matrix has contents of: " + pMatrix.toString());
+        self._logger.fine("Perspective matrix has contents of: " + pMatrix.toString());
         //self._logger.fine("Perspective matrix has length of: " + pMatrix.getEntries().length);
         gl.uniformMatrix4fv(glsl.getUniformLocation("uPMatrix"), false, new Float32Array(pMatrix.getEntries()));
 
         // Send the model-view matrix to the shader
         //self._logger.fine("Sending the model-view matrix to the shader (" +
         //    glsl.getUniformLocation("uMVMatrix") + ").");
-        //self._logger.fine("Model-view matrix has contents of: " + mvMatrix.toString());
+        self._logger.fine("Model-view matrix has contents of: " + mvMatrix.toString());
         //self._logger.fine("Model-view matrix has length of: " + mvMatrix.getEntries().length);
         gl.uniformMatrix4fv(glsl.getUniformLocation("uMVMatrix"), false, new Float32Array(mvMatrix.getEntries()));
 
@@ -162,7 +162,7 @@ lanyard.demo.SectorRender.prototype.run = function () {
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 5);
 
         //self._logger.fine("Finishing draw loop.");
-    }, 500); // end setInterval
+    //}, 500); // end setInterval
 };
 goog.exportSymbol('lanyard.demo.SectorRender.prototype.run',
     lanyard.demo.SectorRender.prototype.run);

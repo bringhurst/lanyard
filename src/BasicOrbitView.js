@@ -225,7 +225,7 @@ lanyard.BasicOrbitView = function () {
      * @private
      * @type {number}
      */
-    this.altitude = 0; // FIXME: should be set to 0?
+    this.altitude = null;
 
     // Coordinate constraints.
 
@@ -311,7 +311,7 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
     /** @type {lanyard.geom.MatrixFour} */
     var modelView = this.computeModelViewMatrix(dc);
 
-    //this._logger.fine("Initial model-view matrix is: " + modelView.toString());
+    this._logger.fine("Initial model-view matrix is: " + modelView.toString());
 
     /** @type {lanyard.geom.Point} */
     var eyePoint = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
@@ -327,6 +327,9 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
     } else {
         this._logger.severe("We don't have a view frustum to generate the projection matrix.");
     }
+
+    this._logger.fine("Using model-view of: " + modelView.toString());
+    this._logger.fine("Using projection of: " + projection.toString());
 
     // Set current GL matrix state.
     this.applyMatrixState(dc, modelView, projection);
@@ -384,14 +387,17 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
     //this._logger.fine("Focus point is: " + focusPoint);
 
     /** @type {lanyard.geom.MatrixFour} */
-    var modelView = lanyard.BasicOrbitView.prototype.lookAt(
+    var modelView = this.lookAt(
         this.focusLat, this.focusLon, focusPoint.length(),
         this.eyeDist, this.heading, this.pitch);
 
-    //this._logger.fine("Lookat returned: " + modelView);
+    this._logger.fine("Lookat returned: " + modelView.toString());
 
     /** @type {lanyard.geom.Point} */
     var eye = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
+    this._logger.fine("Eye is: " + eye.toString());
+
+
 
     /** @type {lanyard.geom.Position} */
     var polarEye = globe.computePositionFromPoint(eye);
@@ -402,10 +408,16 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
     //this._logger.fine("Surface point is: " + surfacePoint);
 
     if (surfacePoint) {
+        this._logger.fine("Basing the view altitude on a surface point.");
+
         /** @type {number} */ 
         var distanceToSurface = eye.length() - this.collisionRadius - surfacePoint.length();
 
+        this._logger.fine("Distance from the eye to the surface is: " + distanceToSurface);
+
         if (distanceToSurface < 0) {
+            this._logger.fine("Distance to surface was less than 0.");
+
             /** @type {lanyard.geom.Point} */
             var surfaceNormal = eye.normalize();
 
@@ -434,6 +446,8 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
                 );
                 this.eyeDist = this.clampZoom(newForward.length());
 
+                this._logger.fine("Eye distance is: " + eyeDist);
+
                 modelView = lanyard.BasicOrbitView.prototype.lookAt(
                     this.focusLat, this.focusLon, focusPoint.length(),
                     this.eyeDist, this.heading, this.pitch);
@@ -443,6 +457,9 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
 
     // Compute the current eye altitude above sea level (Globe radius).
     eye = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
+
+    this._logger.fine("Eye point computed to be: " + eye);
+
     polarEye = globe.computePositionFromPoint(eye);
     this.altitude = eye.length() - globe.getRadiusAt(polarEye.getLatitude(), polarEye.getLongitude());
 
@@ -469,11 +486,16 @@ lanyard.BasicOrbitView.prototype.lookAt =
 
     // Translate model away from eye.
     m.translate(0, 0, -tiltDistance);
+    this._logger.fine("After model is translated away from eye: " + m.toString());
 
+/*** FIXME: tilt is fucked
     // Apply tilt by rotating about X axis at pivot point.
     m.rotateX(tiltX.multiply(-1));
     m.rotateZ(tiltZ);
     m.translate(0, 0, -focusDistance);
+
+    this._logger.fine("After tilt is applied to the model: " + m.toString());
+***/
 
     // Rotate model to lat/lon of eye point.
     m.rotateX(focusX);
@@ -563,17 +585,30 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
     /** @type {number} */
     var tanHalfFov = fov.tanHalfAngle();
 
+    this._logger.fine("Current altitude = " + this.altitude);
+
     /** @type {number} */
-    var near = Math.max(10, this.altitude / (2 * Math.sqrt(2 * tanHalfFov * tanHalfFov + 1)));
+
+    // FIXME: near plane when trying to take altitude into account is insane.
+    //var near = Math.max(10, this.altitude / (2 * Math.sqrt(2 * tanHalfFov * tanHalfFov + 1)));
+
+    var near = 0.1;
 
     // Compute the closest allowable far clipping plane distance.
 
     /** @type {number} */
     var far = this.computeHorizonDistance(dc.getGlobe(), dc.getVerticalExaggeration(), eyePoint);
 
+    this._logger.fine("Creating a new view frustum with dimensions of: " +
+        "fov = " + fov + ", " +
+        "width = " + viewport.getWidth() + ", " +
+        "height = " + viewport.getHeight() + ", " +
+        "near = " + near + ", " +
+        "far = " + far + ".");
+
     // Compute the frustum from a standard perspective projection.
     return new lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView(
-        fov, viewport.width, viewport.height, near, far);
+        fov, viewport.getWidth(), viewport.getHeight(), near, far);
 };
 
 /**
@@ -1262,8 +1297,12 @@ lanyard.BasicOrbitView.prototype.computeHorizonDistance = function (globe, verti
         )
     );
 
+    this._logger.fine("Eyepoint length is: " + eyePoint.length());
+    this._logger.fine("Surface length is: " + surface.length());
+
     /** @type {number} */
     var altitude = eyePoint.length() - surface.length();
+    this._logger.fine("Set altitude to: " + altitude);
 
     /** @type {number} */
     var radius = globe.getMaximumRadius();
@@ -1282,18 +1321,10 @@ lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, pro
     var gl = dc.getGL();
 
     // Apply the model-view matrix to the current OpenGL context held by 'dc'.
-    if (!modelView) {
-        dc.loadMatrix("uMVMatrix", modelView);
-    } else {
-        dc.loadIdentity("uMVMatrix");
-    }
+    dc.loadMatrix("uMVMatrix", modelView);
 
     // Apply the projection matrix to the current OpenGL context held by 'dc'.
-    if (!projection) {
-        dc.loadMatrix("uPMatrix", projection);
-    } else {
-        dc.loadIdentity("uPMatrix");
-    }
+    dc.loadMatrix("uPMatrix", projection);
 
     this.modelView = modelView;
     this.projection = projection;

@@ -83,6 +83,9 @@ lanyard.geom.MatrixFour.prototype.toString = function () {
     var i;
     for(i = 0; i < ents.length; i++) {
         msg += ents[i] + ", ";
+        if(i == 3 || i == 7 || i == 11 || i == 14) {
+            msg += "\n";
+        }
     }
 
     msg += " ]";
