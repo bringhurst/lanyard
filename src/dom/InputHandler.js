@@ -5,6 +5,9 @@ goog.provide('lanyard.dom.InputHandler');
 
 goog.require('goog.debug.Logger');
 goog.require('goog.events.MouseWheelHandler');
+goog.require('goog.events.EventType');
+goog.require('goog.fx.Dragger');
+goog.require('goog.fx.Dragger.EventType');
 
 goog.require('lanyard.dom.ViewProperties');
 
@@ -146,20 +149,34 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
     this.lanyardCanvas = lanyardCanvas;
 
     // Setup a listener for the mouse wheel
-    var mwh  = new goog.events.MouseWheelHandler(domCanvas);
+    var mouseWheelHandler = new goog.events.MouseWheelHandler(domCanvas);
     goog.events.listen(
-        new goog.events.MouseWheelHandler(domCanvas),
+        mouseWheelHandler,
         goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
         this.mouseWheelMoved,
         false,
         this
     );
 
-    // Remove the mouse wheel listener when the map goes away.
+    // Setup a listener for dragging the mouse.
+    goog.events.listen(domCanvas, goog.events.EventType.MOUSEDOWN, function(e) {
+        var dragger = new goog.fx.Dragger(domCanvas);
+
+        goog.events.listen(dragger, goog.fx.Dragger.EventType.DRAG,
+            this.mouseDragged, false, this);
+
+        goog.events.listen(dragger, goog.fx.Dragger.EventType.END, function(e) {
+            dragger.dispose();
+        });
+
+        dragger.startDrag(e);
+    }, false, this);
+
+    // Things to do on canvas unload.
     goog.events.listen(domCanvas, 'unload', function(e) {
-        goog.events.unlisten(mwh,
-        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
-        this.mouseWheelMoved);
+        // Remove the mouse wheel listener
+        goog.events.unlisten(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
+            this.mouseWheelMoved);
     });
 };
 
@@ -170,6 +187,108 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
  */
 lanyard.dom.InputHandler.prototype.getEventSource = function () {
     return this.lanyardCanvas;
+};
+
+/**
+ * Handle a mouse dragged event.
+ *
+ * @param {Event} mouseEvent the mouse event.
+ */
+lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
+
+    if (!this.lanyardCanvas) {
+        this._logger.severe("Attempted to handle a drag event without a valid canvas.");
+        return;
+    }
+
+    if(!mouseEvent) {
+        this._logger.severe("Attempted to handle a drag event without a valid event.");
+        return;
+    }
+
+    /** @type {lanyard.View} */
+    var view = this.lanyardCanvas.getView();
+
+    if(!view) {
+        this._logger.severe("Attempted to handle a drag event without a valid view.");
+        return;
+    }
+
+    /** @type {lanyard.Model} */
+    var model = this.lanyardCanvas.getModel();
+
+    if(!model) {
+        this._logger.severe("Attempted to handle a drag event without a valid model.");
+        return;
+    }
+
+    /** @type {lanyard.util.Point} */
+    var mouseMove = new lanyard.util.Point(mouseEvent.getPoint().x - this.lastMousePoint.x,
+        mouseEvent.getPoint().y - this.lastMousePoint.y);
+
+    /** @type {lanyard.geom.LatLon} */
+    var latLonChange = null;
+
+    /** @type {lanyard.geom.Position} */
+    var prev = view.computePositionFromScreenPoint(this.lastMousePoint.x, this.lastMousePoint.y);
+
+    /** @type {lanyard.geom.Position} */
+    var cur = view.computePositionFromScreenPoint(mouseEvent.getPoint().x, mouseEvent.getPoint().y);
+
+    if (prev && cur) {
+        latLonChange = new lanyard.geom.LatLon(prev.getLatitude().subtract(cur.getLatitude()),
+            prev.getLongitude().subtract(cur.getLongitude()));
+    } else {
+        /** @type {lanyard.Globe} */
+        var globe = this.lanyardCanvas.getModel().getGlobe();
+
+        if (globe) {
+            /** @type {number} */
+            var sinHeading = view.getHeading().sin();
+
+            /** @type {number} */
+            var cosHeading = view.getHeading().cos();
+
+            /** @type {number} */
+            var latFactor = cosHeading * mouseMove.y + sinHeading * mouseMove.x;
+
+            /** @type {number} */
+            var lonFactor = sinHeading * mouseMove.y - cosHeading * mouseMove.x;
+
+            latLonChange = this.computeViewLatLonChange(view, globe, latFactor, lonFactor, false);
+        } else {
+            this._logger.severe("Attempted to perform a drag event without a valid globe.");
+        }
+    }
+
+    if (latLonChange) {
+        this.setViewLatLon(view, this.computeNewViewLatLon(view, latLonChange.getLatitude(),
+            latLonChange.getLongitude()));
+    } else {
+        this._logger.severe("A failure occured in the drag event result.");
+    }
+
+    /**** FIXME: handle the view angle when command is held down....
+
+    if( command key is held down during the drag ) {
+
+        var headingDirection = 1;
+        var source = mouseEvent.getSource();
+
+        if (source) {
+            if (mouseEvent.getPoint().y < source.getHeight() / 2) {
+                headingDirection = -1;
+            }
+        }
+
+        this.setViewAngle(view,
+            this.computeNewViewHeading(view, this.computeViewAngleChange(headingDirection * mouseMove.x, false)),
+            this.computeNewViewPitch(view, this.computeViewAngleChange(mouseMove.y, false)));
+    }
+
+    ****/
+
+    this.lastMousePoint = mouseEvent.getPoint();
 };
 
 /**
@@ -253,8 +372,6 @@ lanyard.dom.InputHandler.prototype.computeNewViewZoom = function (view, change) 
  * @return {number} the zoom view change.
  */
 lanyard.dom.InputHandler.prototype.computeZoomViewChange = function (factor, slow) {
-
-
     return factor * this.viewZoomChangeFactor * (slow ? 2.5e-1 : 1.0);
 };
 

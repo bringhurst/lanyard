@@ -54,6 +54,7 @@ lanyard.demo.HandleInput.prototype.run = function () {
 
     // Setup the input handlers
     var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
+    lc.setModel(model);
     lc.setView(view);
     lc.createDefaultInputHandler();
 
@@ -72,7 +73,7 @@ lanyard.demo.HandleInput.prototype.run = function () {
 
     /** @type {lanyard.SectorGeometryList} */
     var sgl = dc.getModel().getTessellator().tessellate(dc);
-    this._logger.fine("Generated top level sectors (count: " + sgl.length() + ").");
+    //this._logger.fine("Generated top level sectors (count: " + sgl.length() + ").");
 
     var vertexPositionBuffer = dc.getGL().createBuffer();
     dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
@@ -94,8 +95,7 @@ lanyard.demo.HandleInput.prototype.run = function () {
     }
     dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(vertices), dc.getGL().STATIC_DRAW);
 
-    this._logger.fine("Size of vertices is: " + vertices.length);
-
+    //this._logger.fine("Size of vertices is: " + vertices.length);
 
     // Init the color buffer
     //this._logger.fine("Setting up the color buffer.");
