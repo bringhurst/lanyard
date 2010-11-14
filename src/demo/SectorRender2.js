@@ -42,20 +42,10 @@ goog.exportSymbol('lanyard.demo.SectorRender2', lanyard.demo.SectorRender2);
 lanyard.demo.SectorRender2.prototype.run = function () {
     this.setupEventLog();
 
-    // Create a sector to render
-    var minLatitude = 20.0;
-    var minLongitude = 40.0;
-
-    var maxLatitude = 60.0;
-    var maxLongitude = 80.0;
-
-    var sector = lanyard.geom.Sector.prototype.fromDegrees(
-        minLatitude, maxLatitude, minLongitude, maxLongitude);
-
     // Setup a model (the earth)
     var model = new lanyard.BasicModel();
 
-    // Setup a view (don't worry about texture units for this test)
+    // Setup a view
     var view = new lanyard.BasicOrbitView();
     view.setViewport(
         new lanyard.util.Rectangle(
@@ -68,15 +58,25 @@ lanyard.demo.SectorRender2.prototype.run = function () {
     dc.setModel(model);
     dc.setView(view);
 
+    // Setup the shaders
+    dc.loadShaders("shader-vs", "shader-fs");
+    dc.setupShaders();
+
+    // Create a sector to render
+    var minLatitude = 20.0;
+    var minLongitude = 40.0;
+
+    var maxLatitude = 60.0;
+    var maxLongitude = 80.0;
+
+    var sector = lanyard.geom.Sector.prototype.fromDegrees(
+        minLatitude, maxLatitude, minLongitude, maxLongitude);
+
     // Get the corner points of the sector in xyz space
     var corners = sector.computeCornerPoints(model.getGlobe());
     //this._logger.fine("Generated a sector with corners of: " +
     //    corners[0] + ", " + corners[1] + ", " +
     //    corners[2] + ", " + corners[3] + ".");
-
-    // Setup the shaders
-    dc.loadShaders("shader-vs", "shader-fs");
-    dc.setupShaders();
 
     // Init the position buffer
     //this._logger.fine("Setting up the position buffer.");
