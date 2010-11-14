@@ -4,6 +4,9 @@
 goog.provide('lanyard.dom.InputHandler');
 
 goog.require('goog.debug.Logger');
+goog.require('goog.events.MouseWheelHandler');
+
+goog.require('lanyard.dom.ViewProperties');
 
 /**
  * A handler for user input
@@ -11,7 +14,7 @@ goog.require('goog.debug.Logger');
  * @constructor
  */
 lanyard.dom.InputHandler = function () {
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.BasicDrawContext');
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.dom.InputHandler');
 
     /**
      * @private
@@ -138,14 +141,22 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
 
     this.lanyardCanvas = lanyardCanvas;
 
-    // TODO/FIXME: remove existing listeners.
-
     // Setup a listener for the mouse wheel
+    var mwh  = new goog.events.MouseWheelHandler(domCanvas);
     goog.events.listen(
         new goog.events.MouseWheelHandler(domCanvas),
         goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
-        this.mouseWheelMoved
+        this.mouseWheelMoved,
+        false,
+        this
     );
+
+    // Remove the mouse wheel listener when the map goes away.
+    goog.events.listen(domCanvas, 'unload', function(e) {
+        goog.events.unlisten(mwh,
+        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
+        this.mouseWheelMoved);
+    });
 };
 
 /**

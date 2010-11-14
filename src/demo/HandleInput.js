@@ -8,6 +8,8 @@ goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 
+goog.require('lanyard.dom.InputHandler');
+
 /**
  * A basic test for handling user input.
  *
@@ -50,6 +52,11 @@ lanyard.demo.HandleInput.prototype.run = function () {
     dc.setModel(model);
     dc.setView(view);
 
+    // Setup the input handlers
+    var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
+    lc.setView();
+    lc.createDefaultInputHandler();
+
     // Setup the shaders
     dc.loadShaders("shader-vs", "shader-fs");
     dc.setupShaders();
@@ -66,10 +73,6 @@ lanyard.demo.HandleInput.prototype.run = function () {
     /** @type {lanyard.SectorGeometryList} */
     var sgl = dc.getModel().getTessellator().tessellate(dc);
     this._logger.fine("Generated top level sectors (count: " + sgl.length() + ").");
-
-    // Begin drawing the scene
-    dc.getGL().viewport(0, 0, 500, 500);
-    dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
 
     var vertexPositionBuffer = dc.getGL().createBuffer();
     dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
@@ -105,23 +108,33 @@ lanyard.demo.HandleInput.prototype.run = function () {
     }
     dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
 
-    // Send our position buffer to the shader
-    //self._logger.fine("Sending the position buffer to the shader.");
-    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
-    dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
-    dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
-        3, dc.getGL().FLOAT, false, 0, 0);
+    var self = this;
+    setInterval(function() {
+        // Begin drawing the scene
+        dc.getGL().viewport(0, 0, 500, 500);
+        dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
 
-    // Send our color buffer to the shader
-    //self._logger.fine("Sending the color buffer to the shader.");
-    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
-    dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
-    dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
-        4, dc.getGL().FLOAT, false, 0, 0);
+        // Send our position buffer to the shader
+        //self._logger.fine("Sending the position buffer to the shader.");
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
+        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
+        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+            3, dc.getGL().FLOAT, false, 0, 0);
 
-    // Draw the scene
-    //self._logger.fine("Drawing the scene.");
-    dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 4 * sgl.length());
+        // Send our color buffer to the shader
+        //self._logger.fine("Sending the color buffer to the shader.");
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
+        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
+        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
+            4, dc.getGL().FLOAT, false, 0, 0);
+
+        // Apply the current view
+        view.doApply(dc);
+
+        // Draw the scene
+        //self._logger.fine("Drawing the scene.");
+        dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 4 * sgl.length());
+    }, 500); // end setInterval
 };
 goog.exportSymbol('lanyard.demo.HandleInput.prototype.run',
     lanyard.demo.HandleInput.prototype.run);
