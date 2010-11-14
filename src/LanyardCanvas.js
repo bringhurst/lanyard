@@ -20,6 +20,18 @@ lanyard.LanyardCanvas = function (canvasElement) {
      */
     this._sceneController = new lanyard.BasicSceneController(canvasElement);
 
+    /**
+     * @private
+     * @type {Element}
+     */
+    this._canvasElement = canvasElement;
+
+    /**
+     * @private
+     * @type {lanyard.dom.InputHandler}
+     */
+    this._inputHandler = null;
+
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.LanyardCanvas');
 };
 
@@ -95,6 +107,15 @@ lanyard.LanyardCanvas.prototype.getSceneController = function () {
 };
 
 /**
+ * Canvas element accessor.
+ *
+ * @return {Element} the canvas element.
+ */
+lanyard.LanyardCanvas.prototype.getCanvas = function () {
+    return this._canvasElement;
+};
+
+/**
  * Display or update the map.
  */
 lanyard.LanyardCanvas.prototype.display = function () {
@@ -107,6 +128,42 @@ lanyard.LanyardCanvas.prototype.display = function () {
     }
 
     sc.repaint();
+};
+
+/**
+ * Create a default input handler.
+ *
+ * @private
+ */
+lanyard.LanyardCanvas.prototype.createDefaultInputHandler = function () {
+    this.inputHandler = new lanyard.dom.InputHandler();
+    this.inputHandler.setEventSource(this);
+};
+
+/**
+ * Get the input handler used by this canvas.
+ *
+ * @return {lanyard.dom.InputHandler}
+ */
+lanyard.LanyardCanvas.prototype.getInputHandler = function () {
+    return this.inputHandler;
+};
+
+/**
+ * Set the input handler on this canvas.
+ *
+ * @param {lanayrd.dom.InputHandler} eventSource the new input handler to use for this canvas.
+ */
+lanyard.LanyardCanvas.prototype.setInputHandler = function (eventSource) {
+    if (this.inputHandler !== null) {
+        this.inputHandler.setEventSource(null); // remove this canvas as a source of events
+    }
+
+    this.inputHandler = eventSource;
+
+    if (this.inputHandler !== null) {
+        this.inputHandler.setEventSource(this);
+    }
 };
 
 /* EOF */
