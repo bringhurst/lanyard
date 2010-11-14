@@ -1352,7 +1352,7 @@ lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCe
 
         //this._logger.fine("After translate: " + reference);
 
-        newModelView.multiply(reference);
+        //newModelView.multiply(reference);
 
         //this._logger.fine("After multiply: " + newModelView);
     } else {

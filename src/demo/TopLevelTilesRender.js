@@ -8,10 +8,6 @@ goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 
-goog.require('lanyard.geom.Sector');
-goog.require('lanyard.globes.Earth');
-goog.require('lanyard.geom.MatrixFour');
-
 /**
  * A basic test for rendering the top level tiles.
  *
@@ -71,16 +67,6 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     var topLevels = tess.topLevels;
     this._logger.fine("Generated top level tiles (count: " + topLevels.length + ").");
 
-    for(var i = 0; i < topLevels.length; i = i + 1) {
-        var tile = topLevels[i];
-        tile.makeVerts(dc);
-
-        var refCenter = tile._ri.referenceCenter;
-
-        this._logger.fine("For this tile, using reference center of: " + refCenter.toString());
-        this._logger.fine("Vert count for this tile: " + tile._ri.vertices.length);
-    }
-
     // Setup the canvas
     //this._logger.fine("Setting up the canvas.");
     dc.getGL().clearColor(0.0, 0.0, 0.0, 1.0);
@@ -88,24 +74,61 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     dc.getGL().enable(dc.getGL().DEPTH_TEST);
     dc.getGL().depthFunc(dc.getGL().LEQUAL);
 
-    var self = this;
-   // setInterval(function () {
-        //self._logger.fine("Beginning draw loop.");
+    // apply the default matrix state
+    view.doApply(dc);
+
+    for(var i = 0; i < topLevels.length; i = i + 1) {
+        var tile = topLevels[i];
+
+        tile.makeVerts(dc);
+        var refCenter = tile._ri.referenceCenter;
+
+        this._logger.fine("For this tile, using reference center of: " + refCenter.toString());
+        this._logger.fine("Vert count for this tile: " + tile._ri.vertices.length);
+
+        // Setup position buffer
+        var vertexPositionBuffer = dc.getGL().createBuffer();
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
+        dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(tile._ri.vertices),
+            dc.getGL().STATIC_DRAW);
+
+        // Setup color buffer
+        var vertexColorBuffer = dc.getGL().createBuffer();
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
+        var colors = [];
+        for (var i=0; i < tile._ri.vertices.length / 3; i++) {
+            colors = colors.concat([0.5, 0.5, 1.0, 1.0]);
+        }
+        dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
 
         dc.getGL().viewport(0, 0, 500, 500);
         dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
 
-        // Apply default view state
-        view.doApply(dc);
+        // Send our position buffer to the shader
+        //this._logger.fine("Sending the position buffer to the shader.");
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
+        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
+        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+            3, dc.getGL().FLOAT, false, 0, 0);
 
-        // TODO: send position and color buffers to the shader
+        // Send our color buffer to the shader
+        //self._logger.fine("Sending the color buffer to the shader.");
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
+        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
+        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
+            4, dc.getGL().FLOAT, false, 0, 0);
+
+        // Push reference center state for this tile
+        var refCenter = tile._ri.referenceCenter;
+        view.pushReferenceCenter(dc, refCenter)
 
         // Draw the scene
-        //self._logger.fine("Drawing the scene.");
-        dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 5);
+        this._logger.fine("Drawing the scene.");
+        dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, tile._ri.vertices.length / 3);
 
-        //self._logger.fine("Finishing draw loop.");
-   // }, 500); // end setInterval
+        // Pop off the reference center
+        view.popReferenceCenter(dc);
+   }
 };
 goog.exportSymbol('lanyard.demo.TopLevelTilesRender.prototype.run',
     lanyard.demo.TopLevelTilesRender.prototype.run);
