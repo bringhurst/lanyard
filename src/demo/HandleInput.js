@@ -54,7 +54,7 @@ lanyard.demo.HandleInput.prototype.run = function () {
 
     // Setup the input handlers
     var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
-    lc.setView();
+    lc.setView(view);
     lc.createDefaultInputHandler();
 
     // Setup the shaders

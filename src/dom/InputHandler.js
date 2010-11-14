@@ -132,6 +132,10 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
         this._logger.severe("Attempted to use an invalid object as an event source.");
     }
 
+    if(!lanyardCanvas.getView()) {
+        this._logger.severe("Attempted to set an event source without a valid view.");
+    }
+
     /** @type {Element} */
     var domCanvas = lanyardCanvas.getCanvas();
 
@@ -184,6 +188,9 @@ lanyard.dom.InputHandler.prototype.mouseWheelMoved = function (mouseWheelEvent) 
         return;
     }
 
+    // Prevent the mouse wheel from moving the window.
+    mouseWheelEvent.stopPropagation();
+
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();
 
@@ -199,11 +206,11 @@ lanyard.dom.InputHandler.prototype.mouseWheelMoved = function (mouseWheelEvent) 
     var wheelDirection = (function(rotation) {
         // FIXME: isn't there a Math.signum() built into js somewhere?
 
-        if (this < 0.0) {
+        if (rotation < 0.0) {
             return -1.0;
         }
 
-        if (this > 0.0) {
+        if (rotation > 0.0) {
             return 1.0;
         }
 
@@ -246,6 +253,8 @@ lanyard.dom.InputHandler.prototype.computeNewViewZoom = function (view, change) 
  * @return {number} the zoom view change.
  */
 lanyard.dom.InputHandler.prototype.computeZoomViewChange = function (factor, slow) {
+
+
     return factor * this.viewZoomChangeFactor * (slow ? 2.5e-1 : 1.0);
 };
 

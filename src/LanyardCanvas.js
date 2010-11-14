@@ -80,10 +80,11 @@ lanyard.LanyardCanvas.prototype.setView = function (view) {
  * @return {lanyard.View} the view object used.
  */
 lanyard.LanyardCanvas.prototype.getView = function () {
-    /** @type {lanyard.View|null} */
-    var ret = this._sceneController ? this._sceneController.getView() : null;
+    if(!this._sceneController) {
+        this._logger.severe("Attempted to get the view from an invalid scene controller.");
+    }
 
-    return ret;
+    return this._sceneController.getView();
 };
 
 /**

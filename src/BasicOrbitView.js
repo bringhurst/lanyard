@@ -876,6 +876,7 @@ lanyard.BasicOrbitView.prototype.getZoom = function () {
  * @param {number} newZoom the new zoom.
  */
 lanyard.BasicOrbitView.prototype.setZoom = function (newZoom) {
+    this._logger.fine("View setZoom was called with: " + newZoom);
     this.eyeDist = this.clampZoom(newZoom);
 };
 
