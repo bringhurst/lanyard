@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Sector render test</title>
+        <title>test</title>
         <link href="demo.css" media="screen" rel="stylesheet" type="text/css"/>
         <script src="webgl-debug.js"></script>
         <script src="../build/lanyard.js"></script>
@@ -36,7 +36,7 @@
             <div class="map-canvas-column">
                 <!-- Map canvas start -->
                 <fieldset>
-                    <legend>Sector render test</legend>
+                    <legend>test</legend>
                     <canvas id="lanyard-demo-canvas" width="500" height="500">
                         Your browser doesn't appear to support the HTML5 canvas element.
                     </canvas>
@@ -53,11 +53,11 @@
             </div>
         </div>
         <script>
-            var sectorRenderTest = new lanyard.demo.SectorRender(
+            var test = new lanyard.demo.BasicDemo2(
                 document.getElementById("lanyard-demo-canvas"),
                 document.getElementById("lanyard-demo-log")
             );
-            sectorRenderTest.run();
+            test.run();
         </script>
     </body>
 </html>

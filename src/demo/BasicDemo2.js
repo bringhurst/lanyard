@@ -1,22 +1,24 @@
 /*global goog, lanyard */
 /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
-goog.provide('lanyard.demo.TopLevelTilesRender');
+goog.provide('lanyard.demo.BasicDemo2');
 
 goog.require('goog.debug.DivConsole');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 
+goog.require('lanyard.dom.InputHandler');
+
 /**
- * A basic test for rendering the top level tiles.
+ * A basic test for handling user input.
  *
  * @constructor
- * @this {lanyard.demo.TopLevelTilesRender}
+ * @this {lanyard.demo.BasicDemo2}
  * @param {Element} webGLCanvas The WebGL enabled canvas to draw the map to.
  * @param {Element} eventLogDiv The div where the event log is at.
  */
-lanyard.demo.TopLevelTilesRender = function (webGLCanvas, eventLogDiv) {
+lanyard.demo.BasicDemo2 = function (webGLCanvas, eventLogDiv) {
 
     /*
      * Keep in mind that stuff that goes on in this constructor will not
@@ -26,16 +28,16 @@ lanyard.demo.TopLevelTilesRender = function (webGLCanvas, eventLogDiv) {
 
     /** @private */ this._webGLCanvas = webGLCanvas;
     /** @private */ this._eventLogDiv = eventLogDiv;
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.TopLevelTilesRender');
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.BasicDemo2');
 };
-goog.exportSymbol('lanyard.demo.TopLevelTilesRender', lanyard.demo.TopLevelTilesRender);
+goog.exportSymbol('lanyard.demo.BasicDemo2', lanyard.demo.BasicDemo2);
 
 /**
  * Initializes and starts the test.
  *
- * @this {lanyard.demo.TopLevelTilesRender}
+ * @this {lanyard.demo.BasicDemo2}
  */
-lanyard.demo.TopLevelTilesRender.prototype.run = function () {
+lanyard.demo.BasicDemo2.prototype.run = function () {
     this.setupEventLog();
 
     // Setup a model (the earth)
@@ -49,6 +51,12 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
     dc.setModel(model);
     dc.setView(view);
+
+    // Setup the input handlers
+    var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
+    lc.setModel(model);
+    lc.setView(view);
+    lc.createDefaultInputHandler();
 
     // Setup the shaders
     dc.loadShaders("shader-vs", "shader-fs");
@@ -65,11 +73,7 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
 
     /** @type {lanyard.SectorGeometryList} */
     var sgl = dc.getModel().getTessellator().tessellate(dc);
-    this._logger.fine("Generated top level sectors (count: " + sgl.length() + ").");
-
-    // Begin drawing the scene
-    dc.getGL().viewport(0, 0, 500, 500);
-    dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
+    //this._logger.fine("Generated top level sectors (count: " + sgl.length() + ").");
 
     var vertexPositionBuffer = dc.getGL().createBuffer();
     dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
@@ -91,8 +95,7 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
     }
     dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(vertices), dc.getGL().STATIC_DRAW);
 
-    this._logger.fine("Size of vertices is: " + vertices.length);
-
+    //this._logger.fine("Size of vertices is: " + vertices.length);
 
     // Init the color buffer
     //this._logger.fine("Setting up the color buffer.");
@@ -122,42 +125,53 @@ lanyard.demo.TopLevelTilesRender.prototype.run = function () {
             b += colorDelta;
         }
     }
+
     dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
 
-    // Send our position buffer to the shader
-    //self._logger.fine("Sending the position buffer to the shader.");
-    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
-    dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
-    dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
-        3, dc.getGL().FLOAT, false, 0, 0);
+    var self = this;
+    setInterval(function() {
+        // Begin drawing the scene
+        dc.getGL().viewport(0, 0, 500, 500);
+        dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
 
-    // Send our color buffer to the shader
-    //self._logger.fine("Sending the color buffer to the shader.");
-    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
-    dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
-    dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
-        4, dc.getGL().FLOAT, false, 0, 0);
+        // Send our position buffer to the shader
+        //self._logger.fine("Sending the position buffer to the shader.");
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
+        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
+        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+            3, dc.getGL().FLOAT, false, 0, 0);
 
-    // Draw the scene
-    //self._logger.fine("Drawing the scene.");
-    dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 4 * sgl.length());
+        // Send our color buffer to the shader
+        //self._logger.fine("Sending the color buffer to the shader.");
+        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
+        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
+        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
+            4, dc.getGL().FLOAT, false, 0, 0);
+
+        // Apply the current view
+        view.doApply(dc);
+
+        // Draw the scene
+        //self._logger.fine("Drawing the scene.");
+        dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 4 * sgl.length());
+    }, 500); // end setInterval
 };
-goog.exportSymbol('lanyard.demo.TopLevelTilesRender.prototype.run',
-    lanyard.demo.TopLevelTilesRender.prototype.run);
+goog.exportSymbol('lanyard.demo.BasicDemo2.prototype.run',
+    lanyard.demo.BasicDemo2.prototype.run);
 
 /**
  * Setup the event log.
  *
- * @this {lanyard.demo.TopLevelTilesRender}
+ * @this {lanyard.demo.BasicDemo2}
  */
-lanyard.demo.TopLevelTilesRender.prototype.setupEventLog = function () {
+lanyard.demo.BasicDemo2.prototype.setupEventLog = function () {
     goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
 
     /** @type {goog.debug.DivConsole} */
     var logconsole = new goog.debug.DivConsole(this._eventLogDiv);
     logconsole.setCapturing(true);
 };
-goog.exportSymbol('lanyard.demo.TopLevelTilesRender.prototype.setupEventLog',
-    lanyard.demo.TopLevelTilesRender.prototype.setupEventLog);
+goog.exportSymbol('lanyard.demo.BasicDemo2.prototype.setupEventLog',
+    lanyard.demo.BasicDemo2.prototype.setupEventLog);
 
 /* EOF */
