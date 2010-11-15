@@ -488,15 +488,14 @@ lanyard.BasicOrbitView.prototype.lookAt =
     m.translate(0, 0, -tiltDistance);
     //this._logger.fine("After model is translated away from eye: " + m.toString());
 
-/*** FIXME: tilt is fucked
+/*** tilt is fucked
     // Apply tilt by rotating about X axis at pivot point.
     m.rotateX(tiltX.multiply(-1));
     m.rotateZ(tiltZ);
     m.translate(0, 0, -focusDistance);
 
     this._logger.fine("After tilt is applied to the model: " + m.toString());
-***/
-
+****/
     // Rotate model to lat/lon of eye point.
     m.rotateX(focusX);
     m.rotateY(focusY.multiply(-1));
