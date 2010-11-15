@@ -292,6 +292,99 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
 };
 
 /**
+ * Set the view to the calculated latlon.
+ *
+ * @param {lanyard.View} view the view to use.
+ * @param {lanyard.geom.LatLon} newLatLon the latlon to use.
+ */
+lanyard.dom.InputHandler.prototype.setViewLatLon = function (view, newLatLon) {
+    if (!newLatLon) {
+        this._logger.severe("Attempted to set the view to an invalid latlon.");
+    }
+
+    this.viewTarget = new lanyard.dom.ViewProperties();
+    this.viewTarget.latLon = newLatLon;
+    this.setViewProperties(view, this.viewTarget,
+        this.viewLatLonStepCoefficient, this.viewLatLonErrorThresold, false);
+};
+
+/**
+ * Compute the view for a latlon change.
+ *
+ * @param {lanyard.View} view the view to use.
+ * @param {lanyard.Globe} globe the globe to use.
+ * @param {number} latFactor the latitude factor to use.
+ * @param {number} lonFactor the longitude factor to use.
+ * @param {boolean} slow should the transisition be slow or not.
+ * @param {lanyard.geom.LatLon} the computed latlon.
+ */
+lanyard.dom.InputHandler.prototype.computeViewLatLonChange = function (
+        view, globe, latFactor, lonFactor, slow) {
+
+    /** @type {lanyard.geom.Point} */
+    var eye = view.getEyePoint();
+
+    if (!eye) {
+        this._logger.severe("Attempted to compute a latlon change without a valid eye.");
+        return null;
+    }
+
+    /** @type {number} */
+    var normAlt = this.clamp((eye.length() / globe.getMaximumRadius()) - 1, 0, 1);
+
+    /** @type {number} */
+    var factor =
+        ((1 - normAlt) * this.viewLatLonMinChangeFactor + normAlt * this.viewLatLonMaxChangeFactor) *
+        (slow ? 2.5e-1 : 1);
+
+    return lanyard.geom.LatLon.prototype.fromDegrees(latFactor * factor, lonFactor * factor);
+};
+
+/**
+ * Compute a new latlon for the view.
+ *
+ * @param {lanayrd.View} view the view to use.
+ * @param {lanyard.geom.Angle} latChange the change in latitude.
+ * @param {lanyard.geom.Angle} lonChange the change in longitude.
+ * @return {lanyard.geom.LatLon} the computed latlon.
+ */
+lanyard.dom.InputHandler.prototype.computeNewViewLatLon = function (view, latChange, lonChange) {
+    /** @type {number} */
+    var latDegrees;
+
+    /** @type {number} */
+    var lonDegrees;
+
+    if (this.viewTarget && this.viewTarget.latLon) {
+        latDegrees = this.viewTarget.latLon.getLatitude().getDegrees();
+        lonDegrees = this.viewTarget.latLon.getLongitude().getDegrees();
+    } else {
+        latDegrees = view.getPosition().getLatitude().getDegrees();
+        lonDegrees = view.getPosition().getLongitude().getDegrees();
+    }
+
+    latDegrees = latDegrees + latChange.getDegrees();
+    lonDegrees = lonDegrees + lonChange.getDegrees();
+
+    if (latDegrees < -90) {
+        latDegrees = -90;
+    } else if (latDegrees > 90) {
+        latDegrees = 90;
+    }
+
+    if (lonDegrees < -180) {
+        lonDegrees = lonDegrees + 360;
+    } else if (lonDegrees > 180) {
+        lonDegrees = lonDegrees - 360;
+    }
+
+    /** @type {lanyard.geom.LatLon} */
+    var latlon = lanyard.geom.LatLon.prototype.fromDegrees(latDegrees, lonDegrees);
+
+    return latlon;
+};
+
+/**
  * Handle a mouse wheel moved event.
  *
  * @param {MouseWheelEvent} mouseWheelEvent the mouse wheel event.
@@ -338,6 +431,7 @@ lanyard.dom.InputHandler.prototype.mouseWheelMoved = function (mouseWheelEvent) 
 
     this.setViewZoom(view, this.computeNewViewZoom(view, this.computeZoomViewChange(wheelDirection, false)));
 };
+
 
 /**
  * Compute the new view zoom value.
