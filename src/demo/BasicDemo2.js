@@ -154,7 +154,7 @@ lanyard.demo.BasicDemo2.prototype.run = function () {
         // Draw the scene
         //self._logger.fine("Drawing the scene.");
         dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 4 * sgl.length());
-    }, 500); // end setInterval
+    }, 15); // end setInterval
 };
 goog.exportSymbol('lanyard.demo.BasicDemo2.prototype.run',
     lanyard.demo.BasicDemo2.prototype.run);
