@@ -328,8 +328,8 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
         this._logger.severe("We don't have a view frustum to generate the projection matrix.");
     }
 
-    this._logger.fine("Using model-view of: " + modelView.toString());
-    this._logger.fine("Using projection of: " + projection.toString());
+    //this._logger.fine("Using model-view of: " + modelView.toString());
+    //this._logger.fine("Using projection of: " + projection.toString());
 
     // Set current GL matrix state.
     this.applyMatrixState(dc, modelView, projection);
@@ -408,12 +408,12 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
     //this._logger.fine("Surface point is: " + surfacePoint);
 
     if (surfacePoint) {
-        this._logger.fine("Basing the view altitude on a surface point.");
+        //this._logger.fine("Basing the view altitude on a surface point.");
 
         /** @type {number} */ 
         var distanceToSurface = eye.length() - this.collisionRadius - surfacePoint.length();
 
-        this._logger.fine("Distance from the eye to the surface is: " + distanceToSurface);
+        //this._logger.fine("Distance from the eye to the surface is: " + distanceToSurface);
 
         if (distanceToSurface < 0) {
             this._logger.fine("Distance to surface was less than 0.");
@@ -446,7 +446,7 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
                 );
                 this.eyeDist = this.clampZoom(newForward.length());
 
-                this._logger.fine("Eye distance is: " + eyeDist);
+                //this._logger.fine("Eye distance is: " + eyeDist);
 
                 modelView = lanyard.BasicOrbitView.prototype.lookAt(
                     this.focusLat, this.focusLon, focusPoint.length(),
@@ -458,7 +458,7 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
     // Compute the current eye altitude above sea level (Globe radius).
     eye = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
 
-    this._logger.fine("Eye point computed to be: " + eye);
+    //this._logger.fine("Eye point computed to be: " + eye);
 
     polarEye = globe.computePositionFromPoint(eye);
     this.altitude = eye.length() - globe.getRadiusAt(polarEye.getLatitude(), polarEye.getLongitude());
@@ -486,7 +486,7 @@ lanyard.BasicOrbitView.prototype.lookAt =
 
     // Translate model away from eye.
     m.translate(0, 0, -tiltDistance);
-    this._logger.fine("After model is translated away from eye: " + m.toString());
+    //this._logger.fine("After model is translated away from eye: " + m.toString());
 
 /*** FIXME: tilt is fucked
     // Apply tilt by rotating about X axis at pivot point.
@@ -586,7 +586,7 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
     /** @type {number} */
     var tanHalfFov = fov.tanHalfAngle();
 
-    this._logger.fine("Current altitude = " + this.altitude);
+    //this._logger.fine("Current altitude = " + this.altitude);
 
     /** @type {number} */
 
@@ -600,12 +600,14 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
     /** @type {number} */
     var far = this.computeHorizonDistance(dc.getGlobe(), dc.getVerticalExaggeration(), eyePoint);
 
+/**
     this._logger.fine("Creating a new view frustum with dimensions of: " +
         "fov = " + fov + ", " +
         "width = " + viewport.getWidth() + ", " +
         "height = " + viewport.getHeight() + ", " +
         "near = " + near + ", " +
         "far = " + far + ".");
+**/
 
     // Compute the frustum from a standard perspective projection.
     return new lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView(
@@ -711,7 +713,7 @@ lanyard.BasicOrbitView.prototype.goToCoordinate = function (newLatLon, newAltitu
 lanyard.BasicOrbitView.prototype.clampCoordinate = function (latLon) {
     /** @type {number} */
     var lat = latLon.getLatitude().getDegrees();
-    this._logger.fine("Before clamping, lat coord is: lat = " + lat + ".");
+    //this._logger.fine("Before clamping, lat coord is: lat = " + lat + ".");
 
     if (lat < -90) {
         lat = -90;
@@ -721,7 +723,7 @@ lanyard.BasicOrbitView.prototype.clampCoordinate = function (latLon) {
 
     /** @type {number} */
     var lon = latLon.getLongitude().getDegrees();
-    this._logger.fine("Before clamping, lon coord is: lon = " + lon + ".");
+    //this._logger.fine("Before clamping, lon coord is: lon = " + lon + ".");
 
     if (lon < -180) {
         lon = lon + 360;
@@ -729,7 +731,7 @@ lanyard.BasicOrbitView.prototype.clampCoordinate = function (latLon) {
         lon = lon - 360;
     }
 
-    this._logger.fine("Clamping to: lat = " + lat + ", lon = " + lon + ".");
+    //this._logger.fine("Clamping to: lat = " + lat + ", lon = " + lon + ".");
 
     return lanyard.geom.LatLon.prototype.fromDegrees(lat, lon);
 };
@@ -880,7 +882,7 @@ lanyard.BasicOrbitView.prototype.getZoom = function () {
  * @param {number} newZoom the new zoom.
  */
 lanyard.BasicOrbitView.prototype.setZoom = function (newZoom) {
-    this._logger.fine("View setZoom was called with: " + newZoom);
+    //this._logger.fine("View setZoom was called with: " + newZoom);
     this.eyeDist = this.clampZoom(newZoom);
 };
 
@@ -1322,12 +1324,12 @@ lanyard.BasicOrbitView.prototype.computeHorizonDistance = function (globe, verti
         )
     );
 
-    this._logger.fine("Eyepoint length is: " + eyePoint.length());
-    this._logger.fine("Surface length is: " + surface.length());
+    //this._logger.fine("Eyepoint length is: " + eyePoint.length());
+    //this._logger.fine("Surface length is: " + surface.length());
 
     /** @type {number} */
     var altitude = eyePoint.length() - surface.length();
-    this._logger.fine("Set altitude to: " + altitude);
+    //this._logger.fine("Set altitude to: " + altitude);
 
     /** @type {number} */
     var radius = globe.getMaximumRadius();
