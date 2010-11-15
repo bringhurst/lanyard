@@ -31,7 +31,7 @@ lanyard.dom.InputHandler = function () {
      * @private
      * @type {lanyard.util.Point}
      */
-    this.lastMousePoint = null;
+    this.lastMousePoint = new lanyard.util.Point(0, 0);
 
     /**
      * @private
@@ -219,11 +219,6 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
 
     if(!model) {
         this._logger.severe("Attempted to handle a drag event without a valid model.");
-        return;
-    }
-
-    if(!this.lastMousePoint) {
-        this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
         return;
     }
 
