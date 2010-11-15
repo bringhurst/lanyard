@@ -31,7 +31,7 @@ lanyard.dom.InputHandler = function () {
      * @private
      * @type {lanyard.util.Point}
      */
-    this.lastMousePoint = new lanyard.util.Point();
+    this.lastMousePoint = null;
 
     /**
      * @private
@@ -222,6 +222,11 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
         return;
     }
 
+    if(!this.lastMousePoint) {
+        this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
+        return;
+    }
+
     /** @type {lanyard.util.Point} */
     var mouseMove = new lanyard.util.Point(mouseEvent.clientX - this.lastMousePoint.getX(),
         mouseEvent.clientY - this.lastMousePoint.getY());
@@ -305,7 +310,7 @@ lanyard.dom.InputHandler.prototype.setViewLatLon = function (view, newLatLon) {
     this.viewTarget = new lanyard.dom.ViewProperties();
     this.viewTarget.latLon = newLatLon;
     this.setViewProperties(view, this.viewTarget,
-        this.viewLatLonStepCoefficient, this.viewLatLonErrorThresold, false);
+        this.viewLatLonStepCoefficient, this.viewLatLonErrorThreshold, false);
 };
 
 /**
@@ -336,6 +341,7 @@ lanyard.dom.InputHandler.prototype.computeViewLatLonChange = function (
     var factor =
         ((1 - normAlt) * this.viewLatLonMinChangeFactor + normAlt * this.viewLatLonMaxChangeFactor) *
         (slow ? 2.5e-1 : 1);
+
 
     return lanyard.geom.LatLon.prototype.fromDegrees(latFactor * factor, lonFactor * factor);
 };

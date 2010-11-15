@@ -72,4 +72,13 @@ lanyard.util.Point.prototype.translate = function (dx, dy) {
     this._y = this._y + dy;
 };
 
+/**
+ * Create a string representation of this point.
+ *
+ * @return {string} the string representation of this point.
+ */
+lanyard.util.Point.prototype.toString = function () {
+    return "A string with coordinates of: x = " + this._x + ", y = " + this._y + ".";
+};
+
 /* EOF */

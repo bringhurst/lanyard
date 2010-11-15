@@ -711,6 +711,7 @@ lanyard.BasicOrbitView.prototype.goToCoordinate = function (newLatLon, newAltitu
 lanyard.BasicOrbitView.prototype.clampCoordinate = function (latLon) {
     /** @type {number} */
     var lat = latLon.getLatitude().getDegrees();
+    this._logger.fine("Before clamping, lat coord is: lat = " + lat + ".");
 
     if (lat < -90) {
         lat = -90;
@@ -720,12 +721,15 @@ lanyard.BasicOrbitView.prototype.clampCoordinate = function (latLon) {
 
     /** @type {number} */
     var lon = latLon.getLongitude().getDegrees();
+    this._logger.fine("Before clamping, lon coord is: lon = " + lon + ".");
 
     if (lon < -180) {
         lon = lon + 360;
     } else if (lon > 180) {
         lon = lon - 360;
     }
+
+    this._logger.fine("Clamping to: lat = " + lat + ", lon = " + lon + ".");
 
     return lanyard.geom.LatLon.prototype.fromDegrees(lat, lon);
 };

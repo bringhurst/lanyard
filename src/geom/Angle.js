@@ -12,6 +12,16 @@ goog.provide('lanyard.geom.Angle');
  * @param {number} radians The radian value to set this angle to.
  */
 lanyard.geom.Angle = function (degrees, radians) {
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.geom.Angle');
+
+    if(isNaN(degrees)) {
+        this._logger.severe("Attempted to create an angle with invalid degrees.");
+    }
+
+    if(isNaN(radians)) {
+        this._logger.severe("Attempted to create an angle with invalid radians.");
+    }
+
     /** @private */ this._degrees = degrees;
     /** @private */ this._radians = radians;
 };

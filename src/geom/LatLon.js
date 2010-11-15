@@ -20,6 +20,16 @@ goog.require('lanyard.geom.Quaternion');
  * @param {lanyard.geom.Angle} longitude the angle of longitude.
  */
 lanyard.geom.LatLon = function (latitude, longitude) {
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.geom.LatLon');
+
+    if(!latitude) {
+        this._logger.severe("Attempted to create a LatLon with invalid latitude.");
+    }
+
+    if(!longitude) {
+        this._logger.severe("Attempted to create a LatLon with invalid longitude.");
+    }
+
     /** @private */ this._latitude = latitude;
     /** @private */ this._longitude = longitude;
 };
