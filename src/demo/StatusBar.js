@@ -51,6 +51,10 @@ lanyard.demo.StatusBar = function (latElement, lonElement, eleElement) {
  */
 lanyard.demo.StatusBar.prototype.setEventSource = function (newEventSource) {
 
+    if(!newEventSource) {
+        this._logger.severe("Attempted to use an invalid event source.");
+    }
+
     /** FIXME: remove from existing event source.
     if (this.eventSource) {
         this.eventSource.removePositionListener(this);
@@ -58,7 +62,7 @@ lanyard.demo.StatusBar.prototype.setEventSource = function (newEventSource) {
     */
 
     if (newEventSource) {
-        newEventSource.addPositionListener(this);
+        newEventSource.getInputHandler().addPositionListener(this);
     }
 
     this.eventSource = newEventSource;
