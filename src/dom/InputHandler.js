@@ -196,6 +196,10 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
         dragger.startDrag(e);
     }, false, this);
 
+    // Setup a listener for when the mouse moves.
+    goog.events.listen(domCanvas, goog.events.EventType.MOUSEMOVE,
+       this.mouseMoved, false, this); 
+
     // Things to do on canvas unload.
     goog.events.listen(domCanvas, 'unload', function(e) {
         // Remove the mouse wheel listener
@@ -211,6 +215,54 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
  */
 lanyard.dom.InputHandler.prototype.getEventSource = function () {
     return this.lanyardCanvas;
+};
+
+/**
+ * Handle a mouse moved event.
+ *
+ * @param {Event} mouseEvent the mouse event.
+ */
+lanyard.dom.InputHandler.prototype.mouseMoved = function (mouseEvent) {
+
+    if (!this.lanyardCanvas) {
+        return;
+    }
+
+    if (!mouseEvent) {
+        return;
+    }
+
+    /** @type {lanyard.util.Point} */
+    this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
+
+    /** @type {lanyard.View} */
+    var view = this.lanyardCanvas.getView();
+    if (!view) {
+        return;
+    }
+
+    /** @type {lanyard.Model} */
+    var model = this.lanyardCanvas.getModel();
+    if (!model) {
+        return;
+    }
+
+    /** @type {lanyard.Globe} */
+    var globe = model.getGlobe();
+    if (!globe) {
+        return;
+    }
+
+    // TODO: call select listeners
+
+    this.callPositionListeners(
+        new lanyard.dom.PositionEvent(
+            this.lanyardCanvas,
+            mouseEvent,
+            null /* this.previousPickPosition */,
+            null /* p */
+        )
+    );
 };
 
 /**
@@ -551,6 +603,19 @@ lanyard.dom.InputHandler.prototype.setViewProperties =
  */
 lanyard.dom.InputHandler.prototype.clamp = function (x, min, max) {
     return x < min ? min : (x > max ? max : x);
+};
+
+/**
+ * Call the available position listeners.
+ *
+ * @param {lanyard.dom.PositionEvent} positionEvent the position event.
+ */
+lanyard.dom.InputHandler.prototype.callPositionListeners = function (positionEvent) {
+    for(var i = 0; i < this.eventListeners.length; i = i + 1) {
+        if(this.eventListeners[i].isPositionListener && this.eventListeners[i].moved) {
+            this.eventListeners[i].moved(positionEvent);
+        }
+    }
 };
 
 /* EOF */
