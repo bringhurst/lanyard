@@ -380,7 +380,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
-        gl.drawElements(gl.TRIANGLE_STRIP, this._ri.vertices.length / 3, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, this._ri.vertices.length / 3, gl.UNSIGNED_SHORT, 0);
     }
 
     dc.getView().popReferenceCenter(dc);

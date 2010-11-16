@@ -90,6 +90,7 @@ lanyard.demo.BasicDemo2.prototype.run = function () {
     dc.getGL().clearColor(0.0, 0.0, 0.0, 1.0);
     dc.getGL().clearDepth(1.0);
     dc.getGL().enable(dc.getGL().DEPTH_TEST);
+    dc.getGL().enable(dc.getGL().CULL_FACE);
     dc.getGL().depthFunc(dc.getGL().LEQUAL);
 
     // Make sure we have valid state matrices for the initial tessellation

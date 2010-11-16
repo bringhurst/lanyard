@@ -1396,7 +1396,7 @@ lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCe
         this._logger.severe("Attempted to push the reference center without a valid model-view.");
     }
 
-    this._logger.fine("Using new reference center of: " + referenceCenter.toString());
+    //this._logger.fine("Using new reference center of: " + referenceCenter.toString());
 
     // Push the current modelView on the stack
     /** @type {lanyard.geom.MatrixFour} */
@@ -1407,7 +1407,7 @@ lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCe
     /** @type {lanyard.geom.MatrixFour} */
     this.modelView = this.modelView.translatePoint(referenceCenter);
 
-    this._logger.fine("new model-view is: " + this.modelView.toString());
+    //this._logger.fine("new model-view is: " + this.modelView.toString());
 
     // Load up the new model-view
     dc.loadMatrix("uMVMatrix", this.modelView);
