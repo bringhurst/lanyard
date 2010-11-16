@@ -92,65 +92,11 @@ lanyard.demo.BasicDemo2.prototype.run = function () {
     dc.getGL().enable(dc.getGL().DEPTH_TEST);
     dc.getGL().depthFunc(dc.getGL().LEQUAL);
 
-    // Make sure we have valid state matrices
+    // Make sure we have valid state matrices for the initial tessellation
     view.doApply(dc);
 
     /** @type {lanyard.SectorGeometryList} */
     var sgl = dc.getModel().getTessellator().tessellate(dc);
-    //this._logger.fine("Generated top level sectors (count: " + sgl.length() + ").");
-
-    var vertexPositionBuffer = dc.getGL().createBuffer();
-    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
-
-    var vertices = [];
-
-    for(var i = 0; i < sgl.length(); i = i + 1) {
-        var sector = sgl.at(i).getSector();
-        var corners = sector.computeCornerPoints(model.getGlobe());
-
-        // Init the position buffer
-        //this._logger.fine("Setting up the position buffer.");
-        vertices = vertices.concat([
-            corners[0].getX(), corners[0].getY(), corners[0].getZ(),
-            corners[1].getX(), corners[1].getY(), corners[1].getZ(),
-            corners[2].getX(), corners[2].getY(), corners[2].getZ(),
-            corners[3].getX(), corners[3].getY(), corners[3].getZ()
-        ]);
-    }
-    dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(vertices), dc.getGL().STATIC_DRAW);
-
-    //this._logger.fine("Size of vertices is: " + vertices.length);
-
-    // Init the color buffer
-    //this._logger.fine("Setting up the color buffer.");
-    var vertexColorBuffer = dc.getGL().createBuffer();
-    dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
-
-    var perChannelColor = (vertices.length / 3) + 2;
-    var colorDelta = 1.0 / perChannelColor;
-
-    var r = colorDelta;
-    var g = colorDelta;
-    var b = colorDelta;
-
-    var colors = [];
-    for (var i=0; i < vertices.length / 3; i++) {
-        colors = colors.concat([r, g, b, 1.0]);
-
-        if(i <= (vertices.length / 3) / 3) {
-            r += colorDelta;
-        }
-
-        if(i > (((vertices.length / 3) / 3) * 2) || i < vertices.length / 3) {
-            g += colorDelta;
-        }
-
-        if(i >= ((vertices.length / 3) / 3) * 2) {
-            b += colorDelta;
-        }
-    }
-
-    dc.getGL().bufferData(dc.getGL().ARRAY_BUFFER, new Float32Array(colors), dc.getGL().STATIC_DRAW);
 
     var self = this;
     setInterval(function() {
@@ -158,26 +104,13 @@ lanyard.demo.BasicDemo2.prototype.run = function () {
         dc.getGL().viewport(0, 0, 500, 500);
         dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
 
-        // Send our position buffer to the shader
-        //self._logger.fine("Sending the position buffer to the shader.");
-        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexPositionBuffer);
-        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
-        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
-            3, dc.getGL().FLOAT, false, 0, 0);
-
-        // Send our color buffer to the shader
-        //self._logger.fine("Sending the color buffer to the shader.");
-        dc.getGL().bindBuffer(dc.getGL().ARRAY_BUFFER, vertexColorBuffer);
-        dc.getGL().enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexColor"));
-        dc.getGL().vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexColor"),
-            4, dc.getGL().FLOAT, false, 0, 0);
-
         // Apply the current view
         view.doApply(dc);
 
-        // Draw the scene
-        //self._logger.fine("Drawing the scene.");
-        dc.getGL().drawArrays(dc.getGL().TRIANGLE_STRIP, 0, 4 * sgl.length());
+        for(var i = 0; i < sgl.length(); i = i + 1) {
+            // Render each tile
+            sgl.at(i).renderWireframe(dc, true /* showTriangles */, false /* showTileBoundary */);
+        }
     }, 15); // end setInterval
 };
 goog.exportSymbol('lanyard.demo.BasicDemo2.prototype.run',

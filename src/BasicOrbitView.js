@@ -512,14 +512,18 @@ lanyard.BasicOrbitView.prototype.lookAt =
     m.translate(0, 0, -tiltDistance);
     //this._logger.fine("After model is translated away from eye: " + m.toString());
 
-/*** tilt is fucked
-    // Apply tilt by rotating about X axis at pivot point.
-    m.rotateX(tiltX.multiply(-1));
-    m.rotateZ(tiltZ);
-    m.translate(0, 0, -focusDistance);
+    //this._logger.fine("Before tilt is applied to the model: " + m.toString());
 
-    this._logger.fine("After tilt is applied to the model: " + m.toString());
-****/
+    //this._logger.fine("Using tilt X of: " + tiltX.toString());
+    //this._logger.fine("Using tilt Z of: " + tiltZ.toString());
+
+    // Apply tilt by rotating about X axis at pivot point.
+    //m.rotateX(tiltX.multiply(-1));
+    //m.rotateZ(tiltZ);
+    //m.translate(0, 0, -focusDistance);
+
+    //this._logger.fine("After tilt is applied to the model: " + m.toString());
+
     // Rotate model to lat/lon of eye point.
     m.rotateX(focusX);
     m.rotateY(focusY.multiply(-1));
@@ -1387,36 +1391,26 @@ lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, pro
  * @param {lanyard.geom.Point} referenceCenter the reference center.
  */
 lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCenter) {
-    //this._logger.fine("Pushing reference center of " + referenceCenter);
 
-    if (this.modelView) {
-        //this._logger.fine("Found a current mvm.");
-        /** @type {lanyard.geom.MatrixFour} */
-        var newModelView = new lanyard.geom.MatrixFour(this.modelView.getEntries());
-
-        //this._logger.fine("Copy of mvm is " + newModelView);
-
-        /** @type {lanyard.geom.MatrixFour} */
-        var reference = new lanyard.geom.MatrixFour(null);
-        reference = reference.translatePoint(referenceCenter);
-
-        //this._logger.fine("After translate: " + reference);
-
-        //newModelView.multiply(reference);
-
-        //this._logger.fine("After multiply: " + newModelView);
-    } else {
-        //this._logger.fine("New mvm.");
-        /** @type {lanyard.geom.MatrixFour} */
-        var newModelView = new lanyard.geom.MatrixFour(null);
+    if(!this.modelView) {
+        this._logger.severe("Attempted to push the reference center without a valid model-view.");
     }
 
-    var gl = dc.getGL();
+    this._logger.fine("Using new reference center of: " + referenceCenter.toString());
 
-    //this._logger.fine("get ent = " + newModelView.getEntries());
+    // Push the current modelView on the stack
+    /** @type {lanyard.geom.MatrixFour} */
+    var copyModelView = new lanyard.geom.MatrixFour(this.modelView.getEntries());
+    this.modelViewStack.push(copyModelView);
 
-    this.modelViewStack.push(newModelView);
-    dc.loadMatrix("uMVMatrix", newModelView);
+    // Translate the model-view by the reference point.
+    /** @type {lanyard.geom.MatrixFour} */
+    this.modelView = this.modelView.translatePoint(referenceCenter);
+
+    this._logger.fine("new model-view is: " + this.modelView.toString());
+
+    // Load up the new model-view
+    dc.loadMatrix("uMVMatrix", this.modelView);
 };
 
 /* EOF */

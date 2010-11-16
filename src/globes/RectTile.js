@@ -286,9 +286,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
             /** @type {number} */
             var z = ((rpm + elevation) * cosLat * Math.cos(lon)) - refCenter.getZ();
 
-            verts[iv++] = x;
-            verts[iv++] = y;
-            verts[iv++] = z;
+            verts = verts.concat([x, y, z]);
 
             if (i > density) {
                 lon = lonMax;
@@ -304,14 +302,14 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
         }
     }
 
-    this._logger.fine("Created vert of: " + verts);
+    //this._logger.fine("Created vert of: " + verts);
 
     /** @type {lanyard.globes.RenderInfo} */
     var retVal =
         new lanyard.globes.RenderInfo(
             density,
             verts,
-            this._parameterizations.density,
+            this.getParameterization(density),
             refCenter,
             //elevations.getResolution() FIXME
             0,
@@ -364,30 +362,25 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     /** @type {Array.<number>} */
     var indices = this.getIndices(this._ri.density);
 
-    //this._logger.fine("Reference center is " + this._ri.referenceCenter);
-
     dc.getView().pushReferenceCenter(dc, this._ri.referenceCenter);
 
     var gl = dc.getGL();
 
-    //gl.glColor4d(1.0, 1.0, 1.0, 0.2);
-
     if (showTriangles) {
-        //this._logger.fine("Show triangles enabled.");
+        var posBuffer = gl.createBuffer();
 
-        var vertexBuf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.vertices), gl.STATIC_DRAW);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(this._ri.vertices), gl.STATIC_DRAW);
-
-        //gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
-        //    this._ri.vertices.length, gl.FLOAT, false, 0, 0);
-
+        gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
         gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
             3, gl.FLOAT, false, 0, 0);
 
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, this._ri.vertices.length);
-        
+        var idxBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+        gl.drawElements(gl.TRIANGLE_STRIP, this._ri.vertices.length / 3, gl.UNSIGNED_SHORT, 0);
     }
 
     dc.getView().popReferenceCenter(dc);

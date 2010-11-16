@@ -208,9 +208,9 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
     this.sector = null;
     this.currentFrustum = dc.getView().getFrustumInModelCoordinates();
 
-    this._logger.fine("Current frustum is: " + this.currentFrustum);
+    //this._logger.fine("Current frustum is: " + this.currentFrustum);
 
-    this._logger.fine("Number of top level tiles: " + this.topLevels.length);
+    //this._logger.fine("Number of top level tiles: " + this.topLevels.length);
 
     for(var i = 0; i < this.topLevels.length; i = i + 1) {
         this.selectVisibleTiles(dc, this.topLevels[i]);
@@ -218,13 +218,13 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
 
     dc.setVisibleSector(this.getSector());
 
-    this._logger.fine("Number of current tiles: " + this.currentTiles.length());
+    //this._logger.fine("Number of current tiles: " + this.currentTiles.length());
 
     for(var j = 0; j < this.currentTiles.length(); j = j + 1) {
         /** @type {lanyard.SectorGeometry} */
         var t = this.currentTiles.at(j);
 
-        this._logger.fine("Creating vertices for tile: " + t);
+        //this._logger.fine("Creating vertices for tile: " + t);
 
         t.makeVerts(dc);
     }
@@ -245,6 +245,8 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
 
     if (!doesIntersectFrustum) {
         return;
+    } else {
+        //this._logger.fine("Tile does intersect the frustum.");
     }
 
     if (this.currentLevel < this.maxLevel && this.needToSplit(dc, tile)) {
@@ -256,8 +258,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
             this.selectVisibleTiles(dc, subtiles[i]);
         }
 
-    // FIXME:
-//        --this.currentLevel;
+        --this.currentLevel;
 
         return;
     }

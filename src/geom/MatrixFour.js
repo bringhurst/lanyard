@@ -359,16 +359,14 @@ lanyard.geom.MatrixFour.prototype.rotateZ = function (rotation) {
  * @return {lanyard.geom.MatrixFour} this matrix, translated by (x, y, z)
  */
 lanyard.geom.MatrixFour.prototype.translate = function (x, y, z) {
-    /***
     this._m14 = this._m11 * x + this._m12 * y + this._m13 * z + this._m14;
     this._m24 = this._m21 * x + this._m22 * y + this._m23 * z + this._m24;
     this._m34 = this._m31 * x + this._m32 * y + this._m33 * z + this._m34;
     this._m44 = this._m41 * x + this._m42 * y + this._m43 * z + this._m44;
-    **/
 
-    this._m14 *= x;
-    this._m24 *= y;
-    this._m34 *= z;
+    //this._m14 *= x;
+    //this._m24 *= y;
+    //this._m34 *= z;
 
     return this;
 };
