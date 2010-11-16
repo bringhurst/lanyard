@@ -32,6 +32,7 @@ goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 
+goog.require('lanyard.demo.StatusBar');
 goog.require('lanyard.dom.InputHandler');
 
 /**
@@ -53,6 +54,8 @@ lanyard.demo.BasicDemo2 = function (webGLCanvas, eventLogDiv) {
     /** @private */ this._webGLCanvas = webGLCanvas;
     /** @private */ this._eventLogDiv = eventLogDiv;
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.BasicDemo2');
+
+    /** @private */ this.lanyardCanvas = null;
 };
 goog.exportSymbol('lanyard.demo.BasicDemo2', lanyard.demo.BasicDemo2);
 
@@ -77,10 +80,10 @@ lanyard.demo.BasicDemo2.prototype.run = function () {
     dc.setView(view);
 
     // Setup the input handlers
-    var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
-    lc.setModel(model);
-    lc.setView(view);
-    lc.createDefaultInputHandler();
+    this.lanyardCanvas = new lanyard.LanyardCanvas(this._webGLCanvas);
+    this.lanyardCanvas.setModel(model);
+    this.lanyardCanvas.setView(view);
+    this.lanyardCanvas.createDefaultInputHandler();
 
     // Setup the shaders
     dc.loadShaders("shader-vs", "shader-fs");
@@ -131,5 +134,26 @@ lanyard.demo.BasicDemo2.prototype.setupEventLog = function () {
 };
 goog.exportSymbol('lanyard.demo.BasicDemo2.prototype.setupEventLog',
     lanyard.demo.BasicDemo2.prototype.setupEventLog);
+
+/**
+ * Add a status bar.
+ * 
+ * @param {lanyard.demo.StatusBar} statusBar the bar to add.
+ * @this {lanyard.demo.BasicDemo2}
+ */
+lanyard.demo.BasicDemo2.prototype.addStatusBar = function (statusBar) {
+    if(!this.lanyardCanvas) {
+        this._logger.severe("A LanyardCanvas must exist before a status bar is added.");
+    }
+
+    if(!statusBar) {
+        this._logger.severe("Attempted to attach an invalid status bar.");
+    }
+
+    // A reference to statusBar is kept in InputHandler's eventListeners.
+    statusBar.setEventSource(this.lanyardCanvas);
+};
+goog.exportSymbol('lanyard.demo.BasicDemo2.prototype.addStatusBar',
+    lanyard.demo.BasicDemo2.prototype.addStatusBar);
 
 /* EOF */

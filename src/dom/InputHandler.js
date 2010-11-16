@@ -33,6 +33,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.Dragger.EventType');
 
+goog.require('lanyard.dom.PositionEvent');
 goog.require('lanyard.dom.ViewProperties');
 
 /**
@@ -42,6 +43,11 @@ goog.require('lanyard.dom.ViewProperties');
  */
 lanyard.dom.InputHandler = function () {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.dom.InputHandler');
+
+    /**
+     * @private
+     */
+    this.eventListeners = [];
 
     /**
      * @private
@@ -232,8 +238,9 @@ lanyard.dom.InputHandler.prototype.mouseMoved = function (mouseEvent) {
         return;
     }
 
-    /** @type {lanyard.util.Point} */
-    this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
+    if(!this.lastMousePoint) {
+        this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
+    }
 
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();
@@ -603,6 +610,20 @@ lanyard.dom.InputHandler.prototype.setViewProperties =
  */
 lanyard.dom.InputHandler.prototype.clamp = function (x, min, max) {
     return x < min ? min : (x > max ? max : x);
+};
+
+/**
+ * Add a position listener.
+ *
+ * @param {*} listener a position listener.
+ */
+lanyard.dom.InputHandler.prototype.addPositionListener = function (listener) {
+    if(!listener) {
+        this._logger.severe("Attempted to add an invalid position listener.");
+    }
+
+    listener.isPositionListener = true;
+    this.eventListeners.push(listener);
 };
 
 /**
