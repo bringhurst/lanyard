@@ -625,7 +625,7 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
     // Compute the closest allowable far clipping plane distance.
 
     /** @type {number} */
-    var far = this.computeHorizonDistance(dc.getGlobe(), dc.getVerticalExaggeration(), eyePoint);
+    var far = this.computeHorizonDistance(dc.getGlobe(), dc.getVerticalExaggeration(), eyePoint) * 2;
 
 /**
     this._logger.fine("Creating a new view frustum with dimensions of: " +

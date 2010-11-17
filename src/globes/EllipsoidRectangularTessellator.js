@@ -90,14 +90,14 @@ lanyard.globes.EllipsoidRectangularTessellator = function (globe) {
      * @private
      * @type {number}
      */
-    this.density = 12;
+    this.density = 24;
 };
 
 /**
  * @const
  * @type {number}
  */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_DENSITY = 12;
+lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_DENSITY = 24;
 
 /**
  * @const

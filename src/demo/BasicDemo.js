@@ -35,11 +35,8 @@ goog.require('goog.events.Event');
 goog.require('goog.ui.Checkbox');
 goog.require('goog.ui.Checkbox.State');
 
-goog.require('lanyard.BasicModel');
-goog.require('lanyard.LanyardCanvas');
-goog.require('lanyard.Model');
-goog.require('lanyard.Layer');
-goog.require('lanyard.BasicOrbitView');
+goog.require('lanyard.demo.StatusBar');
+goog.require('lanyard.dom.InputHandler');
 
 goog.require('lanyard.layers.earth.BMNGOneImage');
 
@@ -65,7 +62,7 @@ lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
     /** @private */ this._eventLogDiv = eventLogDiv;
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.BasicDemo');
 
-    this._logger.fine("Called BasicDemo constructor");
+    /** @private */ this.lanyardCanvas = null;
 
     /**
      * @private
@@ -76,50 +73,66 @@ lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
 goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
 
 /**
- * Initializes and starts the demo.
+ * Initializes and starts the test.
  *
  * @this {lanyard.demo.BasicDemo}
  */
 lanyard.demo.BasicDemo.prototype.run = function () {
     this.setupEventLog();
     this.setupLayerList();
-    this.setupCanvasView();
+
+    // Setup a model (the earth)
+    var model = new lanyard.BasicModel();
+
+    // Setup a view
+    var view = new lanyard.BasicOrbitView();
+    view.setViewportFromCanvas(this._webGLCanvas);
+
+    // Setup a draw context
+    var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
+    dc.setModel(model);
+    dc.setView(view);
+
+    // Setup the input handlers
+    this.lanyardCanvas = new lanyard.LanyardCanvas(this._webGLCanvas);
+    this.lanyardCanvas.setModel(model);
+    this.lanyardCanvas.setView(view);
+    this.lanyardCanvas.createDefaultInputHandler();
+
+    // Setup the shaders
+    dc.loadShaders("shader-vs", "shader-fs");
+    dc.setupShaders();
+
+    // Setup the canvas
+    dc.getGL().clearColor(0.0, 0.0, 0.0, 1.0);
+    dc.getGL().clearDepth(1.0);
+    dc.getGL().enable(dc.getGL().DEPTH_TEST);
+    dc.getGL().enable(dc.getGL().CULL_FACE);
+    dc.getGL().depthFunc(dc.getGL().LEQUAL);
+
+    // Make sure we have valid state matrices for the initial tessellation
+    view.doApply(dc);
+
+    /** @type {lanyard.SectorGeometryList} */
+    var sgl = dc.getModel().getTessellator().tessellate(dc);
+
+    var self = this;
+    setInterval(function() {
+        // Begin drawing the scene
+        dc.getGL().viewport(0, 0, 500, 500);
+        dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
+
+        // Apply the current view
+        view.doApply(dc);
+
+        for(var i = 0; i < sgl.length(); i = i + 1) {
+            // Render each tile
+            sgl.at(i).render(dc, 1 /* texture units */);
+        }
+    }, 15); // end setInterval
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
     lanyard.demo.BasicDemo.prototype.run);
-
-/**
- * Setup the canvas and initial model.
- *
- * @this {lanyard.demo.BasicDemo}
- */
-lanyard.demo.BasicDemo.prototype.setupCanvasView = function () {
-    /** @type {lanyard.LanyardCanvas} */
-    var lc = new lanyard.LanyardCanvas(this._webGLCanvas);
-
-    /** @type {lanyard.BasicModel} */
-    var m = new lanyard.BasicModel();
-    m.setLayers(this._layerList);
-    m.setShowWireframeExterior(true);
-    m.setShowWireframeInterior(true);
-    m.setShowTessellationBoundingVolumes(true);
-
-    /** @type {lanyard.BasicOrbitView} */
-    var v = new lanyard.BasicOrbitView();
-    v.setViewport(
-        new lanyard.util.Rectangle(
-            0, 0, this._webGLCanvas.width, this._webGLCanvas.height
-        )
-    );
-
-    lc.setModelAndView(m, v);
-
-    // TODO: setup mouse listeners.
-
-    lc.display();
-};
-goog.exportSymbol('lanyard.demo.BasicDemo.prototype.setupEventLog',
-    lanyard.demo.BasicDemo.prototype.setupEventLog);
 
 /**
  * Setup the event log.
@@ -135,6 +148,27 @@ lanyard.demo.BasicDemo.prototype.setupEventLog = function () {
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.setupEventLog',
     lanyard.demo.BasicDemo.prototype.setupEventLog);
+
+/**
+ * Add a status bar.
+ * 
+ * @param {lanyard.demo.StatusBar} statusBar the bar to add.
+ * @this {lanyard.demo.BasicDemo}
+ */
+lanyard.demo.BasicDemo.prototype.addStatusBar = function (statusBar) {
+    if(!this.lanyardCanvas) {
+        this._logger.severe("A LanyardCanvas must exist before a status bar is added.");
+    }
+
+    if(!statusBar) {
+        this._logger.severe("Attempted to attach an invalid status bar.");
+    }
+
+    // A reference to statusBar is kept in InputHandler's eventListeners.
+    statusBar.setEventSource(this.lanyardCanvas);
+};
+goog.exportSymbol('lanyard.demo.BasicDemo.prototype.addStatusBar',
+    lanyard.demo.BasicDemo.prototype.addStatusBar);
 
 /**
  * Setup the layer list.

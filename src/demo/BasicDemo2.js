@@ -32,6 +32,10 @@ goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 
+goog.require('lanyard.BasicModel');
+goog.require('lanyard.BasicOrbitView');
+goog.require('lanyard.BasicDrawContext');
+goog.require('lanyard.LanyardCanvas');
 goog.require('lanyard.demo.StatusBar');
 goog.require('lanyard.dom.InputHandler');
 
