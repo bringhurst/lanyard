@@ -183,7 +183,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
     gl.depthFunc(gl.LEQUAL);
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.enable(gl.TEXTURE_2D);
+    gl.enable(gl.TEXTURE_2D); 
 
     /** @type {lanyard.SectorGeometryList} */
     var sectorGeoms = dc.getSurfaceGeometry();
@@ -218,8 +218,8 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
 
             if (tilesToRender[j].bind(dc)) {
                 // Pass some uniform values to fragment shader.
-                gl.uniform1i(dc.getGLSL().getUniformLocation("tile_image"), 0); // Use texture unit 0.
-                gl.uniform1i(dc.getGLSL().getUniformLocation("alpha_mask"), 1); // Use texture unit 1.
+                gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerTileImage"), 0); // Use texture unit 0.
+                gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerAlphaMask"), 1); // Use texture unit 1.
 
                 /** @type {number} */
                 var so = 0;
@@ -229,7 +229,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                 }
 
                 // Flag for fragment shader.
-                gl.uniform1i(dc.getGLSL().getUniformLocation("showoutlines"), so);
+                gl.uniform1i(dc.getGLSL().getUniformLocation("showOutlines"), so);
 
                 tilesToRender[j].applyInternalTransform(dc);
 
@@ -240,6 +240,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                 //gl.scaled(this.transform.HScale, this.transform.VScale, 1.0);
                 //gl.translated(this.transform.HShift, this.transform.VShift, 0.0);
 
+                /** FIXME: do we actually need these?
                 gl.uniform1f(
                     dc.getGLSL().getUniformLocation("latitude"),
                     tilesToRender[j].getSector().getCentroid().getLatitude().getDegrees()
@@ -249,6 +250,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                     dc.getGLSL().getUniformLocation("longitude"),
                     tilesToRender[j].getSector().getCentroid().getLongitude().getDegrees()
                 );
+                */
 
                 //we will apply the transform to alpha mask in the vertex shader using texture 0 matrix 
                 gl.activeTexture(gl.TEXTURE1);
