@@ -331,7 +331,7 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
     //}
 
     //gl.polygonMode(gl.FRONT, gl.FILL);
-    //gl.enable(gl.CULL_FACE);
+    gl.enable(gl.CULL_FACE);
 
     //this._logger.fine("Passing things along to the surface tile renderer.");
     dc.getSurfaceTileRenderer().renderTile(dc, this);

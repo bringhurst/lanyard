@@ -236,10 +236,16 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                 // Determine and apply texture transform to map image tile into geometry tile's texture space
                 this.computeTransform(dc, tilesToRender[j], this.transform);
 
-                // FIXME: manually apply these to the state matrices
+                // Scale it first
+                var textureMatrix = new lanyard.geom.MatrixFour([
+                    this.transform.HScale, 0.0, 0.0, 0.0,
+                    0.0, this.transform.VScale, 0.0, 0.0,
+                    0.0, 0.0, 1.0, 0.0,
+                    0.0, 0.0, 0.0, 1.0 ]);
 
-                //gl.scaled(this.transform.HScale, this.transform.VScale, 1.0);
-                //gl.translated(this.transform.HShift, this.transform.VShift, 0.0);
+                // Now translate it
+                textureMatrix.translate(this.transform.HShift, this.transform.VShift, 0.0);
+                dc.loadMatrix("uTextureMatrix", textureMatrix);
 
                 /** FIXME: do we actually need these?
                 gl.uniform1f(
