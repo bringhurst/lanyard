@@ -76,6 +76,16 @@
                 </fieldset>
                 <!-- Map canvas end -->
             </div>
+            <div class="map-status-column">
+                <!-- Map status start -->
+                <fieldset>
+                    <legend>Status</legend>
+                    lat = <div id="lanyard-status-bar-lat"></div>
+                    lon = <div id="lanyard-status-bar-lon"></div>
+                    ele = <div id="lanyard-status-bar-ele"></div>
+                </fieldset>
+                <!-- Map status end -->
+            </div>
             <div class="map-console-column">
                 <!-- Map console start -->
                 <fieldset>
@@ -92,6 +102,15 @@
                 document.getElementById("lanyard-demo-log")
             );
             basicDemo.run();
+
+            // Show an example of how to use (position) listeners.
+            basicDemo.addStatusBar(
+                new lanyard.demo.StatusBar(
+                    document.getElementById("lanyard-status-bar-lat"),
+                    document.getElementById("lanyard-status-bar-lon"),
+                    document.getElementById("lanyard-status-bar-ele")
+                )
+            );
         </script>
     </body>
 </html>
