@@ -238,9 +238,7 @@ lanyard.dom.InputHandler.prototype.mouseMoved = function (mouseEvent) {
         return;
     }
 
-    if(!this.lastMousePoint) {
-        this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
-    }
+    this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
 
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();

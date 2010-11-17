@@ -276,20 +276,6 @@ lanyard.render.SurfaceImage.prototype.applyInternalTransform = function (dc) {
     if (!t) {
         t = this.initializeTexture(dc);
     }
-
-    if (t) {
-        /*** FIXME
-
-        if (t.getMustFlipVertically()) {
-            var gl = dc.getGL();
-            gl.matrixMode(GL.GL_TEXTURE);
-            gl.loadIdentity();
-            gl.scaled(1, -1, 1);
-            gl.translated(0, -1, 0);
-        }
-
-        ***/
-    }
 };
 
 /**

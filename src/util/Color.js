@@ -184,6 +184,13 @@ lanyard.util.Color.prototype.WHITE =
     new lanyard.util.Color(0.0, 0.0, 0.0, 1.0, "FFFFFFFF");
 
 /**
+ * @const
+ * @type {lanyard.util.Color}
+ */
+lanyard.util.Color.prototype.CLEAR =
+    new lanyard.util.Color(0.0, 0.0, 0.0, 0.0, "00000000");
+
+/**
  * Create a {lanyard.util.Color} object from a kml or html color hex string.
  *
  * @param {string} hexString the hex string of the color in RRGGBB or RRGGBBAA format.

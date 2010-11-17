@@ -139,8 +139,8 @@ lanyard.BasicDrawContext = function (canvasElement) {
      * @private
      * @type {*}
      */
-    //this.gl = this.canvasElement.getContext("experimental-webgl");
-    this.gl = WebGLDebugUtils.makeDebugContext(this.canvasElement.getContext("experimental-webgl"));
+    this.gl = this.canvasElement.getContext("experimental-webgl");
+    //this.gl = WebGLDebugUtils.makeDebugContext(this.canvasElement.getContext("experimental-webgl"));
 
     if (!this.gl) {
         this._logger.severe("The canvas specified does not seem to support WebGL.");

@@ -216,7 +216,7 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
 
     /** @type {lanyard.util.Color} */
     //var cc = dc.getClearColor();
-    var cc = lanyard.util.Color.prototype.BLACK;
+    var cc = lanyard.util.Color.prototype.CLEAR;
 
     var gl = dc.getGL();
     

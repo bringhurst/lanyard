@@ -510,19 +510,11 @@ lanyard.BasicOrbitView.prototype.lookAt =
 
     // Translate model away from eye.
     m.translate(0, 0, -tiltDistance);
-    //this._logger.fine("After model is translated away from eye: " + m.toString());
-
-    //this._logger.fine("Before tilt is applied to the model: " + m.toString());
-
-    //this._logger.fine("Using tilt X of: " + tiltX.toString());
-    //this._logger.fine("Using tilt Z of: " + tiltZ.toString());
 
     // Apply tilt by rotating about X axis at pivot point.
     m.rotateX(tiltX.multiply(-1));
     m.rotateZ(tiltZ);
     m.translate(0, 0, -focusDistance);
-
-    //this._logger.fine("After tilt is applied to the model: " + m.toString());
 
     // Rotate model to lat/lon of eye point.
     m.rotateX(focusX);
@@ -625,7 +617,7 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
     // Compute the closest allowable far clipping plane distance.
 
     /** @type {number} */
-    var far = this.computeHorizonDistance(dc.getGlobe(), dc.getVerticalExaggeration(), eyePoint);
+    var far = this.computeHorizonDistance(dc.getGlobe(), dc.getVerticalExaggeration(), eyePoint) * 2;
 
 /**
     this._logger.fine("Creating a new view frustum with dimensions of: " +

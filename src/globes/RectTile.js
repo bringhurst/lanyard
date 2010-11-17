@@ -345,7 +345,6 @@ lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
     //FIXME: support more than one texture unit
     var texBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, texBuffer);
-
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.texCoords), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aTextureCoord0"));
     gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aTextureCoord0"),
@@ -358,7 +357,6 @@ lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
     gl.drawElements(gl.TRIANGLE_STRIP, this._ri.indices.length, gl.UNSIGNED_SHORT, 0);
 
     dc.getView().popModelViewMatrix(dc);
-
     return this._ri.indices.length - 2; // return number of triangles rendered
 };
 

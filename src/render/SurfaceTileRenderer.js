@@ -221,16 +221,6 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                 gl.activeTexture(gl.TEXTURE0);
                 gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerTileImage"), 0);
 
-                /** @type {number} */
-                var so = 0;
-
-                if(this.showImageTileOutlines) {
-                    so = 1;
-                }
-
-                // Flag for fragment shader.
-                gl.uniform1i(dc.getGLSL().getUniformLocation("showOutlines"), so);
-
                 tilesToRender[j].applyInternalTransform(dc);
 
                 // Determine and apply texture transform to map image tile into geometry tile's texture space
@@ -245,26 +235,13 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
 
                 // Now translate it
                 textureMatrix.translate(this.transform.HShift, this.transform.VShift, 0.0);
+
                 dc.loadMatrix("uTextureMatrix", textureMatrix);
 
-                /** FIXME: do we actually need these?
-                gl.uniform1f(
-                    dc.getGLSL().getUniformLocation("latitude"),
-                    tilesToRender[j].getSector().getCentroid().getLatitude().getDegrees()
-                );
-
-                gl.uniform1f(
-                    dc.getGLSL().getUniformLocation("longitude"),
-                    tilesToRender[j].getSector().getCentroid().getLongitude().getDegrees()
-                );
-                */
-
-                //we will apply the transform to alpha mask in the vertex shader using texture 0 matrix 
+                // We will apply the transform to alpha mask in the vertex shader using texture 0 matrix 
                 gl.activeTexture(gl.TEXTURE1);
                 this.alphaTexture.bind();
                 gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerAlphaMask"), 1);
-
-                var numTexUnitsUsed = 2;
 
                 // Render the geometry tile
                 sectorGeoms.geometryList[i].render(dc);
