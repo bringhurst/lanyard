@@ -326,6 +326,8 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
  * @param {number} numTextureUnits the number of texture units available.
  */
 lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
+    this._logger.fine("Render was called.");
+
 /*******
     dc.getView().pushReferenceCenter(dc, this._ri.referenceCenter);
 

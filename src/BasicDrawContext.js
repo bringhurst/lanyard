@@ -501,6 +501,8 @@ lanyard.BasicDrawContext.prototype.drawUnitQuad = function () {
 
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
     gl.vertexAttribPointer(this.glsl.getAttribLocation("aVertexPosition"), 3, gl.FLOAT, false, 0, 0);
+
+    this._logger.fine("Calling draw arrays.");
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
 /*

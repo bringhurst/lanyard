@@ -145,7 +145,7 @@ lanyard.demo.BasicDemo.prototype.setupLayerList = function () {
 
     var i;
     for(i = 0; i < this._layerList.length; i = i + 1) {
-        this._logger.fine("Adding layer with name = " + this._layerList[i].toString());
+        //this._logger.fine("Adding layer with name = " + this._layerList[i].toString());
 
         var layerLabel = goog.dom.createDom('p', {'style': 'background-color:#EEE'},
             this._layerList[i].getName());

@@ -175,7 +175,7 @@ lanyard.render.SurfaceImage.prototype.getExtent = function (dc) {
  * @return {lanyard.util.Texture} the texture.
  */
 lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
-    this._logger.fine("Initializing a texture.");
+    //this._logger.fine("Initializing a texture.");
 
     if (!dc) {
         this._logger.severe("The draw context was null.");
@@ -194,7 +194,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
     var surfaceImage = new Image();
 
     surfaceImage.onload = function () {
-        thix._logger.fine("Loaded image at: " + thix.imageSource + "<img src=" + thix.imageSource + ">");
+        //thix._logger.fine("Loaded image at: " + thix.imageSource + "<img src=" + thix.imageSource + ">");
 
         surfaceTexture.bind();
         surfaceTexture.setImage(surfaceImage);
@@ -233,7 +233,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
  * @return {boolean} if the bind was a success.
  */
 lanyard.render.SurfaceImage.prototype.bind = function (dc) {
-    this._logger.fine("Surface image bind was called.");
+    //this._logger.fine("Surface image bind was called.");
 
     if (!dc) {
         this._logger.severe("The draw context is null.");
@@ -311,29 +311,29 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
     /** @type {*} */
     var gl = dc.getGL();
 
-    if (!dc.isPickingMode()) {
-
+    // FIXME: for picking
+    //if (!dc.isPickingMode()) {
         /** @type {number} */
-        var opacity = this.layer ? this.opacity * this.layer.opacity : this.opacity;
+     //   var opacity = this.layer ? this.opacity * this.layer.opacity : this.opacity;
 
-        if (opacity < 1) {
+     //   if (opacity < 1) {
             //gl.pushAttrib(gl.COLOR_BUFFER_BIT | gl.GL_POLYGON_BIT | gl.GL_CURRENT_BIT);
             //gl.color4d(1.0, 1.0, 1.0, opacity);
-        } else {
+     //   } else {
             //gl.pushAttrib(gl.COLOR_BUFFER_BIT | gl.GL_POLYGON_BIT);
-        }
+    //    }
 
         //gl.enable(gl.BLEND);
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    } else {
-        gl.pushAttrib(gl.POLYGON_BIT);
-    }
+    //} else {
+        //gl.pushAttrib(gl.POLYGON_BIT);
+    //}
 
     //gl.polygonMode(gl.FRONT, gl.FILL);
     //gl.enable(gl.CULL_FACE);
-    //gl.cullFace(gl.BACK);
+    gl.cullFace(gl.BACK);
 
-    this._logger.fine("Passing things along to the surface tile renderer.");
+    //this._logger.fine("Passing things along to the surface tile renderer.");
     dc.getSurfaceTileRenderer().renderTile(dc, this);
 
     //gl.popAttrib();

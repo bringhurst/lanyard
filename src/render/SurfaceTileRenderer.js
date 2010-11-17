@@ -281,7 +281,7 @@ lanyard.render.SurfaceTileRenderer.prototype.getIntersectingTiles = function (sg
     /** @type {number} */
     var i;
     for (i = 0; i < tiles.length; i = i + 1) {
-        this._logger.fine("Check intersect: " + tiles[i].toString());
+        //this._logger.fine("Check intersect: " + tiles[i].toString());
 
         if (tiles[i].getSector().intersects(sg.getSector())) {
             intersectingTiles.push(tiles[i]);

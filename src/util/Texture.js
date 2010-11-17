@@ -57,7 +57,7 @@ lanyard.util.Texture.prototype.bind = function () {
  * @param {Element} textureCanvas the canvas that holds the texture.
  */
 lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
-    this._logger.fine("Updating the canvas.");
+    //this._logger.fine("Updating the canvas.");
 
     var ctx = textureCanvas.getContext("2d");
     var img = new Image();
@@ -76,7 +76,7 @@ lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
  * @param {Image} imagee the image to use for this texture.
  */
 lanyard.util.Texture.prototype.setImage = function (image) {
-    this._logger.fine("Setting an image.");
+    //this._logger.fine("Setting an image.");
     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image);
 };
 
