@@ -51,7 +51,7 @@ lanyard.layers.earth.BMNGOneImage = function () {
     //this._logger.fine("Adding the surface image renderable.");
     this.addRenderable(
         new lanyard.render.SurfaceImage(
-            "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg",
+            "images/bmng.world.topo.512.256.gif",
             lanyard.geom.Sector.prototype.FULL_SPHERE,
             this)
     );
