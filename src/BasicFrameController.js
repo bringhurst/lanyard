@@ -49,12 +49,19 @@ lanyard.BasicFrameController = function () {
 lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
     //this._logger.fine("Initializing the frame.");
 
-    dc.getGLSL().startShader();
+    // Setup the shaders
+    dc.loadShaders("shader-vs", "shader-fs");
+    dc.setupShaders();
 
+    // Setup the canvas
+    dc.getGL().clearDepth(1.0);
+    dc.getGL().enable(dc.getGL().DEPTH_TEST);
+    dc.getGL().enable(dc.getGL().CULL_FACE);
+    dc.getGL().depthFunc(dc.getGL().LEQUAL);
+
+    // Setup state matrices for tessellation
     dc.loadIdentity("uMVMatrix");
     dc.loadIdentity("uPMatrix");
-
-    dc.getGL().enable(dc.getGL().DEPTH_TEST);
 };
 
 /**
@@ -65,7 +72,8 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
 lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
     //this._logger.fine("Finalizing the frame.");
 
-    dc.getGL().flush();
+    // Note that in WebGL, a flush is implied.
+
     dc.getGLSL().endShader();
 };
 
@@ -131,16 +139,13 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
         dc.getModel().isShowWireframeInterior() ||
         dc.getModel().isShowTessellationBoundingVolumes()) {
 
-        //this._logger.fine("Creating diagnostic displays.");
+        this._logger.fine("Creating diagnostic displays.");
 
         /** @type {lanyard.Model} */
         var model = dc.getModel();
 
         /** @type {Array.<number>} */
         var previousColor = [];
-
-        // FIXME: save the current color.
-        //dc.getGL().getFloatv(this.dc.getGL().CURRENT_COLOR, previousColor, 0);
 
         /** @type {lanyard.SectorGeometryList} */
         var sgs = dc.getSurfaceGeometry();
@@ -163,9 +168,6 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
                 sgs.geometryList[j].renderBoundingVolume(dc);
             }
         }
-
-        // FIXME: restore the current color.
-        //dc.getGL().color4fv(previousColor, 0);
     }
 };
 
@@ -214,7 +216,7 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
 
     /** @type {lanyard.util.Color} */
     //var cc = dc.getClearColor();
-    var cc = lanyard.util.Color.prototype.BLUE;
+    var cc = lanyard.util.Color.prototype.BLACK;
 
     var gl = dc.getGL();
     

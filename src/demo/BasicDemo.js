@@ -78,58 +78,22 @@ goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
  * @this {lanyard.demo.BasicDemo}
  */
 lanyard.demo.BasicDemo.prototype.run = function () {
+    // Setup the logging and layer divs for this demo.
     this.setupEventLog();
     this.setupLayerList();
 
-    // Setup a model (the earth)
+    // Setup the model with the layers used in the demo.
     var model = new lanyard.BasicModel();
+    model.setLayers(this._layerList);
 
-    // Setup a view
-    var view = new lanyard.BasicOrbitView();
-    view.setViewportFromCanvas(this._webGLCanvas);
-
-    // Setup a draw context
-    var dc = new lanyard.BasicDrawContext(this._webGLCanvas);
-    dc.setModel(model);
-    dc.setView(view);
-
-    // Setup the input handlers
+    // Setup the canvas.
     this.lanyardCanvas = new lanyard.LanyardCanvas(this._webGLCanvas);
     this.lanyardCanvas.setModel(model);
-    this.lanyardCanvas.setView(view);
+    this.lanyardCanvas.setView(new lanyard.BasicOrbitView());
     this.lanyardCanvas.createDefaultInputHandler();
 
-    // Setup the shaders
-    dc.loadShaders("shader-vs", "shader-fs");
-    dc.setupShaders();
-
-    // Setup the canvas
-    dc.getGL().clearColor(0.0, 0.0, 0.0, 1.0);
-    dc.getGL().clearDepth(1.0);
-    dc.getGL().enable(dc.getGL().DEPTH_TEST);
-    dc.getGL().enable(dc.getGL().CULL_FACE);
-    dc.getGL().depthFunc(dc.getGL().LEQUAL);
-
-    // Make sure we have valid state matrices for the initial tessellation
-    view.doApply(dc);
-
-    /** @type {lanyard.SectorGeometryList} */
-    var sgl = dc.getModel().getTessellator().tessellate(dc);
-
-    var self = this;
-    setInterval(function() {
-        // Begin drawing the scene
-        dc.getGL().viewport(0, 0, 500, 500);
-        dc.getGL().clear(dc.getGL().COLOR_BUFFER_BIT | dc.getGL().DEPTH_BUFFER_BIT);
-
-        // Apply the current view
-        view.doApply(dc);
-
-        for(var i = 0; i < sgl.length(); i = i + 1) {
-            // Render each tile
-            sgl.at(i).render(dc, 1 /* texture units */);
-        }
-    }, 15); // end setInterval
+    // Show it
+    this.lanyardCanvas.display();
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
     lanyard.demo.BasicDemo.prototype.run);

@@ -90,6 +90,16 @@ lanyard.LanyardCanvas.prototype.getModel = function () {
  * @param {lanyard.View} view the new view.
  */
 lanyard.LanyardCanvas.prototype.setView = function (view) {
+    if(!this._canvasElement) {
+        this._logger.severe("Attempted to set the view without a valid canvas element.");
+    }
+
+    if(!view) {
+        this._logger.severe("Attempted to set an invalid view.");
+    }
+
+    view.setViewportFromCanvas(this._canvasElement);
+
     // view can be null, that's ok - it indicates no view.
     if (this._sceneController) {
         this._sceneController.setView(view);

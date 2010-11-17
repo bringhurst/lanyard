@@ -71,7 +71,7 @@ goog.inherits(lanyard.layers.RenderableLayer, lanyard.layers.AbstractLayer);
  * @param {lanyard.Renderable} renderable the renderable to add.
  */
 lanyard.layers.RenderableLayer.prototype.addRenderable = function (renderable) {
-    //this._logger.fine("A renderable was added: " + renderable.toString());
+    this._logger.fine("A renderable was added: " + renderable.toString());
 
     if (!renderable) {
         this._logger.severe("Renderable is null.");
