@@ -145,7 +145,7 @@ lanyard.render.GLSL.prototype.getUniformLocation = function (name) {
     var loc = this.gl.getUniformLocation(this.programObject, name);
 
     if(!loc) {
-        this._logger.severe("The specified uniform was not found in the shader.");
+        this._logger.severe("The specified uniform was not found in the shader (" + name + ").");
     }
 
     return loc;

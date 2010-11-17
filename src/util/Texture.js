@@ -57,8 +57,17 @@ lanyard.util.Texture.prototype.bind = function () {
  * @param {Element} textureCanvas the canvas that holds the texture.
  */
 lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
-    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, textureCanvas);
-    this.createMipmap();
+    this._logger.fine("Updating the canvas.");
+
+    var ctx = textureCanvas.getContext("2d");
+    var img = new Image();
+
+    var self = this;
+    img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+        self.gl.texImage2D(self.gl.TEXTURE_2D, 0, self.gl.RGBA, self.gl.RGBA, self.gl.UNSIGNED_BYTE, img);
+        self.createMipmap();
+    };
 };
 
 /**
@@ -67,7 +76,8 @@ lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
  * @param {Image} imagee the image to use for this texture.
  */
 lanyard.util.Texture.prototype.setImage = function (image) {
-    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, image, true);
+    this._logger.fine("Setting an image.");
+    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image);
 };
 
 /**

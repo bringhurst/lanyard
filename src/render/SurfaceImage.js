@@ -123,6 +123,15 @@ lanyard.render.SurfaceImage.prototype.setSector = function (sector) {
 };
 
 /**
+ * Accessor for the sector.
+ *
+ * @return {lanyard.geom.Sector} the sector for the surface image.
+ */
+lanyard.render.SurfaceImage.prototype.getSector = function () {
+    return this.sector;
+};
+
+/**
  * Returns if the image is loaded.
  *
  * @return {boolean} true if the image data is loaded.

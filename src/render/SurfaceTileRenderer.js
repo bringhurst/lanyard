@@ -235,15 +235,17 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
 
                 // Determine and apply texture transform to map image tile into geometry tile's texture space
                 this.computeTransform(dc, tilesToRender[j], this.transform);
-                gl.glScaled(this.transform.HScale, this.transform.VScale, 1.0);
-                gl.glTranslated(this.transform.HShift, this.transform.VShift, 0.0);
 
-                gl.glUniform1f(
+                // FIXME: manually apply these to the state matrices
+                //gl.scaled(this.transform.HScale, this.transform.VScale, 1.0);
+                //gl.translated(this.transform.HShift, this.transform.VShift, 0.0);
+
+                gl.uniform1f(
                     dc.getGLSL().getUniformLocation("latitude"),
                     tilesToRender[j].getSector().getCentroid().getLatitude().getDegrees()
                 );
 
-                gl.glUniform1f(
+                gl.uniform1f(
                     dc.getGLSL().getUniformLocation("longitude"),
                     tilesToRender[j].getSector().getCentroid().getLongitude().getDegrees()
                 );
@@ -261,7 +263,6 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
     }
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.disable(gl.TEXTURE_2D);
 };
 
 /**
@@ -278,6 +279,8 @@ lanyard.render.SurfaceTileRenderer.prototype.getIntersectingTiles = function (sg
     /** @type {number} */
     var i;
     for (i = 0; i < tiles.length; i = i + 1) {
+        this._logger.fine("Check intersect: " + tiles[i].toString());
+
         if (tiles[i].getSector().intersects(sg.getSector())) {
             intersectingTiles.push(tiles[i]);
         }
