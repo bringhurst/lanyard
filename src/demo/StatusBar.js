@@ -100,9 +100,9 @@ lanyard.demo.StatusBar.prototype.handleCursorPositionChange = function (position
         this.lonDisplay.innerHTML = newPos.getLongitude().getDegrees();
         this.eleDisplay.innerHTML = newPos.getElevation();
     } else {
-        this.latDisplay.innerHTML = "";
+        this.latDisplay.innerHTML = "Off globe";
         this.lonDisplay.innerHTML = "Off globe";
-        this.eleDisplay.innerHTML = "";
+        this.eleDisplay.innerHTML = "Off globe";
     }
 };
 
