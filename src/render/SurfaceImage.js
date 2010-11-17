@@ -194,7 +194,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
     var surfaceImage = new Image();
 
     surfaceImage.onload = function () {
-        //thix._logger.fine("Loaded image at: " + thix.imageSource + "<img src=" + thix.imageSource + ">");
+        thix._logger.fine("Loaded image at: " + thix.imageSource + "<img src=" + thix.imageSource + ">");
 
         surfaceTexture.bind();
         surfaceTexture.setImage(surfaceImage);
@@ -251,6 +251,7 @@ lanyard.render.SurfaceImage.prototype.bind = function (dc) {
     }
 
     if (t) {
+        this._logger.fine("Binding a surface image texture.");
         t.bind();
         return true;
     }
@@ -331,7 +332,6 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
 
     //gl.polygonMode(gl.FRONT, gl.FILL);
     //gl.enable(gl.CULL_FACE);
-    gl.cullFace(gl.BACK);
 
     //this._logger.fine("Passing things along to the surface tile renderer.");
     dc.getSurfaceTileRenderer().renderTile(dc, this);

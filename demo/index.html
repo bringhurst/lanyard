@@ -49,8 +49,11 @@
             varying vec4 vTextureCoord1;
 
             void main(void) {
-                vTextureCoord0 = uTextureMatrix[0] * aTextureCoord0;
-                vTextureCoord1 = uTextureMatrix[0] * aTextureCoord1;
+//                vTextureCoord0 = uTextureMatrix[0] * aTextureCoord0;
+//                vTextureCoord1 = uTextureMatrix[0] * aTextureCoord1;
+            vTextureCoord0 = aTextureCoord0;
+                vTextureCoord1 = aTextureCoord1;
+
 
                 gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
             }

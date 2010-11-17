@@ -1172,7 +1172,7 @@ lanyard.BasicOrbitView.prototype.getUpVector = function () {
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.BasicOrbitView.prototype.popReferenceCenter = function (dc) {
+lanyard.BasicOrbitView.prototype.popModelViewMatrix = function (dc) {
     //this._logger.fine("Popping the reference center.");
 
     this.modelView = this.modelViewStack.pop();
@@ -1390,7 +1390,7 @@ lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, pro
  * @param {lanyard.DrawContext} dc the draw context.
  * @param {lanyard.geom.Point} referenceCenter the reference center.
  */
-lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCenter) {
+lanyard.BasicOrbitView.prototype.pushModelViewReferenceCenter = function (dc, referenceCenter) {
 
     if(!this.modelView) {
         this._logger.severe("Attempted to push the reference center without a valid model-view.");
@@ -1408,6 +1408,24 @@ lanyard.BasicOrbitView.prototype.pushReferenceCenter = function (dc, referenceCe
     this.modelView = this.modelView.translatePoint(referenceCenter);
 
     //this._logger.fine("new model-view is: " + this.modelView.toString());
+
+    // Load up the new model-view
+    dc.loadMatrix("uMVMatrix", this.modelView);
+};
+
+/**
+ * Pushes a new model-view matrix to the matrix stack.
+ *
+ * @param {lanyard.DrawContext} dc the new draw context.
+ * @param {lanyard.geom.MatrixFour} newModelView the new model-view matrix.
+ */
+lanyard.BasicOrbitView.prototype.pushModelViewMatrix = function (dc, newModelView) {
+    // Push the current modelView on the stack
+    /** @type {lanyard.geom.MatrixFour} */
+    var copyModelView = new lanyard.geom.MatrixFour(this.modelView.getEntries());
+    this.modelViewStack.push(copyModelView);
+
+    this.modelView = newModelView;
 
     // Load up the new model-view
     dc.loadMatrix("uMVMatrix", this.modelView);

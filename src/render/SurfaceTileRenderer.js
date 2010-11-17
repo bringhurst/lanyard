@@ -183,7 +183,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
     gl.depthFunc(gl.LEQUAL);
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.enable(gl.TEXTURE_2D); 
+    //gl.enable(gl.TEXTURE_2D); 
 
     /** @type {lanyard.SectorGeometryList} */
     var sectorGeoms = dc.getSurfaceGeometry();
@@ -217,9 +217,9 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
             gl.activeTexture(gl.TEXTURE0);
 
             if (tilesToRender[j].bind(dc)) {
-                // Pass some uniform values to fragment shader.
-                gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerTileImage"), 0); // Use texture unit 0.
-                gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerAlphaMask"), 1); // Use texture unit 1.
+
+                gl.activeTexture(gl.TEXTURE0);
+                gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerTileImage"), 0);
 
                 /** @type {number} */
                 var so = 0;
@@ -237,6 +237,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                 this.computeTransform(dc, tilesToRender[j], this.transform);
 
                 // FIXME: manually apply these to the state matrices
+
                 //gl.scaled(this.transform.HScale, this.transform.VScale, 1.0);
                 //gl.translated(this.transform.HShift, this.transform.VShift, 0.0);
 
@@ -255,6 +256,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                 //we will apply the transform to alpha mask in the vertex shader using texture 0 matrix 
                 gl.activeTexture(gl.TEXTURE1);
                 this.alphaTexture.bind();
+                gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerAlphaMask"), 1);
 
                 var numTexUnitsUsed = 2;
 

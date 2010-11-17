@@ -328,29 +328,38 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
 lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
     this._logger.fine("Render was called.");
 
-/*******
-    dc.getView().pushReferenceCenter(dc, this._ri.referenceCenter);
+    /** @type {Array.<number>} */
+    var indices = this.getIndices(this._ri.density);
 
     var gl = dc.getGL();
-    gl.glPushClientAttrib(GL.GL_CLIENT_VERTEX_ARRAY_BIT);
-    gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-    gl.glVertexPointer(3, GL.GL_DOUBLE, 0, this.ri.vertices.rewind());
 
-    for (int i = 0; i < numTextureUnits; i++) {
-        gl.glClientActiveTexture(GL.GL_TEXTURE0 + i);
-        gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-        gl.glTexCoordPointer(2, GL.GL_DOUBLE, 0, ri.texCoords.rewind());
-    }
+    dc.getView().pushModelViewReferenceCenter(dc, this._ri.referenceCenter);
 
-    gl.glDrawElements(javax.media.opengl.GL.GL_TRIANGLE_STRIP, this.ri.indices.limit(),
-        javax.media.opengl.GL.GL_UNSIGNED_INT, this.ri.indices.rewind());
+    var posBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.vertices), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
+    gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+        3, gl.FLOAT, false, 0, 0);
 
-    gl.glPopClientAttrib();
+    //FIXME: support more than one texture unit
+    var texBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, texBuffer);
 
-    dc.getView().popReferenceCenter(dc);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.texCoords), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aTextureCoord0"));
+    gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aTextureCoord0"),
+        2, gl.FLOAT, false, 0, 0)
 
-    return this.ri.indices.limit() - 2; // return number of triangles rendered
-********/
+    var idxBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+    gl.drawElements(gl.TRIANGLES, this._ri.indices.length, gl.UNSIGNED_SHORT, 0);
+
+    dc.getView().popModelViewMatrix(dc);
+
+    return this._ri.indices.length - 2; // return number of triangles rendered
 };
 
 /**
@@ -364,7 +373,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
     /** @type {Array.<number>} */
     var indices = this.getIndices(this._ri.density);
 
-    dc.getView().pushReferenceCenter(dc, this._ri.referenceCenter);
+    dc.getView().pushModelViewReferenceCenter(dc, this._ri.referenceCenter);
 
     var gl = dc.getGL();
 
@@ -385,7 +394,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
         gl.drawElements(gl.TRIANGLE_STRIP, this._ri.vertices.length / 3, gl.UNSIGNED_SHORT, 0);
     }
 
-    dc.getView().popReferenceCenter(dc);
+    dc.getView().popModelViewMatrix(dc);
 
     if (showTileBoundary) {
         this.renderPatchBoundary(dc, gl);
@@ -439,7 +448,7 @@ lanyard.globes.RectTile.prototype.renderTrianglesWithUniqueColors = function (dc
     var gl = dc.getGL();
 
     if (null != ri.referenceCenter) {
-        dc.getView().pushReferenceCenter(dc, ri.referenceCenter);
+        dc.getView().pushModelViewReferenceCenter(dc, ri.referenceCenter);
     }
 
     minColorCode = dc.getUniquePickColor().getRGB();
@@ -468,7 +477,7 @@ lanyard.globes.RectTile.prototype.renderTrianglesWithUniqueColors = function (dc
     maxColorCode = dc.getUniquePickColor().getRGB();
 
     if (null != ri.referenceCenter) {
-        dc.getView().popReferenceCenter(dc);
+        dc.getView().popModelViewMatrix(dc);
     }
 *************/
 };

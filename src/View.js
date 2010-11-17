@@ -124,16 +124,16 @@ lanyard.View.prototype.setFieldOfView = function (newFov) {};
 /**
  * Generates a new coordinate system in which the View does not move, and model coordinates are reverse
  * transformed into eye coordinates. The origin for these coordinates will be referenceCenter, therefore
- * all objects drawn after a call to pushReferenceCenter should be with respect to this Point, rather than
- * the customary origin (0, 0, 0). This creates a new model-view matrix, which is places on the top of a
- * a matrix stack, and immediately applied to the current OpenGL context. In order to return to the original
- * coordinate space, callers should invoke popReferenceCenter after rendering is complete. Note that calls
- * to getModelViewMatrix will not return reference-center model-view matrix, but the original matrix.
+ * all objects drawn after a call to pushModelViewReferenceCenter should be with respect to this Point,
+ * rather than the customary origin (0, 0, 0). This creates a new model-view matrix, which is places on the
+ * top of a a matrix stack, and immediately applied to the current OpenGL context. In order to return to the
+ * original coordinate space, callers should invoke popReferenceCenter after rendering is complete. Note that
+ * calls to getModelViewMatrix will not return reference-center model-view matrix, but the original matrix.
  *
  * @param {lanyard.DrawContext} dc the current World Wind drawing context on which View's state will apply.
  * @param {lanyard.geom.Point} referenceCenter the Point to become the new model space origin.
  */
-lanyard.View.prototype.pushReferenceCenter = function (dc, referenceCenter) {};
+lanyard.View.prototype.pushModelViewReferenceCenter = function (dc, referenceCenter) {};
 
 /**
  * Removes the model-view matrix on top of the matrix stack, and restores the matrix now on top. This has
@@ -142,7 +142,7 @@ lanyard.View.prototype.pushReferenceCenter = function (dc, referenceCenter) {};
  *
  * @param {lanyard.DrawContext} dc the current World Wind drawing context on which View's state will apply.
  */
-lanyard.View.prototype.popReferenceCenter = function (dc) {};
+lanyard.View.prototype.popModelViewMatrix = function (dc) {};
 
 /**
  * Returns the eye position in model coordinates.

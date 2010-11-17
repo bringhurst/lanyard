@@ -48,6 +48,7 @@ lanyard.util.Texture = function (gl) {
  * Binds this texture to the current GL context.
  */
 lanyard.util.Texture.prototype.bind = function () {
+    this._logger.fine("Binding a texture.");
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
 };
 
@@ -65,7 +66,16 @@ lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
     var self = this;
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
-        self.gl.texImage2D(self.gl.TEXTURE_2D, 0, self.gl.RGBA, self.gl.RGBA, self.gl.UNSIGNED_BYTE, img);
+
+        var gl = self.gl;
+
+        gl.bindTexture(gl.TEXTURE_2D, this.tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+
         self.createMipmap();
     };
 };
