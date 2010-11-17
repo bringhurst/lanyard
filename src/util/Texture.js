@@ -48,7 +48,7 @@ lanyard.util.Texture = function (gl) {
  * Binds this texture to the current GL context.
  */
 lanyard.util.Texture.prototype.bind = function () {
-    this._logger.fine("Binding a texture.");
+    //this._logger.fine("Binding a texture.");
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
 };
 

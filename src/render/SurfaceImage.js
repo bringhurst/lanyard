@@ -194,7 +194,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
     var surfaceImage = new Image();
 
     surfaceImage.onload = function () {
-        thix._logger.fine("Loaded image at: " + thix.imageSource + "<img src=" + thix.imageSource + ">");
+        //thix._logger.fine("Loaded image at: " + thix.imageSource + "<img src=" + thix.imageSource + ">");
 
         surfaceTexture.bind();
         surfaceTexture.setImage(surfaceImage);
@@ -251,7 +251,7 @@ lanyard.render.SurfaceImage.prototype.bind = function (dc) {
     }
 
     if (t) {
-        this._logger.fine("Binding a surface image texture.");
+        //this._logger.fine("Binding a surface image texture.");
         t.bind();
         return true;
     }
@@ -298,7 +298,7 @@ lanyard.render.SurfaceImage.prototype.applyInternalTransform = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.render.SurfaceImage.prototype.render = function (dc) {
-    this._logger.fine("The surface image render was called.");
+    //this._logger.fine("The surface image render was called.");
 
     if (!dc) {
         this._logger.severe("The draw context is null.");

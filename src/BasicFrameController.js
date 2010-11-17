@@ -125,7 +125,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
         var layer = layers[i];
 
         if(layer) {
-            this._logger.fine("Rendering layer: " + layer.toString());
+            //this._logger.fine("Rendering layer: " + layer.toString());
             layer.render(dc);
         }
     }

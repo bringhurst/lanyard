@@ -197,7 +197,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
  * @return {lanyard.SectorGeometryList} the sector geometries.
  */
 lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (dc) {
-    this._logger.fine("Tessellating the draw context geometries.");
+    //this._logger.fine("Tessellating the draw context geometries.");
 
     if(!dc) {
         this._logger.severe("Attempted to tessellate without a valid draw context.");

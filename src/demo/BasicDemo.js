@@ -96,7 +96,7 @@ lanyard.demo.BasicDemo.prototype.run = function () {
     var self = this;
     setInterval(function () {
         self.lanyardCanvas.display();
-    }, 1500);
+    }, 15);
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
     lanyard.demo.BasicDemo.prototype.run);
@@ -148,7 +148,7 @@ lanyard.demo.BasicDemo.prototype.setupLayerList = function () {
 
     var i;
     for(i = 0; i < this._layerList.length; i = i + 1) {
-        //this._logger.fine("Adding layer with name = " + this._layerList[i].toString());
+        this._logger.fine("Adding layer with name = " + this._layerList[i].toString());
 
         var layerLabel = goog.dom.createDom('p', {'style': 'background-color:#EEE'},
             this._layerList[i].getName());

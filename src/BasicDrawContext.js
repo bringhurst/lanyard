@@ -203,7 +203,7 @@ lanyard.BasicDrawContext.prototype.setupShaders = function () {
         this.glsl.useShaders();
         this.glsl.startShader();
     } else {
-        this._logger.fine("Attempted to reload shaders when shaders were already loaded.");
+        //this._logger.fine("Attempted to reload shaders when shaders were already loaded.");
     }
 };
 
