@@ -178,15 +178,14 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
 
     this.lanyardCanvas = lanyardCanvas;
 
+    // Setup a listener for key events.
+    var keyEventHandler = new goog.events.KeyHandler(domCanvas);
+    goog.events.listen(keyEventHandler, "key", this.keysPolled, false, this);
+
     // Setup a listener for the mouse wheel
     var mouseWheelHandler = new goog.events.MouseWheelHandler(domCanvas);
-    goog.events.listen(
-        mouseWheelHandler,
-        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
-        this.mouseWheelMoved,
-        false,
-        this
-    );
+    goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
+        this.mouseWheelMoved, false, this);
 
     // Setup a listener for dragging the mouse.
     goog.events.listen(domCanvas, goog.events.EventType.MOUSEDOWN, function(e) {
@@ -221,6 +220,72 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
  */
 lanyard.dom.InputHandler.prototype.getEventSource = function () {
     return this.lanyardCanvas;
+};
+
+/**
+ * Handle key events.
+ *
+ * @param {Event} keyEvent the key event.
+ */
+lanyard.dom.InputHandler.prototype.keysPolled = function (keyEvent) {
+    if(!this.lanyardCanvas) {
+        return;
+    }
+
+    /** @type {lanyard.View} */
+    var view = this.lanyardCanvas.getView();
+    if(!view) {
+        return;
+    }
+
+    // Prevent the keypress from affecting the browser window.
+    keyEvent.preventDefault();
+
+    /** @type {number} */
+    var sinHeading = view.getHeading().sin();
+
+    /** @type {number} */
+    var cosHeading = view.getHeading().cos();
+
+    /** @type {number} */
+    var latFactor = 0;
+
+    /** @type {number} */
+    var lonFactor = 0;
+
+    if (keyEvent.keyCode == goog.events.KeyCodes.LEFT) {
+        latFactor = sinHeading;
+        lonFactor = -cosHeading;
+    } else if (keyEvent.keyCode == goog.events.KeyCodes.RIGHT) {
+        latFactor = -sinHeading;
+        lonFactor = cosHeading;
+    } else if (keyEvent.keyCode == goog.events.KeyCodes.UP) {
+        latFactor = cosHeading;
+        lonFactor = sinHeading;
+    } else if (keyEvent.keyCode == goog.events.KeyCodes.DOWN) {
+        latFactor = -cosHeading;
+        lonFactor = -sinHeading;
+    }
+  
+    if (latFactor !== 0 || lonFactor !== 0) {
+        /** @type {lanyard.Globe} */
+        var globe = this.lanyardCanvas.getModel().getGlobe();
+
+        if (globe) {
+            /** @type {lanyard.geom.LatLon} */
+            var latLonChange =
+                this.computeViewLatLonChange(view, globe, 10 * latFactor, 10 * lonFactor, false);
+            this.setViewLatLon(view,
+                this.computeNewViewLatLon(
+                    view,
+                    latLonChange.getLatitude(),
+                    latLonChange.getLongitude()
+                )
+            );
+
+            return;
+        }
+    }
 };
 
 /**
