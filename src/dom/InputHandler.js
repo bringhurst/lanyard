@@ -253,16 +253,16 @@ lanyard.dom.InputHandler.prototype.keysPolled = function (keyEvent) {
     /** @type {number} */
     var lonFactor = 0;
 
-    if (keyEvent.keyCode == goog.events.KeyCodes.LEFT) {
+    if (keyEvent.keyCode === goog.events.KeyCodes.LEFT) {
         latFactor = sinHeading;
         lonFactor = -cosHeading;
-    } else if (keyEvent.keyCode == goog.events.KeyCodes.RIGHT) {
+    } else if (keyEvent.keyCode === goog.events.KeyCodes.RIGHT) {
         latFactor = -sinHeading;
         lonFactor = cosHeading;
-    } else if (keyEvent.keyCode == goog.events.KeyCodes.UP) {
+    } else if (keyEvent.keyCode === goog.events.KeyCodes.UP) {
         latFactor = cosHeading;
         lonFactor = sinHeading;
-    } else if (keyEvent.keyCode == goog.events.KeyCodes.DOWN) {
+    } else if (keyEvent.keyCode === goog.events.KeyCodes.DOWN) {
         latFactor = -cosHeading;
         lonFactor = -sinHeading;
     }
