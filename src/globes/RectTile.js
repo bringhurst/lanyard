@@ -51,6 +51,24 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
     this._logger = goog.debug.Logger.getLogger('lanyard.globes.RectTile');
 
     /**
+     * @type {*}
+     * @private
+     */
+    this.posBuffer = null;
+
+    /**
+     * @type {*}
+     * @private
+     */
+    this.texBuffer = null;
+
+    /**
+     * @type {*}
+     * @private
+     */
+    this.idxBuffer = null;
+
+    /**
      * @type {number}
      * @private
      */
@@ -335,24 +353,39 @@ lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
 
     dc.getView().pushModelViewReferenceCenter(dc, this._ri.referenceCenter);
 
-    var posBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.vertices), gl.STATIC_DRAW);
+    if(!this.posBuffer) {
+        this.posBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.vertices), gl.STATIC_DRAW);
+    } else {
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
+    }
+
     gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
     gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
         3, gl.FLOAT, false, 0, 0);
 
     //FIXME: support more than one texture unit
-    var texBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.texCoords), gl.STATIC_DRAW);
+
+    if(!this.texBuffer) {
+        this.texBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.texBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.texCoords), gl.STATIC_DRAW);
+    } else {
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.texBuffer);
+    }
+
     gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aTextureCoord0"));
     gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aTextureCoord0"),
         2, gl.FLOAT, false, 0, 0)
 
-    var idxBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    if(!this.idxBuffer) {
+        this.idxBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.idxBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    } else {
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.idxBuffer);
+    }
 
     gl.drawElements(gl.TRIANGLE_STRIP, this._ri.indices.length, gl.UNSIGNED_SHORT, 0);
 
