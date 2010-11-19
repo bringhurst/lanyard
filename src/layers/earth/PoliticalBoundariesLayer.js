@@ -42,7 +42,10 @@ lanyard.layers.earth.PoliticalBoundariesLayer = function () {
     /** @private */
     this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
 
+    // Method called into super()
     this.makeLevels();
+
+    // Method called into super()
     this.setUseTransparentTextures(true);
 };
 

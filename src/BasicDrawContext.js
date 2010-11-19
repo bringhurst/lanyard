@@ -620,7 +620,7 @@ lanyard.BasicDrawContext.prototype.loadMatrix = function (name, matrix) {
  */     
 lanyard.BasicDrawContext.prototype.loadIdentity = function (name) {
     // Matrix constructor defaults to identity.
-    this.loadMatrix(name, new lanyard.geom.MatrixFour(null));
+    this.loadMatrix(name, new Float32Array(new lanyard.geom.MatrixFour(null)));
 };
 
 /* EOF */
