@@ -157,7 +157,7 @@ lanyard.dom.InputHandler = function () {
 /**
  * Set the event source of this input handler.
  *
- * @param {lanyard.LanyardCanvas} lanyardCanvas the event source.
+ * @param {lanyard.LanyardCanvas} anyardCanvas the event source.
  */
 lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
 
@@ -661,6 +661,10 @@ lanyard.dom.InputHandler.prototype.setViewProperties =
     if (newProperties.zoom) {
         view.setZoom(newProperties.zoom);
     }
+
+    var evt = document.createEvent("Event");
+    evt.initEvent("render", true, false);
+    this.lanyardCanvas.dispatchEvent(evt);
 };
 
 /**

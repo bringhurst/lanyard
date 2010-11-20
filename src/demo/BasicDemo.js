@@ -92,11 +92,8 @@ lanyard.demo.BasicDemo.prototype.run = function () {
     this.lanyardCanvas.setView(new lanyard.BasicOrbitView());
     this.lanyardCanvas.createDefaultInputHandler();
 
-    // Show it
-    var self = this;
-    setInterval(function () {
-        self.lanyardCanvas.display();
-    }, 15);
+    // Start it up.
+    this.lanyardCanvas.display();
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
     lanyard.demo.BasicDemo.prototype.run);

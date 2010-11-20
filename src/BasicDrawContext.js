@@ -1,4 +1,4 @@
-/*global goog, lanyard */
+/*global goog, lanyard, Float32Array */
 /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 /**

@@ -175,7 +175,8 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
 
     if (!this.alphaTexture) {
         this.initAlphaTexture(
-            lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE
+            lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE,
+            dc
         );
     }
 
@@ -280,8 +281,9 @@ lanyard.render.SurfaceTileRenderer.prototype.getIntersectingTiles = function (sg
  * Generate an alpha texture of the specified size.
  *
  * @param {number} size the size fo the specified tile.
+ * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function (size) {
+lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function (size, dc) {
     /** @type {Element} */
     var textureCanvas = goog.dom.createElement("canvas");
     textureCanvas.width = textureCanvas.height = size;
@@ -301,7 +303,7 @@ lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function (size) 
 
     textureContext.putImageData(textureImage, 0, 0);
 
-    this.alphaTexture = new lanyard.util.Texture(this.gl);
+    this.alphaTexture = new lanyard.util.Texture(dc);
     this.alphaTexture.updateCanvas(textureCanvas);
 
     this.alphaTexture.bind();
@@ -316,8 +318,9 @@ lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function (size) 
  * Generate an outline texture of the specified size.
  *
  * @param {number} size the size of the texture to create.
+ * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.render.SurfaceTileRenderer.prototype.initOutlineTexture = function (size) {
+lanyard.render.SurfaceTileRenderer.prototype.initOutlineTexture = function (size, dc) {
     /** @type {Element} */
     var textureCanvas = goog.dom.createElement("canvas");
     textureCanvas.width = textureCanvas.height = size;
@@ -344,7 +347,7 @@ lanyard.render.SurfaceTileRenderer.prototype.initOutlineTexture = function (size
 
     textureContext.putImageData(textureImage, 0, 0);
 
-    this.outlineTexture = new lanyard.util.Texture(this.gl);
+    this.outlineTexture = new lanyard.util.Texture(dc);
     this.outlineTexture.updateCanvas(textureCanvas);
 
     this.outlineTexture.bind();

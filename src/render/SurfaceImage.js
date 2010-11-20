@@ -188,7 +188,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
     var thix = this;
 
     /** @type {lanyard.util.Texture} */
-    var surfaceTexture = new lanyard.util.Texture(dc.getGL());
+    var surfaceTexture = new lanyard.util.Texture(dc);
 
     /** @type {Image} */
     var surfaceImage = new Image();
@@ -208,6 +208,11 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
 
         thix.isLoaded = true;
         thix.textureData = surfaceTexture;
+
+        // Fire off a rendering event.
+        var evt = document.createEvent("Event");
+        evt.initEvent("render", true, false);
+        dc.getWebGLCanvas().dispatchEvent(evt);
     };
 
     surfaceImage.onerror = function () {

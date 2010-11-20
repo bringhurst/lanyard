@@ -56,6 +56,9 @@ lanyard.LanyardCanvas = function (canvasElement) {
      */
     this._inputHandler = null;
 
+    // Listen for rendering events.
+    goog.events.listen(this._canvasElement, 'render', lanyard.LanyardCanvas.prototype.display, false, this);
+
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.LanyardCanvas');
 };
 
@@ -154,6 +157,8 @@ lanyard.LanyardCanvas.prototype.getCanvas = function () {
  * Display or update the map.
  */
 lanyard.LanyardCanvas.prototype.display = function () {
+
+    //this._logger.fine("display was called.");
 
     /** @type {lanyard.SceneController} */
     var sc = this.getSceneController();

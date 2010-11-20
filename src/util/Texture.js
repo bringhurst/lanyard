@@ -31,17 +31,25 @@ goog.provide('lanyard.util.Texture');
  * Represent an OpenGL texture object.
  *
  * @constructor
- * @param {*} gl the current webgl context.
+ * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.util.Texture = function (gl) {
+lanyard.util.Texture = function (dc) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.util.Texture');
 
-    if(!gl) {
+    if(!dc) {
+        this._logger.severe("Creation of a texture was attempted without a valid draw context.");
+    }
+
+    /** @type {lanyard.DrawContext} */
+    this.dc = dc;
+
+    this.gl = dc.getGL();
+
+    if(!this.gl) {
         this._logger.severe("Creation of a texture was attempted without a valid gl context.");
     }
 
-    this.gl = gl;
-    this.tex = gl.createTexture(); 
+    this.tex = this.gl.createTexture(); 
 };
 
 /**
@@ -77,6 +85,10 @@ lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
         gl.bindTexture(gl.TEXTURE_2D, null);
 
         self.createMipmap();
+
+        // Fire off a rendering event.
+        self._logger.fine("Render event is being fired off.");
+        self.dispatchEvent(new goog.events.Event('render', self.dc.getWebGLCanvas()));
     };
 };
 
