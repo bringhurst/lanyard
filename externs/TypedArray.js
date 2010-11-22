@@ -67,12 +67,12 @@ function Int8Array(args) {}
  * @const
  * @type {number}
  */
-Int8Array.prototype.BYTES_PER_ELEMENT = {};
+Int8Array.prototype.BYTES_PER_ELEMENT;
 
 /**
  * @type {number}
  */
-Int8Array.prototype.length = {};
+Int8Array.prototype.length;
 
 /**
  * @param {number} index
@@ -105,12 +105,12 @@ function Int16Array(args) {}
  * @const
  * @type {number}
  */
-Int16Array.prototype.BYTES_PER_ELEMENT = {};
+Int16Array.prototype.BYTES_PER_ELEMENT;
 
 /**
  * @type {number}
  */
-Int16Array.prototype.length = {};
+Int16Array.prototype.length;
 
 /**
  * @param {number} index
@@ -142,12 +142,12 @@ function Uint16Array(args) {}
  * @const
  * @type {number}
  */
-Uint16Array.prototype.BYTES_PER_ELEMENT = {};
+Uint16Array.prototype.BYTES_PER_ELEMENT;
 
 /**
  * @type {number}
  */
-Uint16Array.prototype.length = {};
+Uint16Array.prototype.length;
 
 /**
  * @param {number} index
@@ -179,12 +179,12 @@ function Int32Array(args) {}
  * @const
  * @type {number}
  */
-Int32Array.prototype.BYTES_PER_ELEMENT = {};
+Int32Array.prototype.BYTES_PER_ELEMENT;
 
 /**
  * @type {number}
  */
-Int32Array.prototype.length = {};
+Int32Array.prototype.length;
 
 /**
  * @param {number} index
@@ -217,12 +217,12 @@ function Uint32Array(args) {}
  * @const
  * @type {number}
  */
-Uint32Array.prototype.BYTES_PER_ELEMENT = {};
+Uint32Array.prototype.BYTES_PER_ELEMENT;
 
 /**
  * @type {number}
  */
-Uint32Array.prototype.length = {};
+Uint32Array.prototype.length;
 
 /**
  * @param {number} index
@@ -255,12 +255,12 @@ function Float32Array(args) {}
  * @const
  * @type {number}
  */
-Float32Array.prototype.BYTES_PER_ELEMENT = {};
+Float32Array.prototype.BYTES_PER_ELEMENT;
 
 /**
  * @type {number}
  */
-Float32Array.prototype.length = {};
+Float32Array.prototype.length;
 
 /**
  * @param {number} index
@@ -293,12 +293,12 @@ function Float64Array(args) {}
  * @const
  * @type {number}
  */
-Float64Array.prototype.BYTES_PER_ELEMENT = {};
+Float64Array.prototype.BYTES_PER_ELEMENT;
 
 /**
  * @type {number}
  */
-Float64Array.prototype.length = {};
+Float64Array.prototype.length;
 
 /**
  * @param {number} index
