@@ -37,9 +37,9 @@ function ArrayBuffer(length) {}
 
 /**
  * @constructor
- * @param {*}
+ * @param {*} args
  */
-function ArrayBufferView() {}
+function ArrayBufferView(args) {}
 
 /**
  * @return {ArrayBuffer}
@@ -59,9 +59,9 @@ ArrayBufferView.prototype.byteLength = function() {};
 /**
  * @constructor
  * @extends {ArrayBufferView}
- * @param {*}
+ * @param {*} args
  */
-function Int8Array() {}
+function Int8Array(args) {}
 
 /**
  * @const
@@ -97,9 +97,9 @@ Int8Array.prototype.slice = function (start, end) {};
 /**
  * @constructor
  * @extends {ArrayBufferView}
- * @param {*}
+ * @param {*} args
  */
-function Int16Array() {}
+function Int16Array(args) {}
 
 /**
  * @const
@@ -134,9 +134,9 @@ Int16Array.prototype.slice = function (start, end) {};
 /**
  * @constructor
  * @extends {ArrayBufferView}
- * @param {*}
+ * @param {*} args
  */
-function Uint16Array() {}
+function Uint16Array(args) {}
 
 /**
  * @const
@@ -171,9 +171,9 @@ Uint16Array.prototype.slice = function (start, end) {};
 /**
  * @constructor
  * @extends {ArrayBufferView}
- * @param {*}
+ * @param {*} args
  */
-function Int32Array() {}
+function Int32Array(args) {}
 
 /**
  * @const
@@ -209,9 +209,9 @@ Int32Array.prototype.slice = function (start, end) {};
 /**
  * @constructor
  * @extends {ArrayBufferView}
- * @param {*}
+ * @param {*} args
  */
-function Uint32Array() {}
+function Uint32Array(args) {}
 
 /**
  * @const
@@ -247,9 +247,9 @@ Uint32Array.prototype.slice = function (start, end) {};
 /**
  * @constructor
  * @extends {ArrayBufferView}
- * @param {*}
+ * @param {*} args
  */
-function Float32Array() {}
+function Float32Array(args) {}
 
 /**
  * @const
@@ -285,9 +285,9 @@ Float32Array.prototype.slice = function (start, end) {};
 /**
  * @constructor
  * @extends {ArrayBufferView}
- * @param {*}
+ * @param {*} args
  */
-function Float64Array() {}
+function Float64Array(args) {}
 
 /**
  * @const
@@ -395,42 +395,42 @@ DataView.prototype.setUint8 = function (byteOffset, value) {};
 /**
  * @param {number} byteOffset
  * @param {number} value
- * @boolean {boolean} littleEndian
+ * @param {boolean} littleEndian
  */
 DataView.prototype.setInt16 = function (byteOffset, value, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
- * @boolean {boolean} littleEndian
+ * @param {boolean} littleEndian
  */
 DataView.prototype.setUint16 = function (byteOffset, value, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
- * @boolean {boolean} littleEndian
+ * @param {boolean} littleEndian
  */
 DataView.prototype.setInt32 = function (byteOffset, value, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
- * @boolean {boolean} littleEndian
+ * @param {boolean} littleEndian
  */
 DataView.prototype.setUint32 = function (byteOffset, value, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
- * @boolean {boolean} littleEndian
+ * @param {boolean} littleEndian
  */
 DataView.prototype.setFloat32 = function (byteOffset, value, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
- * @boolean {boolean} littleEndian
+ * @param {boolean} littleEndian
  */
 DataView.prototype.setFloat64 = function (byteOffset, value, littleEndian) {};
 
