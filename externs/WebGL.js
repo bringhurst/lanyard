@@ -2033,36 +2033,15 @@ WebGLRenderingContext.prototype.blendFuncSeparate = function (srcRGB, dstRGB, sr
 
 /**
  * @param {number} target
- * @param {number} size
+ * @param {number|ArrayBufferView|ArrayBuffer} x size, data
  * @param {number} usage
  */
-WebGLRenderingContext.prototype.bufferData = function (target, size, usage) {};
-
-/**
- * @param {number} target
- * @param {ArrayBufferView} data
- * @param {number} usage
- */
-WebGLRenderingContext.prototype.bufferData = function (target, data, usage) {};
-
-/**
- * @param {number} target
- * @param {ArrayBuffer} data
- * @param {number} usage
- */
-WebGLRenderingContext.prototype.bufferData = function (target, data, usage) {};
+WebGLRenderingContext.prototype.bufferData = function (target, x, usage) {};
 
 /**
  * @param {number} target
  * @param {number} offset
- * @param {ArrayBufferView} data
- */
-WebGLRenderingContext.prototype.bufferSubData = function (target, offset, data) {};
-
-/**
- * @param {number} target
- * @param {number} offset
- * @param {ArrayBuffer} data
+ * @param {ArrayBufferView|ArrayBuffer} data
  */
 WebGLRenderingContext.prototype.bufferSubData = function (target, offset, data) {};
 
@@ -2578,59 +2557,15 @@ WebGLRenderingContext.prototype.stencilOpSeparate = function (face, fail, zfail,
  * @param {number} target
  * @param {number} level
  * @param {number} internalformat
- * @param {number} width
- * @param {number} height
- * @param {number} border
- * @param {number} format
- * @param {number} type
- * @param {ArrayBufferView} pixels
+ * @param {number} x width, format
+ * @param {number} y height, type
+ * @param {number|ImageData|image|canvas|video} z border, pixels, image, canvas, video
+ * @param {undefined|number} format
+ * @param {undefined|number} type
+ * @param {undefined|ArrayBufferView} pixels
  */
 WebGLRenderingContext.prototype.texImage2D =
-    function (target, level, internalformat, width, height, border, format, type, pixels) {};
-
-/**
- * @param {number} target
- * @param {number} level
- * @param {number} internalformat
- * @param {number} format
- * @param {number} type
- * @param {ImageData} pixels
- */
-WebGLRenderingContext.prototype.texImage2D =
-    function (target, level, internalformat, format, type, pixels) {};
-
-/**
- * @param {number} target
- * @param {number} level
- * @param {number} internalformat
- * @param {number} format
- * @param {number} type
- * @param {Image} image
- */
-WebGLRenderingContext.prototype.texImage2D =
-    function (target, level, internalformat, format, type, image) {};
-
-/**
- * @param {number} target
- * @param {number} level
- * @param {number} internalformat
- * @param {number} format
- * @param {number} type
- * @param {canvas} canvas
- */
-WebGLRenderingContext.prototype.texImage2D =
-    function (target, level, internalformat, format, type, canvas) {};
-
-/**
- * @param {number} target
- * @param {number} level
- * @param {number} internalformat
- * @param {number} format
- * @param {number} type
- * @param {video} video
- */
-WebGLRenderingContext.prototype.texImage2D =
-    function (target, level, internalformat, format, type, video) {};
+    function (target, level, internalformat, x, y, z, format, type, pixels) {};
 
 /**
  * @param {number} target
@@ -2651,62 +2586,14 @@ WebGLRenderingContext.prototype.texParameteri = function (target, pname, param) 
  * @param {number} level
  * @param {number} xoffset
  * @param {number} yoffset
- * @param {number} width
- * @param {number} height
- * @param {number} format
- * @param {number} type
- * @param {ArrayBufferView} pixels
+ * @param {number} x width, format
+ * @param {number} y height, type
+ * @param {number|image|canvas|video} z format, pixels, canvas, video
+ * @param {undefined|number} type
+ * @param {undefined|ArrayBufferView} pixels
  */
 WebGLRenderingContext.prototype.texSubImage2D =
-    function (target, level, xoffset, yoffset, width, height, format, type, pixels) {};
-
-/**
- * @param {number} target
- * @param {number} level
- * @param {number} xoffset
- * @param {number} yoffset
- * @param {number} format
- * @param {number} type
- * @param {image} pixels
- */
-WebGLRenderingContext.prototype.texSubImage2D =
-    function (target, level, xoffset, yoffset, format, type, pixels) {};
-
-/**
- * @param {number} target
- * @param {number} level
- * @param {number} xoffset
- * @param {number} yoffset
- * @param {number} format
- * @param {number} type
- * @param {image} image
- */
-WebGLRenderingContext.prototype.texSubImage2D =
-    function (target, level, xoffset, yoffset, format, type, image) {};
-
-/**
- * @param {number} target
- * @param {number} level
- * @param {number} xoffset
- * @param {number} yoffset
- * @param {number} format
- * @param {number} type
- * @param {canvas} canvas
- */
-WebGLRenderingContext.prototype.texSubImage2D =
-    function (target, level, xoffset, yoffset, format, type, canvas) {};
-
-/**
- * @param {number} target
- * @param {number} level
- * @param {number} xoffset
- * @param {number} yoffset
- * @param {number} format
- * @param {number} type
- * @param {video} video
- */
-WebGLRenderingContext.prototype.texSubImage2D =
-    function (target, level, xoffset, yoffset, format, type, video) {};
+    function (target, level, xoffset, yoffset, x, y, z, type, pixels) {};
 
 /**
  * @param {WebGLUniformLocation} loc
