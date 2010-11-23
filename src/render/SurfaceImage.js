@@ -68,7 +68,7 @@ lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
      * @private
      * @type {boolean}
      */
-    this.loaded = false; // True when image is loading or downloading
+    this.isLoaded = false; // True when image is loading or downloading
 
     /**
      * @type {boolean}
@@ -129,24 +129,6 @@ lanyard.render.SurfaceImage.prototype.setSector = function (sector) {
  */
 lanyard.render.SurfaceImage.prototype.getSector = function () {
     return this.sector;
-};
-
-/**
- * Returns if the image is loaded.
- *
- * @return {boolean} true if the image data is loaded.
- */
-lanyard.render.SurfaceImage.prototype.isLoaded = function () {
-    return this.loaded;
-};
-
-/**
- * Returns whether there was any problem loading texture data.
- *
- * @return {boolean} true if image data failed to download - or other problems.
- */
-lanyard.render.SurfaceImage.prototype.hasProblem = function () {
-    return this.hasProblem;
 };
 
 /**
