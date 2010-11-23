@@ -36,7 +36,7 @@ goog.require('lanyard.render.SurfaceTile');
  * A surface tile renderer.
  *
  * @constructor
- * @param {*} gl the current gl context.
+ * @param {WebGLRenderingContext} gl the current gl context.
  */
 lanyard.render.SurfaceTileRenderer = function (gl) {
     /** @type {lanyard.util.Texture} */
@@ -48,7 +48,7 @@ lanyard.render.SurfaceTileRenderer = function (gl) {
     /** @type {boolean} */
     this.showImageTileOutlines = true;
 
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     this.gl = gl;
 
     /** @type {Object} */
@@ -170,7 +170,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTile = function (dc, tile) {
 lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) {
     //this._logger.fine("renderTiles was called.");
 
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     var gl = dc.getGL();
 
     if (!this.alphaTexture) {

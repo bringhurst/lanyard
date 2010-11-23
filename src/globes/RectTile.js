@@ -51,19 +51,19 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
     this._logger = goog.debug.Logger.getLogger('lanyard.globes.RectTile');
 
     /**
-     * @type {*}
+     * @type {WebGLBuffer}
      * @private
      */
     this.posBuffer = null;
 
     /**
-     * @type {*}
+     * @type {WebGLBuffer}
      * @private
      */
     this.texBuffer = null;
 
     /**
-     * @type {*}
+     * @type {WebGLBuffer}
      * @private
      */
     this.idxBuffer = null;
@@ -441,7 +441,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
  * rather than just at the corners.
  *
  * @param {lanyard.DrawContext} dc the draw context.
- * @param {*} gl the webgl context.
+ * @param {WebGLRenderingContext} gl the webgl context.
  */
 lanyard.globes.RectTile.prototype.renderPatchBoundary = function (dc, gl) {
 /**************

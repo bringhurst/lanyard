@@ -46,7 +46,7 @@ lanyard.DrawContext = function (canvas) {};
 /**
  * Retrieves the current GL.
  *
- * @return {*} the current GL if available, null otherwise.
+ * @return {WebGLRenderingContext} the current GL if available, null otherwise.
  */
 lanyard.DrawContext.prototype.getGL = function () {};
 

@@ -99,7 +99,7 @@ lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
  */
 lanyard.util.Texture.prototype.setImage = function (image) {
     //this._logger.fine("Setting an image.");
-    this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+    this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, 1);
     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image);
 };
 

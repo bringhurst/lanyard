@@ -235,7 +235,7 @@ lanyard.BasicDrawContext.prototype.loadShaders = function (vshaderId, fshaderId)
 /**
  * Return the current WebGL rendering context.
  *
- * @return {*} the current rendering context.
+ * @return {WebGLRenderingContext} the current rendering context.
  */
 lanyard.BasicDrawContext.prototype.getGL = function () {
     return this.gl;
@@ -500,11 +500,14 @@ lanyard.BasicDrawContext.prototype.getOrderedRenderables = function () {
 lanyard.BasicDrawContext.prototype.drawUnitQuad = function () {
     this._logger.fine("Drawing a unit quad.");
 
+    /** @type {WebGLRenderingContext} */
     var gl = this.getGL();
 
+    /** @type {WebGLBuffer} */
     var quadBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
 
+    /** @type {Array.<number>} */
     var vertices = [
          0.0, 0.0, 0.0,
          1.0, 0.0, 0.0,
@@ -512,7 +515,7 @@ lanyard.BasicDrawContext.prototype.drawUnitQuad = function () {
          0.0, 1.0, 0.0
     ];
 
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     gl.vertexAttribPointer(this.glsl.getAttribLocation("aVertexPosition"), 3, gl.FLOAT, false, 0, 0);
 
     this._logger.fine("Calling draw arrays.");

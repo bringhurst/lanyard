@@ -181,7 +181,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
         this._logger.severe("The draw context was null.");
     }
 
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     var gl = dc.getGL();
 
     /** @type {lanyard.render.SurfaceImage} */
@@ -298,7 +298,7 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
         return;
     }
 
-    /** @type {*} */
+    /** @type {WebGLRenderingContext} */
     var gl = dc.getGL();
 
     // FIXME: for picking

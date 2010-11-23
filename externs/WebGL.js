@@ -2560,9 +2560,9 @@ WebGLRenderingContext.prototype.stencilOpSeparate = function (face, fail, zfail,
  * @param {number} x width, format
  * @param {number} y height, type
  * @param {number|ImageData|Image|HTMLCanvasElement|HTMLVideoElement} z border, pixels, image, canvas, video
- * @param {undefined|number} format
- * @param {undefined|number} type
- * @param {undefined|ArrayBufferView} pixels
+ * @param {number=} format
+ * @param {number=} type
+ * @param {ArrayBufferView=} pixels
  */
 WebGLRenderingContext.prototype.texImage2D =
     function (target, level, internalformat, x, y, z, format, type, pixels) {};
@@ -2589,8 +2589,8 @@ WebGLRenderingContext.prototype.texParameteri = function (target, pname, param) 
  * @param {number} x width, format
  * @param {number} y height, type
  * @param {number|Image|HTMLCanvasElement|HTMLVideoElement} z format, pixels, canvas, video
- * @param {undefined|number} type
- * @param {undefined|ArrayBufferView} pixels
+ * @param {number=} type
+ * @param {ArrayBufferView=} pixels
  */
 WebGLRenderingContext.prototype.texSubImage2D =
     function (target, level, xoffset, yoffset, x, y, z, type, pixels) {};
