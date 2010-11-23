@@ -28,8 +28,9 @@
 goog.provide('lanyard.dom.InputHandler');
 
 goog.require('goog.debug.Logger');
-goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.EventType');
+goog.require('goog.events.KeyHandler');
+goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.Dragger.EventType');
 
@@ -157,7 +158,7 @@ lanyard.dom.InputHandler = function () {
 /**
  * Set the event source of this input handler.
  *
- * @param {lanyard.LanyardCanvas} anyardCanvas the event source.
+ * @param {lanyard.LanyardCanvas} lanyardCanvas the event source.
  */
 lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
 
@@ -169,13 +170,14 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
         this._logger.severe("Attempted to set an event source without a valid view.");
     }
 
-    /** @type {Element} */
-    var domCanvas = lanyardCanvas.getCanvas();
+    /** @type {HTMLCanvasElement} */
+    var domCanvas = lanyardCanvas.getWebGLCanvas();
 
     if(!domCanvas) {
         this._logger.severe("Attempted to use an input source without a valid dom node.");
     }
 
+    /** @type {lanyard.LanyardCanvas} */
     this.lanyardCanvas = lanyardCanvas;
 
     // Setup a listener for key events.
@@ -202,8 +204,8 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
     }, false, this);
 
     // Setup a listener for when the mouse moves.
-    goog.events.listen(domCanvas, goog.events.EventType.MOUSEMOVE,
-       this.mouseMoved, false, this); 
+    //goog.events.listen(domCanvas, goog.events.EventType.MOUSEMOVE,
+    //   this.mouseMoved, false, this); 
 
     // Things to do on canvas unload.
     goog.events.listen(domCanvas, 'unload', function(e) {
@@ -462,7 +464,7 @@ lanyard.dom.InputHandler.prototype.setViewLatLon = function (view, newLatLon) {
  * @param {number} latFactor the latitude factor to use.
  * @param {number} lonFactor the longitude factor to use.
  * @param {boolean} slow should the transisition be slow or not.
- * @param {lanyard.geom.LatLon} the computed latlon.
+ * @return {lanyard.geom.LatLon} the computed latlon.
  */
 lanyard.dom.InputHandler.prototype.computeViewLatLonChange = function (
         view, globe, latFactor, lonFactor, slow) {
@@ -490,7 +492,7 @@ lanyard.dom.InputHandler.prototype.computeViewLatLonChange = function (
 /**
  * Compute a new latlon for the view.
  *
- * @param {lanayrd.View} view the view to use.
+ * @param {lanyard.View} view the view to use.
  * @param {lanyard.geom.Angle} latChange the change in latitude.
  * @param {lanyard.geom.Angle} lonChange the change in longitude.
  * @return {lanyard.geom.LatLon} the computed latlon.
@@ -534,7 +536,7 @@ lanyard.dom.InputHandler.prototype.computeNewViewLatLon = function (view, latCha
 /**
  * Handle a mouse wheel moved event.
  *
- * @param {MouseWheelEvent} mouseWheelEvent the mouse wheel event.
+ * @param {goog.events.MouseWheelEvent} mouseWheelEvent the mouse wheel event.
  */
 lanyard.dom.InputHandler.prototype.mouseWheelMoved = function (mouseWheelEvent) {
     if(!this.lanyardCanvas) {
@@ -662,9 +664,8 @@ lanyard.dom.InputHandler.prototype.setViewProperties =
         view.setZoom(newProperties.zoom);
     }
 
-    var evt = document.createEvent("Event");
-    evt.initEvent("render", true, false);
-    this.lanyardCanvas.dispatchEvent(evt);
+    // Trigger a repaint
+    this.lanyardCanvas.display();
 };
 
 /**

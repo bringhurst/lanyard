@@ -64,7 +64,7 @@ goog.inherits(lanyard.layers.earth.BMNGOneImage, lanyard.layers.RenderableLayer)
 /**
  * A description of this object.
  *
- * @return {String} a description of this object.
+ * @return {string} a description of this object.
  */
 lanyard.layers.earth.BMNGOneImage.prototype.toString = function () {
     return "A BMNGOneImage object.";

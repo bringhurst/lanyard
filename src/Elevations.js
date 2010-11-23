@@ -27,8 +27,6 @@
 
 goog.provide('lanyard.Elevations');
 
-goog.require('lanyard.geom.Sector');
-
 /**
  * The Elevations interface provides elevations at specified latitude and longitude
  * positions. Objects implementing this interface are created by {lanyard.ElevationModel}.

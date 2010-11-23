@@ -88,6 +88,20 @@ lanyard.geom.Position.prototype.fromDegrees = function (latitude, longitude, ele
 };
 
 /**
+ * Create a position from a latlon.
+ *
+ * @param {lanyard.geom.LatLon} latLon the latlon object to use.
+ * @param {number} elevation the elevation to use.
+ */
+lanyard.geom.Position.prototype.fromLatLon = function (latLon, elevation) {
+    return new lanyard.geom.Position(
+        latLon.getLatitude(),
+        latLon.getLongitude(),
+        elevation
+    );
+};
+
+/**
  * Obtains the latitude of this position.
  *
  * @return {lanyard.geom.Angle} this position's latitude.
@@ -112,6 +126,62 @@ lanyard.geom.Position.prototype.getLongitude = function () {
  */
 lanyard.geom.Position.prototype.getElevation = function () {
     return this._elevation;
+};
+
+/**
+ * Add this position to another.
+ *
+ * @param {lanyard.geom.Position} that the position to add.
+ * @return {lanyard.geom.Position} the added positions.
+ */
+lanyard.geom.Position.prototype.add = function (that) {
+    /** @type {lanyard.geom.Angle} */
+    var lat = lanyard.geom.Angle.prototype.fromDegrees(
+        lanyard.geom.Angle.prototype.normalizedDegreesLatitude(
+            this.getLatitude().add(
+                that.getLatitude()
+            ).getDegrees()
+        )
+    );
+
+    /** @type {lanyard.geom.Angle} */
+    var lon = lanyard.geom.Angle.prototype.fromDegrees(
+        lanyard.geom.Angle.prototype.normalizedDegreesLongitude(
+            this.getLongitude().add(
+                that.getLongitude()
+            ).getDegrees()
+        )
+    );
+
+    return new lanyard.geom.Position(lat, lon, this.getElevation() + that.getElevation());
+};
+
+/**
+ * Subtract this position from another.
+ *
+ * @param {lanyard.geom.Position} that the position to subtract.
+ * @return {lanyard.geom.Position} the result of the subtraction.
+ */
+lanyard.geom.Position.prototype.subtract = function (that) {
+    /** @type {lanyard.geom.Angle} */
+    var lat = lanyard.geom.Angle.prototype.fromDegrees(
+        lanyard.geom.Angle.prototype.normalizedDegreesLatitude(
+            this.getLatitude().subtract(
+                that.getLatitude()
+            ).getDegrees()
+        )
+    );
+
+    /** @type {lanyard.geom.Angle} */
+    var lon = lanyard.geom.Angle.prototype.fromDegrees(
+        lanyard.geom.Angle.prototype.normalizedDegreesLongitude(
+            this.getLongitude().subtract(
+                that.getLongitude()
+            ).getDegrees()
+        )
+    );
+
+    return new lanyard.geom.Position(lat, lon, this.getElevation() - that.getElevation());
 };
 
 /**

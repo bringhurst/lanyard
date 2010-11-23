@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.Model');
 
+goog.require('lanyard.Tessellator');
+
 /**
  * An interface for a model.
  *

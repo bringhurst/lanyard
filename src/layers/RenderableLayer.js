@@ -32,6 +32,7 @@ goog.require('lanyard.layers.AbstractLayer');
 /**
  * Creates a new RenderableLayer with the specified delegateOwner.
  *
+ * @constructor
  * @extends {lanyard.layers.AbstractLayer}
  * @param {lanyard.Layer|null} delegateOwner a layer that is this layer's delegate owner.
  */
@@ -87,7 +88,7 @@ lanyard.layers.RenderableLayer.prototype.addRenderable = function (renderable) {
 /**
  * Adds the contents of the specified renderables to this layer's internal collection.
  *
- * @param {Array.<lanyard.Renderable>} renderables Renderables to add.
+ * @param {Array.<lanyard.Renderable>} rables Renderables to add.
  */
 lanyard.layers.RenderableLayer.prototype.addRenderables = function (rables) {
     //this._logger.fine("Several renderables were added.");
@@ -151,7 +152,7 @@ lanyard.layers.RenderableLayer.prototype.getActiveRenderables = function () {
  * If the specified renderableIterable is null, this layer will revert to maintaining its internal
  * collection.
  *
- * @param {Object} renderableIterable Iterable to use instead of this layer's internal collection.
+ * @param {Array.<lanyard.Renderable>} renderableIterable to use instead of this layer's internal collection.
  */
 lanyard.layers.RenderableLayer.prototype.setRenderables = function (renderableIterable) {
     this.renderablesOverride = renderableIterable;
@@ -197,7 +198,7 @@ lanyard.layers.RenderableLayer.prototype.getDelegateOwner = function () {
 /**
  * Returns a short description of this layer.
  *
- * @return {String} a description of this layer.
+ * @return {string} a description of this layer.
  */
 lanyard.layers.RenderableLayer.prototype.toString = function () {
     return "A generic renderable layer.";

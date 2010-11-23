@@ -2202,7 +2202,7 @@ WebGLRenderingContext.prototype.depthRange = function (zNear, zFar) {};
 WebGLRenderingContext.prototype.detachShader = function (program, shader) {};
 
 /**
- * @param {number}
+ * @param {number} cap
  */
 WebGLRenderingContext.prototype.disable = function (cap) {};
 

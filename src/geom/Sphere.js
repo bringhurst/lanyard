@@ -25,17 +25,14 @@
  * See http://worldwind.arc.nasa.gov/ for further information about NASA World Wind.
  */
 
-/** Represents a sphere in three dimensional space. */
 goog.provide('lanyard.geom.Sphere');
 
-goog.require('lanyard.Renderable');
-goog.require('lanyard.DrawContext');
-
 goog.require('lanyard.geom.Extent');
-goog.require('lanyard.geom.Point');
 goog.require('lanyard.geom.Intersection');
 goog.require('lanyard.geom.Line');
 goog.require('lanyard.geom.Plane');
+goog.require('lanyard.geom.Point');
+goog.require('lanyard.Renderable');
 
 /**
  * Creates a new Sphere from a given center and radius.

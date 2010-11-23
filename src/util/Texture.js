@@ -88,14 +88,14 @@ lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
 
         // Fire off a rendering event.
         self._logger.fine("Render event is being fired off.");
-        self.dispatchEvent(new goog.events.Event('render', self.dc.getWebGLCanvas()));
+        self.dc.getCanvas().display();
     };
 };
 
 /**
  * Sets this texture to the image.
  *
- * @param {Image} imagee the image to use for this texture.
+ * @param {Image} image the image to use for this texture.
  */
 lanyard.util.Texture.prototype.setImage = function (image) {
     //this._logger.fine("Setting an image.");

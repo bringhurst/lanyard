@@ -35,18 +35,18 @@ goog.require('lanyard.SceneController');
  * Provides a wrapper for the WebGL canvas.
  *
  * @constructor
- * @param {Element} canvasElement the WebGL enabled canvas to draw to.
+ * @param {HTMLCanvasElement} canvasElement the WebGL enabled canvas to draw to.
  */
 lanyard.LanyardCanvas = function (canvasElement) {
     /**
      * @private
      * @type {lanyard.SceneController}
      */
-    this._sceneController = new lanyard.BasicSceneController(canvasElement);
+    this._sceneController = null;
 
     /**
      * @private
-     * @type {Element}
+     * @type {HTMLCanvasElement}
      */
     this._canvasElement = canvasElement;
 
@@ -55,9 +55,6 @@ lanyard.LanyardCanvas = function (canvasElement) {
      * @type {lanyard.dom.InputHandler}
      */
     this._inputHandler = null;
-
-    // Listen for rendering events.
-    goog.events.listen(this._canvasElement, 'render', lanyard.LanyardCanvas.prototype.display, false, this);
 
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.LanyardCanvas');
 };
@@ -68,6 +65,10 @@ lanyard.LanyardCanvas = function (canvasElement) {
  * @param {lanyard.Model} model the new model.
  */
 lanyard.LanyardCanvas.prototype.setModel = function (model) {
+    if(!this._sceneController) {
+       this._sceneController = new lanyard.BasicSceneController(this);
+    }
+
     if (this._sceneController) {
         this._sceneController.setModel(model);
     } else {
@@ -101,6 +102,10 @@ lanyard.LanyardCanvas.prototype.setView = function (view) {
         this._logger.severe("Attempted to set an invalid view.");
     }
 
+    if(!this._sceneController) { 
+       this._sceneController = new lanyard.BasicSceneController(this);
+    }
+
     view.setViewportFromCanvas(this._canvasElement);
 
     // view can be null, that's ok - it indicates no view.
@@ -117,6 +122,10 @@ lanyard.LanyardCanvas.prototype.setView = function (view) {
  * @return {lanyard.View} the view object used.
  */
 lanyard.LanyardCanvas.prototype.getView = function () {
+    if(!this._sceneController) { 
+       this._sceneController = new lanyard.BasicSceneController(this);
+    }
+
     if(!this._sceneController) {
         this._logger.severe("Attempted to get the view from an invalid scene controller.");
     }
@@ -131,6 +140,10 @@ lanyard.LanyardCanvas.prototype.getView = function () {
  * @param {lanyard.View} view the new view to use.
  */
 lanyard.LanyardCanvas.prototype.setModelAndView = function (model, view) {
+    if(!this._sceneController) { 
+       this._sceneController = new lanyard.BasicSceneController(this);
+    }
+
     this.setModel(model);
     this.setView(view);
 };
@@ -147,9 +160,9 @@ lanyard.LanyardCanvas.prototype.getSceneController = function () {
 /**
  * Canvas element accessor.
  *
- * @return {Element} the canvas element.
+ * @return {HTMLCanvasElement} the canvas element.
  */
-lanyard.LanyardCanvas.prototype.getCanvas = function () {
+lanyard.LanyardCanvas.prototype.getWebGLCanvas = function () {
     return this._canvasElement;
 };
 
@@ -192,7 +205,7 @@ lanyard.LanyardCanvas.prototype.getInputHandler = function () {
 /**
  * Set the input handler on this canvas.
  *
- * @param {lanayrd.dom.InputHandler} eventSource the new input handler to use for this canvas.
+ * @param {lanyard.dom.InputHandler} eventSource the new input handler to use for this canvas.
  */
 lanyard.LanyardCanvas.prototype.setInputHandler = function (eventSource) {
     if (this.inputHandler !== null) {

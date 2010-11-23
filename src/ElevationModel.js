@@ -28,8 +28,6 @@
 goog.provide('lanyard.ElevationModel');
 
 goog.require('lanyard.Elevations');
-goog.require('lanyard.geom.Sector');
-goog.require('lanyard.DrawContext');
 goog.require('lanyard.geom.Angle');
 
 /**

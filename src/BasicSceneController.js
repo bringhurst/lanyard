@@ -35,9 +35,18 @@ goog.require('lanyard.BasicFrameController');
  *
  * @constructor
  * @implements {lanyard.SceneController}
- * @param {Element} canvasElement the WebGL enabled canvas element.
+ * @param {lanyard.LanyardCanvas} lanyardCanvas the lanyard canvas.
  */
-lanyard.BasicSceneController = function (canvasElement) {
+lanyard.BasicSceneController = function (lanyardCanvas) {
+    /**
+     * @private
+     */
+    this._logger = goog.debug.Logger.getLogger('lanyard.BasicSceneController');
+
+    if(!lanyardCanvas) {
+        this._logger.severe("Attempted to create a scene controller without a valid lanyard canvas.");
+    }
+    
     /**
      * @private
      * @type {lanyard.Model}
@@ -66,12 +75,7 @@ lanyard.BasicSceneController = function (canvasElement) {
      * @private
      * @type {lanyard.DrawContext}
      */
-    this._dc = new lanyard.BasicDrawContext(canvasElement);
-
-    /**
-     * @private
-     */
-    this._logger = goog.debug.Logger.getLogger('lanyard.BasicSceneController');
+    this._dc = new lanyard.BasicDrawContext(lanyardCanvas);
 };
 
 /**
@@ -158,8 +162,11 @@ lanyard.BasicSceneController.prototype.repaint = function () {
     this._dc.setVerticalExaggeration(this._verticalExaggeration);
     this._dc.setupShaders();
 
-    if (!this._dc.getWebGLCanvas()) {
-        this._logger.fine("The scene controller has a null gl canvas context.");
+    /** @type {lanyard.LanyardCanvas} */
+    var lanyardCanvas = this._dc.getCanvas();
+
+    if (!lanyardCanvas) {
+        this._logger.fine("The scene controller has a null lanyard canvas.");
     }
 
     /** @type {lanyard.FrameController} */

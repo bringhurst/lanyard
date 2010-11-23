@@ -27,6 +27,9 @@
 
 goog.provide('lanyard.Layer');
 
+goog.require('lanyard.DrawContext');
+goog.require('lanyard.geom.Extent');
+
 /**
  * An interface for layers.
  *

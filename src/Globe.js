@@ -27,6 +27,7 @@
 
 goog.provide('lanyard.Globe');
 
+goog.require('lanyard.ElevationModel');
 goog.require('lanyard.geom.Angle');
 goog.require('lanyard.geom.Point');
 goog.require('lanyard.geom.Extent');

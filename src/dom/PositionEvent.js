@@ -78,14 +78,14 @@ lanyard.dom.PositionEvent.prototype.getMouseEvent = function () {
 /**
  * Create a string representation of this position event.
  *
- * @return {String} a string representation of this position event.
+ * @return {string} a string representation of this position event.
  */
 lanyard.dom.PositionEvent.prototype.toString = function () {
-    /** @type {String} */
+    /** @type {string} */
     var val = "A position event: " +
-        this.previousPosition ? this.previousPosition : "null" +
+        this.previousPosition ? this.previousPosition.toString() : "null" +
         " --> " +
-        this.position ? this.position : "null";
+        this.position ? this.position.toString() : "null";
 
     return val;
 };

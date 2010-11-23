@@ -139,9 +139,10 @@ lanyard.render.GLSL.prototype.getAttribLocation = function (name) {
  * Get the location of a uniform variable.
  *
  * @param {string} name the name of the variable.
- * @return {number} the location of the variable.
+ * @return {WebGLUniformLocation} the location of the variable.
  */
 lanyard.render.GLSL.prototype.getUniformLocation = function (name) {
+    /** @type {WebGLUniformLocation} */
     var loc = this.gl.getUniformLocation(this.programObject, name);
 
     if(!loc) {

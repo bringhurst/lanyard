@@ -28,16 +28,13 @@
 goog.provide('lanyard.demo.BasicDemo');
 
 goog.require('goog.debug.DivConsole');
-goog.require('goog.debug.LogManager');
-goog.require('goog.debug.Logger');
-goog.require('goog.events.Event');
+goog.require('goog.debug.ErrorHandler');
 
-goog.require('goog.ui.Checkbox');
-goog.require('goog.ui.Checkbox.State');
-
+goog.require('lanyard.BasicModel');
+goog.require('lanyard.BasicOrbitView')
 goog.require('lanyard.demo.StatusBar');
 goog.require('lanyard.dom.InputHandler');
-
+goog.require('lanyard.Layer');
 goog.require('lanyard.layers.earth.BMNGOneImage');
 
 /**
@@ -45,9 +42,9 @@ goog.require('lanyard.layers.earth.BMNGOneImage');
  *
  * @constructor
  * @this {lanyard.demo.BasicDemo}
- * @param {Element} webGLCanvas The WebGL enabled canvas to draw the map to.
- * @param {Element} layerListDiv The div where the layerList should be contained.
- * @param {Element} eventLogDiv The div where the event log is at.
+ * @param {HTMLCanvasElement} webGLCanvas The WebGL enabled canvas to draw the map to.
+ * @param {HTMLDivElement} layerListDiv The div where the layerList should be contained.
+ * @param {HTMLDivElement} eventLogDiv The div where the event log is at.
  */
 lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
 
@@ -57,7 +54,12 @@ lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
      * or put your logic somewhere after the logger has been setup properly.
      */
 
-    /** @private */ this._webGLCanvas = webGLCanvas;
+    /**
+     * @type {HTMLCanvasElement}
+     * @private
+     */
+    this._webGLCanvas = webGLCanvas;
+
     /** @private */ this._layerListDiv = layerListDiv;
     /** @private */ this._eventLogDiv = eventLogDiv;
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.BasicDemo');
@@ -81,6 +83,10 @@ lanyard.demo.BasicDemo.prototype.run = function () {
     // Setup the logging and layer divs for this demo.
     this.setupEventLog();
     this.setupLayerList();
+
+    if(!this._webGLCanvas) {
+        this._logger.severe("A valid canvas element was not found.");
+    }
 
     // Setup the model with the layers used in the demo.
     var model = new lanyard.BasicModel();

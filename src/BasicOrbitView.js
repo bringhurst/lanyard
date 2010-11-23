@@ -122,19 +122,19 @@ lanyard.BasicOrbitView = function () {
 
     /**
      * @private
-     * @type {lanyard.geom.MatrixFour}
+     * @type {lanyard.geom.MatrixFour|null}
      */
     this.modelView = null;
 
     /**
      * @private
-     * @type {lanyard.geom.MatrixFour}
+     * @type {lanyard.geom.MatrixFour|null}
      */
     this.projection = null;
 
     /**
      * @private
-     * @type {lanyard.util.Rectangle}
+     * @type {lanyard.util.Rectangle|null}
      */
     this.viewport = null;
 
@@ -148,7 +148,7 @@ lanyard.BasicOrbitView = function () {
 
     /**
      * @private
-     * @type {lanyard.Globe}
+     * @type {lanyard.Globe|null}
      */
     this.globe = null;
 
@@ -162,25 +162,25 @@ lanyard.BasicOrbitView = function () {
 
     /**
      * @private
-     * @type {lanyard.geom.Point}
+     * @type {lanyard.geom.Point|null}
      */
     this.eye = null;
 
     /**
      * @private
-     * @type {lanyard.geom.Point}
+     * @type {lanyard.geom.Point|null}
      */
     this.up = null;
 
     /**
      * @private
-     * @type {lanyard.geom.Point}
+     * @type {lanyard.geom.Point|null}
      */
     this.forward = null;
 
     /**
      * @private
-     * @type {lanyard.geom.Frustum}
+     * @type {lanyard.geom.Frustum|null}
      */
     this.frustumInModelCoords = null;
 
@@ -249,7 +249,7 @@ lanyard.BasicOrbitView = function () {
      * @private
      * @type {number}
      */
-    this.altitude = null;
+    this.altitude = 0;
 
     // Coordinate constraints.
 
@@ -293,7 +293,7 @@ lanyard.BasicOrbitView = function () {
 
     /**
      * @private
-     * @type {lanyard.geom.ViewFrustum}
+     * @type {lanyard.geom.ViewFrustum|null}
      */
     this.viewFrustum = null;
 
@@ -327,9 +327,6 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
         this.isInitialized = true;
     }
 
-    /** @type {lanyard.geom.MatrixFour} */
-    var projection = null;
-
     // Compute the current model-view matrix and view eye point.
 
     /** @type {lanyard.geom.MatrixFour} */
@@ -345,12 +342,14 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
     // Compute the current viewing frustum and projection matrix.
     this.viewFrustum = this.computeViewFrustum(dc, eyePoint);
 
-    if (this.viewFrustum) {
-        this.collisionRadius = this.computeCollisionRadius(this.viewFrustum);
-        projection = this.viewFrustum.getProjectionMatrix();
-    } else {
+    if (!this.viewFrustum) {
         this._logger.severe("We don't have a view frustum to generate the projection matrix.");
     }
+
+    this.collisionRadius = this.computeCollisionRadius(this.viewFrustum);
+
+    /** @type {lanyard.geom.MatrixFour} */
+    var projection = this.viewFrustum.getProjectionMatrix();
 
     //this._logger.fine("Using model-view of: " + modelView.toString());
     //this._logger.fine("Using projection of: " + projection.toString());
@@ -1163,12 +1162,15 @@ lanyard.BasicOrbitView.prototype.getUpVector = function () {
  * Pop the reference center off the stack.
  *
  * @param {lanyard.DrawContext} dc the draw context.
+ * @return {lanyard.geom.MatrixFour} the popped model view matrix.
  */
 lanyard.BasicOrbitView.prototype.popModelViewMatrix = function (dc) {
     //this._logger.fine("Popping the reference center.");
 
-    this.modelView = this.modelViewStack.pop();
+    this.modelView = /** @type {lanyard.geom.MatrixFour} */ (this.modelViewStack.pop());
     dc.loadMatrix("uMVMatrix", this.modelView);
+
+    return this.modelView;
 };
 
 /**

@@ -44,7 +44,7 @@ lanyard.dom.ViewProperties = function () {
     /** @type {lanyard.geom.Angle} */
     this.pitch = null;
 
-    /** @type {number} */
+    /** @type {?number} */
     this.zoom = null;
 };
 

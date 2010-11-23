@@ -7,6 +7,7 @@
   <property name="build.dir" value="${basedir}/build" />
   <property name="test.dir" value="${basedir}/test" />
   <property name="jsunit.dir" value="${test.dir}/jsunit" />
+  <property name="externs.dir" value="${basedir}/externs" />
 
   <target name="clean" description="delete generated files" depends="test-clean">
     <delete dir="${build.dir}" />
@@ -29,7 +30,10 @@
 
         <!-- List of demo files begins here. -->
         <arg line='-i "${basedir}/src/demo/BasicDemo.js"' />
-        <arg line='-i "${basedir}/src/demo/BasicDemo2.js"' />
+
+        <!-- List of closure externs begins here. -->
+        <arg line='-f "--externs=${externs.dir}/TypedArray.js"' />
+        <arg line='-f "--externs=${externs.dir}/WebGL.js"' />
 
         <arg line='-p "${src.dir}"' />
         <arg line='-p "${closure-library.dir}"' />
@@ -51,19 +55,19 @@
     </sequential>
   </macrodef>
 
-  <target name="lanyard-advanced-no-debug">
+  <target name="advanced-no-debug">
     <calcdeps outputfile="lanyard-advanced-no-debug.js" compilerjarfile="${build.dir}/compiler.jar" />
   </target>
 
-  <target name="lanyard-advanced">
+  <target name="advanced">
     <calcdeps outputfile="lanyard.js" />
   </target>
 
-  <target name="lanyard-simple">
+  <target name="simple">
     <calcdeps outputfile="lanyard-simple.js" compilationlevel="SIMPLE_OPTIMIZATIONS" />
   </target>
 
-  <target name="lanyard-whitespace-only">
+  <target name="whitespace-only">
     <calcdeps outputfile="lanyard.js" compilationlevel="WHITESPACE_ONLY" />
   </target>
 
@@ -77,7 +81,7 @@
     <ant antfile="${jsunit.dir}/build.xml" inheritAll="false" target="standalone_test"></ant>
   </target>
 
-  <target name="test-setup-jsunit" depends="lanyard-advanced">
+  <target name="test-setup-jsunit" depends="advanced">
     <copy file="${build.dir}/lanyard.js" tofile="${jsunit.dir}/test-lanyard/lanyard.js"/>
     <copy todir="${jsunit.dir}/test-lanyard">
       <fileset dir="${test.dir}/js" />
@@ -95,5 +99,5 @@
     </exec>
   </target>
 
-  <target name="all" depends="lanyard-whitespace-only" />
+  <target name="all" depends="advanced" />
 </project>

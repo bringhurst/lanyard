@@ -27,6 +27,14 @@
 
 goog.provide('lanyard.DrawContext');
 
+goog.require('lanyard.geom.Sector');
+goog.require('lanyard.Globe');
+goog.require('lanyard.LanyardCanvas');
+goog.require('lanyard.Model');
+goog.require('lanyard.SectorGeometryList');
+goog.require('lanyard.util.Color');
+goog.require('lanyard.View');
+
 /**
  * An interface for a draw context.
  *
@@ -34,20 +42,6 @@ goog.provide('lanyard.DrawContext');
  * @param {Element} canvas the webgl canvas.
  */
 lanyard.DrawContext = function (canvas) {};
-
-/**
- * Accessor for getting the WebGL canvas.
- *
- * @return {Element} the WebGL canvas.
- */
-lanyard.DrawContext.prototype.getWebGLCanvas = function () {};
-
-/**
- * Mutator for the webgl canvas.
- *
- * @param {Element} canvas the new webgl context.
- */
-lanyard.DrawContext.prototype.setWebGLCanvas = function (canvas) {};
 
 /**
  * Retrieves the current GL.
@@ -170,5 +164,19 @@ lanyard.DrawContext.prototype.getSurfaceGeometry = function () {};
  * @return {lanyard.util.Color} a unique pick color.
  */
 lanyard.DrawContext.prototype.getUniquePickColor = function () {};
+
+/**
+ * Mutator for the lanyard canvas.
+ *
+ * @param {lanyard.LanyardCanvas} lanyardCanvas the lanyard canvas to use.
+ */
+lanyard.DrawContext.prototype.setCanvas = function (lanyardCanvas) {};
+
+/**
+ * Accessor for the lanyard canvas.
+ *
+ * @return {lanyard.LanyardCanvas} the lanyard canvas in use.
+ */
+lanyard.DrawContext.prototype.getCanvas = function () {};
 
 /* EOF */

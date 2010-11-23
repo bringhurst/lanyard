@@ -30,11 +30,12 @@ goog.provide('lanyard.render.SurfaceImage');
 /**
  * Renders a single image tile from a local or remote source.
  *
+ * @constructor
  * @implements {lanyard.Renderable}
  * @implements {lanyard.render.SurfaceTile}
- * @param {String} imageSource can be a local image path or a url pointing to another server.
- * @param {lanyard.geom.Sector} the sector covered by the image.
- * @param {lanyard.Layer|null} a reference to the layer handling this image.
+ * @param {string} imageSource can be a local image path or a url pointing to another server.
+ * @param {lanyard.geom.Sector} sector the sector covered by the image.
+ * @param {lanyard.Layer|null} layer a reference to the layer handling this image.
  */
 lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.SurfaceImage');
@@ -70,14 +71,13 @@ lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
     this.loaded = false; // True when image is loading or downloading
 
     /**
-     * @private
      * @type {boolean}
      */
     this.hasProblem = false; // True when download failed
 
     /**
      * @private
-     * @type {String}
+     * @type {string}
      */
     this.imageSource = imageSource;
 
@@ -91,7 +91,7 @@ lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
      * @private
      * @type {lanyard.geom.Position}
      */
-    this.referencePosition = new lanyard.geom.Position(sector.getCentroid(), 0);
+    this.referencePosition = new lanyard.geom.Position.prototype.fromLatLon(sector.getCentroid(), 0);
 
     /**
      * @private
@@ -185,7 +185,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
     var gl = dc.getGL();
 
     /** @type {lanyard.render.SurfaceImage} */
-    var thix = this;
+    var self = this;
 
     /** @type {lanyard.util.Texture} */
     var surfaceTexture = new lanyard.util.Texture(dc);
@@ -194,7 +194,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
     var surfaceImage = new Image();
 
     surfaceImage.onload = function () {
-        //thix._logger.fine("Loaded image at: " + thix.imageSource + "<img src=" + thix.imageSource + ">");
+        //self._logger.fine("Loaded image at: " + self.imageSource + "<img src=" + self.imageSource + ">");
 
         surfaceTexture.bind();
         surfaceTexture.setImage(surfaceImage);
@@ -206,23 +206,21 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
 
         surfaceTexture.createMipmap();
 
-        thix.isLoaded = true;
-        thix.textureData = surfaceTexture;
+        self.isLoaded = true;
+        self.textureData = surfaceTexture;
 
-        // Fire off a rendering event.
-        var evt = document.createEvent("Event");
-        evt.initEvent("render", true, false);
-        dc.getWebGLCanvas().dispatchEvent(evt);
+        // Fire off a repaint
+        dc.getCanvas().display();
     };
 
     surfaceImage.onerror = function () {
-        thix._logger.warning("An image failed to load from: " + thix.imageSource);
-        thix.hasProblem = true;
+        self._logger.warning("An image failed to load from: " + self.imageSource);
+        self.hasProblem = true;
     };
 
     surfaceImage.onabort = function () {
-        thix._logger.warning("An image load was aborted: " + thix.imageSource);
-        thix.hasProblem = true;
+        self._logger.warning("An image load was aborted: " + self.imageSource);
+        self.hasProblem = true;
     };
 
     // Fire it off
@@ -433,7 +431,7 @@ lanyard.render.SurfaceImage.prototype.getReferencePosition = function () {
 /**
  * Return the type and path of this surface image.
  *
- * @return {String} the string representation of this object.
+ * @return {string} the string representation of this object.
  */
 lanyard.render.SurfaceImage.prototype.toString = function () {
     return "A SurfaceImage with a path of: " + this.imageSource;

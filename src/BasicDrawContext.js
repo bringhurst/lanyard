@@ -40,9 +40,9 @@ goog.require('lanyard.render.GLSL');
  *
  * @constructor
  * @implements {lanyard.DrawContext}
- * @param {Element} canvasElement the WebGL enabled canvas element.
+ * @param {lanyard.LanyardCanvas} lanyardCanvas the WebGL enabled canvas element.
  */
-lanyard.BasicDrawContext = function (canvasElement) {
+lanyard.BasicDrawContext = function (lanyardCanvas) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.BasicDrawContext');
 
     /**
@@ -65,9 +65,13 @@ lanyard.BasicDrawContext = function (canvasElement) {
 
     /**
      * @private
-     * @type {Element}
+     * @type {lanyard.LanyardCanvas}
      */
-    this.canvasElement = canvasElement;
+    this.lanyardCanvas = lanyardCanvas;
+
+    if(!this.lanyardCanvas) {
+        this._logger.severe("Attempted to create a draw context without a valid lanyard canvas.");
+    }
 
     /**
      * @private
@@ -135,12 +139,15 @@ lanyard.BasicDrawContext = function (canvasElement) {
       }
     );
 
+    /** @type {HTMLCanvasElement} */
+    var domCanvas = lanyardCanvas.getWebGLCanvas();
+
     /**
      * @private
-     * @type {*}
+     * @type {WebGLRenderingContext}
      */
-    this.gl = this.canvasElement.getContext("experimental-webgl");
-    //this.gl = WebGLDebugUtils.makeDebugContext(this.canvasElement.getContext("experimental-webgl"));
+    this.gl = /** @type {WebGLRenderingContext} */ (domCanvas.getContext("experimental-webgl"));
+    //this.gl = WebGLDebugUtils.makeDebugContext(this.lanyardCanvas.getWebGLCanvas().getContext("experimental-webgl"));
 
     if (!this.gl) {
         this._logger.severe("The canvas specified does not seem to support WebGL.");
@@ -168,7 +175,13 @@ lanyard.BasicDrawContext = function (canvasElement) {
  * Setup the WebGL/draw context.
  */
 lanyard.BasicDrawContext.prototype.initialize = function () {
-    this.gl.viewport(0, 0, this.canvasElement.width, this.canvasElement.height);
+    if(!this.lanyardCanvas) {
+        this._logger.severe("Attempt to initialize a draw context without a valid lanyard canvas.");
+    }
+
+    this.gl.viewport(0, 0,
+        this.lanyardCanvas.getWebGLCanvas().width,
+        this.lanyardCanvas.getWebGLCanvas().height);
 
     this.visibleSector = null;
 
@@ -238,21 +251,21 @@ lanyard.BasicDrawContext.prototype.getGLSL = function () {
 };
 
 /**
- * Accessor for getting the WebGL context.
+ * Accessor for getting the canvas object.
  *
- * @return {Element} the WebGL context.
+ * @return {lanyard.LanyardCanvas} the lanyard canvas.
  */
-lanyard.BasicDrawContext.prototype.getWebGLCanvas = function () {
-    return this.canvasElement;
+lanyard.BasicDrawContext.prototype.getCanvas = function () {
+    return this.lanyardCanvas;
 };
 
 /**
- * Mutator for the WebGL context.
+ * Mutator for setting the canvas object.
  *
- * @param {Element} canvas the webgl canvas.
+ * @param {lanyard.LanyardCanvas} lanyardCanvas the new canvas object.
  */
-lanyard.BasicDrawContext.prototype.setWebGLCanvas = function (canvas) {
-    this.canvasElement = canvas;
+lanyard.BasicDrawContext.prototype.setCanvas = function (lanyardCanvas) {
+    this.lanyardCanvas = lanyardCanvas;
 };
 
 /**
@@ -261,7 +274,7 @@ lanyard.BasicDrawContext.prototype.setWebGLCanvas = function (canvas) {
  * @return {number} the drawable height of the canvas.
  */
 lanyard.BasicDrawContext.prototype.getDrawableHeight = function () {
-    return this.canvasElement.height;
+    return this.lanyardCanvas.getWebGLCanvas().height;
 };
 
 /**
@@ -270,18 +283,18 @@ lanyard.BasicDrawContext.prototype.getDrawableHeight = function () {
  * @return {number} the drawable width of the canvas.
  */
 lanyard.BasicDrawContext.prototype.getDrawableWidth = function () {
-    return this.canvasElement.width;
+    return this.lanyardCanvas.getWebGLCanvas().width;
 };
 
 /**
  * Return the number of available texture units.
  *
  * @private
- * @param {*} gl the rendering context.
+ * @param {WebGLRenderingContext} gl the rendering context.
  * @return {number} the number of available texture units.
  */
 lanyard.BasicDrawContext.prototype.queryMaxTextureUnits = function (gl) {
-    return this.gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+    return /** @type {number} */ (this.gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS));
 };
 
 /**

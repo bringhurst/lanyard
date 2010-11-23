@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.SectorGeometryList');
 
+goog.require('lanyard.SectorGeometry');
+
 /**
  * A list of sector geometries.
  *

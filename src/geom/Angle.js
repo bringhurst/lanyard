@@ -502,6 +502,32 @@ lanyard.geom.Angle.prototype.compareTo = function (angle) {
 goog.exportSymbol('lanyard.geom.Angle.prototype.compareTo', lanyard.geom.Angle.prototype.compareTo);
 
 /**
+ * Get the normalized degrees latitude.
+ *
+ * @param {number} degrees the degrees latitude.
+ * @return {number} the normalized degrees.
+ */
+lanyard.geom.Angle.prototype.normalizedDegreesLatitude = function (degrees) {
+    /** @type {number} */
+    var lat = degrees % 180;
+
+    return lat > 90 ? 180 - lat : lat < -90 ? -180 - lat : lat;
+};
+
+/**
+ * Get the normalized degrees longitude.
+ *
+ * @param {number} degrees the degrees longitude.
+ * @return {number} the normalized degrees.
+ */
+lanyard.geom.Angle.prototype.normalizedDegreesLongitude = function (degrees) {
+    /** @type {number} */
+    var lon = degrees % 360;
+
+    return lon > 180 ? lon - 360 : lon < -180 ? 360 + lon : lon;
+};
+
+/**
  * This angle as a string.
  *
  * @this {lanyard.geom.Angle}

@@ -342,6 +342,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
  *
  * @param {lanyard.DrawContext} dc the draw context.
  * @param {number} numTextureUnits the number of texture units available.
+ * @return {number} the number of triangles rendered.
  */
 lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
     //this._logger.fine("Render was called.");
@@ -420,7 +421,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
 
         var idxBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
 
         gl.drawElements(gl.TRIANGLE_STRIP, this._ri.vertices.length / 3, gl.UNSIGNED_SHORT, 0);
     }

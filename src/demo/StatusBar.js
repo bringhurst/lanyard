@@ -36,6 +36,8 @@ goog.provide('lanyard.demo.StatusBar');
  * @param {Element} eleElement the div where the elevation value is set to.
  */
 lanyard.demo.StatusBar = function (latElement, lonElement, eleElement) {
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.StatusBar');
+
     /** @type {lanyard.LanyardCanvas} */
     this.eventSource = null;
 
