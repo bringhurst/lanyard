@@ -56,15 +56,17 @@
   </macrodef>
 
   <target name="advanced-no-debug">
-    <calcdeps outputfile="lanyard-advanced-no-debug.js" compilerjarfile="${build.dir}/compiler.jar" />
+    <calcdeps outputfile="lanyard.js" compilerjarfile="${build.dir}/compiler.jar" />
   </target>
 
   <target name="advanced">
     <calcdeps outputfile="lanyard.js" />
+    <!-- <gzip src="${build.dir}/lanyard.js" destfile="${build.dir}/lanyard.js.gz" /> -->
+    <!-- <delete file="${build.dir}/lanyard.js" /> -->
   </target>
 
   <target name="simple">
-    <calcdeps outputfile="lanyard-simple.js" compilationlevel="SIMPLE_OPTIMIZATIONS" />
+    <calcdeps outputfile="lanyard.js" compilationlevel="SIMPLE_OPTIMIZATIONS" />
   </target>
 
   <target name="whitespace-only">
