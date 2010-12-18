@@ -2,7 +2,6 @@
 <html>
     <head>
         <title>Lanyard Demo</title>
-        <link href="demo.css" media="screen" rel="stylesheet" type="text/css"/>
         <script id="shader-fs" type="x-shader/x-fragment">
             #ifdef GL_ES
                 precision highp float;
@@ -40,6 +39,7 @@
                 gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
             }
         </script>
+        <link href="demo.css" media="screen" rel="stylesheet" type="text/css"/>
         <script src="webgl-debug.js"></script>
         <script src="../build/lanyard.js"></script>
     </head>
