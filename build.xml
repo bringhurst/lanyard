@@ -99,5 +99,5 @@
     </exec>
   </target>
 
-  <target name="all" depends="whitespace-only" />
+  <target name="all" depends="advanced" />
 </project>
