@@ -282,7 +282,13 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   this.shiftKey = e.shiftKey;
   this.metaKey = e.metaKey;
   this.platformModifierKey = goog.userAgent.MAC ? e.metaKey : e.ctrlKey;
-  this.state = e.state;
+
+  if(e.state) {
+    this.state = e.state;
+  } else {
+    this.state = null;
+  }
+
   this.event_ = e;
   delete this.returnValue_;
   delete this.propagationStopped_;
