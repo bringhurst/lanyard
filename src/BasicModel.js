@@ -219,10 +219,16 @@ lanyard.BasicModel.prototype.getExtent = function () {
         /** @type {number} */
         var i;
         for(i = 0; i < layers.length; i = i + 1) {
-            /** @type {lanyard.geom.Extent|null} */
-            var e = layers[i].getExtent();
-            if (e) {
-                return e;
+            /** @type {lanyard.Layer} */
+            var l = layers[i];
+
+            if(typeof l.getExtent === "function") {
+                /** @type {lanyard.geom.Extent|null} */
+                var e = l.getExtent();
+
+                if (e) {
+                    return e;
+                }
             }
         }
     }

@@ -38,13 +38,6 @@ goog.require('lanyard.geom.Extent');
 lanyard.Layer = function () {};
 
 /**
- * Get the extent of this layer.
- *
- * @return {lanyard.geom.Extent} the extent of this layer.
- */
-lanyard.Layer.prototype.getExtent = function () {};
-
-/**
  * Accessor to check if this layer is enabled.
  *
  * @return {boolean} if this layer is enabled or not.
