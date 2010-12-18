@@ -185,8 +185,6 @@ lanyard.LanyardCanvas.prototype.display = function () {
 
 /**
  * Create a default input handler.
- *
- * @private
  */
 lanyard.LanyardCanvas.prototype.createDefaultInputHandler = function () {
     this.inputHandler = new lanyard.dom.InputHandler();
