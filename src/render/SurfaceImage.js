@@ -143,7 +143,9 @@ lanyard.render.SurfaceImage.prototype.getExtent = function (dc) {
     }
 
     if (!this.extent || this.extentVerticalExaggertion !== dc.getVerticalExaggeration()) {
-        this.extent = dc.getGlobe().computeBoundingCylinder(dc.getVerticalExaggeration(), this.sector);
+        this.extent = lanyard.geom.Sector.prototype.computeBoundingCylinder(
+            dc.getGlobe(), dc.getVerticalExaggeration(), this.sector
+        );
         this.extentVerticalExaggertion = dc.getVerticalExaggeration();
     }
 
