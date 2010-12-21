@@ -34,7 +34,7 @@ goog.require('goog.debug.Logger');
  *
  * @constructor
  */
-lanyard.dom.ViewProperties = function () {
+lanyard.dom.ViewProperties = function() {
     /** @type {lanyard.geom.LatLon} */
     this.latLon = null;
 

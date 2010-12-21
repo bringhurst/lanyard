@@ -41,7 +41,7 @@ goog.require('lanyard.Globe');
  * @param {number} es the eccentricity squared of this globe.
  * @param {lanyard.ElevationModel} em the elevation model for this globe.
  */
-lanyard.globes.EllipsoidalGlobe = function (equatorialRadius, polarRadius, es, em) {
+lanyard.globes.EllipsoidalGlobe = function(equatorialRadius, polarRadius, es, em) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.EllipsoidalGlobe');
 
     /** @private */ this.equatorialRadius = equatorialRadius;
@@ -58,7 +58,7 @@ goog.exportSymbol('lanyard.globes.EllipsoidalGlobe', lanyard.globes.EllipsoidalG
  *
  * @return {number} the radius of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getRadius = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getRadius = function() {
     return this.equatorialRadius;
 };
 
@@ -67,7 +67,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getRadius = function () {
  *
  * @return {number} the equatorial radius of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getEquatorialRadius = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getEquatorialRadius = function() {
     return this.equatorialRadius;
 };
 
@@ -76,7 +76,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getEquatorialRadius = function () {
  *
  * @return {number} the polar radius of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getPolarRadius = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getPolarRadius = function() {
     return this.polarRadius;
 };
 
@@ -85,7 +85,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getPolarRadius = function () {
  *
  * @return {number} the maximum radius of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getMaximumRadius = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getMaximumRadius = function() {
     return this.equatorialRadius;
 };
 
@@ -96,7 +96,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getMaximumRadius = function () {
  * @param {lanyard.geom.Angle} longitude the longitude of the coordinate.
  * @return {number} the radius at the specified coordinate.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getRadiusAt = function (latitude, longitude) {
+lanyard.globes.EllipsoidalGlobe.prototype.getRadiusAt = function(latitude, longitude) {
     /** @type {lanyard.geom.Point} */
     var p = this.computePointFromPositionAngles(latitude, longitude, 0);
 
@@ -111,7 +111,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getRadiusAt = function (latitude, long
  *
  * @return {number} the eccentricity squared of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getEccentricitySquared = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getEccentricitySquared = function() {
     return this.es;
 };
 
@@ -120,7 +120,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getEccentricitySquared = function () {
  *
  * @return {number} the diameter of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getDiameter = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getDiameter = function() {
     return this.equatorialRadius * 2;
 };
 
@@ -129,7 +129,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getDiameter = function () {
  *
  * @return {lanyard.geom.Point} the center point of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getCenter = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getCenter = function() {
     return this.center;
 };
 
@@ -138,8 +138,8 @@ lanyard.globes.EllipsoidalGlobe.prototype.getCenter = function () {
  *
  * @return {number} the maximum elevation of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getMaxElevation = function () {
-    if(this.elevationModel) {
+lanyard.globes.EllipsoidalGlobe.prototype.getMaxElevation = function() {
+    if (this.elevationModel) {
         return this.elevationModel.getMaximumElevation();
     } else {
         return 0;
@@ -151,8 +151,8 @@ lanyard.globes.EllipsoidalGlobe.prototype.getMaxElevation = function () {
  *
  * @return {number} the minimum elevation of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getMinElevation = function () {
-    if(this.elevationModel) {
+lanyard.globes.EllipsoidalGlobe.prototype.getMinElevation = function() {
+    if (this.elevationModel) {
         return this.elevationModel.getMinimumElevation();
     } else {
         return 0;
@@ -164,7 +164,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getMinElevation = function () {
  *
  * @return {lanyard.geom.Extent} the extent of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getExtent = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getExtent = function() {
     return this;
 };
 
@@ -174,7 +174,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getExtent = function () {
  * @param {lanyard.geom.Frustum} frustum the frustum to test intersection with.
  * @return {boolean} if this globe interesects with the given frustum.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.intersectsFrustum = function (frustum) {
+lanyard.globes.EllipsoidalGlobe.prototype.intersectsFrustum = function(frustum) {
     return frustum.intersects(this);
 };
 
@@ -186,7 +186,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.intersectsFrustum = function (frustum)
  * @param {lanyard.geom.Line} line the line to find intersections for.
  * @return {Array.<lanyard.geom.Intersection>} the intersections of this globe with the given line.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.intersect = function (line) {
+lanyard.globes.EllipsoidalGlobe.prototype.intersect = function(line) {
     /** @type {number} */
     var m = this.equatorialRadius / this.polarRadius;
 
@@ -241,7 +241,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.intersect = function (line) {
         /** @type {lanyard.geom.Point} */
         var p = line.getPointAt((-b - discriminantRoot) / (2 * a));
 
-        return [ new lanyard.geom.Intersection(p, true) ];
+        return [new lanyard.geom.Intersection(p, true)];
 
     } else { // (discriminant > 0)
 
@@ -269,7 +269,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.intersect = function (line) {
  * @param {number} c
  * @return {number} the discriminant of this globe.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.discriminant = function (a, b, c) {
+lanyard.globes.EllipsoidalGlobe.prototype.discriminant = function(a, b, c) {
     return b * b - 4 * a * c;
 };
 
@@ -279,7 +279,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.discriminant = function (a, b, c) {
  * @param {lanyard.geom.Line} line the line.
  * @return {boolean} if this globe intersects with the given line.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.intersectsLine = function (line) {
+lanyard.globes.EllipsoidalGlobe.prototype.intersectsLine = function(line) {
     return line.distanceTo(this.center) <= this.equatorialRadius;
 };
 
@@ -289,7 +289,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.intersectsLine = function (line) {
  * @param {lanyard.geom.Plane} plane the plane.
  * @return {boolean} if this globe intersects with the given plane.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.intersectsPlane = function (plane) {
+lanyard.globes.EllipsoidalGlobe.prototype.intersectsPlane = function(plane) {
     /** @type {number} */
     var dq1 = plane.dot(this.center);
 
@@ -302,7 +302,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.intersectsPlane = function (plane) {
  * @param {lanyard.geom.Point} p the point to calculate.
  * @return {lanyard.geom.Point} the surface normal.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.computeSurfaceNormalAtPoint = function (p) {
+lanyard.globes.EllipsoidalGlobe.prototype.computeSurfaceNormalAtPoint = function(p) {
     p = p.subtract(this.center);
 
     /** @type {lanyard.geom.Point} */
@@ -322,7 +322,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.computeSurfaceNormalAtPoint = function
  *
  * @return {lanyard.ElevationModel} this globe's elevation model.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getElevationModel = function () {
+lanyard.globes.EllipsoidalGlobe.prototype.getElevationModel = function() {
     return this.elevationModel;
 };
 
@@ -333,8 +333,8 @@ lanyard.globes.EllipsoidalGlobe.prototype.getElevationModel = function () {
  * @param {lanyard.geom.Angle} longitude the longitude of the given coordinate.
  * @return {number} the elevation at the given coordinate.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getElevation = function (latitude, longitude) {
-    if(this.elevationModel) {
+lanyard.globes.EllipsoidalGlobe.prototype.getElevation = function(latitude, longitude) {
+    if (this.elevationModel) {
         return this.elevationModel.getElevation(latitude, longitude);
     } else {
         return 0;
@@ -347,7 +347,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getElevation = function (latitude, lon
  * @param {lanyard.geom.Position} position the position.
  * @return {lanyard.geom.Point} the point.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.computePointFromPosition = function (position) {
+lanyard.globes.EllipsoidalGlobe.prototype.computePointFromPosition = function(position) {
     return this.geodeticToCartesian(position.getLatitude(), position.getLongitude(), position.getElevation());
 };
 
@@ -360,7 +360,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.computePointFromPosition = function (p
  * @return {lanyard.geom.Point} the point.
  */
 lanyard.globes.EllipsoidalGlobe.prototype.computePointFromPositionAngles =
-        function (latitude, longitude, metersElevation) {
+        function(latitude, longitude, metersElevation) {
 
     return this.geodeticToCartesian(latitude, longitude, metersElevation);
 };
@@ -371,7 +371,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.computePointFromPositionAngles =
  * @param {lanyard.geom.Point} point the point to compute a position from.
  * @return {lanyard.geom.Position} the position.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.computePositionFromPoint = function (point) {
+lanyard.globes.EllipsoidalGlobe.prototype.computePositionFromPoint = function(point) {
     return this.cartesianToGeodetic(point);
 };
 
@@ -381,7 +381,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.computePositionFromPoint = function (p
  * @param {lanyard.geom.Line} line the line.
  * @return {lanyard.geom.Position} the position calculated.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.getIntersectionPosition = function (line) {
+lanyard.globes.EllipsoidalGlobe.prototype.getIntersectionPosition = function(line) {
     /** @type {Array.<lanyard.geom.Intersection>} */
     var intersections = this.intersect(line);
 
@@ -404,7 +404,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getIntersectionPosition = function (li
  * @return {lanyard.geom.Point} the cartesian point.
  */
 lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
-        function (latitude, longitude, metersElevation) {
+        function(latitude, longitude, metersElevation) {
 
     //this._logger.fine("Converting from geodetic to Cartesian with: " +
     //    latitude + "; " + longitude + "; " + metersElevation);
@@ -452,7 +452,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
  * @param {lanyard.geom.Point} cart the cartesian point.
  * @return {lanyard.geom.Position} the geodetic position.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.cartesianToGeodetic = function (cart) {
+lanyard.globes.EllipsoidalGlobe.prototype.cartesianToGeodetic = function(cart) {
 
     /** @type {number} */
     var ra2 = 1 / (this.equatorialRadius * this.equatorialRadius);
@@ -529,7 +529,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.cartesianToGeodetic = function (cart) 
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {lanyard.SectorGeometryList} the geometry list.
  */
-lanyard.globes.EllipsoidalGlobe.prototype.tessellate = function (dc) {
+lanyard.globes.EllipsoidalGlobe.prototype.tessellate = function(dc) {
     return dc.getModel().getTessellator().tessellate(dc);
 };
 

@@ -33,11 +33,11 @@ goog.provide('lanyard.util.Texture');
  * @constructor
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.util.Texture = function (dc) {
+lanyard.util.Texture = function(dc) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.util.Texture');
 
-    if(!dc) {
-        this._logger.severe("Creation of a texture was attempted without a valid draw context.");
+    if (!dc) {
+        this._logger.severe('Creation of a texture was attempted without a valid draw context.');
     }
 
     /** @type {lanyard.DrawContext} */
@@ -45,17 +45,17 @@ lanyard.util.Texture = function (dc) {
 
     this.gl = dc.getGL();
 
-    if(!this.gl) {
-        this._logger.severe("Creation of a texture was attempted without a valid gl context.");
+    if (!this.gl) {
+        this._logger.severe('Creation of a texture was attempted without a valid gl context.');
     }
 
-    this.tex = this.gl.createTexture(); 
+    this.tex = this.gl.createTexture();
 };
 
 /**
  * Binds this texture to the current GL context.
  */
-lanyard.util.Texture.prototype.bind = function () {
+lanyard.util.Texture.prototype.bind = function() {
     //this._logger.fine("Binding a texture.");
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
 };
@@ -65,10 +65,10 @@ lanyard.util.Texture.prototype.bind = function () {
  *
  * @param {Element} textureCanvas the canvas that holds the texture.
  */
-lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
+lanyard.util.Texture.prototype.updateCanvas = function(textureCanvas) {
     //this._logger.fine("Updating the canvas.");
 
-    var ctx = textureCanvas.getContext("2d");
+    var ctx = textureCanvas.getContext('2d');
     var img = new Image();
 
     var self = this;
@@ -87,7 +87,7 @@ lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
         self.createMipmap();
 
         // Fire off a rendering event.
-        self._logger.fine("Render event is being fired off.");
+        self._logger.fine('Render event is being fired off.');
         self.dc.getCanvas().display();
     };
 };
@@ -97,7 +97,7 @@ lanyard.util.Texture.prototype.updateCanvas = function (textureCanvas) {
  *
  * @param {Image} image the image to use for this texture.
  */
-lanyard.util.Texture.prototype.setImage = function (image) {
+lanyard.util.Texture.prototype.setImage = function(image) {
     //this._logger.fine("Setting an image.");
     this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, 1);
     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image);
@@ -106,7 +106,7 @@ lanyard.util.Texture.prototype.setImage = function (image) {
 /**
  * Generate a mipmap for this texture.
  */
-lanyard.util.Texture.prototype.createMipmap = function () {
+lanyard.util.Texture.prototype.createMipmap = function() {
     this.gl.generateMipmap(this.gl.TEXTURE_2D);
 };
 
@@ -116,8 +116,8 @@ lanyard.util.Texture.prototype.createMipmap = function () {
  * @param {number} parameterName the parameter name.
  * @param {number} value the value to set the parameter to.
  */
-lanyard.util.Texture.prototype.setTexParameteri = function (parameterName, value) {
-    this.gl.texParameteri(this.gl.TEXTURE_2D, parameterName, value); 
+lanyard.util.Texture.prototype.setTexParameteri = function(parameterName, value) {
+    this.gl.texParameteri(this.gl.TEXTURE_2D, parameterName, value);
 };
 
 /* EOF */

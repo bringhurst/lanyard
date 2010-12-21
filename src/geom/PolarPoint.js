@@ -40,7 +40,7 @@ goog.require('lanyard.geom.Point');
  * @param {lanyard.geom.Angle} longitude the longitude.
  * @param {number} radius the distance from the center.
  */
-lanyard.geom.PolarPoint = function (latitude, longitude, radius) {
+lanyard.geom.PolarPoint = function(latitude, longitude, radius) {
     /** @private */ this._latitude = latitude;
     /** @private */ this._longitude = longitude;
     /** @private */ this._radius = radius;
@@ -66,7 +66,7 @@ goog.exportSymbol('lanyard.geom.PolarPoint.prototype.ZERO',
  * @param {number} radius the distance form the center.
  * @return {lanyard.geom.PolarPoint} a new PolarPoint.
  */
-lanyard.geom.PolarPoint.prototype.fromRadians = function (latitude, longitude, radius) {
+lanyard.geom.PolarPoint.prototype.fromRadians = function(latitude, longitude, radius) {
     return new lanyard.geom.PolarPoint(
         lanyard.geom.Angle.prototype.fromRadians(latitude),
         lanyard.geom.Angle.prototype.fromRadians(longitude),
@@ -81,7 +81,7 @@ lanyard.geom.PolarPoint.prototype.fromRadians = function (latitude, longitude, r
  * @param {number} radius the distance form the center.
  * @return {lanyard.geom.PolarPoint} a new PolarPoint.
  */
-lanyard.geom.PolarPoint.prototype.fromDegrees = function (latitude, longitude, radius) {
+lanyard.geom.PolarPoint.prototype.fromDegrees = function(latitude, longitude, radius) {
     return new lanyard.geom.PolarPoint(
         lanyard.geom.Angle.prototype.fromDegrees(latitude),
         lanyard.geom.Angle.prototype.fromDegrees(longitude),
@@ -94,7 +94,7 @@ lanyard.geom.PolarPoint.prototype.fromDegrees = function (latitude, longitude, r
  * @param {lanyard.geom.Point} cartesianPoint the point to convert.
  * @return {lanyard.geom.PolarPoint} the cartesian point expressed as a polar point.
  */
-lanyard.geom.PolarPoint.prototype.fromCartesianPoint = function (cartesianPoint) {
+lanyard.geom.PolarPoint.prototype.fromCartesianPoint = function(cartesianPoint) {
     return lanyard.geom.PolarPoint.prototype.fromCartesian(
         cartesianPoint.getX(), cartesianPoint.getY(), cartesianPoint.getZ());
 };
@@ -107,7 +107,7 @@ lanyard.geom.PolarPoint.prototype.fromCartesianPoint = function (cartesianPoint)
  * @param {number} z the z coordinate of the cartesian point.
  * @return {lanyard.geom.PolarPoint} a polar point located at (x,y,z) in cartesian space.
  */
-lanyard.geom.PolarPoint.prototype.fromCartesian = function (x, y, z) {
+lanyard.geom.PolarPoint.prototype.fromCartesian = function(x, y, z) {
     var radius = Math.sqrt(x * x + y * y + z * z);
     var latRads = Math.atan2(y, Math.sqrt(x * x + z * z));
     var lonRads = Math.atan2(x, z);
@@ -120,7 +120,7 @@ lanyard.geom.PolarPoint.prototype.fromCartesian = function (x, y, z) {
  *
  * @return {lanyard.geom.Angle} this polar point's latitude.
  */
-lanyard.geom.PolarPoint.prototype.getLatitude = function () {
+lanyard.geom.PolarPoint.prototype.getLatitude = function() {
     return this._latitude;
 };
 
@@ -129,7 +129,7 @@ lanyard.geom.PolarPoint.prototype.getLatitude = function () {
  *
  * @return {lanyard.geom.Angle} this polar point's longitude.
  */
-lanyard.geom.PolarPoint.prototype.getLongitude = function () {
+lanyard.geom.PolarPoint.prototype.getLongitude = function() {
     return this._longitude;
 };
 
@@ -138,7 +138,7 @@ lanyard.geom.PolarPoint.prototype.getLongitude = function () {
  *
  * @return {number} the distance from this polar point to its origin.
  */
-lanyard.geom.PolarPoint.prototype.getRadius = function () {
+lanyard.geom.PolarPoint.prototype.getRadius = function() {
     return this._radius;
 };
 
@@ -152,7 +152,7 @@ lanyard.geom.PolarPoint.prototype.getRadius = function () {
  * @param {number} radius the distance from the origin.
  * @return {lanyard.geom.Point} a cartesian point from two angles and a radius.
  */
-lanyard.geom.PolarPoint.prototype.toCartesian = function (latitude, longitude, radius) {
+lanyard.geom.PolarPoint.prototype.toCartesian = function(latitude, longitude, radius) {
     var x = radius * longitude.sin() * latitude.cos();
     var y = radius * latitude.sin();
     var z = radius * longitude.cos() * latitude.cos();
@@ -165,10 +165,10 @@ lanyard.geom.PolarPoint.prototype.toCartesian = function (latitude, longitude, r
  *
  * @return {string} a string representation of this polar point.
  */
-lanyard.geom.PolarPoint.prototype.toString = function () {
-    return "(lat: " + this._latitude.toString() +
-        ", lon: " + this._longitude.toString() +
-        ", r: " + this._radius + ")";
+lanyard.geom.PolarPoint.prototype.toString = function() {
+    return '(lat: ' + this._latitude.toString() +
+        ', lon: ' + this._longitude.toString() +
+        ', r: ' + this._radius + ')';
 };
 
 /* EOF */

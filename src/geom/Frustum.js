@@ -41,7 +41,7 @@ goog.require('lanyard.geom.Matrix');
  * @param {lanyard.geom.Plane} topp the top of the view frustum.
  * @param {lanyard.geom.Plane} bottom the bottom of the view frustum.
  */
-lanyard.geom.Frustum = function (near, far, left, right, bottom, topp) {
+lanyard.geom.Frustum = function(near, far, left, right, bottom, topp) {
     /** @private */ this._near = near;
     /** @private */ this._far = far;
     /** @private */ this._left = left;
@@ -57,7 +57,7 @@ goog.exportSymbol('lanyard.geom.Frustum', lanyard.geom.Frustum);
  *
  * @return {lanyard.geom.Frustum} the new default Frustum.
  */
-lanyard.geom.Frustum.prototype.createDefault = function () {
+lanyard.geom.Frustum.prototype.createDefault = function() {
     var near = new lanyard.geom.Plane(0, 0, 1, 1);
     var far = new lanyard.geom.Plane(0, 0, 0 - 1, 1);
     var left = new lanyard.geom.Plane(1, 0, 0, 1);
@@ -73,7 +73,7 @@ lanyard.geom.Frustum.prototype.createDefault = function () {
  *
  * @return {lanyard.geom.Plane} the near Plane.
  */
-lanyard.geom.Frustum.prototype.getNear = function () {
+lanyard.geom.Frustum.prototype.getNear = function() {
     return this._near;
 };
 
@@ -82,7 +82,7 @@ lanyard.geom.Frustum.prototype.getNear = function () {
  *
  * @return {lanyard.geom.Plane} the far Plane.
  */
-lanyard.geom.Frustum.prototype.getFar = function () {
+lanyard.geom.Frustum.prototype.getFar = function() {
     return this._far;
 };
 
@@ -91,7 +91,7 @@ lanyard.geom.Frustum.prototype.getFar = function () {
  *
  * @return {lanyard.geom.Plane} the left Plane.
  */
-lanyard.geom.Frustum.prototype.getLeft = function () {
+lanyard.geom.Frustum.prototype.getLeft = function() {
     return this._left;
 };
 
@@ -100,7 +100,7 @@ lanyard.geom.Frustum.prototype.getLeft = function () {
  *
  * @return {lanyard.geom.Plane} the right Plane.
  */
-lanyard.geom.Frustum.prototype.getRight = function () {
+lanyard.geom.Frustum.prototype.getRight = function() {
     return this._right;
 };
 
@@ -109,7 +109,7 @@ lanyard.geom.Frustum.prototype.getRight = function () {
  *
  * @return {lanyard.geom.Plane} the bottom Plane.
  */
-lanyard.geom.Frustum.prototype.getBottom = function () {
+lanyard.geom.Frustum.prototype.getBottom = function() {
     return this._bottom;
 };
 
@@ -118,7 +118,7 @@ lanyard.geom.Frustum.prototype.getBottom = function () {
  *
  * @return {lanyard.geom.Plane} the top Plane.
  */
-lanyard.geom.Frustum.prototype.getTop = function () {
+lanyard.geom.Frustum.prototype.getTop = function() {
     return this._topp;
 };
 
@@ -128,7 +128,7 @@ lanyard.geom.Frustum.prototype.getTop = function () {
  * @param {lanyard.geom.Matrix} m
  * @return {lanyard.geom.Frustum}
  */
-lanyard.geom.Frustum.prototype.getInverseTransformed = function (m) {
+lanyard.geom.Frustum.prototype.getInverseTransformed = function(m) {
     // Assumes orthogonal matrices with translation.
     var it = m.getTranspose();
 
@@ -148,7 +148,7 @@ lanyard.geom.Frustum.prototype.getInverseTransformed = function (m) {
  * @param {lanyard.geom.Extent} extent
  * @return {boolean} if this frustum intersects.
  */
-lanyard.geom.Frustum.prototype.intersects = function (extent) {
+lanyard.geom.Frustum.prototype.intersects = function(extent) {
     // See if the extent's bounding sphere is within or intersects the frustum.
     var c = extent.getCenter();
     var nr = -extent.getRadius();
@@ -186,7 +186,7 @@ lanyard.geom.Frustum.prototype.intersects = function (extent) {
  * @param {lanyard.geom.Point} point
  * @return {boolean}
  */
-lanyard.geom.Frustum.prototype.contains = function (point) {
+lanyard.geom.Frustum.prototype.contains = function(point) {
     if (this._far.dot(point) < 0) {
         return false;
     }
@@ -219,10 +219,10 @@ lanyard.geom.Frustum.prototype.contains = function (point) {
  *
  * @return {string} a string representation of this frustum.
  */
-lanyard.geom.Frustum.prototype.toString = function () {
-    return "near: " + this._near.toString() + "... far: " + this._far.toString() +
-        "... left: " + this._left.toString() + "... right: " + this._right.toString() +
-        "... bottom: " + this._bottom.toString() + "... top: " + this._topp.toString();
+lanyard.geom.Frustum.prototype.toString = function() {
+    return 'near: ' + this._near.toString() + '... far: ' + this._far.toString() +
+        '... left: ' + this._left.toString() + '... right: ' + this._right.toString() +
+        '... bottom: ' + this._bottom.toString() + '... top: ' + this._topp.toString();
 };
 
 /* EOF */

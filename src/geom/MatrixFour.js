@@ -28,8 +28,8 @@
 goog.provide('lanyard.geom.MatrixFour');
 
 goog.require('lanyard.geom.Angle');
-goog.require('lanyard.geom.Point');
 goog.require('lanyard.geom.Matrix');
+goog.require('lanyard.geom.Point');
 
 /**
  * Creates a new MatrixFour from an array of values.
@@ -45,7 +45,7 @@ goog.require('lanyard.geom.Matrix');
  * @implements {lanyard.geom.Matrix}
  * @param {Array} entries points to insert into the new matrix.
  */
-lanyard.geom.MatrixFour = function (entries) {
+lanyard.geom.MatrixFour = function(entries) {
     // default to identity matrix
     /** @private */ this._m11 = 1.0;
     /** @private */ this._m22 = 1.0;
@@ -70,7 +70,7 @@ lanyard.geom.MatrixFour = function (entries) {
 
     /** @private */ this._isOrthonormal = true;
 
-    if(entries) {
+    if (entries) {
         this._m11 = entries[0];
         this._m21 = entries[1];
         this._m31 = entries[2];
@@ -100,19 +100,19 @@ goog.exportSymbol('lanyard.geom.MatrixFour', lanyard.geom.MatrixFour);
  * Create a string representation of this._matrix.
  * @return {string} the string representing this._matrix.
  */
-lanyard.geom.MatrixFour.prototype.toString = function () {
+lanyard.geom.MatrixFour.prototype.toString = function() {
     var ents = this.getEntries();
-    var msg = "MatrixFour : \n[ ";
+    var msg = 'MatrixFour : \n[ ';
 
     var i;
-    for(i = 0; i < ents.length; i++) {
-        msg += ents[i] + ", ";
-        if(i == 3 || i == 7 || i == 11 || i == 14) {
-            msg += "\n";
+    for (i = 0; i < ents.length; i++) {
+        msg += ents[i] + ', ';
+        if (i == 3 || i == 7 || i == 11 || i == 14) {
+            msg += '\n';
         }
     }
 
-    msg += " ]";
+    msg += ' ]';
     return msg;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.toString', lanyard.geom.MatrixFour.prototype.toString);
@@ -126,7 +126,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.toString', lanyard.geom.Mat
  *
  * @return {Array} an array of all the elements in this._matrix.
  */
-lanyard.geom.MatrixFour.prototype.getEntries = function () {
+lanyard.geom.MatrixFour.prototype.getEntries = function() {
     var e = [];
 
     e[0] = this._m11;
@@ -156,7 +156,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.getEntries', lanyard.geom.M
 /**
  * Sets this MatrixFour to the identity matrix.
  */
-lanyard.geom.MatrixFour.prototype.setToIdentity = function () {
+lanyard.geom.MatrixFour.prototype.setToIdentity = function() {
     this._m11 = 1;
     this._m12 = 0;
     this._m13 = 0;
@@ -182,7 +182,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.setToIdentity', lanyard.geo
  * Obtains whether or not this MatrixFour is orthonormal.
  * @return {boolean} if this._matrix is orthonormal.
  */
-lanyard.geom.MatrixFour.prototype.isOrthonormal = function () {
+lanyard.geom.MatrixFour.prototype.isOrthonormal = function() {
     return this._isOrthonormal;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.isOrthonormal',
@@ -192,7 +192,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.isOrthonormal',
  * Indicate if this MatrixFour is orthonormal.
  * @param {boolean} value if this._matrix is orthonormal.
  */
-lanyard.geom.MatrixFour.prototype.setOrthonormal = function (value) {
+lanyard.geom.MatrixFour.prototype.setOrthonormal = function(value) {
     this._isOrthonormal = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.setOrthonormal',
@@ -202,20 +202,20 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.setOrthonormal',
  * Rotate this._matrix by some angle around an arbitrary axis. A positive <code>Angle</code> indicates an
  * anti-clockwise direction. This method affects the internal state of this._matrix.
  *
- * @param {lanyard.geom.Angle} rotation the distance to rotate this._matrix
- * @param {number} axisX the x component of the axis of rotation
- * @param {number} axisY the y component of the axis of rotation
- * @param {number} axisZ the z component of the axis of rotation
- * @return {lanyard.geom.MatrixFour} with the rotation applied
+ * @param {lanyard.geom.Angle} rotation the distance to rotate this._matrix.
+ * @param {number} axisX the x component of the axis of rotation.
+ * @param {number} axisY the y component of the axis of rotation.
+ * @param {number} axisZ the z component of the axis of rotation.
+ * @return {lanyard.geom.MatrixFour} with the rotation applied.
  */
-lanyard.geom.MatrixFour.prototype.rotate = function (rotation, axisX, axisY, axisZ) {
+lanyard.geom.MatrixFour.prototype.rotate = function(rotation, axisX, axisY, axisZ) {
     var ll = axisX * axisX + axisY * axisY + axisZ * axisZ;
 
     if (rotation.getDegrees() === 0 || ll === 0) {
         return this;
     }
 
-    // if axis not unit length, normalize it    
+    // if axis not unit length, normalize it
     if (ll !== 1) {
         var l = Math.sqrt(ll);
         axisX /= l;
@@ -255,7 +255,7 @@ lanyard.geom.MatrixFour.prototype.rotate = function (rotation, axisX, axisY, axi
  * @param {lanyard.geom.Angle} rotation the distance to rotate.
  * @return {lanyard.geom.MatrixFour} this MatrixFour, rotated around the x-axis by rotation distance.
  */
-lanyard.geom.MatrixFour.prototype.rotateX = function (rotation) {
+lanyard.geom.MatrixFour.prototype.rotateX = function(rotation) {
     var c = rotation.cos();
     var s = rotation.sin();
 
@@ -289,7 +289,7 @@ lanyard.geom.MatrixFour.prototype.rotateX = function (rotation) {
  * @param {lanyard.geom.Angle} rotation the distance to rotate.
  * @return {lanyard.geom.MatrixFour} this MatrixFour, rotated around the y-axis by rotation distance.
  */
-lanyard.geom.MatrixFour.prototype.rotateY = function (rotation) {
+lanyard.geom.MatrixFour.prototype.rotateY = function(rotation) {
     var c = rotation.cos();
     var s = rotation.sin();
 
@@ -323,7 +323,7 @@ lanyard.geom.MatrixFour.prototype.rotateY = function (rotation) {
  * @param {lanyard.geom.Angle} rotation the distance to rotate.
  * @return {lanyard.geom.MatrixFour} this MatrixFour, rotated around the z-axis by rotation distance.
  */
-lanyard.geom.MatrixFour.prototype.rotateZ = function (rotation) {
+lanyard.geom.MatrixFour.prototype.rotateZ = function(rotation) {
     var c = rotation.cos();
     var s = rotation.sin();
 
@@ -353,12 +353,12 @@ lanyard.geom.MatrixFour.prototype.rotateZ = function (rotation) {
 
 /**
  * Translates this MatrixFour in three dimensional space.
- * @param {number} x the distance to translate along the x-axis
- * @param {number} y the distance to translate along the y-axis
- * @param {number} z the distance to translate along the z-axis
- * @return {lanyard.geom.MatrixFour} this matrix, translated by (x, y, z)
+ * @param {number} x the distance to translate along the x-axis.
+ * @param {number} y the distance to translate along the y-axis.
+ * @param {number} z the distance to translate along the z-axis.
+ * @return {lanyard.geom.MatrixFour} this matrix, translated by (x, y, z).
  */
-lanyard.geom.MatrixFour.prototype.translate = function (x, y, z) {
+lanyard.geom.MatrixFour.prototype.translate = function(x, y, z) {
     this._m14 = this._m11 * x + this._m12 * y + this._m13 * z + this._m14;
     this._m24 = this._m21 * x + this._m22 * y + this._m23 * z + this._m24;
     this._m34 = this._m31 * x + this._m32 * y + this._m33 * z + this._m34;
@@ -373,7 +373,7 @@ lanyard.geom.MatrixFour.prototype.translate = function (x, y, z) {
  * @param {lanyard.geom.Point} p the x, y and z distances to translate as a Point.
  * @return {lanyard.geom.MatrixFour} this MatrixFour, translated by the distances defined in p.
  */
-lanyard.geom.MatrixFour.prototype.translatePoint = function (p) {
+lanyard.geom.MatrixFour.prototype.translatePoint = function(p) {
     return this.translate(p.getX(), p.getY(), p.getZ());
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.translatePoint',
@@ -385,7 +385,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.translatePoint',
  * @param {lanyard.geom.MatrixFour} m the MatrixFour to add to this one.
  * @return {lanyard.geom.MatrixFour} this MatrixFour, with m added to it.
  */
-lanyard.geom.MatrixFour.prototype.add = function (m) {
+lanyard.geom.MatrixFour.prototype.add = function(m) {
     var o = m;
 
     this._m11 += o._m11;
@@ -416,7 +416,7 @@ lanyard.geom.MatrixFour.prototype.add = function (m) {
  * @param {lanyard.geom.MatrixFour} m another MatrixFour.
  * @return {lanyard.geom.MatrixFour} this, postmultiplied by m.
  */
-lanyard.geom.MatrixFour.prototype.multiply = function (m) {
+lanyard.geom.MatrixFour.prototype.multiply = function(m) {
     var o = m;
 
     var n11 = this._m11 * o._m11 + this._m12 * o._m21 + this._m13 * o._m31 + this._m14 * o._m41;
@@ -465,7 +465,7 @@ lanyard.geom.MatrixFour.prototype.multiply = function (m) {
  * Obtains the transpose of this MatrixFour.
  * @return {lanyard.geom.MatrixFour} the transpoase of this MatrixFour.
  */
-lanyard.geom.MatrixFour.prototype.getTranspose = function () {
+lanyard.geom.MatrixFour.prototype.getTranspose = function() {
     var transpose = new lanyard.geom.MatrixFour(null);
 
     transpose._m11 = this._m11;
@@ -494,7 +494,7 @@ lanyard.geom.MatrixFour.prototype.getTranspose = function () {
  * Obtain the inverse of this MatrixFour.
  * @return {lanyard.geom.MatrixFour} the inverse of this MatrixFour.
  */
-lanyard.geom.MatrixFour.prototype.getInverse = function () {
+lanyard.geom.MatrixFour.prototype.getInverse = function() {
     var inverse;
 
     if (this._isOrthonormal) {
@@ -512,7 +512,7 @@ lanyard.geom.MatrixFour.prototype.getInverse = function () {
  * Find the orthonormal inverse of the current matrix.
  * @return {lanyard.geom.MatrixFour} the orthonormal inverse of the current matrix.
  */
-lanyard.geom.MatrixFour.prototype.orthonormalInverse = function () {
+lanyard.geom.MatrixFour.prototype.orthonormalInverse = function() {
     var inverse = new lanyard.geom.MatrixFour(null);
 
     // Transpose of upper 3x3.
@@ -544,7 +544,7 @@ lanyard.geom.MatrixFour.prototype.orthonormalInverse = function () {
  *
  * @return {lanyard.geom.MatrixFour} the inverse of this matrix.
  */
-lanyard.geom.MatrixFour.prototype.generalInverse = function () {
+lanyard.geom.MatrixFour.prototype.generalInverse = function() {
     var d = this.determinant();
 
     if (d === 0) {
@@ -642,9 +642,9 @@ lanyard.geom.MatrixFour.prototype.generalInverse = function () {
 
 /**
  * Obtains the determinant of this MatrixFour.
- * @return {number} the determinant
+ * @return {number} the determinant.
  */
-lanyard.geom.MatrixFour.prototype.determinant = function () {
+lanyard.geom.MatrixFour.prototype.determinant = function() {
     var det = this._m11 * (
         (this._m22 * this._m33 * this._m44 + this._m23 * this._m34 * this._m42 + this._m24 * this._m32 * this._m43) -
             this._m24 * this._m33 * this._m42 -
@@ -673,7 +673,7 @@ lanyard.geom.MatrixFour.prototype.determinant = function () {
  * @param {lanyard.geom.Point} p the Point to transform.
  * @return {lanyard.geom.Point} the point, transformed by the current state of this MatrixFour.
  */
-lanyard.geom.MatrixFour.prototype.transform = function (p) {
+lanyard.geom.MatrixFour.prototype.transform = function(p) {
     var x = this._m11 * p.getX() + this._m12 * p.getY() + this._m13 * p.getZ() + this._m14 * p.getW();
     var y = this._m21 * p.getX() + this._m22 * p.getY() + this._m23 * p.getZ() + this._m24 * p.getW();
     var z = this._m31 * p.getX() + this._m32 * p.getY() + this._m33 * p.getZ() + this._m34 * p.getW();
@@ -688,7 +688,7 @@ lanyard.geom.MatrixFour.prototype.transform = function (p) {
  * @public
  * @return {number} the value in position 11.
  */
-lanyard.geom.MatrixFour.prototype.get11 = function () {
+lanyard.geom.MatrixFour.prototype.get11 = function() {
     return this._m11;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get11',
@@ -700,7 +700,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get11',
  * @public
  * @param {number} value the new value for position 11.
  */
-lanyard.geom.MatrixFour.prototype.set11 = function (value) {
+lanyard.geom.MatrixFour.prototype.set11 = function(value) {
     this._m11 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set11',
@@ -712,7 +712,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set11',
  * @public
  * @return {number} the value in position 22.
  */
-lanyard.geom.MatrixFour.prototype.get22 = function () {
+lanyard.geom.MatrixFour.prototype.get22 = function() {
     return this._m22;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get22',
@@ -724,7 +724,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get22',
  * @public
  * @param {number} value the new value for position 22.
  */
-lanyard.geom.MatrixFour.prototype.set22 = function (value) {
+lanyard.geom.MatrixFour.prototype.set22 = function(value) {
     this._m22 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set22',
@@ -736,7 +736,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set22',
  * @public
  * @return {number} the value in position 33.
  */
-lanyard.geom.MatrixFour.prototype.get33 = function () {
+lanyard.geom.MatrixFour.prototype.get33 = function() {
     return this._m33;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get33',
@@ -748,7 +748,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get33',
  * @public
  * @param {number} value the new value for position 33.
  */
-lanyard.geom.MatrixFour.prototype.set33 = function (value) {
+lanyard.geom.MatrixFour.prototype.set33 = function(value) {
     this._m33 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set33',
@@ -760,7 +760,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set33',
  * @public
  * @return {number} the value in position 44.
  */
-lanyard.geom.MatrixFour.prototype.get44 = function () {
+lanyard.geom.MatrixFour.prototype.get44 = function() {
     return this._m44;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get44',
@@ -772,7 +772,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get44',
  * @public
  * @param {number} value the new value for position 44.
  */
-lanyard.geom.MatrixFour.prototype.set44 = function (value) {
+lanyard.geom.MatrixFour.prototype.set44 = function(value) {
     this._m44 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set44',
@@ -784,7 +784,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set44',
  * @public
  * @return {number} the value in position 12.
  */
-lanyard.geom.MatrixFour.prototype.get12 = function () {
+lanyard.geom.MatrixFour.prototype.get12 = function() {
     return this._m12;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get12',
@@ -796,7 +796,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get12',
  * @public
  * @param {number} value the new value for position 12.
  */
-lanyard.geom.MatrixFour.prototype.set12 = function (value) {
+lanyard.geom.MatrixFour.prototype.set12 = function(value) {
     this._m12 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set12',
@@ -808,7 +808,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set12',
  * @public
  * @return {number} the value in position 13.
  */
-lanyard.geom.MatrixFour.prototype.get13 = function () {
+lanyard.geom.MatrixFour.prototype.get13 = function() {
     return this._m13;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get13',
@@ -820,7 +820,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get13',
  * @public
  * @param {number} value the new value for position 13.
  */
-lanyard.geom.MatrixFour.prototype.set13 = function (value) {
+lanyard.geom.MatrixFour.prototype.set13 = function(value) {
     this._m13 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set13',
@@ -832,7 +832,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set13',
  * @public
  * @return {number} the value in position 14.
  */
-lanyard.geom.MatrixFour.prototype.get14 = function () {
+lanyard.geom.MatrixFour.prototype.get14 = function() {
     return this._m14;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get14',
@@ -844,7 +844,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get14',
  * @public
  * @param {number} value the new value for position 14.
  */
-lanyard.geom.MatrixFour.prototype.set14 = function (value) {
+lanyard.geom.MatrixFour.prototype.set14 = function(value) {
     this._m14 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set14',
@@ -856,7 +856,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set14',
  * @public
  * @return {number} the value in position 21.
  */
-lanyard.geom.MatrixFour.prototype.get21 = function () {
+lanyard.geom.MatrixFour.prototype.get21 = function() {
     return this._m21;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get21',
@@ -868,7 +868,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get21',
  * @public
  * @param {number} value the new value for position 21.
  */
-lanyard.geom.MatrixFour.prototype.set21 = function (value) {
+lanyard.geom.MatrixFour.prototype.set21 = function(value) {
     this._m21 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set21',
@@ -880,7 +880,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set21',
  * @public
  * @return {number} the value in position 23.
  */
-lanyard.geom.MatrixFour.prototype.get23 = function () {
+lanyard.geom.MatrixFour.prototype.get23 = function() {
     return this._m23;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get23',
@@ -892,7 +892,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get23',
  * @public
  * @param {number} value the new value for position 23.
  */
-lanyard.geom.MatrixFour.prototype.set23 = function (value) {
+lanyard.geom.MatrixFour.prototype.set23 = function(value) {
     this._m23 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set23',
@@ -904,7 +904,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set23',
  * @public
  * @return {number} the value in position 24.
  */
-lanyard.geom.MatrixFour.prototype.get24 = function () {
+lanyard.geom.MatrixFour.prototype.get24 = function() {
     return this._m24;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get24',
@@ -916,7 +916,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get24',
  * @public
  * @param {number} value the new value for position 24.
  */
-lanyard.geom.MatrixFour.prototype.set24 = function (value) {
+lanyard.geom.MatrixFour.prototype.set24 = function(value) {
     this._m24 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set24',
@@ -928,7 +928,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set24',
  * @public
  * @return {number} the value in position 31.
  */
-lanyard.geom.MatrixFour.prototype.get31 = function () {
+lanyard.geom.MatrixFour.prototype.get31 = function() {
     return this._m31;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get31',
@@ -940,7 +940,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get31',
  * @public
  * @param {number} value the new value for position 31.
  */
-lanyard.geom.MatrixFour.prototype.set31 = function (value) {
+lanyard.geom.MatrixFour.prototype.set31 = function(value) {
     this._m31 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set31',
@@ -952,7 +952,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set31',
  * @public
  * @return {number} the value in position 32.
  */
-lanyard.geom.MatrixFour.prototype.get32 = function () {
+lanyard.geom.MatrixFour.prototype.get32 = function() {
     return this._m32;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get32',
@@ -964,7 +964,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get32',
  * @public
  * @param {number} value the new value for position 32.
  */
-lanyard.geom.MatrixFour.prototype.set32 = function (value) {
+lanyard.geom.MatrixFour.prototype.set32 = function(value) {
     this._m32 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set32',
@@ -976,7 +976,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set32',
  * @public
  * @return {number} the value in position 34.
  */
-lanyard.geom.MatrixFour.prototype.get34 = function () {
+lanyard.geom.MatrixFour.prototype.get34 = function() {
     return this._m34;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get34',
@@ -988,7 +988,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get34',
  * @public
  * @param {number} value the new value for position 34.
  */
-lanyard.geom.MatrixFour.prototype.set34 = function (value) {
+lanyard.geom.MatrixFour.prototype.set34 = function(value) {
     this._m34 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set34',
@@ -1000,7 +1000,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set34',
  * @public
  * @return {number} the value in position 41.
  */
-lanyard.geom.MatrixFour.prototype.get41 = function () {
+lanyard.geom.MatrixFour.prototype.get41 = function() {
     return this._m41;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get41',
@@ -1012,7 +1012,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get41',
  * @public
  * @param {number} value the new value for position 41.
  */
-lanyard.geom.MatrixFour.prototype.set41 = function (value) {
+lanyard.geom.MatrixFour.prototype.set41 = function(value) {
     this._m41 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set41',
@@ -1024,7 +1024,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set41',
  * @public
  * @return {number} the value in position 42.
  */
-lanyard.geom.MatrixFour.prototype.get42 = function () {
+lanyard.geom.MatrixFour.prototype.get42 = function() {
     return this._m42;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get42',
@@ -1036,7 +1036,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get42',
  * @public
  * @param {number} value the new value for position 42.
  */
-lanyard.geom.MatrixFour.prototype.set42 = function (value) {
+lanyard.geom.MatrixFour.prototype.set42 = function(value) {
     this._m42 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set42',
@@ -1048,7 +1048,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set42',
  * @public
  * @return {number} the value in position 43.
  */
-lanyard.geom.MatrixFour.prototype.get43 = function () {
+lanyard.geom.MatrixFour.prototype.get43 = function() {
     return this._m43;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get43',
@@ -1060,7 +1060,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.get43',
  * @public
  * @param {number} value the new value for position 43.
  */
-lanyard.geom.MatrixFour.prototype.set43 = function (value) {
+lanyard.geom.MatrixFour.prototype.set43 = function(value) {
     this._m43 = value;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.set43',

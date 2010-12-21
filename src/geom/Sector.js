@@ -36,11 +36,11 @@
  */
 goog.provide('lanyard.geom.Sector');
 
+goog.require('lanyard.Globe');
 goog.require('lanyard.geom.Angle');
 goog.require('lanyard.geom.Cylinder');
-goog.require('lanyard.Globe');
-goog.require('lanyard.geom.Sphere');
 goog.require('lanyard.geom.LatLon');
+goog.require('lanyard.geom.Sphere');
 
 /**
  * Creates a new Sector and initializes it to the specified angles. The angles are assumed to be
@@ -54,7 +54,7 @@ goog.require('lanyard.geom.LatLon');
  * @param {lanyard.geom.Angle} minLongitude the sector's minimum longitude.
  * @param {lanyard.geom.Angle} maxLongitude the sector's maximum longitude.
  */
-lanyard.geom.Sector = function (minLatitude, maxLatitude, minLongitude, maxLongitude) {
+lanyard.geom.Sector = function(minLatitude, maxLatitude, minLongitude, maxLongitude) {
     /** @private */ this._minLatitude = minLatitude;
     /** @private */ this._maxLatitude = maxLatitude;
     /** @private */ this._minLongitude = minLongitude;
@@ -105,7 +105,7 @@ lanyard.geom.Sector.prototype.EMPTY_SECTOR =
  * @return {lanyard.geom.Sector} the new Sector.
  */
 lanyard.geom.Sector.prototype.fromDegrees =
-        function (minLatitude, maxLatitude, minLongitude, maxLongitude) {
+        function(minLatitude, maxLatitude, minLongitude, maxLongitude) {
 
     var ret = new lanyard.geom.Sector(
         lanyard.geom.Angle.prototype.fromDegrees(minLatitude),
@@ -128,7 +128,7 @@ lanyard.geom.Sector.prototype.fromDegrees =
  * @return {lanyard.geom.Sector} the new Sector.
  */
 lanyard.geom.Sector.prototype.fromRadians =
-        function (minLatitude, maxLatitude, minLongitude, maxLongitude) {
+        function(minLatitude, maxLatitude, minLongitude, maxLongitude) {
 
     /** @type {lanyard.geom.Sector} */
     var ret = new lanyard.geom.Sector(
@@ -146,7 +146,7 @@ lanyard.geom.Sector.prototype.fromRadians =
  * @param {Array.<lanyard.geom.LatLon>} positions the array of positions.
  * @return {lanyard.geom.Sector} the new bounding sector.
  */
-lanyard.geom.Sector.prototype.boundingSector = function (positions) {
+lanyard.geom.Sector.prototype.boundingSector = function(positions) {
 
     /** @type {number} */
     var minLat = lanyard.geom.Angle.prototype.POS90.getDegrees();
@@ -162,7 +162,7 @@ lanyard.geom.Sector.prototype.boundingSector = function (positions) {
 
     /** @type {number} */
     var i;
-    for(i = 0; i < positions.length; i = i + 1) {
+    for (i = 0; i < positions.length; i = i + 1) {
 
         /** @type {number} */
         var lat = positions[i].getLatitude().getDegrees();
@@ -199,7 +199,7 @@ lanyard.geom.Sector.prototype.boundingSector = function (positions) {
  *
  * @return {lanyard.geom.Angle} the sector's minimum latitude.
  */
-lanyard.geom.Sector.prototype.getMinLatitude = function () {
+lanyard.geom.Sector.prototype.getMinLatitude = function() {
     return this._minLatitude;
 };
 
@@ -208,7 +208,7 @@ lanyard.geom.Sector.prototype.getMinLatitude = function () {
  *
  * @return {lanyard.geom.Angle} the sector's minimum longitude.
  */
-lanyard.geom.Sector.prototype.getMinLongitude = function () {
+lanyard.geom.Sector.prototype.getMinLongitude = function() {
     return this._minLongitude;
 };
 
@@ -217,7 +217,7 @@ lanyard.geom.Sector.prototype.getMinLongitude = function () {
  *
  * @return {lanyard.geom.Angle} the sector's maximum latitude.
  */
-lanyard.geom.Sector.prototype.getMaxLatitude = function () {
+lanyard.geom.Sector.prototype.getMaxLatitude = function() {
     return this._maxLatitude;
 };
 
@@ -226,7 +226,7 @@ lanyard.geom.Sector.prototype.getMaxLatitude = function () {
  *
  * @return {lanyard.geom.Angle} the sector's maximum longitude.
  */
-lanyard.geom.Sector.prototype.getMaxLongitude = function () {
+lanyard.geom.Sector.prototype.getMaxLongitude = function() {
     return this._maxLongitude;
 };
 
@@ -235,7 +235,7 @@ lanyard.geom.Sector.prototype.getMaxLongitude = function () {
  *
  * @return {lanyard.geom.Angle} the angular difference between the sector's minimum and maximum latitudes.
  */
-lanyard.geom.Sector.prototype.getDeltaLat = function () {
+lanyard.geom.Sector.prototype.getDeltaLat = function() {
     //Angle.fromDegrees(this.maxLatitude.degrees - this.minLatitude.degrees);
     return this._deltaLat;
 };
@@ -245,7 +245,7 @@ lanyard.geom.Sector.prototype.getDeltaLat = function () {
  *
  * @return {number} the degree difference between the sector's minimum and maximum latitudes.
  */
-lanyard.geom.Sector.prototype.getDeltaLatDegrees = function () {
+lanyard.geom.Sector.prototype.getDeltaLatDegrees = function() {
     //this.maxLatitude.degrees - this.minLatitude.degrees;
     return this._deltaLat.getDegrees();
 };
@@ -255,7 +255,7 @@ lanyard.geom.Sector.prototype.getDeltaLatDegrees = function () {
  *
  * @return {number} the radian difference between the sector's minimim and maximum latitudes.
  */
-lanyard.geom.Sector.prototype.getDeltaLatRadians = function () {
+lanyard.geom.Sector.prototype.getDeltaLatRadians = function() {
     //this.maxLatitude.radians - this.minLatitude.radians;
     return this._deltaLat.getRadians();
 };
@@ -265,7 +265,7 @@ lanyard.geom.Sector.prototype.getDeltaLatRadians = function () {
  *
  * @return {lanyard.geom.Angle} the angular difference between the sector's minimum and maximum longitudes.
  */
-lanyard.geom.Sector.prototype.getDeltaLon = function () {
+lanyard.geom.Sector.prototype.getDeltaLon = function() {
     //Angle.fromDegrees(this.maxLongitude.degrees - this.minLongitude.degrees);
     return this._deltaLon;
 };
@@ -275,7 +275,7 @@ lanyard.geom.Sector.prototype.getDeltaLon = function () {
  *
  * @return {number} the degree difference between the sector's minimum and maximum longitudes.
  */
-lanyard.geom.Sector.prototype.getDeltaLonDegrees = function () {
+lanyard.geom.Sector.prototype.getDeltaLonDegrees = function() {
     //this.maxLongitude.degrees - this.minLongitude.degrees;
     return this._deltaLon.getDegrees();
 };
@@ -285,7 +285,7 @@ lanyard.geom.Sector.prototype.getDeltaLonDegrees = function () {
  *
  * @return {number} the radian difference between the sector's minimum and maximum longitudes.
  */
-lanyard.geom.Sector.prototype.getDeltaLonRadians = function () {
+lanyard.geom.Sector.prototype.getDeltaLonRadians = function() {
     //this.maxLongitude.radians - this.minLongitude.radians;
     return this._deltaLon.getRadians();
 };
@@ -296,7 +296,7 @@ lanyard.geom.Sector.prototype.getDeltaLonRadians = function () {
  *
  * @return {lanyard.geom.LatLon} the latitude and longitude of the sector's angular center.
  */
-lanyard.geom.Sector.prototype.getCentroid = function () {
+lanyard.geom.Sector.prototype.getCentroid = function() {
     /** @type {lanyard.geom.Angle} */
     var la = lanyard.geom.Angle.prototype.fromDegrees(
         0.5 * (this.getMaxLatitude().getDegrees() + this.getMinLatitude().getDegrees())
@@ -316,7 +316,7 @@ lanyard.geom.Sector.prototype.getCentroid = function () {
  * @param {lanyard.Globe} globe the globe.
  * @return {lanyard.geom.Point} the center point.
  */
-lanyard.geom.Sector.prototype.computeCenterPoint = function (globe) {
+lanyard.geom.Sector.prototype.computeCenterPoint = function(globe) {
 
     /** @type {number} */
     var lat = 0.5 * (this._minLatitude.getDegrees() + this._maxLatitude.getDegrees());
@@ -339,7 +339,7 @@ lanyard.geom.Sector.prototype.computeCenterPoint = function (globe) {
  * @param {lanyard.Globe} globe the globe.
  * @return {Array.<lanyard.geom.Point>} the corner points.
  */
-lanyard.geom.Sector.prototype.computeCornerPoints = function (globe) {
+lanyard.geom.Sector.prototype.computeCornerPoints = function(globe) {
 
     /** @type {Array.<lanyard.geom.Point>} */
     var corners = [];
@@ -372,7 +372,7 @@ lanyard.geom.Sector.prototype.computeCornerPoints = function (globe) {
  * @param sector {lanyard.geom.Sector} the sector to return the bounding sphere for.
  * @return {lanyard.geom.Extent} the minimal bounding sphere in Cartesian coordinates.
  */
-lanyard.geom.Sector.prototype.computeBoundingSphere = function (globe, verticalExaggeration, sector) {
+lanyard.geom.Sector.prototype.computeBoundingSphere = function(globe, verticalExaggeration, sector) {
 
     /** @type {lanyard.geom.LatLon} */
     var center = sector.getCentroid();
@@ -416,7 +416,7 @@ lanyard.geom.Sector.prototype.computeBoundingSphere = function (globe, verticalE
  * @param sector {lanyard.geom.Sector} the sector to return the bounding cylinder for.
  * @return {lanyard.geom.Cylinder} the minimal bounding cylinder in Cartesian coordinates.
  */
-lanyard.geom.Sector.prototype.computeBoundingCylinder = function (globe, verticalExaggeration, sector) {
+lanyard.geom.Sector.prototype.computeBoundingCylinder = function(globe, verticalExaggeration, sector) {
 
     // Compute the center points of the bounding cylinder's top and bottom planes.
 
@@ -495,8 +495,8 @@ lanyard.geom.Sector.prototype.computeBoundingCylinder = function (globe, vertica
  * @param {lanyard.geom.Angle} longitude the coordinate longitude.
  * @return {boolean} if the coodinate is contained in this sector.
  */
-lanyard.geom.Sector.prototype.contains = function (latitude, longitude) {
-    /** @type {boolean} */    
+lanyard.geom.Sector.prototype.contains = function(latitude, longitude) {
+    /** @type {boolean} */
     var ret = (latitude.getDegrees() >= this._minLatitude.getDegrees()) &&
         (latitude.getDegrees() <= this._maxLatitude.getDegrees()) &&
         (longitude.getDegrees() >= this._minLongitude.getDegrees()) &&
@@ -513,7 +513,7 @@ lanyard.geom.Sector.prototype.contains = function (latitude, longitude) {
  * @param {lanyard.geom.LatLon} latLon the position to test, with angles normalized.
  * @return {boolean} true if the position is within the sector, false otherwise.
  */
-lanyard.geom.Sector.prototype.containsLatLon = function (latLon) {
+lanyard.geom.Sector.prototype.containsLatLon = function(latLon) {
     return this.contains(latLon.getLatitude(), latLon.getLongitude());
 };
 
@@ -527,7 +527,7 @@ lanyard.geom.Sector.prototype.containsLatLon = function (latLon) {
  * @param {number} radiansLongitude the longitude in radians of the position to test, normalized.
  * @return {boolean} true if the position is within the sector, false otherwise.
  */
-lanyard.geom.Sector.prototype.containsRadians = function (radiansLatitude, radiansLongitude) {
+lanyard.geom.Sector.prototype.containsRadians = function(radiansLatitude, radiansLongitude) {
     /** @type {boolean} */
     var ret = (radiansLatitude >= this._minLatitude.getRadians()) &&
         (radiansLatitude <= this._maxLatitude.getRadians()) &&
@@ -544,7 +544,7 @@ lanyard.geom.Sector.prototype.containsRadians = function (radiansLatitude, radia
  * @param {number} degreesLongitude the degrees longitude.
  * @return {boolean} true if this sector contains the coordinates, false otherwise.
  */
-lanyard.geom.Sector.prototype.containsDegrees = function (degreesLatitude, degreesLongitude) {
+lanyard.geom.Sector.prototype.containsDegrees = function(degreesLatitude, degreesLongitude) {
     /** @type {boolean} */
     var ret = (degreesLatitude >= this._minLatitude.getDegrees()) &&
         (degreesLatitude <= this._maxLatitude.getDegrees()) &&
@@ -562,7 +562,7 @@ lanyard.geom.Sector.prototype.containsDegrees = function (degreesLatitude, degre
  * @param {lanyard.geom.Sector} that the sector to test for intersection.
  * @return {boolean} true if the sectors intersect, otherwise false.
  */
-lanyard.geom.Sector.prototype.intersects = function (that) {
+lanyard.geom.Sector.prototype.intersects = function(that) {
     if (!that) {
         return false;
     }
@@ -599,7 +599,7 @@ lanyard.geom.Sector.prototype.intersects = function (that) {
  * @param {lanyard.geom.Sector} that the sector to join with this.
  * @return {lanyard.geom.Sector} a new sector formed from the extremes of the two sectors.
  */
-lanyard.geom.Sector.prototype.unionWithSector = function (that) {
+lanyard.geom.Sector.prototype.unionWithSector = function(that) {
     if (!that) {
         return this;
     }
@@ -642,7 +642,7 @@ lanyard.geom.Sector.prototype.unionWithSector = function (that) {
  * @param {lanyard.geom.Angle} longitude the longitude coordinate.
  * @return {lanyard.geom.Sector} the result of the union.
  */
-lanyard.geom.Sector.prototype.unionWithCoordinate = function (latitude, longitude) {
+lanyard.geom.Sector.prototype.unionWithCoordinate = function(latitude, longitude) {
     if (!latitude || !longitude) {
         return this;
     }
@@ -684,7 +684,7 @@ lanyard.geom.Sector.prototype.unionWithCoordinate = function (latitude, longitud
  * @param {lanyard.geom.Sector} that the sector to check for intersection.
  * @return {lanyard.geom.Sector} a sector of the intersection.
  */
-lanyard.geom.Sector.prototype.intersectionWithSector = function (that) {
+lanyard.geom.Sector.prototype.intersectionWithSector = function(that) {
     if (!that) {
         return this;
     }
@@ -731,7 +731,7 @@ lanyard.geom.Sector.prototype.intersectionWithSector = function (that) {
  * @param {lanyard.geom.Angle} longitude the longitude of the coordinate.
  * @return {lanyard.geom.Sector} the sector of the intersection.
  */
-lanyard.geom.Sector.prototype.intersectionWithCoordinate = function (latitude, longitude) {
+lanyard.geom.Sector.prototype.intersectionWithCoordinate = function(latitude, longitude) {
     if (!latitude || !longitude) {
         return this;
     }
@@ -748,7 +748,7 @@ lanyard.geom.Sector.prototype.intersectionWithCoordinate = function (latitude, l
  *
  * @return {Array.<lanyard.geom.Sector>} the array of four sectors.
  */
-lanyard.geom.Sector.prototype.subdivide = function () {
+lanyard.geom.Sector.prototype.subdivide = function() {
 
     /** @type {lanyard.geom.Angle} */
     var midLat = lanyard.geom.Angle.prototype.average(this._minLatitude, this._maxLatitude, null);
@@ -772,10 +772,10 @@ lanyard.geom.Sector.prototype.subdivide = function () {
  *
  * @return {string} a string indicating the sector's angles.
  */
-lanyard.geom.Sector.prototype.toString = function () {
+lanyard.geom.Sector.prototype.toString = function() {
     /** @type {string} */
-    var ret = "A Sector with angles: (" + this._minLatitude.toString() + ", " + this._minLongitude.toString() + ")" +
-        ", (" + this._maxLatitude.toString() + ", " + this._maxLongitude.toString() + ")";
+    var ret = 'A Sector with angles: (' + this._minLatitude.toString() + ', ' + this._minLongitude.toString() + ')' +
+        ', (' + this._maxLatitude.toString() + ', ' + this._maxLongitude.toString() + ')';
 
     return ret;
 };
@@ -787,7 +787,7 @@ lanyard.geom.Sector.prototype.toString = function () {
  * @param {lanyard.geom.Sector} that the Sector to compareTo with this.
  * @return {number} -1 if this sector is less than that specified, 0 if it's equal, and 1 if it's greater.
  */
-lanyard.geom.Sector.prototype.compareTo = function (that) {
+lanyard.geom.Sector.prototype.compareTo = function(that) {
     if (this.getMinLatitude().compareTo(that.getMinLatitude()) < 0) {
         return -1;
     }

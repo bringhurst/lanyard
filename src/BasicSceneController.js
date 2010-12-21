@@ -37,16 +37,16 @@ goog.require('lanyard.BasicFrameController');
  * @implements {lanyard.SceneController}
  * @param {lanyard.LanyardCanvas} lanyardCanvas the lanyard canvas.
  */
-lanyard.BasicSceneController = function (lanyardCanvas) {
+lanyard.BasicSceneController = function(lanyardCanvas) {
     /**
      * @private
      */
     this._logger = goog.debug.Logger.getLogger('lanyard.BasicSceneController');
 
-    if(!lanyardCanvas) {
-        this._logger.severe("Attempted to create a scene controller without a valid lanyard canvas.");
+    if (!lanyardCanvas) {
+        this._logger.severe('Attempted to create a scene controller without a valid lanyard canvas.');
     }
-    
+
     /**
      * @private
      * @type {lanyard.Model}
@@ -83,7 +83,7 @@ lanyard.BasicSceneController = function (lanyardCanvas) {
  *
  * @return {lanyard.FrameController} the frame controller.
  */
-lanyard.BasicSceneController.prototype.getFrameController = function () {
+lanyard.BasicSceneController.prototype.getFrameController = function() {
     return this._frameController;
 };
 
@@ -92,7 +92,7 @@ lanyard.BasicSceneController.prototype.getFrameController = function () {
  *
  * @return {lanyard.Model} the model.
  */
-lanyard.BasicSceneController.prototype.getModel = function () {
+lanyard.BasicSceneController.prototype.getModel = function() {
     return this._model;
 };
 
@@ -101,7 +101,7 @@ lanyard.BasicSceneController.prototype.getModel = function () {
  *
  * @return {lanyard.View} the view.
  */
-lanyard.BasicSceneController.prototype.getView = function () {
+lanyard.BasicSceneController.prototype.getView = function() {
     return this._view;
 };
 
@@ -110,16 +110,16 @@ lanyard.BasicSceneController.prototype.getView = function () {
  *
  * @param {lanyard.FrameController} frameController the frame controller.
  */
-lanyard.BasicSceneController.prototype.setFrameController = function (frameController) {
+lanyard.BasicSceneController.prototype.setFrameController = function(frameController) {
     this._frameController = frameController;
 };
 
 /**
  * Model mutator.
  *
- * @param {lanyard.Model} model the new model;
+ * @param {lanyard.Model} model the new model;.
  */
-lanyard.BasicSceneController.prototype.setModel = function (model) {
+lanyard.BasicSceneController.prototype.setModel = function(model) {
     this._model = model;
 };
 
@@ -128,7 +128,7 @@ lanyard.BasicSceneController.prototype.setModel = function (model) {
  *
  * @param {lanyard.View} view the new view.
  */
-lanyard.BasicSceneController.prototype.setView = function (view) {
+lanyard.BasicSceneController.prototype.setView = function(view) {
     this._view = view;
 };
 
@@ -137,7 +137,7 @@ lanyard.BasicSceneController.prototype.setView = function (view) {
  *
  * @param {number} verticalExaggeration the new vertical exaggeration.
  */
-lanyard.BasicSceneController.prototype.setVerticalExaggeration = function (verticalExaggeration) {
+lanyard.BasicSceneController.prototype.setVerticalExaggeration = function(verticalExaggeration) {
     this._verticalExaggeration = verticalExaggeration;
 };
 
@@ -146,14 +146,14 @@ lanyard.BasicSceneController.prototype.setVerticalExaggeration = function (verti
  *
  * @return {number} the vertical exaggeration.
  */
-lanyard.BasicSceneController.prototype.getVerticalExaggeration = function () {
+lanyard.BasicSceneController.prototype.getVerticalExaggeration = function() {
     return this._verticalExaggeration;
 };
 
 /**
  * Repaint the entire scene.
  */
-lanyard.BasicSceneController.prototype.repaint = function () {
+lanyard.BasicSceneController.prototype.repaint = function() {
     // TODO: calculate start of FPS here
 
     this._dc.initialize();
@@ -166,16 +166,16 @@ lanyard.BasicSceneController.prototype.repaint = function () {
     var lanyardCanvas = this._dc.getCanvas();
 
     if (!lanyardCanvas) {
-        this._logger.fine("The scene controller has a null lanyard canvas.");
+        this._logger.fine('The scene controller has a null lanyard canvas.');
     }
 
     /** @type {lanyard.FrameController} */
     var fc = this.getFrameController();
 
     if (!fc) {
-        this._logger.fine("The frame controller did not exist when the scene controller tried to use it.");
+        this._logger.fine('The frame controller did not exist when the scene controller tried to use it.');
     }
-    
+
     fc.initializeFrame(this._dc);
 
     this._view.apply(this._dc);
@@ -183,7 +183,7 @@ lanyard.BasicSceneController.prototype.repaint = function () {
     fc.drawFrame(this._dc);
     fc.finalizeFrame(this._dc);
     this.frame = this.frame + 1;
-    
+
     // TODO: calculate end of FPS here
 };
 
@@ -192,7 +192,7 @@ lanyard.BasicSceneController.prototype.repaint = function () {
  *
  * @return {number} the frames per second.
  */
-lanyard.BasicSceneController.prototype.getFramesPerSecond = function () {
+lanyard.BasicSceneController.prototype.getFramesPerSecond = function() {
     return 0;
 };
 

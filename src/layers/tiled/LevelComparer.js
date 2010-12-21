@@ -30,7 +30,7 @@ goog.provide('lanyard.layers.tiled.LevelComparer');
 /**
  * Creates a tiled layer level comparer.
  */
-lanyard.layers.tiled.LevelComparer = function () {
+lanyard.layers.tiled.LevelComparer = function() {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
 };
 
@@ -41,7 +41,7 @@ lanyard.layers.tiled.LevelComparer = function () {
  * @param {lanyard.layers.tiled.TextureTile} tb
  * @return {number} 0 if equal, 1 if greater, -1 if less than.
  */
-lanyard.layers.tiled.LevelComparer.prototype.compare = function (ta, tb) {
+lanyard.layers.tiled.LevelComparer.prototype.compare = function(ta, tb) {
     /** @type {number} */
     var la;
 

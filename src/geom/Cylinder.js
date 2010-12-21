@@ -38,7 +38,7 @@ goog.provide('lanyard.geom.Cylinder');
  * @param {lanyard.geom.Point} topCenter represents the centrepoint of the top disc of the Cylinder.
  * @param {number} cylinderRadius the radius of the Cylinder.
  */
-lanyard.geom.Cylinder = function (bottomCenter, topCenter, cylinderRadius) {
+lanyard.geom.Cylinder = function(bottomCenter, topCenter, cylinderRadius) {
     /** @private */ this.bottomCenter = bottomCenter;
     /** @private */ this.topCenter = topCenter;
     /** @private */ this.cylinderHeight = this.bottomCenter.distanceTo(this.topCenter);
@@ -52,9 +52,9 @@ goog.exportSymbol('lanyard.geom.Cylinder', lanyard.geom.Cylinder);
  *
  * @return {string} a string representation of this cylinder.
  */
-lanyard.geom.Cylinder.prototype.toString = function () {
-    var ret = this.cylinderRadius + ", " + this.bottomCenter.toString() + ", " +
-        this.topCenter.toString() + ", " + this.axisUnitDirection.toString();
+lanyard.geom.Cylinder.prototype.toString = function() {
+    var ret = this.cylinderRadius + ', ' + this.bottomCenter.toString() + ', ' +
+        this.topCenter.toString() + ', ' + this.axisUnitDirection.toString();
     return ret;
 };
 
@@ -64,7 +64,7 @@ lanyard.geom.Cylinder.prototype.toString = function () {
  * @param {lanyard.geom.Line} line the line to test.
  * @return {Array.<lanyard.geom.Intersection>} the intersections.
  */
-lanyard.geom.Cylinder.prototype.intersect = function (line) {
+lanyard.geom.Cylinder.prototype.intersect = function(line) {
     /** @type {lanyard.geom.Point} */
     var ld = line.getDirection();
 
@@ -94,7 +94,7 @@ lanyard.geom.Cylinder.prototype.intersect = function (line) {
         /** @type {lanyard.geom.Point} */
         var p = line.getPointAt((-b - discriminantRoot) / (2 * a));
 
-        return [ new lanyard.geom.Intersection(p, true) ];
+        return [new lanyard.geom.Intersection(p, true)];
 
     } else { // (discriminant > 0)
 
@@ -137,9 +137,9 @@ lanyard.geom.Cylinder.prototype.intersect = function (line) {
                 new lanyard.geom.Intersection(far, fTangent)
             ];
         } else if (n) {
-            intersections = [ new lanyard.geom.Intersection(near, nTangent) ];
+            intersections = [new lanyard.geom.Intersection(near, nTangent)];
         } else if (f) {
-            intersections = [ new lanyard.geom.Intersection(far, fTangent) ];
+            intersections = [new lanyard.geom.Intersection(far, fTangent)];
         }
 
         return intersections;
@@ -152,7 +152,7 @@ lanyard.geom.Cylinder.prototype.intersect = function (line) {
  * @param {lanyard.geom.Line} line the line to check.
  * @return {boolean} if this line intersects with the cylinder.
  */
-lanyard.geom.Cylinder.prototype.intersectsLine = function (line) {
+lanyard.geom.Cylinder.prototype.intersectsLine = function(line) {
     /** @type {lanyard.geom.Point} */
     var ld = line.getDirection();
 
@@ -183,7 +183,7 @@ lanyard.geom.Cylinder.prototype.intersectsLine = function (line) {
  * @param {number} c
  * @return {number} the discriminant of this cylinder.
  */
-lanyard.geom.Cylinder.prototype.discriminant = function (a, b, c) {
+lanyard.geom.Cylinder.prototype.discriminant = function(a, b, c) {
     return b * b - 4 * a * c;
 };
 
@@ -195,7 +195,7 @@ lanyard.geom.Cylinder.prototype.discriminant = function (a, b, c) {
  * @param {number} parameter
  * @return {number} the value at which the plane intersects the cylinder's axis.
  */
-lanyard.geom.Cylinder.prototype.intersectsAt = function (plane, effectiveRadius, parameter) {
+lanyard.geom.Cylinder.prototype.intersectsAt = function(plane, effectiveRadius, parameter) {
 
     // Test the distance from the first cylinder end-point.
 
@@ -241,7 +241,7 @@ lanyard.geom.Cylinder.prototype.intersectsAt = function (plane, effectiveRadius,
  * @param {lanyard.geom.Plane} plane the plane.
  * @return {number} the effective radius.
  */
-lanyard.geom.Cylinder.prototype.getEffectiveRadius = function (plane) {
+lanyard.geom.Cylinder.prototype.getEffectiveRadius = function(plane) {
     /** @type {number} */
     var dot = plane.getNormal().dot(this.axisUnitDirection);
 
@@ -261,10 +261,10 @@ lanyard.geom.Cylinder.prototype.getEffectiveRadius = function (plane) {
  * @param {lanyard.geom.Plane} plane the plane to check.
  * @return {boolean} if the plane intersects with this cylinder.
  */
-lanyard.geom.Cylinder.prototype.intersectsPlane = function (plane) {
+lanyard.geom.Cylinder.prototype.intersectsPlane = function(plane) {
     /** @type {number} */
     var effectiveRadius = this.getEffectiveRadius(plane);
-    
+
     /** @type {number} */
     var intersectionPoint = this.intersectsAt(plane, effectiveRadius, 1);
 
@@ -277,7 +277,7 @@ lanyard.geom.Cylinder.prototype.intersectsPlane = function (plane) {
  * @param {lanyard.geom.Frustum} frustum the frustum to check.
  * @return {boolean} if this cylinder intersects with the frustum.
  */
-lanyard.geom.Cylinder.prototype.intersectsFrustum = function (frustum) {
+lanyard.geom.Cylinder.prototype.intersectsFrustum = function(frustum) {
     /** @type {number} */
     var intersectionPoint;
 
@@ -329,7 +329,7 @@ lanyard.geom.Cylinder.prototype.intersectsFrustum = function (frustum) {
  *
  * @return {lanyard.geom.Point} the center of this cylinder.
  */
-lanyard.geom.Cylinder.prototype.getCenter = function () {
+lanyard.geom.Cylinder.prototype.getCenter = function() {
     /** @type {lanyard.geom.Point} */
     var b = this.bottomCenter;
 
@@ -352,7 +352,7 @@ lanyard.geom.Cylinder.prototype.getCenter = function () {
  *
  * @return {number} the diameter of this cylinder.
  */
-lanyard.geom.Cylinder.prototype.getDiameter = function () {
+lanyard.geom.Cylinder.prototype.getDiameter = function() {
     return 2 * this.getRadius();
 };
 
@@ -361,7 +361,7 @@ lanyard.geom.Cylinder.prototype.getDiameter = function () {
  *
  * @return {number} the radius of this cylinder.
  */
-lanyard.geom.Cylinder.prototype.getRadius = function () {
+lanyard.geom.Cylinder.prototype.getRadius = function() {
     // return the radius of the enclosing sphere
 
     /** @type {number} */
@@ -374,7 +374,7 @@ lanyard.geom.Cylinder.prototype.getRadius = function () {
  *
  * @return {number} the distance between the bottom and top of this Cylinder.
  */
-lanyard.geom.Cylinder.prototype.getHeight = function () {
+lanyard.geom.Cylinder.prototype.getHeight = function() {
     return this.cylinderHeight;
 };
 
@@ -383,7 +383,7 @@ lanyard.geom.Cylinder.prototype.getHeight = function () {
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.geom.Cylinder.prototype.render = function (dc) {
+lanyard.geom.Cylinder.prototype.render = function(dc) {
 
 /*
     Point center = this.getCenter();

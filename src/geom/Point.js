@@ -37,12 +37,12 @@ goog.provide('lanyard.geom.Point');
  * @param {number} z the z value of the point.
  * @param {number} w the w value of thie point.
  */
-lanyard.geom.Point = function (x, y, z, w) {
+lanyard.geom.Point = function(x, y, z, w) {
     /** @private */ this._x = x;
     /** @private */ this._y = y;
     /** @private */ this._z = z;
 
-    if(w) {
+    if (w) {
         /** @private */ this._w = w;
     } else {
         /** @private */ this._w = 1;
@@ -87,7 +87,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.UNIT_Z', lanyard.geom.Point.prot
  * @this {lanyard.geom.Point}
  * @return {number} the w value.
  */
-lanyard.geom.Point.prototype.getW = function () {
+lanyard.geom.Point.prototype.getW = function() {
     return this._w;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.getW', lanyard.geom.Point.prototype.getW);
@@ -97,7 +97,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getW', lanyard.geom.Point.protot
  * @this {lanyard.geom.Point}
  * @return {number} the x value.
  */
-lanyard.geom.Point.prototype.getX = function () {
+lanyard.geom.Point.prototype.getX = function() {
     return this._x;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.getX', lanyard.geom.Point.prototype.getX);
@@ -107,7 +107,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getX', lanyard.geom.Point.protot
  * @this {lanyard.geom.Point}
  * @return {number} the y value.
  */
-lanyard.geom.Point.prototype.getY = function () {
+lanyard.geom.Point.prototype.getY = function() {
     return this._y;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.getY', lanyard.geom.Point.prototype.getY);
@@ -117,7 +117,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getY', lanyard.geom.Point.protot
  * @this {lanyard.geom.Point}
  * @return {number} the z value.
  */
-lanyard.geom.Point.prototype.getZ = function () {
+lanyard.geom.Point.prototype.getZ = function() {
     return this._z;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.getZ', lanyard.geom.Point.prototype.getZ);
@@ -128,7 +128,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getZ', lanyard.geom.Point.protot
  * @param {lanyard.geom.Matrix} m the matrix.
  * @return {lanyard.geom.Point} the result of the transform.
  */
-lanyard.geom.Point.prototype.translate = function (m) {
+lanyard.geom.Point.prototype.translate = function(m) {
     /** @type {lanyard.geom.Point} */
     var p = new lanyard.geom.Point(
         m.get11() * this._x + m.get21() * this._y + m.get31() * this._z + m.get41(),
@@ -148,7 +148,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.translate',
  * @param {lanyard.geom.Point} p another point.
  * @return {lanyard.geom.Point} the points added together.
  */
-lanyard.geom.Point.prototype.add = function (p) {
+lanyard.geom.Point.prototype.add = function(p) {
     return new lanyard.geom.Point(
         this._x + p.getX(),
         this._y + p.getY(),
@@ -164,7 +164,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.add', lanyard.geom.Point.prototy
  * @param {lanyard.geom.Point} p another point.
  * @return {lanyard.geom.Point} the point resulting from the subtraction.
  */
-lanyard.geom.Point.prototype.subtract = function (p) {
+lanyard.geom.Point.prototype.subtract = function(p) {
     return new lanyard.geom.Point(
         this._x - p.getX(),
         this._y - p.getY(),
@@ -180,7 +180,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.subtract', lanyard.geom.Point.pr
  * @param {number} s a scalar.
  * @return {lanyard.geom.Point} the result of the multiplication.
  */
-lanyard.geom.Point.prototype.multiply = function (s) {
+lanyard.geom.Point.prototype.multiply = function(s) {
     return new lanyard.geom.Point(
         this._x * s,
         this._y * s,
@@ -198,7 +198,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.multiply', lanyard.geom.Point.pr
  * @param {number} sz factor for the z axis.
  * @return {lanyard.geom.Point} the scaled point.
  */
-lanyard.geom.Point.prototype.scale = function (sx, sy, sz) {
+lanyard.geom.Point.prototype.scale = function(sx, sy, sz) {
     if (!this._w) {
         return new lanyard.geom.Point(
             this._x * sx,
@@ -222,7 +222,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.scale', lanyard.geom.Point.proto
  * @this {lanyard.geom.Point}
  * @return {number} the length.
  */
-lanyard.geom.Point.prototype.length = function () {
+lanyard.geom.Point.prototype.length = function() {
     return Math.sqrt(this.selfDot());
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.length', lanyard.geom.Point.prototype.length);
@@ -232,7 +232,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.length', lanyard.geom.Point.prot
  * @this {lanyard.geom.Point}
  * @return {lanyard.geom.Point} the normalized point.
  */
-lanyard.geom.Point.prototype.normalize = function () {
+lanyard.geom.Point.prototype.normalize = function() {
     var s = 1.0 / this.length();
     return this.scale(s, s, s);
 };
@@ -244,7 +244,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.normalize', lanyard.geom.Point.p
  * @param {lanyard.geom.Point} p the other point.
  * @return {number} the result of the dot product.
  */
-lanyard.geom.Point.prototype.dot = function (p) {
+lanyard.geom.Point.prototype.dot = function(p) {
     return this._x * p.getX() + this._y * p.getY() + this._z * p.getZ();
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.dot', lanyard.geom.Point.prototype.dot);
@@ -254,7 +254,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.dot', lanyard.geom.Point.prototy
  * @this {lanyard.geom.Point}
  * @return {number} the result of the dot product.
  */
-lanyard.geom.Point.prototype.selfDot = function () {
+lanyard.geom.Point.prototype.selfDot = function() {
     return this._x * this._x + this._y * this._y + this._z * this._z;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.selfDot', lanyard.geom.Point.prototype.selfDot);
@@ -265,7 +265,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.selfDot', lanyard.geom.Point.pro
  * @param {lanyard.geom.Point} p the other point.
  * @return {number} the result of the dot product.
  */
-lanyard.geom.Point.prototype.dot4 = function (p) {
+lanyard.geom.Point.prototype.dot4 = function(p) {
     return this._x * p.getX() + this._y * p.getY() + this._z * p.getZ() + this._w * this.getW();
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.dot4', lanyard.geom.Point.prototype.dot4);
@@ -276,7 +276,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.dot4', lanyard.geom.Point.protot
  * @param {lanyard.geom.Point} p the other point.
  * @return {number} the distance between the points.
  */
-lanyard.geom.Point.prototype.distanceTo = function (p) {
+lanyard.geom.Point.prototype.distanceTo = function(p) {
     var dx = this._x - p.getX();
     var dy = this._y - p.getY();
     var dz = this._z - p.getZ();
@@ -291,11 +291,11 @@ goog.exportSymbol('lanyard.geom.Point.prototype.distanceTo', lanyard.geom.Point.
  * @param {lanyard.geom.Point} p the other point.
  * @return {number} the squared distance.
  */
-lanyard.geom.Point.prototype.distanceToSquared = function (p) {
+lanyard.geom.Point.prototype.distanceToSquared = function(p) {
     var dx = this._x - p.getX();
     var dy = this._y - p.getY();
     var dz = this._z - p.getZ();
- 
+
     return (dx * dx + dy * dy + dz * dz);
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.distanceToSquared',
@@ -307,7 +307,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.distanceToSquared',
  * @param {lanyard.geom.Point} p2 the second point.
  * @return {lanyard.geom.Point} a point midway between the two points.
  */
-lanyard.geom.Point.prototype.midPoint = function (p1, p2) {
+lanyard.geom.Point.prototype.midPoint = function(p1, p2) {
     return new lanyard.geom.Point(
         0.5 * (p1.getX() + p2.getX()),
         0.5 * (p1.getY() + p2.getY()),
@@ -324,7 +324,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.midPoint', lanyard.geom.Point.pr
  * @param {lanyard.geom.Point} origin the origin of the vector heading toward the direction.
  * @return {lanyard.geom.Point} the new point in the specified location.
  */
-lanyard.geom.Point.prototype.fromOriginAndDirection = function (scale, direction, origin) {
+lanyard.geom.Point.prototype.fromOriginAndDirection = function(scale, direction, origin) {
     return new lanyard.geom.Point(
         scale * direction.getX() + origin.getX(),
         scale * direction.getY() + origin.getY(),
@@ -340,7 +340,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.fromOriginAndDirection',
  * @param {Array.<lanyard.geom.Point>} points the array of Points.
  * @return {Array.<lanyard.geom.Point>} a bounding box of the points extrema.
  */
-lanyard.geom.Point.prototype.composeExtrema = function (points) {
+lanyard.geom.Point.prototype.composeExtrema = function(points) {
     if (points.length === 0) {
         return [
             lanyard.geom.Point.prototype.ZERO,
@@ -354,7 +354,7 @@ lanyard.geom.Point.prototype.composeExtrema = function (points) {
     var xmax = xmin;
     var ymax = ymin;
     var zmax = zmin;
- 
+
     for (var i = 0; i < points.length; i = i + 1) {
         var x = points[i].getX();
 
@@ -404,7 +404,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.composeExtrema', lanyard.geom.Po
  * @param {lanyard.geom.Point} that the other point.
  * @return {lanyard.geom.Point} the result of the cross product.
  */
-lanyard.geom.Point.prototype.cross = function (that) {
+lanyard.geom.Point.prototype.cross = function(that) {
     return new lanyard.geom.Point(
         this._y * that.getZ() - this._z * that.getY(),
         this._z * that.getX() - this._x * that.getZ(),
@@ -419,11 +419,11 @@ goog.exportSymbol('lanyard.geom.Point.prototype.cross', lanyard.geom.Point.proto
  * @this {lanyard.geom.Point}
  * @return {string} the point represented as a string.
  */
-lanyard.geom.Point.prototype.toString = function () {
-    return "A point with values of x=" + this._x +
-        "; y=" + this._y +
-        "; z=" + this._z +
-        "; w=" + this._w + ".";
+lanyard.geom.Point.prototype.toString = function() {
+    return 'A point with values of x=' + this._x +
+        '; y=' + this._y +
+        '; z=' + this._z +
+        '; w=' + this._w + '.';
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.toString', lanyard.geom.Point.prototype.toString);
 

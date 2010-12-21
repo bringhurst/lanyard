@@ -76,119 +76,119 @@ lanyard.util.Color = function(red, green, blue, alpha, hex) {
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.BLACK =
-    new lanyard.util.Color(0.0, 0.0, 0.0, 1.0, "000000FF");
+    new lanyard.util.Color(0.0, 0.0, 0.0, 1.0, '000000FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.NAVY =
-    new lanyard.util.Color(0.0, 0.0, 0.5, 1.0, "000080FF");
+    new lanyard.util.Color(0.0, 0.0, 0.5, 1.0, '000080FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.BLUE =
-    new lanyard.util.Color(0.0, 0.0, 1.0, 1.0, "0000FFFF");
+    new lanyard.util.Color(0.0, 0.0, 1.0, 1.0, '0000FFFF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.GREEN =
-    new lanyard.util.Color(0.0, 0.5, 0.0, 1.0, "008000FF");
+    new lanyard.util.Color(0.0, 0.5, 0.0, 1.0, '008000FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.TEAL =
-    new lanyard.util.Color(0.0, 0.5, 0.5, 1.0, "008080FF");
+    new lanyard.util.Color(0.0, 0.5, 0.5, 1.0, '008080FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.LIME =
-    new lanyard.util.Color(0.0, 1.0, 0.0, 1.0, "00FF00FF");
+    new lanyard.util.Color(0.0, 1.0, 0.0, 1.0, '00FF00FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.AQUA =
-    new lanyard.util.Color(0.0, 1.0, 1.0, 1.0, "00FFFFFF");
+    new lanyard.util.Color(0.0, 1.0, 1.0, 1.0, '00FFFFFF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.MAROON =
-    new lanyard.util.Color(0.5, 0.0, 0.0, 1.0, "800000FF");
+    new lanyard.util.Color(0.5, 0.0, 0.0, 1.0, '800000FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.PURPLE =
-    new lanyard.util.Color(0.5, 0.0, 0.5, 1.0, "800080FF");
+    new lanyard.util.Color(0.5, 0.0, 0.5, 1.0, '800080FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.OLIVE =
-    new lanyard.util.Color(0.5, 0.5, 0.0, 1.0, "808000FF");
+    new lanyard.util.Color(0.5, 0.5, 0.0, 1.0, '808000FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.GRAY =
-    new lanyard.util.Color(0.5, 0.5, 0.5, 1.0, "808080FF");
+    new lanyard.util.Color(0.5, 0.5, 0.5, 1.0, '808080FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.SILVER =
-    new lanyard.util.Color(0.75, 0.75, 0.75, 1.0, "C0C0C0FF");
+    new lanyard.util.Color(0.75, 0.75, 0.75, 1.0, 'C0C0C0FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.RED =
-    new lanyard.util.Color(1.0, 0.0, 0.0, 1.0, "FF0000FF");
+    new lanyard.util.Color(1.0, 0.0, 0.0, 1.0, 'FF0000FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.FUCHSIA =
-    new lanyard.util.Color(1.0, 0.0, 1.0, 1.0, "FF00FFFF");
+    new lanyard.util.Color(1.0, 0.0, 1.0, 1.0, 'FF00FFFF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.YELLOW =
-    new lanyard.util.Color(1.0, 1.0, 0.0, 1.0, "FFFF00FF");
+    new lanyard.util.Color(1.0, 1.0, 0.0, 1.0, 'FFFF00FF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.WHITE =
-    new lanyard.util.Color(0.0, 0.0, 0.0, 1.0, "FFFFFFFF");
+    new lanyard.util.Color(0.0, 0.0, 0.0, 1.0, 'FFFFFFFF');
 
 /**
  * @const
  * @type {lanyard.util.Color}
  */
 lanyard.util.Color.prototype.CLEAR =
-    new lanyard.util.Color(0.0, 0.0, 0.0, 0.0, "00000000");
+    new lanyard.util.Color(0.0, 0.0, 0.0, 0.0, '00000000');
 
 /**
  * Create a {lanyard.util.Color} object from a kml or html color hex string.
@@ -196,18 +196,18 @@ lanyard.util.Color.prototype.CLEAR =
  * @param {string} hexString the hex string of the color in RRGGBB or RRGGBBAA format.
  * @return {lanyard.util.Color} the new color object.
  */
-lanyard.util.Color.prototype.fromHexString = function (hexString) {
+lanyard.util.Color.prototype.fromHexString = function(hexString) {
     if (!hexString) {
-        this._logger.fine("Attempted to parse a null color hex string.");
+        this._logger.fine('Attempted to parse a null color hex string.');
         return null;
     }
 
     // Strip a leading "#" if it exists.
-    hexString = hexString.charAt(0) === "#" ? hexString.substring(1) : hexString;
+    hexString = hexString.charAt(0) === '#' ? hexString.substring(1) : hexString;
 
-    if(hexString.length !== 6 || hexString.length !== 8) {
+    if (hexString.length !== 6 || hexString.length !== 8) {
         this._logger.fine(
-            "Attempted to parse a color hex string of an incorrect length. " +
+            'Attempted to parse a color hex string of an incorrect length. ' +
             hexString);
         return null;
     }
@@ -219,7 +219,7 @@ lanyard.util.Color.prototype.fromHexString = function (hexString) {
     // Default to full alpha.
     var a = 1.0;
 
-    if(hexString.length === 8) {
+    if (hexString.length === 8) {
         a = parseInt(hexString.substring(6, 8), 16) / 255;
     }
 
@@ -231,7 +231,7 @@ lanyard.util.Color.prototype.fromHexString = function (hexString) {
  *
  * @return {Array.<number>} the color as a four part RGBA vector.
  */
-lanyard.util.Color.prototype.toVec4 = function () {
+lanyard.util.Color.prototype.toVec4 = function() {
     return [this._red, this._green, this._blue, this._alpha];
 };
 
@@ -240,7 +240,7 @@ lanyard.util.Color.prototype.toVec4 = function () {
  *
  * @return {Array.<number>} the color as a three part RGB vector.
  */
-lanyard.util.Color.prototype.toVec3 = function () {
+lanyard.util.Color.prototype.toVec3 = function() {
     return [this._red, this._green, this._blue];
 };
 
@@ -249,7 +249,7 @@ lanyard.util.Color.prototype.toVec3 = function () {
  *
  * @return {string} the string value of this color.
  */
-lanyard.util.Color.prototype.toHex = function () {
+lanyard.util.Color.prototype.toHex = function() {
     return this._hex;
 };
 
@@ -258,7 +258,7 @@ lanyard.util.Color.prototype.toHex = function () {
  *
  * @return {number} the red value of this color.
  */
-lanyard.util.Color.prototype.getRed = function () {
+lanyard.util.Color.prototype.getRed = function() {
     return this._red;
 };
 
@@ -267,7 +267,7 @@ lanyard.util.Color.prototype.getRed = function () {
  *
  * @return {number} the green value of this color.
  */
-lanyard.util.Color.prototype.getGreen = function () {
+lanyard.util.Color.prototype.getGreen = function() {
     return this._green;
 };
 
@@ -276,7 +276,7 @@ lanyard.util.Color.prototype.getGreen = function () {
  *
  * @return {number} the blue value of this color.
  */
-lanyard.util.Color.prototype.getBlue = function () {
+lanyard.util.Color.prototype.getBlue = function() {
     return this._blue;
 };
 
@@ -285,7 +285,7 @@ lanyard.util.Color.prototype.getBlue = function () {
  *
  * @return {number} the alpha value of this color.
  */
-lanyard.util.Color.prototype.getAlpha = function () {
+lanyard.util.Color.prototype.getAlpha = function() {
     return this._alpha;
 };
 

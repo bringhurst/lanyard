@@ -68,7 +68,7 @@ lanyard.util.Rectangle = function(x, y, width, height) {
  *
  * @return {number} the x value of the top-left point.
  */
-lanyard.util.Rectangle.prototype.getX = function () {
+lanyard.util.Rectangle.prototype.getX = function() {
     return this._x;
 };
 
@@ -77,7 +77,7 @@ lanyard.util.Rectangle.prototype.getX = function () {
  *
  * @return {number} the y value of the top-left point.
  */
-lanyard.util.Rectangle.prototype.getY = function () {
+lanyard.util.Rectangle.prototype.getY = function() {
     return this._y;
 };
 
@@ -86,16 +86,16 @@ lanyard.util.Rectangle.prototype.getY = function () {
  *
  * @return {number} the width of this rectangle.
  */
-lanyard.util.Rectangle.prototype.getWidth = function () {
+lanyard.util.Rectangle.prototype.getWidth = function() {
     return this._width;
 };
 
 /**
  * Returns the height value of this rectangle
  *
- * @return {number} the height of this rectangle
+ * @return {number} the height of this rectangle.
  */
-lanyard.util.Rectangle.prototype.getHeight = function () {
+lanyard.util.Rectangle.prototype.getHeight = function() {
     return this._height;
 };
 

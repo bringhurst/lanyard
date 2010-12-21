@@ -38,7 +38,7 @@ goog.provide('lanyard.AbsentResourceList');
  * @param {number} minCheckInterval the minimum checking interval for attempts.
  * @constructor
  */
-lanyard.AbsentResourceList = function (maxTries, minCheckInterval) {
+lanyard.AbsentResourceList = function(maxTries, minCheckInterval) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.AbsentResourceList');
 
     /** @type {number} */
@@ -47,7 +47,7 @@ lanyard.AbsentResourceList = function (maxTries, minCheckInterval) {
     /** @type {number} */
     this.DEFAULT_MIN_ABSENT_RESOURCE_CHECK_INTERVAL = 10000;
 
-    if(maxTries) {
+    if (maxTries) {
         /** @type {number} */
         this.maxTries = Math.max(maxTries, 1);
     } else {
@@ -55,7 +55,7 @@ lanyard.AbsentResourceList = function (maxTries, minCheckInterval) {
         this.maxTries = this.DEFAULT_MAX_ABSENT_RESOURCE_TRIES;
     }
 
-    if(minCheckInterval) {
+    if (minCheckInterval) {
         /** @type {number} */
         this.minCheckInterval = Math.max(minCheckInterval, 500);
     } else {
@@ -76,12 +76,12 @@ lanyard.AbsentResourceList = function (maxTries, minCheckInterval) {
  *
  * @param {number} resourceID the id of the resource to mark absent.
  */
-lanyard.AbsentResourceList.prototype.markResourceAbsent = function (resourceId) {
+lanyard.AbsentResourceList.prototype.markResourceAbsent = function(resourceId) {
     if (this.definitelyAbsent.resourceID) {
         return;
     }
 
-    if(!this.possiblyAbsent.resourceId) {
+    if (!this.possiblyAbsent.resourceId) {
         this.possiblyAbsent.resourceId = {
             numTries: 0
         };
@@ -89,7 +89,7 @@ lanyard.AbsentResourceList.prototype.markResourceAbsent = function (resourceId) 
 
     /** @type {Object} */
     var entry = this.possiblyAbsent.resourceId;
-    
+
     entry.numTries = entry.numTries + 1;
     entry.timeOfLastMark = Date.getMilliseconds();
 
@@ -105,12 +105,12 @@ lanyard.AbsentResourceList.prototype.markResourceAbsent = function (resourceId) 
  * @param {number} resourceID the id of the resource.
  * @return {boolean} true of the resource is absent, false otherwise.
  */
-lanyard.AbsentResourceList.prototype.isResourceAbsent = function (resourceID) {
-    if(this.definatelyAbsent.resourceId) {
+lanyard.AbsentResourceList.prototype.isResourceAbsent = function(resourceID) {
+    if (this.definatelyAbsent.resourceId) {
         return true;
     }
 
-    if(!this.possiblyAbsent.resourceID) {
+    if (!this.possiblyAbsent.resourceID) {
         return false;
     }
 
@@ -125,7 +125,7 @@ lanyard.AbsentResourceList.prototype.isResourceAbsent = function (resourceID) {
  *
  * @param {number} resourceID the ID of the specified resource.
  */
-lanyard.AbsentResourceList.prototype.unmarkResourceAbsent = function (resourceID) {
+lanyard.AbsentResourceList.prototype.unmarkResourceAbsent = function(resourceID) {
     this.definitelyAbsent.resourceID = null;
     this.possiblyAbsent.resourceID = null;
 };

@@ -43,15 +43,15 @@ goog.require('lanyard.geom.Quaternion');
  * @param {lanyard.geom.Angle} latitude the angle of latitude.
  * @param {lanyard.geom.Angle} longitude the angle of longitude.
  */
-lanyard.geom.LatLon = function (latitude, longitude) {
+lanyard.geom.LatLon = function(latitude, longitude) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.geom.LatLon');
 
-    if(!latitude) {
-        this._logger.severe("Attempted to create a LatLon with invalid latitude.");
+    if (!latitude) {
+        this._logger.severe('Attempted to create a LatLon with invalid latitude.');
     }
 
-    if(!longitude) {
-        this._logger.severe("Attempted to create a LatLon with invalid longitude.");
+    if (!longitude) {
+        this._logger.severe('Attempted to create a LatLon with invalid longitude.');
     }
 
     /** @private */ this._latitude = latitude;
@@ -66,7 +66,7 @@ goog.exportSymbol('lanyard.geom.LatLon', lanyard.geom.LatLon);
  * @param {number} longitude in radians.
  * @return {lanyard.geom.LatLon} a new LatLon from the given angles, which are expressed as radians.
  */
-lanyard.geom.LatLon.prototype.fromRadians = function (latitude, longitude) {
+lanyard.geom.LatLon.prototype.fromRadians = function(latitude, longitude) {
     return new lanyard.geom.LatLon(
         lanyard.geom.Angle.prototype.fromRadians(latitude),
         lanyard.geom.Angle.prototype.fromRadians(longitude));
@@ -79,7 +79,7 @@ lanyard.geom.LatLon.prototype.fromRadians = function (latitude, longitude) {
  * @param {number} longitude in degrees.
  * @return {lanyard.geom.LatLon} a new LatLon from the given angles, which are expressed as degrees.
  */
-lanyard.geom.LatLon.prototype.fromDegrees = function (latitude, longitude) {
+lanyard.geom.LatLon.prototype.fromDegrees = function(latitude, longitude) {
     return new lanyard.geom.LatLon(
         lanyard.geom.Angle.prototype.fromDegrees(latitude),
         lanyard.geom.Angle.prototype.fromDegrees(longitude));
@@ -90,7 +90,7 @@ lanyard.geom.LatLon.prototype.fromDegrees = function (latitude, longitude) {
  *
  * @return {lanyard.geom.Angle} this LatLon's latitude.
  */
-lanyard.geom.LatLon.prototype.getLatitude = function () {
+lanyard.geom.LatLon.prototype.getLatitude = function() {
     return this._latitude;
 };
 
@@ -99,7 +99,7 @@ lanyard.geom.LatLon.prototype.getLatitude = function () {
  *
  * @return {lanyard.geom.Angle} this LatLon's longitude.
  */
-lanyard.geom.LatLon.prototype.getLongitude = function () {
+lanyard.geom.LatLon.prototype.getLongitude = function() {
     return this._longitude;
 };
 
@@ -111,7 +111,7 @@ lanyard.geom.LatLon.prototype.getLongitude = function () {
  * @param {lanyard.geom.LatLon} end
  * @return {lanyard.geom.LatLon}
  */
-lanyard.geom.LatLon.prototype.interpolate = function (t, begin, end) {
+lanyard.geom.LatLon.prototype.interpolate = function(t, begin, end) {
     if (t < 0) {
         return begin;
     } else if (t > 1) {
@@ -142,8 +142,8 @@ lanyard.geom.LatLon.prototype.interpolate = function (t, begin, end) {
  *
  * @return {string} a string representation of this LatLon.
  */
-lanyard.geom.LatLon.prototype.toString = function () {
-    return "(" + this._latitude.toString() + ", " + this._longitude.toString() + ")";
+lanyard.geom.LatLon.prototype.toString = function() {
+    return '(' + this._latitude.toString() + ', ' + this._longitude.toString() + ')';
 };
 
 /* EOF */

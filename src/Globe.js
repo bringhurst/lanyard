@@ -29,9 +29,9 @@ goog.provide('lanyard.Globe');
 
 goog.require('lanyard.ElevationModel');
 goog.require('lanyard.geom.Angle');
-goog.require('lanyard.geom.Point');
 goog.require('lanyard.geom.Extent');
 goog.require('lanyard.geom.Line');
+goog.require('lanyard.geom.Point');
 goog.require('lanyard.geom.Position');
 
 /**
@@ -40,7 +40,7 @@ goog.require('lanyard.geom.Position');
  * @interface
  * @implements {lanyard.geom.Extent}
  */
-lanyard.Globe = function () {};
+lanyard.Globe = function() {};
 
 /**
  * Compute a simple point from a position on the globe.
@@ -50,7 +50,7 @@ lanyard.Globe = function () {};
  * @param {number} metersElevation the elevation of the point in meters.
  * @return {lanyard.geom.Point} the point.
  */
-lanyard.Globe.prototype.computePointFromPositionAngles = function (latitude, longitude, metersElevation) {};
+lanyard.Globe.prototype.computePointFromPositionAngles = function(latitude, longitude, metersElevation) {};
 
 /**
  * Compute a point from the specified position.
@@ -58,7 +58,7 @@ lanyard.Globe.prototype.computePointFromPositionAngles = function (latitude, lon
  * @param {lanyard.geom.Position} position the position.
  * @return {lanyard.geom.Point} the point.
  */
-lanyard.Globe.prototype.computePointFromPosition = function (position) {};
+lanyard.Globe.prototype.computePointFromPosition = function(position) {};
 
 /**
  * Compute the surface normal at a specified point on the globe.
@@ -66,42 +66,42 @@ lanyard.Globe.prototype.computePointFromPosition = function (position) {};
  * @param {lanyard.geom.Point} p the point on the globe to compute the surface normal for.
  * @return {lanyard.geom.Point} the surface normal.
  */
-lanyard.Globe.prototype.computeSurfaceNormalAtPoint = function (p) {};
+lanyard.Globe.prototype.computeSurfaceNormalAtPoint = function(p) {};
 
 /**
  * Accessor for this globe's elevation model.
  *
  * @return {lanyard.ElevationModel} this globe's elevation model.
  */
-lanyard.Globe.prototype.getElevationModel = function () {};
+lanyard.Globe.prototype.getElevationModel = function() {};
 
 /**
  * Get the extent of this globe.
  *
  * @return {lanyard.geom.Extent} the extent of this globe.
  */
-lanyard.Globe.prototype.getExtent = function () {};
+lanyard.Globe.prototype.getExtent = function() {};
 
 /**
  * Find the equatorial radius of this globe.
  *
  * @return {number} the equatorial radius of this globe.
  */
-lanyard.Globe.prototype.getEquatorialRadius = function () {};
+lanyard.Globe.prototype.getEquatorialRadius = function() {};
 
 /**
  * Find the polar radius of this globe.
  *
  * @return {number} the polar radius of this globe.
  */
-lanyard.Globe.prototype.getPolarRadius = function () {};
+lanyard.Globe.prototype.getPolarRadius = function() {};
 
 /**
  * Find the maximum radius of this globe.
  *
  * @return {number} the maximum radius.
  */
-lanyard.Globe.prototype.getMaximumRadius = function () {};
+lanyard.Globe.prototype.getMaximumRadius = function() {};
 
 /**
  * Find the radius at a specified coordinate.
@@ -110,7 +110,7 @@ lanyard.Globe.prototype.getMaximumRadius = function () {};
  * @param {lanyard.geom.Angle} longitude the longitude coordinate.
  * @return {number} the radius at the specified coordinate.
  */
-lanyard.Globe.prototype.getRadiusAt = function (latitude, longitude) {};
+lanyard.Globe.prototype.getRadiusAt = function(latitude, longitude) {};
 
 /**
  * Get the elevation for a specified coordinate.
@@ -119,21 +119,21 @@ lanyard.Globe.prototype.getRadiusAt = function (latitude, longitude) {};
  * @param {lanyard.geom.Angle} longitude the longitude of the coordinate.
  * @return {number} the elevation of the specified coordinate.
  */
-lanyard.Globe.prototype.getElevation = function (latitude, longitude) {};
+lanyard.Globe.prototype.getElevation = function(latitude, longitude) {};
 
 /**
  * Find the maximum elevation of this globe.
  *
  * @return {number} the maximum elevation of this globe.
  */
-lanyard.Globe.prototype.getMaxElevation = function () {};
+lanyard.Globe.prototype.getMaxElevation = function() {};
 
 /**
  * Find the minimum elevation of this globe.
  *
  * @return {number} the minimum elevation of this globe.
  */
-lanyard.Globe.prototype.getMinElevation = function () {};
+lanyard.Globe.prototype.getMinElevation = function() {};
 
 /**
  * Find the intersection position of a line to this globe.
@@ -141,14 +141,14 @@ lanyard.Globe.prototype.getMinElevation = function () {};
  * @param {lanyard.geom.Line} line the line to test.
  * @return {lanyard.geom.Position} the position of the intersection.
  */
-lanyard.Globe.prototype.getIntersectionPosition = function (line) {};
+lanyard.Globe.prototype.getIntersectionPosition = function(line) {};
 
 /**
  * Find the eccentricity squared of this globe.
  *
  * @return {number} the eccentricity squared.
  */
-lanyard.Globe.prototype.getEccentricitySquared = function () {};
+lanyard.Globe.prototype.getEccentricitySquared = function() {};
 
 /**
  * Find a position on the globe from a specified point.
@@ -156,14 +156,14 @@ lanyard.Globe.prototype.getEccentricitySquared = function () {};
  * @param {lanyard.geom.Point} point the point.
  * @return {lanyard.geom.Position} the position.
  */
-lanyard.Globe.prototype.computePositionFromPoint = function (point) {};
+lanyard.Globe.prototype.computePositionFromPoint = function(point) {};
 
 /**
  * Get the radius of this globe.
  *
  * @return {number} the radius of this globe.
  */
-lanyard.Globe.prototype.getRadius = function () {};
+lanyard.Globe.prototype.getRadius = function() {};
 
 /**
  * Create a tessellation of this globe.
@@ -171,6 +171,6 @@ lanyard.Globe.prototype.getRadius = function () {};
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {lanyard.SectorGeometryList} the tessellated globe.
  */
-lanyard.Globe.prototype.tessellate = function (dc) {}
+lanyard.Globe.prototype.tessellate = function(dc) {};
 
 /* EOF */

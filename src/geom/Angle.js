@@ -35,15 +35,15 @@ goog.provide('lanyard.geom.Angle');
  * @param {number} degrees The degree value to set this angle to.
  * @param {number} radians The radian value to set this angle to.
  */
-lanyard.geom.Angle = function (degrees, radians) {
+lanyard.geom.Angle = function(degrees, radians) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.geom.Angle');
 
-    if(isNaN(degrees)) {
-        this._logger.severe("Attempted to create an angle with invalid degrees.");
+    if (isNaN(degrees)) {
+        this._logger.severe('Attempted to create an angle with invalid degrees.');
     }
 
-    if(isNaN(radians)) {
-        this._logger.severe("Attempted to create an angle with invalid radians.");
+    if (isNaN(radians)) {
+        this._logger.severe('Attempted to create an angle with invalid radians.');
     }
 
     /** @private */ this._degrees = degrees;
@@ -87,7 +87,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.PIOver2',
  * @param {number} d degrees for the new angle.
  * @return {lanyard.geom.Angle} the new angle.
  */
-lanyard.geom.Angle.prototype.fromDegrees = function (d) {
+lanyard.geom.Angle.prototype.fromDegrees = function(d) {
     return new lanyard.geom.Angle(d, lanyard.geom.Angle.prototype.DEGREES_TO_RADIANS * d);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.fromDegrees', lanyard.geom.Angle.prototype.fromDegrees);
@@ -97,8 +97,8 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.fromDegrees', lanyard.geom.Angle
  *
  * @param {number} r radians for the new angle.
  * @return {lanyard.geom.Angle} the new angle.
- */    
-lanyard.geom.Angle.prototype.fromRadians = function (r) {
+ */
+lanyard.geom.Angle.prototype.fromRadians = function(r) {
     return new lanyard.geom.Angle(lanyard.geom.Angle.prototype.RADIANS_TO_DEGREES * r, r);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.fromRadians', lanyard.geom.Angle.prototype.fromRadians);
@@ -109,7 +109,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.fromRadians', lanyard.geom.Angle
  * @this {lanyard.geom.Angle}
  * @return {number} the degree value of this angle.
  */
-lanyard.geom.Angle.prototype.getDegrees = function () {
+lanyard.geom.Angle.prototype.getDegrees = function() {
     return this._degrees;
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.getDegrees', lanyard.geom.Angle.prototype.getDegrees);
@@ -120,7 +120,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.getDegrees', lanyard.geom.Angle.
  * @this {lanyard.geom.Angle}
  * @return {number} the radian value of this angle.
  */
-lanyard.geom.Angle.prototype.getRadians = function () {
+lanyard.geom.Angle.prototype.getRadians = function() {
     return this._radians;
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.getRadians', lanyard.geom.Angle.prototype.getRadians);
@@ -185,7 +185,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.POS360', lanyard.geom.Angle.prot
  * @param {number} d degrees latitude.
  * @return {lanyard.geom.Angle} the new angle.
  */
-lanyard.geom.Angle.prototype.fromDegreesLatitude = function (d) {
+lanyard.geom.Angle.prototype.fromDegreesLatitude = function(d) {
     d = d < -90 ? -90 : d > 90 ? 90 : d;
     var r = lanyard.geom.Angle.prototype.DEGREES_TO_RADIANS * d;
 
@@ -200,7 +200,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.fromDegreesLatitude',
  * @param {number} r radians latitude.
  * @return {lanyard.geom.Angle} the new angle.
  */
-lanyard.geom.Angle.prototype.fromRadiansLatitude = function (r) {
+lanyard.geom.Angle.prototype.fromRadiansLatitude = function(r) {
     r = r < lanyard.geom.Angle.prototype.PIOver2 ? -lanyard.geom.Angle.prototype.PIOver2 :
         r > lanyard.geom.Angle.prototype.PIOver2 ? lanyard.geom.Angle.prototype.PIOver2 : r;
     var d = lanyard.geom.Angle.prototype.RADIANS_TO_DEGREES * r;
@@ -217,7 +217,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.fromRadiansLatitude',
  * @param {number} degrees the degrees longitude.
  * @return {lanyard.geom.Angle} the new angle.
  */
-lanyard.geom.Angle.prototype.fromDegreesLongitude = function (degrees) {
+lanyard.geom.Angle.prototype.fromDegreesLongitude = function(degrees) {
     degrees = degrees < -180 ? -180 : degrees > 180 ? 180 : degrees;
     var radians = lanyard.geom.Angle.prototype.DEGREES_TO_RADIANS * degrees;
     radians = radians < -Math.PI ? -Math.PI : radians > Math.PI ? Math.PI : radians;
@@ -233,7 +233,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.fromDegreesLongitude',
  * @param {number} radians the radians longitude.
  * @return {lanyard.geom.Angle} the new angle.
  */
-lanyard.geom.Angle.prototype.fromRadiansLongitude = function (radians) {
+lanyard.geom.Angle.prototype.fromRadiansLongitude = function(radians) {
     radians = radians < -Math.PI ? -Math.PI : radians > Math.PI ? Math.PI : radians;
     var degrees = lanyard.geom.Angle.prototype.RADIANS_TO_DEGREES * radians;
     degrees = degrees < -180 ? -180 : degrees > 180 ? 180 : degrees;
@@ -250,7 +250,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.fromRadiansLongitude',
  * @param {number} y the ordinate coordinate.
  * @return {lanyard.geom.Angle} a new angle, whose size is determined from x and y.
  */
-lanyard.geom.Angle.prototype.fromXY = function (x, y) {
+lanyard.geom.Angle.prototype.fromXY = function(x, y) {
     var radians = Math.atan2(y, x);
     return new lanyard.geom.Angle(lanyard.geom.Angle.prototype.RADIANS_TO_DEGREES * radians, radians);
 };
@@ -265,9 +265,9 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.fromXY',
  *
  * @this {lanyard.geom.Angle}
  * @param {lanyard.geom.Angle} angle the Angle to add to this one.
- * @return {lanyard.geom.Angle} an Angle whose size is the total of this Angles and angles size
+ * @return {lanyard.geom.Angle} an Angle whose size is the total of this Angles and angles size.
  */
-lanyard.geom.Angle.prototype.add = function (angle) {
+lanyard.geom.Angle.prototype.add = function(angle) {
     return lanyard.geom.Angle.prototype.fromDegrees(this._degrees + angle.getDegrees());
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.add',
@@ -282,7 +282,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.add',
  * @param {lanyard.geom.Angle} angle the Angle to subtract from this Angle.
  * @return {lanyard.geom.Angle} a new Angle correpsonding to this Angle's size minus angle's size.
  */
-lanyard.geom.Angle.prototype.subtract = function (angle) {
+lanyard.geom.Angle.prototype.subtract = function(angle) {
     return lanyard.geom.Angle.prototype.fromDegrees(this._degrees - angle.getDegrees());
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.subtract', lanyard.geom.Angle.prototype.subtract);
@@ -295,7 +295,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.subtract', lanyard.geom.Angle.pr
  * @param {number} multiplier a scalar by which this Angle is multiplied.
  * @return {lanyard.geom.Angle} a new Angle whose size equals this Angle's size multiplied by multiplier.
  */
-lanyard.geom.Angle.prototype.multiply = function (multiplier) {
+lanyard.geom.Angle.prototype.multiply = function(multiplier) {
     return lanyard.geom.Angle.prototype.fromDegrees(this._degrees * multiplier);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.multiply', lanyard.geom.Angle.prototype.multiply);
@@ -308,7 +308,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.multiply', lanyard.geom.Angle.pr
  * @param {lanyard.geom.Angle} angle the Angle by which to divide.
  * @return {number} this Angle's degrees divided by angle's degrees.
  */
-lanyard.geom.Angle.prototype.divideByAngle = function (angle) {
+lanyard.geom.Angle.prototype.divideByAngle = function(angle) {
     return this._degrees / angle.getDegrees();
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.divideByAngle', lanyard.geom.Angle.prototype.divideByAngle);
@@ -321,7 +321,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.divideByAngle', lanyard.geom.Ang
  * @param {number} divisor the number to be divided by.
  * @return {lanyard.geom.Angle} a new Angle equivalent to this Angle divided by divisor.
  */
-lanyard.geom.Angle.prototype.divideByDegrees = function (divisor) {
+lanyard.geom.Angle.prototype.divideByDegrees = function(divisor) {
     return lanyard.geom.Angle.prototype.fromDegrees(this._degrees / divisor);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.divideByDegrees', lanyard.geom.Angle.prototype.divideByDegrees);
@@ -334,7 +334,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.divideByDegrees', lanyard.geom.A
  * @param {number} radians the number to be added.
  * @return {lanyard.geom.Angle} a new angle equivalent to this Angle added to radians.
  */
-lanyard.geom.Angle.prototype.addRadians = function (radians) {
+lanyard.geom.Angle.prototype.addRadians = function(radians) {
     return lanyard.geom.Angle.prototype.fromRadians(this._radians + radians);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.addRadians', lanyard.geom.Angle.prototype.addRadians);
@@ -347,7 +347,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.addRadians', lanyard.geom.Angle.
  * @param {number} degrees the number to be added.
  * @return {lanyard.geom.Angle} a new angle equivalent to this Angle added to degrees.
  */
-lanyard.geom.Angle.prototype.addDegrees = function (degrees) {
+lanyard.geom.Angle.prototype.addDegrees = function(degrees) {
     return lanyard.geom.Angle.prototype.fromDegrees(this._degrees + degrees);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.addDegrees', lanyard.geom.Angle.prototype.addDegrees);
@@ -360,7 +360,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.addDegrees', lanyard.geom.Angle.
  * @param {number} radians the number to be subtracted.
  * @return {lanyard.geom.Angle} a new angle equivalent to this Angle subtracted by radians.
  */
-lanyard.geom.Angle.prototype.subtractRadians = function (radians) {
+lanyard.geom.Angle.prototype.subtractRadians = function(radians) {
     return lanyard.geom.Angle.prototype.fromRadians(this._radians - radians);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.subtractRadians', lanyard.geom.Angle.prototype.subtractRadians);
@@ -371,7 +371,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.subtractRadians', lanyard.geom.A
  * @this {lanyard.geom.Angle}
  * @return {number} the sine value of this angle.
  */
-lanyard.geom.Angle.prototype.sin = function () {
+lanyard.geom.Angle.prototype.sin = function() {
     return Math.sin(this._radians);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.sin', lanyard.geom.Angle.prototype.sin);
@@ -382,7 +382,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.sin', lanyard.geom.Angle.prototy
  * @this {lanyard.geom.Angle}
  * @return {number} the sine half angle value of this angle.
  */
-lanyard.geom.Angle.prototype.sinHalfAngle = function () {
+lanyard.geom.Angle.prototype.sinHalfAngle = function() {
     return Math.sin(0.5 * this._radians);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.sinHalfAngle', lanyard.geom.Angle.prototype.sinHalfAngle);
@@ -392,7 +392,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.sinHalfAngle', lanyard.geom.Angl
  *
  * @return {lanyard.geom.Angle} the new angle from the arcsine of sine.
  */
-lanyard.geom.Angle.prototype.asin = function (sine) {
+lanyard.geom.Angle.prototype.asin = function(sine) {
     return lanyard.geom.Angle.prototype.fromRadians(Math.asin(sine));
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.asin', lanyard.geom.Angle.prototype.asin);
@@ -403,7 +403,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.asin', lanyard.geom.Angle.protot
  * @this {lanyard.geom.Angle}
  * @return {number} the cosine value of this angle.
  */
-lanyard.geom.Angle.prototype.cos = function () {
+lanyard.geom.Angle.prototype.cos = function() {
     return Math.cos(this._radians);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.cos', lanyard.geom.Angle.prototype.cos);
@@ -414,7 +414,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.cos', lanyard.geom.Angle.prototy
  * @this {lanyard.geom.Angle}
  * @return {number} the cosine value of half of this angle.
  */
-lanyard.geom.Angle.prototype.cosHalfAngle = function () {
+lanyard.geom.Angle.prototype.cosHalfAngle = function() {
     return Math.cos(0.5 * this._radians);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.cosHalfAngle', lanyard.geom.Angle.prototype.cosHalfAngle);
@@ -424,7 +424,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.cosHalfAngle', lanyard.geom.Angl
  *
  * @return {lanyard.geom.Angle} the angle created by the cosine.
  */
-lanyard.geom.Angle.prototype.acos = function (cosine) {
+lanyard.geom.Angle.prototype.acos = function(cosine) {
     return lanyard.geom.Angle.prototype.fromRadians(Math.acos(cosine));
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.acos', lanyard.geom.Angle.prototype.acos);
@@ -435,7 +435,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.acos', lanyard.geom.Angle.protot
  * @this {lanyard.geom.Angle}
  * @return {number} the trigonometric tangent of half of this Angle.
  */
-lanyard.geom.Angle.prototype.tanHalfAngle = function () {
+lanyard.geom.Angle.prototype.tanHalfAngle = function() {
     return Math.tan(0.5 * this._radians);
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.tanHalfAngle', lanyard.geom.Angle.prototype.tanHalfAngle);
@@ -445,7 +445,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.tanHalfAngle', lanyard.geom.Angl
  *
  * @return {lanyard.geom.Angle} a new angle based on tan.
  */
-lanyard.geom.Angle.prototype.atan = function (tan) {
+lanyard.geom.Angle.prototype.atan = function(tan) {
     return lanyard.geom.Angle.prototype.fromRadians(Math.atan(tan));
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.atan', lanyard.geom.Angle.prototype.atan);
@@ -458,7 +458,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.atan', lanyard.geom.Angle.protot
  * @param {lanyard.geom.Angle} a2 the second Angle.
  * @return {lanyard.geom.Angle} the average of a1 and a2.
  */
-lanyard.geom.Angle.prototype.midAngle = function (a1, a2) {
+lanyard.geom.Angle.prototype.midAngle = function(a1, a2) {
     return lanyard.geom.Angle.prototype.fromDegrees(0.5 * (a1.getDegrees() + a2.getDegrees()));
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.midAngle', lanyard.geom.Angle.prototype.midAngle);
@@ -471,8 +471,8 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.midAngle', lanyard.geom.Angle.pr
  * @param {lanyard.geom.Angle} c the third optional Angle.
  * @return {lanyard.geom.Angle} the average of a1, a2 and a3 if it exists.
  */
-lanyard.geom.Angle.prototype.average = function (a, b, c) {
-    if(c) {
+lanyard.geom.Angle.prototype.average = function(a, b, c) {
+    if (c) {
         return lanyard.geom.Angle.prototype.fromDegrees((a._degrees + b._degrees + c._degrees) / 3);
     } else {
         return lanyard.geom.Angle.prototype.fromDegrees(0.5 * (a._degrees + b._degrees));
@@ -488,7 +488,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.average', lanyard.geom.Angle.pro
  * @param {lanyard.geom.Angle} angle the Angle to compare against.
  * @return {number} -1 if this Angle is smaller, 0 if both are equal and +1 if this Angle is larger.
  */
-lanyard.geom.Angle.prototype.compareTo = function (angle) {
+lanyard.geom.Angle.prototype.compareTo = function(angle) {
     if (this._degrees < angle.getDegrees()) {
         return -1;
     }
@@ -507,7 +507,7 @@ goog.exportSymbol('lanyard.geom.Angle.prototype.compareTo', lanyard.geom.Angle.p
  * @param {number} degrees the degrees latitude.
  * @return {number} the normalized degrees.
  */
-lanyard.geom.Angle.prototype.normalizedDegreesLatitude = function (degrees) {
+lanyard.geom.Angle.prototype.normalizedDegreesLatitude = function(degrees) {
     /** @type {number} */
     var lat = degrees % 180;
 
@@ -520,7 +520,7 @@ lanyard.geom.Angle.prototype.normalizedDegreesLatitude = function (degrees) {
  * @param {number} degrees the degrees longitude.
  * @return {number} the normalized degrees.
  */
-lanyard.geom.Angle.prototype.normalizedDegreesLongitude = function (degrees) {
+lanyard.geom.Angle.prototype.normalizedDegreesLongitude = function(degrees) {
     /** @type {number} */
     var lon = degrees % 360;
 
@@ -533,8 +533,8 @@ lanyard.geom.Angle.prototype.normalizedDegreesLongitude = function (degrees) {
  * @this {lanyard.geom.Angle}
  * @return {string} the string representation of this angle.
  */
-lanyard.geom.Angle.prototype.toString = function () {
-    return "This Angle equals " + this._degrees + " (" + this._radians + " radians).";
+lanyard.geom.Angle.prototype.toString = function() {
+    return 'This Angle equals ' + this._degrees + ' (' + this._radians + ' radians).';
 };
 goog.exportSymbol('lanyard.geom.Angle.prototype.toString', lanyard.geom.Angle.prototype.toString);
 

@@ -36,7 +36,7 @@ goog.require('lanyard.globes.EllipsoidalGlobe');
  * @constructor
  * @this {lanyard.globes.Earth}
  */
-lanyard.globes.Earth = function () {
+lanyard.globes.Earth = function() {
 
     /**
      * The WGS84 ellipsoid equatorial radius of the earth, in meters.
@@ -83,7 +83,7 @@ goog.inherits(lanyard.globes.Earth, lanyard.globes.EllipsoidalGlobe);
  *
  * @return {number} the radius of the earth.
  */
-lanyard.globes.Earth.prototype.getRadius = function () {
+lanyard.globes.Earth.prototype.getRadius = function() {
     return this.equatorialRadius;
 };
 

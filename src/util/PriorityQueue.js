@@ -33,7 +33,7 @@ goog.provide('lanyard.util.PriorityQueue');
  * @constructor
  * @param {Function} compare the function used to compare elements.
  */
-lanyard.util.PriorityQueue = function (compare) {
+lanyard.util.PriorityQueue = function(compare) {
     /**
      * The function used for comparing elements.
      *
@@ -56,7 +56,7 @@ lanyard.util.PriorityQueue = function (compare) {
  *
  * @return {number} the number of elements in this queue.
  */
-lanyard.util.PriorityQueue.prototype.size = function () {
+lanyard.util.PriorityQueue.prototype.size = function() {
     return this._elements.length;
 };
 
@@ -65,10 +65,10 @@ lanyard.util.PriorityQueue.prototype.size = function () {
  *
  * @param {Object} element a new element to insert (must be compatible with the compare function).
  */
-lanyard.util.PriorityQueue.prototype.offer = function (element) {
+lanyard.util.PriorityQueue.prototype.offer = function(element) {
     this._elements.push(element);
 
-    if(this._elements.length <= 1) {
+    if (this._elements.length <= 1) {
         // no need to sort
         return;
     }
@@ -81,7 +81,7 @@ lanyard.util.PriorityQueue.prototype.offer = function (element) {
  *
  * @return {Object} the first element in the queue.
  */
-lanyard.util.PriorityQueue.prototype.poll = function () {
+lanyard.util.PriorityQueue.prototype.poll = function() {
     return this._elements.splice(0, 1);
 };
 
@@ -90,7 +90,7 @@ lanyard.util.PriorityQueue.prototype.poll = function () {
  *
  * @return {Object} the first element in the queue.
  */
-lanyard.util.PriorityQueue.prototype.peek = function () {
+lanyard.util.PriorityQueue.prototype.peek = function() {
     return this._elements[0];
 };
 
@@ -99,14 +99,14 @@ lanyard.util.PriorityQueue.prototype.peek = function () {
  *
  * @return {Array.<Object>} the queue as an array.
  */
-lanyard.util.PriorityQueue.prototype.toArray = function () {
+lanyard.util.PriorityQueue.prototype.toArray = function() {
     return this._elements.slice();
 };
 
 /**
  * Clear out the current elements in the queue.
  */
-lanyard.util.PriorityQueue.prototype.clear = function () {
+lanyard.util.PriorityQueue.prototype.clear = function() {
     this._elements = [];
 };
 

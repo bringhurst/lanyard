@@ -35,21 +35,21 @@ goog.require('goog.debug.Logger');
  * @constructor
  * @param {WebGLRenderingContext} gl the WebGL rendering context.
  */
-lanyard.render.GLSL = function (gl) {
+lanyard.render.GLSL = function(gl) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.GLSL');
 
-    if(!gl) {
-        this._logger.severe("Attempted to create a program object without a valid GL context.");
+    if (!gl) {
+        this._logger.severe('Attempted to create a program object without a valid GL context.');
     }
 
     /** @type {WebGLRenderingContext} */
     this.gl = gl;
 
     /** @type {string} */
-    this.vshaderSource = "";
+    this.vshaderSource = '';
 
     /** @type {string} */
-    this.fshaderSource = "";
+    this.fshaderSource = '';
 
     /** @type {WebGLProgram} */
     this.programObject = gl.createProgram();
@@ -58,17 +58,17 @@ lanyard.render.GLSL = function (gl) {
 /**
  * Compile and attach a vertex shader.
  */
-lanyard.render.GLSL.prototype.updateVertexShader = function () {
+lanyard.render.GLSL.prototype.updateVertexShader = function() {
     /** @type {WebGLShader} */
     var vs = this.gl.createShader(this.gl.VERTEX_SHADER);
 
-    if(!this.vshaderSource) {
-        this._logger.severe("The location of a vertex shader was not specified.");
+    if (!this.vshaderSource) {
+        this._logger.severe('The location of a vertex shader was not specified.');
     }
- 
+
     this.gl.shaderSource(vs, this.vshaderSource);
     this.gl.compileShader(vs);
- 
+
     this.checkCompilerOutput(vs, false);
     this.gl.attachShader(this.programObject, vs);
 };
@@ -76,12 +76,12 @@ lanyard.render.GLSL.prototype.updateVertexShader = function () {
 /**
  * Compile and attach a fragment shader.
  */
-lanyard.render.GLSL.prototype.updateFragmentShader = function () {
+lanyard.render.GLSL.prototype.updateFragmentShader = function() {
     /** @type {WebGLShader} */
     var fs = this.gl.createShader(this.gl.FRAGMENT_SHADER);
 
-    if(!this.fshaderSource) {
-        this._logger.severe("The location of a fragment shader was not specified.");
+    if (!this.fshaderSource) {
+        this._logger.severe('The location of a fragment shader was not specified.');
     }
 
     this.gl.shaderSource(fs, this.fshaderSource);
@@ -96,7 +96,7 @@ lanyard.render.GLSL.prototype.updateFragmentShader = function () {
  *
  * @param {string} id the dom id of the vertex shader.
  */
-lanyard.render.GLSL.prototype.loadVertexShader = function (id) {
+lanyard.render.GLSL.prototype.loadVertexShader = function(id) {
     /** @type {Element} */
     var shaderScript = goog.dom.getElement(id);
 
@@ -106,8 +106,8 @@ lanyard.render.GLSL.prototype.loadVertexShader = function (id) {
         this.vshaderSource = shaderScript.innerHTML;
     }
 
-    if (shaderScript.type !== "x-shader/x-vertex") {
-        this._logger.severe("Attempted to update a vertex shader with an incorrect mime type.");
+    if (shaderScript.type !== 'x-shader/x-vertex') {
+        this._logger.severe('Attempted to update a vertex shader with an incorrect mime type.');
         return;
     }
 
@@ -119,7 +119,7 @@ lanyard.render.GLSL.prototype.loadVertexShader = function (id) {
  *
  * @param {string} id the dom id of the fragment shader.
  */
-lanyard.render.GLSL.prototype.loadFragmentShader = function (id) {
+lanyard.render.GLSL.prototype.loadFragmentShader = function(id) {
     /** @type {Element} */
     var shaderScript = goog.dom.getElement(id);
 
@@ -129,8 +129,8 @@ lanyard.render.GLSL.prototype.loadFragmentShader = function (id) {
         this.fshaderSource = shaderScript.innerHTML;
     }
 
-    if (shaderScript.type !== "x-shader/x-fragment") {
-        this._logger.severe("Attempted to update a fragment shader with an incorrect mime type.");
+    if (shaderScript.type !== 'x-shader/x-fragment') {
+        this._logger.severe('Attempted to update a fragment shader with an incorrect mime type.');
         return;
     }
 
@@ -142,8 +142,8 @@ lanyard.render.GLSL.prototype.loadFragmentShader = function (id) {
  *
  * @param {string} name the name of the variable.
  * @return {number} the location of the variable.
- */ 
-lanyard.render.GLSL.prototype.getAttribLocation = function (name) {
+ */
+lanyard.render.GLSL.prototype.getAttribLocation = function(name) {
     return this.gl.getAttribLocation(this.programObject, name);
 };
 
@@ -153,12 +153,12 @@ lanyard.render.GLSL.prototype.getAttribLocation = function (name) {
  * @param {string} name the name of the variable.
  * @return {WebGLUniformLocation} the location of the variable.
  */
-lanyard.render.GLSL.prototype.getUniformLocation = function (name) {
+lanyard.render.GLSL.prototype.getUniformLocation = function(name) {
     /** @type {WebGLUniformLocation} */
     var loc = this.gl.getUniformLocation(this.programObject, name);
 
-    if(!loc) {
-        this._logger.severe("The specified uniform was not found in the shader (" + name + ").");
+    if (!loc) {
+        this._logger.severe('The specified uniform was not found in the shader (' + name + ').');
     }
 
     return loc;
@@ -169,14 +169,14 @@ lanyard.render.GLSL.prototype.getUniformLocation = function (name) {
  *
  * @return {WebGLProgram} a reference to the program object.
  */
-lanyard.render.GLSL.prototype.getProgramObject = function () {
+lanyard.render.GLSL.prototype.getProgramObject = function() {
     return this.programObject;
 };
 
 /**
  * Setup to use the shaders in this program.
  */
-lanyard.render.GLSL.prototype.useShaders = function () {
+lanyard.render.GLSL.prototype.useShaders = function() {
     this.gl.linkProgram(this.programObject);
     this.gl.validateProgram(this.programObject);
     this.checkCompilerOutput(this.programObject, true);
@@ -185,29 +185,29 @@ lanyard.render.GLSL.prototype.useShaders = function () {
 /**
  * Start using the shader in this program.
  */
-lanyard.render.GLSL.prototype.startShader = function () {
-    this.gl.useProgram(this.programObject);  
+lanyard.render.GLSL.prototype.startShader = function() {
+    this.gl.useProgram(this.programObject);
 };
 
 /**
  * End using the shader in this program.
  */
-lanyard.render.GLSL.prototype.endShader = function () {
-    this.gl.useProgram(null);  
+lanyard.render.GLSL.prototype.endShader = function() {
+    this.gl.useProgram(null);
 };
 
 /**
  * Check the compilation status of a shader.
  */
-lanyard.render.GLSL.prototype.checkCompilerOutput = function (shader, isProgram) {
-    if(isProgram) {
+lanyard.render.GLSL.prototype.checkCompilerOutput = function(shader, isProgram) {
+    if (isProgram) {
       if (!this.gl.getProgramParameter(shader, this.gl.LINK_STATUS)) {
-          this._logger.severe("Linking of a program failed. " +
+          this._logger.severe('Linking of a program failed. ' +
                 this.gl.getProgramInfoLog(shader));
       }
     } else {
         if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-            this._logger.severe("Compilation of a shader failed. " +
+            this._logger.severe('Compilation of a shader failed. ' +
                 this.gl.getShaderInfoLog(shader));
         }
     }

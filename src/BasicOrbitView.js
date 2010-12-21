@@ -27,10 +27,10 @@
 
 goog.provide('lanyard.BasicOrbitView');
 
+goog.require('lanyard.Globe');
 goog.require('lanyard.geom.ViewFrustum');
 goog.require('lanyard.util.GLU');
 goog.require('lanyard.util.Stack');
-goog.require('lanyard.Globe');
 
 /**
  * A basic orbit view implementation.
@@ -38,7 +38,7 @@ goog.require('lanyard.Globe');
  * @constructor
  * @implements {lanyard.View}
  */
-lanyard.BasicOrbitView = function () {
+lanyard.BasicOrbitView = function() {
     /**
      * @private
      */
@@ -122,19 +122,19 @@ lanyard.BasicOrbitView = function () {
 
     /**
      * @private
-     * @type {lanyard.geom.MatrixFour|null}
+     * @type {?lanyard.geom.MatrixFour}
      */
     this.modelView = null;
 
     /**
      * @private
-     * @type {lanyard.geom.MatrixFour|null}
+     * @type {?lanyard.geom.MatrixFour}
      */
     this.projection = null;
 
     /**
      * @private
-     * @type {lanyard.util.Rectangle|null}
+     * @type {?lanyard.util.Rectangle}
      */
     this.viewport = null;
 
@@ -148,7 +148,7 @@ lanyard.BasicOrbitView = function () {
 
     /**
      * @private
-     * @type {lanyard.Globe|null}
+     * @type {?lanyard.Globe}
      */
     this.globe = null;
 
@@ -162,25 +162,25 @@ lanyard.BasicOrbitView = function () {
 
     /**
      * @private
-     * @type {lanyard.geom.Point|null}
+     * @type {?lanyard.geom.Point}
      */
     this.eye = null;
 
     /**
      * @private
-     * @type {lanyard.geom.Point|null}
+     * @type {?lanyard.geom.Point}
      */
     this.up = null;
 
     /**
      * @private
-     * @type {lanyard.geom.Point|null}
+     * @type {?lanyard.geom.Point}
      */
     this.forward = null;
 
     /**
      * @private
-     * @type {lanyard.geom.Frustum|null}
+     * @type {?lanyard.geom.Frustum}
      */
     this.frustumInModelCoords = null;
 
@@ -293,7 +293,7 @@ lanyard.BasicOrbitView = function () {
 
     /**
      * @private
-     * @type {lanyard.geom.ViewFrustum|null}
+     * @type {?lanyard.geom.ViewFrustum}
      */
     this.viewFrustum = null;
 
@@ -321,7 +321,7 @@ lanyard.BasicOrbitView = function () {
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.BasicOrbitView.prototype.doApply = function (dc) {
+lanyard.BasicOrbitView.prototype.doApply = function(dc) {
     if (!this.isInitialized) {
         this.doInitialize(dc);
         this.isInitialized = true;
@@ -363,7 +363,7 @@ lanyard.BasicOrbitView.prototype.doApply = function (dc) {
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.BasicOrbitView.prototype.doInitialize = function (dc) {
+lanyard.BasicOrbitView.prototype.doInitialize = function(dc) {
     /** @type {lanyard.Globe} */
     var globe = dc.getGlobe();
 
@@ -388,12 +388,12 @@ lanyard.BasicOrbitView.prototype.doInitialize = function (dc) {
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {lanyard.geom.MatrixFour} the model-view matrix.
  */
-lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
+lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function(dc) {
     /** @type {lanyard.Globe} */
     var globe = dc.getGlobe();
 
     if (!globe) {
-        this._logger.severe("The globe was null when computing the model-view matrix.");
+        this._logger.severe('The globe was null when computing the model-view matrix.');
         return null;
     }
 
@@ -433,13 +433,13 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
     if (surfacePoint) {
         //this._logger.fine("Basing the view altitude on a surface point.");
 
-        /** @type {number} */ 
+        /** @type {number} */
         var distanceToSurface = eye.length() - this.collisionRadius - surfacePoint.length();
 
         //this._logger.fine("Distance from the eye to the surface is: " + distanceToSurface);
 
         if (distanceToSurface < 0) {
-            this._logger.fine("Distance to surface was less than 0.");
+            this._logger.fine('Distance to surface was less than 0.');
 
             /** @type {lanyard.geom.Point} */
             var surfaceNormal = eye.normalize();
@@ -502,7 +502,7 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function (dc) {
  * @return {lanyard.geom.MatrixFour}
  */
 lanyard.BasicOrbitView.prototype.lookAt =
-        function (focusX, focusY, focusDistance, tiltDistance, tiltZ, tiltX) {
+        function(focusX, focusY, focusDistance, tiltDistance, tiltZ, tiltX) {
 
     /** @type {lanyard.geom.MatrixFour} */
     var m = new lanyard.geom.MatrixFour(null); // identity
@@ -531,7 +531,7 @@ lanyard.BasicOrbitView.prototype.lookAt =
  * @param {lanyard.geom.Angle} lon the longitude.
  * @return {lanyard.geom.Point} the new surface point.
  */
-lanyard.BasicOrbitView.prototype.computeSurfacePoint = function (dc, lat, lon) {
+lanyard.BasicOrbitView.prototype.computeSurfacePoint = function(dc, lat, lon) {
     /** @type {lanyard.geom.Point} */
     var p = null;
 
@@ -565,9 +565,9 @@ lanyard.BasicOrbitView.prototype.computeSurfacePoint = function (dc, lat, lon) {
  *
  * @return {lanyard.geom.Frustum}
  */
-lanyard.BasicOrbitView.prototype.getFrustum = function () {
+lanyard.BasicOrbitView.prototype.getFrustum = function() {
     if (!this.viewFrustum) {
-        this._logger.severe("Attempted to get a null frustum from the view.");
+        this._logger.severe('Attempted to get a null frustum from the view.');
         return null;
     }
 
@@ -582,11 +582,11 @@ lanyard.BasicOrbitView.prototype.getFrustum = function () {
  * @param {lanyard.geom.Point} eyePoint the eye point.
  * @return {lanyard.geom.ViewFrustum} the view frustum.
  */
-lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
+lanyard.BasicOrbitView.prototype.computeViewFrustum = function(dc, eyePoint) {
     /** @type {lanyard.util.Rectangle} */
     var viewport = this.getViewport();
 
-    if(!viewport) {
+    if (!viewport) {
         this._logger.severe("We don't know anything about the viewport.");
         return null;
     }
@@ -594,7 +594,7 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
     /** @type {lanyard.geom.Angle} */
     var fov = this.getFieldOfView();
 
-    if(!fov) {
+    if (!fov) {
         this._logger.severe("We don't know anything about the field of view.");
         return null;
     }
@@ -638,7 +638,7 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function (dc, eyePoint) {
  * @param {lanyard.geom.ViewFrustum} viewFrustum
  * @return {number} the collision radius.
  */
-lanyard.BasicOrbitView.prototype.computeCollisionRadius = function (viewFrustum) {
+lanyard.BasicOrbitView.prototype.computeCollisionRadius = function(viewFrustum) {
     /** @type {lanyard.util.Rectangle} */
     var viewport = this.getViewport();
 
@@ -677,7 +677,7 @@ lanyard.BasicOrbitView.prototype.computeCollisionRadius = function (viewFrustum)
  *
  * @return {lanyard.geom.Position}
  */
-lanyard.BasicOrbitView.prototype.getPosition = function () {
+lanyard.BasicOrbitView.prototype.getPosition = function() {
     return new lanyard.geom.Position(this.focusLat, this.focusLon, 0);
 };
 
@@ -686,7 +686,7 @@ lanyard.BasicOrbitView.prototype.getPosition = function () {
  *
  * @param {lanyard.geom.LatLon} newLatLon
  */
-lanyard.BasicOrbitView.prototype.goToLatLon = function (newLatLon) {
+lanyard.BasicOrbitView.prototype.goToLatLon = function(newLatLon) {
     /** @type {lanyard.geom.LatLon} */
     var clampedLatLon = this.clampCoordinate(newLatLon);
     this.focusLat = clampedLatLon.getLatitude();
@@ -698,7 +698,7 @@ lanyard.BasicOrbitView.prototype.goToLatLon = function (newLatLon) {
  *
  * @return {number} the altitude.
  */
-lanyard.BasicOrbitView.prototype.getAltitude = function () {
+lanyard.BasicOrbitView.prototype.getAltitude = function() {
     return this.altitude;
 };
 
@@ -707,8 +707,8 @@ lanyard.BasicOrbitView.prototype.getAltitude = function () {
  *
  * @param {number} newAltitude the new altitude.
  */
-lanyard.BasicOrbitView.prototype.goToAltitude = function (newAltitude) {
-    throw "unsupported";
+lanyard.BasicOrbitView.prototype.goToAltitude = function(newAltitude) {
+    throw 'unsupported';
 };
 
 /**
@@ -717,8 +717,8 @@ lanyard.BasicOrbitView.prototype.goToAltitude = function (newAltitude) {
  * @param {lanyard.geom.LatLon} newLatLon
  * @param {number} newAltitude
  */
-lanyard.BasicOrbitView.prototype.goToCoordinate = function (newLatLon, newAltitude) {
-    throw "unsupported";
+lanyard.BasicOrbitView.prototype.goToCoordinate = function(newLatLon, newAltitude) {
+    throw 'unsupported';
 };
 
 /**
@@ -728,7 +728,7 @@ lanyard.BasicOrbitView.prototype.goToCoordinate = function (newLatLon, newAltitu
  * @param {lanyard.geom.LatLon} latLon
  * @return {lanyard.geom.LatLon}
  */
-lanyard.BasicOrbitView.prototype.clampCoordinate = function (latLon) {
+lanyard.BasicOrbitView.prototype.clampCoordinate = function(latLon) {
     /** @type {number} */
     var lat = latLon.getLatitude().getDegrees();
     //this._logger.fine("Before clamping, lat coord is: lat = " + lat + ".");
@@ -757,27 +757,27 @@ lanyard.BasicOrbitView.prototype.clampCoordinate = function (latLon) {
 /**
  * Get the heading.
  *
- * @return {lanyard.geom.Angle} 
+ * @return {lanyard.geom.Angle}
  */
-lanyard.BasicOrbitView.prototype.getHeading = function () {
+lanyard.BasicOrbitView.prototype.getHeading = function() {
     return this.heading;
 };
 
 /**
  * Set the current heading.
  */
-lanyard.BasicOrbitView.prototype.setHeading = function (newHeading) {
+lanyard.BasicOrbitView.prototype.setHeading = function(newHeading) {
     this.heading = this.clampHeading(newHeading);
 };
 
 /**
- * Clamp the heading. 
+ * Clamp the heading.
  *
  * @private
  * @param {lanyard.geom.Angle} heading
  * @return {lanyard.geom.Angle}
  */
-lanyard.BasicOrbitView.prototype.clampHeading = function (heading) {
+lanyard.BasicOrbitView.prototype.clampHeading = function(heading) {
     /** @type {number} */
     var degrees = heading.getDegrees();
 
@@ -795,7 +795,7 @@ lanyard.BasicOrbitView.prototype.clampHeading = function (heading) {
  *
  * @return {lanyard.geom.Angle} the current pitch.
  */
-lanyard.BasicOrbitView.prototype.getPitch = function () {
+lanyard.BasicOrbitView.prototype.getPitch = function() {
     return this.pitch;
 };
 
@@ -804,7 +804,7 @@ lanyard.BasicOrbitView.prototype.getPitch = function () {
  *
  * @param {lanyard.geom.Angle} newPitch the new pitch.
  */
-lanyard.BasicOrbitView.prototype.setPitch = function (newPitch) {
+lanyard.BasicOrbitView.prototype.setPitch = function(newPitch) {
     this.pitch = this.clampPitch(newPitch);
 };
 
@@ -813,7 +813,7 @@ lanyard.BasicOrbitView.prototype.setPitch = function (newPitch) {
  *
  * @return {Array.<lanyard.geom.Angle>} the pitch constraints.
  */
-lanyard.BasicOrbitView.prototype.getPitchConstraints = function () {
+lanyard.BasicOrbitView.prototype.getPitchConstraints = function() {
     return [this.minPitch, this.maxPitch];
 };
 
@@ -823,7 +823,7 @@ lanyard.BasicOrbitView.prototype.getPitchConstraints = function () {
  * @param {lanyard.geom.Angle} newMinPitch the new minimum pitch.
  * @param {lanyard.geom.Angle} newMaxPitch the new maximum pitch.
  */
-lanyard.BasicOrbitView.prototype.setPitchConstraints = function (newMinPitch, newMaxPitch) {
+lanyard.BasicOrbitView.prototype.setPitchConstraints = function(newMinPitch, newMaxPitch) {
     this.minPitch = newMinPitch;
     this.maxPitch = newMaxPitch;
 };
@@ -833,7 +833,7 @@ lanyard.BasicOrbitView.prototype.setPitchConstraints = function (newMinPitch, ne
  *
  * @return {boolean} true if the pitch constraints are enabled, false otherwise.
  */
-lanyard.BasicOrbitView.prototype.isEnablePitchConstraints = function () {
+lanyard.BasicOrbitView.prototype.isEnablePitchConstraints = function() {
     return this.enablePitchConstraint;
 };
 
@@ -842,7 +842,7 @@ lanyard.BasicOrbitView.prototype.isEnablePitchConstraints = function () {
  *
  * @param {boolean} enabled if the pitch constraint should be enabled or not.
  */
-lanyard.BasicOrbitView.prototype.setEnablePitchConstraints = function (enabled) {
+lanyard.BasicOrbitView.prototype.setEnablePitchConstraints = function(enabled) {
     this.enablePitchConstraint = enabled;
 };
 
@@ -853,7 +853,7 @@ lanyard.BasicOrbitView.prototype.setEnablePitchConstraints = function (enabled) 
  * @param {lanyard.geom.Angle} pitch the pitch angle.
  * @return {lanyard.geom.Angle} the current pitch angle.
  */
-lanyard.BasicOrbitView.prototype.clampPitch = function (pitch) {
+lanyard.BasicOrbitView.prototype.clampPitch = function(pitch) {
     /** @type {Array.<lanyard.geom.Angle>} */
     var constraints = this.getPitchConstraints();
 
@@ -872,7 +872,7 @@ lanyard.BasicOrbitView.prototype.clampPitch = function (pitch) {
  *
  * @return {lanyard.geom.Angle}
  */
-lanyard.BasicOrbitView.prototype.getRoll = function () {
+lanyard.BasicOrbitView.prototype.getRoll = function() {
     return lanyard.geom.Angle.prototype.ZERO;
 };
 
@@ -881,7 +881,7 @@ lanyard.BasicOrbitView.prototype.getRoll = function () {
  *
  * @param {lanyard.geom.Angle} newRoll the new roll value.
  */
-lanyard.BasicOrbitView.prototype.setRoll = function (newRoll) {
+lanyard.BasicOrbitView.prototype.setRoll = function(newRoll) {
     // do nothing for now.
 };
 
@@ -890,7 +890,7 @@ lanyard.BasicOrbitView.prototype.setRoll = function (newRoll) {
  *
  * @return {number} the current zoom.
  */
-lanyard.BasicOrbitView.prototype.getZoom = function () {
+lanyard.BasicOrbitView.prototype.getZoom = function() {
     return this.eyeDist;
 };
 
@@ -899,7 +899,7 @@ lanyard.BasicOrbitView.prototype.getZoom = function () {
  *
  * @param {number} newZoom the new zoom.
  */
-lanyard.BasicOrbitView.prototype.setZoom = function (newZoom) {
+lanyard.BasicOrbitView.prototype.setZoom = function(newZoom) {
     //this._logger.fine("View setZoom was called with: " + newZoom);
     this.eyeDist = this.clampZoom(newZoom);
 };
@@ -909,7 +909,7 @@ lanyard.BasicOrbitView.prototype.setZoom = function (newZoom) {
  *
  * @return {Array.<number>}
  */
-lanyard.BasicOrbitView.prototype.getZoomConstraints = function () {
+lanyard.BasicOrbitView.prototype.getZoomConstraints = function() {
     return [Math.max(this.minEyeDist, this.collisionRadius), this.maxEyeDist];
 };
 
@@ -919,7 +919,7 @@ lanyard.BasicOrbitView.prototype.getZoomConstraints = function () {
  * @param {number} newMinZoom the new minimum zoom.
  * @param {number} newMaxZoom the new maximum zoom.
  */
-lanyard.BasicOrbitView.prototype.setZoomConstraints = function (newMinZoom, newMaxZoom) {
+lanyard.BasicOrbitView.prototype.setZoomConstraints = function(newMinZoom, newMaxZoom) {
     this.minEyeDist = newMinZoom;
     this.maxEyeDist = newMaxZoom;
 };
@@ -929,7 +929,7 @@ lanyard.BasicOrbitView.prototype.setZoomConstraints = function (newMinZoom, newM
  *
  * @return {boolean} true if zoom constraints are enabled, false otherwise.
  */
-lanyard.BasicOrbitView.prototype.isEnableZoomConstraints = function () {
+lanyard.BasicOrbitView.prototype.isEnableZoomConstraints = function() {
     return this.enableZoomConstraint;
 };
 
@@ -938,7 +938,7 @@ lanyard.BasicOrbitView.prototype.isEnableZoomConstraints = function () {
  *
  * @param {boolean} enabled
  */
-lanyard.BasicOrbitView.prototype.setEnableZoomConstraints = function (enabled) {
+lanyard.BasicOrbitView.prototype.setEnableZoomConstraints = function(enabled) {
     this.enableZoomConstraint = enabled;
 };
 
@@ -948,7 +948,7 @@ lanyard.BasicOrbitView.prototype.setEnableZoomConstraints = function (enabled) {
  * @param {number} zoom the zoom value.
  * @return {number} the zoom value.
  */
-lanyard.BasicOrbitView.prototype.clampZoom = function (zoom) {
+lanyard.BasicOrbitView.prototype.clampZoom = function(zoom) {
     /** @type {number} */
     var x = zoom;
 
@@ -969,7 +969,7 @@ lanyard.BasicOrbitView.prototype.clampZoom = function (zoom) {
  *
  * @return {lanyard.geom.LatLon} the visible latlon range.
  */
-lanyard.BasicOrbitView.prototype.computeVisibleLatLonRange = function () {
+lanyard.BasicOrbitView.prototype.computeVisibleLatLonRange = function() {
     return null;
 };
 
@@ -978,7 +978,7 @@ lanyard.BasicOrbitView.prototype.computeVisibleLatLonRange = function () {
  *
  * @param {lanyard.geom.Point} windowPoint the window point.
  */
-lanyard.BasicOrbitView.prototype.unProject = function (windowPoint) {
+lanyard.BasicOrbitView.prototype.unProject = function(windowPoint) {
 
     if (!this.modelView || !this.projection || !this.viewport) {
         return null;
@@ -1002,7 +1002,7 @@ lanyard.BasicOrbitView.prototype.unProject = function (windowPoint) {
  * @param {lanyard.geom.Point} modelPoint
  * @return {lanyard.geom.Point} the projected point.
  */
-lanyard.BasicOrbitView.prototype.project = function (modelPoint) {
+lanyard.BasicOrbitView.prototype.project = function(modelPoint) {
     if (!this.modelView || !this.projection || !this.viewport) {
         return null;
     }
@@ -1040,7 +1040,7 @@ lanyard.BasicOrbitView.prototype.project = function (modelPoint) {
  * @param {number} distance the specified distance.
  * @return {number} the pixel size.
  */
-lanyard.BasicOrbitView.prototype.computePixelSizeAtDistance = function (distance) {
+lanyard.BasicOrbitView.prototype.computePixelSizeAtDistance = function(distance) {
     if (this.pixelSizeScale < 0) {
         // Compute the current coefficient for computing the size of a pixel.
         if (this.fieldOfView && this.viewport.width > 0) {
@@ -1062,7 +1062,7 @@ lanyard.BasicOrbitView.prototype.computePixelSizeAtDistance = function (distance
  *
  * @return {number} the horizon distance.
  */
-lanyard.BasicOrbitView.prototype.computeHorizonDistanceHere = function () {
+lanyard.BasicOrbitView.prototype.computeHorizonDistanceHere = function() {
     if (this.horizonDistance < 0) {
         this.horizonDistance = this.computeHorizonDistance(this.globe, this.verticalExaggeration,
             this.getEyePoint());
@@ -1079,7 +1079,7 @@ lanyard.BasicOrbitView.prototype.computeHorizonDistanceHere = function () {
  * @param {number} y
  * @return {lanyard.geom.Line} the ray.
  */
-lanyard.BasicOrbitView.prototype.computeRayFromScreenPoint = function (x, y) {
+lanyard.BasicOrbitView.prototype.computeRayFromScreenPoint = function(x, y) {
     if (!this.viewport) {
         return null;
     }
@@ -1107,7 +1107,7 @@ lanyard.BasicOrbitView.prototype.computeRayFromScreenPoint = function (x, y) {
  * @param {number} y
  * @return {lanyard.geom.Position}
  */
-lanyard.BasicOrbitView.prototype.computePositionFromScreenPoint = function (x, y) {
+lanyard.BasicOrbitView.prototype.computePositionFromScreenPoint = function(x, y) {
     /** @type {lanyard.geom.Line} */
     var line = this.computeRayFromScreenPoint(x, y);
 
@@ -1127,7 +1127,7 @@ lanyard.BasicOrbitView.prototype.computePositionFromScreenPoint = function (x, y
  *
  * @return {lanyard.geom.Point}
  */
-lanyard.BasicOrbitView.prototype.getForwardVector = function () {
+lanyard.BasicOrbitView.prototype.getForwardVector = function() {
     if (!this.forward && this.modelView) {
         /** @type {lanyard.geom.Matrix} */
         var modelViewInv = this.modelView.getInverse();
@@ -1145,12 +1145,12 @@ lanyard.BasicOrbitView.prototype.getForwardVector = function () {
  *
  * @return {lanyard.geom.Point} the up vector.
  */
-lanyard.BasicOrbitView.prototype.getUpVector = function () {
+lanyard.BasicOrbitView.prototype.getUpVector = function() {
     if (!this.up && this.modelView) {
         /** @type {lanyard.geom.Matrix} */
         var modelViewInv = this.modelView.getInverse();
 
-        if(modelViewInv) {
+        if (modelViewInv) {
             this.up = modelViewInv.transform(new lanyard.geom.Point(0, 1, 0, 0));
         }
     }
@@ -1164,11 +1164,11 @@ lanyard.BasicOrbitView.prototype.getUpVector = function () {
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {lanyard.geom.MatrixFour} the popped model view matrix.
  */
-lanyard.BasicOrbitView.prototype.popModelViewMatrix = function (dc) {
+lanyard.BasicOrbitView.prototype.popModelViewMatrix = function(dc) {
     //this._logger.fine("Popping the reference center.");
 
     this.modelView = /** @type {lanyard.geom.MatrixFour} */ (this.modelViewStack.pop());
-    dc.loadMatrix("uMVMatrix", this.modelView);
+    dc.loadMatrix('uMVMatrix', this.modelView);
 
     return this.modelView;
 };
@@ -1178,7 +1178,7 @@ lanyard.BasicOrbitView.prototype.popModelViewMatrix = function (dc) {
  *
  * @return {lanyard.geom.Point}
  */
-lanyard.BasicOrbitView.prototype.getEyePoint = function () {
+lanyard.BasicOrbitView.prototype.getEyePoint = function() {
     if (!this.eye && this.modelView) {
         /** @type {lanyard.geom.Matrix} */
         var modelViewInv = this.modelView.getInverse();
@@ -1196,10 +1196,10 @@ lanyard.BasicOrbitView.prototype.getEyePoint = function () {
  *
  * @return {lanyard.geom.Frustum} the view frustum in model coords.
  */
-lanyard.BasicOrbitView.prototype.getFrustumInModelCoordinates = function () {
+lanyard.BasicOrbitView.prototype.getFrustumInModelCoordinates = function() {
 
-    if(!this.modelView) {
-        this._logger.severe("Attempted to compute a model-view coordinate frustum without a valid state matrix.");
+    if (!this.modelView) {
+        this._logger.severe('Attempted to compute a model-view coordinate frustum without a valid state matrix.');
     }
 
     if (!this.frustumInModelCoords && this.modelView) {
@@ -1210,7 +1210,7 @@ lanyard.BasicOrbitView.prototype.getFrustumInModelCoordinates = function () {
         if (frust) {
             this.frustumInModelCoords = frust.getInverseTransformed(this.modelView);
         } else {
-            this._logger.severe("Frustum for conversion to model coordinates was invalid.");
+            this._logger.severe('Frustum for conversion to model coordinates was invalid.');
         }
     }
 
@@ -1222,7 +1222,7 @@ lanyard.BasicOrbitView.prototype.getFrustumInModelCoordinates = function () {
  *
  * @return {lanyard.geom.Angle}
  */
-lanyard.BasicOrbitView.prototype.getFieldOfView = function () {
+lanyard.BasicOrbitView.prototype.getFieldOfView = function() {
     return this.fieldOfView;
 };
 
@@ -1231,7 +1231,7 @@ lanyard.BasicOrbitView.prototype.getFieldOfView = function () {
  *
  * @param {lanyard.geom.Angle} newFov the new field of view value.
  */
-lanyard.BasicOrbitView.prototype.setFieldOfView = function (newFov) {
+lanyard.BasicOrbitView.prototype.setFieldOfView = function(newFov) {
     this.fieldOfView = newFov;
 };
 
@@ -1240,7 +1240,7 @@ lanyard.BasicOrbitView.prototype.setFieldOfView = function (newFov) {
  *
  * @return {lanyard.geom.MatrixFour} the current model-view matrix.
  */
-lanyard.BasicOrbitView.prototype.getModelViewMatrix = function () {
+lanyard.BasicOrbitView.prototype.getModelViewMatrix = function() {
     return this.modelView;
 };
 
@@ -1249,7 +1249,7 @@ lanyard.BasicOrbitView.prototype.getModelViewMatrix = function () {
  *
  * @return {lanyard.geom.MatrixFour} the current projection matrix.
  */
-lanyard.BasicOrbitView.prototype.getProjectionMatrix = function () {
+lanyard.BasicOrbitView.prototype.getProjectionMatrix = function() {
     return this.projection;
 };
 
@@ -1258,7 +1258,7 @@ lanyard.BasicOrbitView.prototype.getProjectionMatrix = function () {
  *
  * @return {lanyard.util.Rectangle} the current viewport rectangle.
  */
-lanyard.BasicOrbitView.prototype.getViewport = function () {
+lanyard.BasicOrbitView.prototype.getViewport = function() {
     return this.viewport;
 };
 
@@ -1267,7 +1267,7 @@ lanyard.BasicOrbitView.prototype.getViewport = function () {
  *
  * @param {lanyard.util.Rectangle} vp the current viewport rectangle.
  */
-lanyard.BasicOrbitView.prototype.setViewport = function (vp) {
+lanyard.BasicOrbitView.prototype.setViewport = function(vp) {
     this.viewport = vp;
 };
 
@@ -1276,7 +1276,7 @@ lanyard.BasicOrbitView.prototype.setViewport = function (vp) {
  *
  * @param {Element} canvas the canvas to use.
  */
-lanyard.BasicOrbitView.prototype.setViewportFromCanvas = function (canvas) {
+lanyard.BasicOrbitView.prototype.setViewportFromCanvas = function(canvas) {
     this.viewport = new lanyard.util.Rectangle(
             0, 0, canvas.width, canvas.height
     );
@@ -1288,7 +1288,7 @@ lanyard.BasicOrbitView.prototype.setViewportFromCanvas = function (canvas) {
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.BasicOrbitView.prototype.apply = function (dc) {
+lanyard.BasicOrbitView.prototype.apply = function(dc) {
     this.globe = dc.getGlobe();
     this.verticalExaggeration = dc.getVerticalExaggeration();
 
@@ -1305,7 +1305,7 @@ lanyard.BasicOrbitView.prototype.apply = function (dc) {
 /**
  * Clear attributes cached in the view.
  */
-lanyard.BasicOrbitView.prototype.clearCachedAttributes = function () {
+lanyard.BasicOrbitView.prototype.clearCachedAttributes = function() {
     this.eye = null;
     this.up = null;
     this.forward = null;
@@ -1322,7 +1322,7 @@ lanyard.BasicOrbitView.prototype.clearCachedAttributes = function () {
  * @param {lanyard.geom.Point} eyePoint the camera eye point.
  * @return {number} the distance to the horizon.
  */
-lanyard.BasicOrbitView.prototype.computeHorizonDistance = function (globe, verticalExaggeration, eyePoint) {
+lanyard.BasicOrbitView.prototype.computeHorizonDistance = function(globe, verticalExaggeration, eyePoint) {
     if (!globe || !eyePoint) {
         return -1;
     }
@@ -1365,14 +1365,14 @@ lanyard.BasicOrbitView.prototype.computeHorizonDistance = function (globe, verti
  * @param {lanyard.geom.MatrixFour} modelView the model-view matrix.
  * @param {lanyard.geom.MatrixFour} projection the projection matrix.
  */
-lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, projection) {
+lanyard.BasicOrbitView.prototype.applyMatrixState = function(dc, modelView, projection) {
     var gl = dc.getGL();
 
     // Apply the model-view matrix to the current OpenGL context held by 'dc'.
-    dc.loadMatrix("uMVMatrix", modelView);
+    dc.loadMatrix('uMVMatrix', modelView);
 
     // Apply the projection matrix to the current OpenGL context held by 'dc'.
-    dc.loadMatrix("uPMatrix", projection);
+    dc.loadMatrix('uPMatrix', projection);
 
     this.modelView = modelView;
     this.projection = projection;
@@ -1384,10 +1384,10 @@ lanyard.BasicOrbitView.prototype.applyMatrixState = function (dc, modelView, pro
  * @param {lanyard.DrawContext} dc the draw context.
  * @param {lanyard.geom.Point} referenceCenter the reference center.
  */
-lanyard.BasicOrbitView.prototype.pushModelViewReferenceCenter = function (dc, referenceCenter) {
+lanyard.BasicOrbitView.prototype.pushModelViewReferenceCenter = function(dc, referenceCenter) {
 
-    if(!this.modelView) {
-        this._logger.severe("Attempted to push the reference center without a valid model-view.");
+    if (!this.modelView) {
+        this._logger.severe('Attempted to push the reference center without a valid model-view.');
     }
 
     //this._logger.fine("Using new reference center of: " + referenceCenter.toString());
@@ -1404,7 +1404,7 @@ lanyard.BasicOrbitView.prototype.pushModelViewReferenceCenter = function (dc, re
     //this._logger.fine("new model-view is: " + this.modelView.toString());
 
     // Load up the new model-view
-    dc.loadMatrix("uMVMatrix", this.modelView);
+    dc.loadMatrix('uMVMatrix', this.modelView);
 };
 
 /**
@@ -1413,7 +1413,7 @@ lanyard.BasicOrbitView.prototype.pushModelViewReferenceCenter = function (dc, re
  * @param {lanyard.DrawContext} dc the new draw context.
  * @param {lanyard.geom.MatrixFour} newModelView the new model-view matrix.
  */
-lanyard.BasicOrbitView.prototype.pushModelViewMatrix = function (dc, newModelView) {
+lanyard.BasicOrbitView.prototype.pushModelViewMatrix = function(dc, newModelView) {
     // Push the current modelView on the stack
     /** @type {lanyard.geom.MatrixFour} */
     var copyModelView = new lanyard.geom.MatrixFour(this.modelView.getEntries());
@@ -1422,7 +1422,7 @@ lanyard.BasicOrbitView.prototype.pushModelViewMatrix = function (dc, newModelVie
     this.modelView = newModelView;
 
     // Load up the new model-view
-    dc.loadMatrix("uMVMatrix", this.modelView);
+    dc.loadMatrix('uMVMatrix', this.modelView);
 };
 
 /* EOF */

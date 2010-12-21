@@ -27,9 +27,9 @@
 
 goog.provide('lanyard.geom.ViewFrustum');
 
-goog.require('lanyard.geom.MatrixFour');
-goog.require('lanyard.geom.Frustum');
 goog.require('lanyard.geom.Angle');
+goog.require('lanyard.geom.Frustum');
+goog.require('lanyard.geom.MatrixFour');
 
 /**
  * A view frustum.
@@ -39,7 +39,7 @@ goog.require('lanyard.geom.Angle');
  * @param {lanyard.geom.Frustum} frustum the frustum of this view frustum.
  * @param {lanyard.geom.MatrixFour} projection the projection matrix of this view frustum.
  */
-lanyard.geom.ViewFrustum = function (frustum, projection) {
+lanyard.geom.ViewFrustum = function(frustum, projection) {
     /** @private */ this._frustum = frustum;
     /** @private */ this._projection = projection;
 };
@@ -51,7 +51,7 @@ goog.exportSymbol('lanyard.geom.ViewFrustum', lanyard.geom.ViewFrustum);
  * @param {lanyard.geom.MatrixFour} projectionMatrix the projection matrix.
  * @return {lanyard.geom.ViewFrustum} the new view frustum.
  */
-lanyard.geom.ViewFrustum.prototype.fromProjectionMatrix = function (projectionMatrix) {
+lanyard.geom.ViewFrustum.prototype.fromProjectionMatrix = function(projectionMatrix) {
 
     var m = projectionMatrix.getEntries();
 
@@ -120,7 +120,7 @@ lanyard.geom.ViewFrustum.prototype.fromProjectionMatrix = function (projectionMa
  * @return {lanyard.geom.ViewFrustum} the new view frustum.
  */
 lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView =
-        function (fieldOfView, viewportWidth, viewportHeight, near, far) {
+        function(fieldOfView, viewportWidth, viewportHeight, near, far) {
 
     var fov = fieldOfView.getDegrees();
     var farMinusNear = far - near;
@@ -163,7 +163,7 @@ lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView =
  * @return {lanyard.geom.ViewFrustum} the new view frustum.
  */
 lanyard.geom.ViewFrustum.prototype.fromParallelClipplingPlanes =
-        function (near, far, left, right, bottom, top) {
+        function(near, far, left, right, bottom, top) {
 
     var farMinusNear = far - near;
     var rightMinusLeft = right - left;
@@ -194,7 +194,7 @@ lanyard.geom.ViewFrustum.prototype.fromParallelClipplingPlanes =
  *
  * @return {lanyard.geom.Frustum} the frustum.
  */
-lanyard.geom.ViewFrustum.prototype.getFrustum = function () {
+lanyard.geom.ViewFrustum.prototype.getFrustum = function() {
     return this._frustum;
 };
 
@@ -203,7 +203,7 @@ lanyard.geom.ViewFrustum.prototype.getFrustum = function () {
  *
  * @return {lanyard.geom.MatrixFour} the projection matrix.
  */
-lanyard.geom.ViewFrustum.prototype.getProjectionMatrix = function () {
+lanyard.geom.ViewFrustum.prototype.getProjectionMatrix = function() {
     return this._projection;
 };
 

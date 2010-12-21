@@ -37,7 +37,7 @@ goog.require('lanyard.util.Point');
  * @constructor
  * @implements {lanyard.FrameController}
  */
-lanyard.BasicFrameController = function () {
+lanyard.BasicFrameController = function() {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.BasicFrameController');
 };
 
@@ -46,11 +46,11 @@ lanyard.BasicFrameController = function () {
  *
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
+lanyard.BasicFrameController.prototype.initializeFrame = function(dc)  {
     //this._logger.fine("Initializing the frame.");
 
     // Setup the shaders
-    dc.loadShaders("shader-vs", "shader-fs");
+    dc.loadShaders('shader-vs', 'shader-fs');
     dc.setupShaders();
 
     // Setup the canvas
@@ -60,8 +60,8 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
     dc.getGL().depthFunc(dc.getGL().LEQUAL);
 
     // Setup state matrices for tessellation
-    dc.loadIdentity("uMVMatrix");
-    dc.loadIdentity("uPMatrix");
+    dc.loadIdentity('uMVMatrix');
+    dc.loadIdentity('uPMatrix');
 };
 
 /**
@@ -69,7 +69,7 @@ lanyard.BasicFrameController.prototype.initializeFrame = function (dc)  {
  *
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
+lanyard.BasicFrameController.prototype.finalizeFrame = function(dc) {
     //this._logger.fine("Finalizing the frame.");
 
     // Note that in WebGL, a flush is implied.
@@ -82,7 +82,7 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function (dc) {
  *
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
+lanyard.BasicFrameController.prototype.drawFrame = function(dc) {
     this.clearFrame(dc);
 
     //this._logger.fine("Drawing the frame.");
@@ -90,17 +90,17 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
     // Perform some basic sanity checks.
 
     if (!dc.getView()) {
-        this._logger.severe("The view was null when attempting to draw.");
+        this._logger.severe('The view was null when attempting to draw.');
         return;
     }
 
     if (!dc.getModel()) {
-        this._logger.severe("The model was null when attempting to draw.");
+        this._logger.severe('The model was null when attempting to draw.');
         return;
     }
 
     if (!dc.getLayers()) {
-        this._logger.severe("The layers were null when attempting to draw.");
+        this._logger.severe('The layers were null when attempting to draw.');
         return;
     }
 
@@ -112,7 +112,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
 
         dc.setSurfaceGeometry(sgl);
     } else {
-        this._logger.severe("No tessellator was available.");
+        this._logger.severe('No tessellator was available.');
     }
 
     /** @type {Array.<lanyard.Layer>} */
@@ -120,11 +120,11 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
 
     //this._logger.fine("The frame controller is rendering " + layers.length + " layers.");
 
-    for(var i = 0; i < layers.length; i = i + 1) {
+    for (var i = 0; i < layers.length; i = i + 1) {
         /** @type {lanyard.Layer} */
         var layer = layers[i];
 
-        if(layer) {
+        if (layer) {
             //this._logger.fine("Rendering layer: " + layer.toString());
             layer.render(dc);
         }
@@ -139,7 +139,7 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
         dc.getModel().isShowWireframeInterior() ||
         dc.getModel().isShowTessellationBoundingVolumes()) {
 
-        this._logger.fine("Creating diagnostic displays.");
+        this._logger.fine('Creating diagnostic displays.');
 
         /** @type {lanyard.Model} */
         var model = dc.getModel();
@@ -176,8 +176,8 @@ lanyard.BasicFrameController.prototype.drawFrame = function (dc) {
  *
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.BasicFrameController.prototype.initializePicking = function (dc) {
-    this._logger.fine("Initializing picking.");
+lanyard.BasicFrameController.prototype.initializePicking = function(dc) {
+    this._logger.fine('Initializing picking.');
 
     // TODO: something
 };
@@ -188,8 +188,8 @@ lanyard.BasicFrameController.prototype.initializePicking = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  * @param {lanyard.util.Point} pickPoint the pick point.
  */
-lanyard.BasicFrameController.prototype.pick = function (dc, pickPoint) {
-    this._logger.fine("Performing a pick operation.");
+lanyard.BasicFrameController.prototype.pick = function(dc, pickPoint) {
+    this._logger.fine('Performing a pick operation.');
 
     // TODO: something
 };
@@ -199,7 +199,7 @@ lanyard.BasicFrameController.prototype.pick = function (dc, pickPoint) {
  *
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
+lanyard.BasicFrameController.prototype.finalizePicking = function(dc) {
     //this._logger.fine("Finalizing picking.");
 
     // FIXME: something
@@ -211,7 +211,7 @@ lanyard.BasicFrameController.prototype.finalizePicking = function (dc) {
  * @private
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
+lanyard.BasicFrameController.prototype.clearFrame = function(dc) {
     //this._logger.fine("Clearing the frame.");
 
     /** @type {lanyard.util.Color} */
@@ -219,7 +219,7 @@ lanyard.BasicFrameController.prototype.clearFrame = function (dc) {
     var cc = lanyard.util.Color.prototype.CLEAR;
 
     var gl = dc.getGL();
-    
+
     gl.clearColor(cc.getRed(), cc.getGreen(), cc.getBlue(), cc.getAlpha());
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };

@@ -34,7 +34,7 @@ goog.require('lanyard.SectorGeometry');
  *
  * @constructor
  */
-lanyard.SectorGeometryList = function () {
+lanyard.SectorGeometryList = function() {
     /**
      * @type {Array.<lanyard.SectorGeometry>}
      */
@@ -46,7 +46,7 @@ lanyard.SectorGeometryList = function () {
  *
  * @param {lanyard.SectorGeometry} sg the sector geometry to add.
  */
-lanyard.SectorGeometryList.prototype.add = function (sg) {
+lanyard.SectorGeometryList.prototype.add = function(sg) {
     this.geometryList.push(sg);
 };
 
@@ -55,8 +55,8 @@ lanyard.SectorGeometryList.prototype.add = function (sg) {
  *
  * @return {number} the length of the geometry list.
  */
-lanyard.SectorGeometryList.prototype.length = function () {
-    if(!this.geometryList) {
+lanyard.SectorGeometryList.prototype.length = function() {
+    if (!this.geometryList) {
         return 0;
     } else {
         return this.geometryList.length;
@@ -69,14 +69,14 @@ lanyard.SectorGeometryList.prototype.length = function () {
  * @param {number} position the position of the wanted sector geometry.
  * @return {lanyard.SectorGeometry} the sector geometry.
  */
-lanyard.SectorGeometryList.prototype.at = function (position) {
+lanyard.SectorGeometryList.prototype.at = function(position) {
     return this.geometryList[position];
 };
 
 /**
  * Clear the elements in this list
  */
-lanyard.SectorGeometryList.prototype.clear = function () {
+lanyard.SectorGeometryList.prototype.clear = function() {
     this.geometryList = [];
 };
 
@@ -86,14 +86,14 @@ lanyard.SectorGeometryList.prototype.clear = function () {
  * @param {lanyard.geom.Sector} sector the sector to check for intersection with.
  * @return {Array.<lanyard.SectorGeometry>} the array of sector geometries.
  */
-lanyard.SectorGeometryList.prototype.getIntersectingSectors = function (sector) {
+lanyard.SectorGeometryList.prototype.getIntersectingSectors = function(sector) {
 
     /** @type {Array.<lanyard.SectorGeometry>} */
     var list = [];
 
     /** @type {number} */
     var i;
-    for(i = 0; i < this.geometryList.length; i = i + 1) {
+    for (i = 0; i < this.geometryList.length; i = i + 1) {
         if (this.geometryList[i].getSector().intersects(sector)) {
             list.push(this.geometryList[i]);
         } else {
@@ -112,11 +112,11 @@ lanyard.SectorGeometryList.prototype.getIntersectingSectors = function (sector) 
  * @param {number} metersOffset the meters offset.
  * @return {lanyard.geom.Point} the surface point.
  */
-lanyard.SectorGeometryList.prototype.getSurfacePoint = function (latitude, longitude, metersOffset) {
+lanyard.SectorGeometryList.prototype.getSurfacePoint = function(latitude, longitude, metersOffset) {
 
     /** @type {number} */
     var i;
-    for(i = 0; i < this.geometryList.length; i = i + 1) {
+    for (i = 0; i < this.geometryList.length; i = i + 1) {
         if (this.geometryList[i].getSector().contains(latitude, longitude)) {
             /** @type {lanyard.geom.Point} */
             var point = this.geometryList[i].getSurfacePoint(latitude, longitude, metersOffset);

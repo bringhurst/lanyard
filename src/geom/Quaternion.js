@@ -27,8 +27,8 @@
 
 goog.provide('lanyard.geom.Quaternion');
 
-goog.require('lanyard.geom.Point');
 goog.require('lanyard.geom.Angle');
+goog.require('lanyard.geom.Point');
 
 /**
  * Creates a new quaternion from an initial rotation state.
@@ -39,7 +39,7 @@ goog.require('lanyard.geom.Angle');
  * @param {number} z
  * @param {number} w
  */
-lanyard.geom.Quaternion = function (x, y, z, w) {
+lanyard.geom.Quaternion = function(x, y, z, w) {
     /** @public */ this._x = x;
     /** @public */ this._y = y;
     /** @public */ this._z = z;
@@ -54,8 +54,8 @@ lanyard.geom.Quaternion = function (x, y, z, w) {
  * @this {lanyard.geom.Quaternion}
  * @return {string} a string representation of this Quaternion.
  */
-lanyard.geom.Quaternion.prototype.toString = function () {
-    return "(" + this._x + ", " + this._y + ", " + this._z + ", " + this._w + ")";
+lanyard.geom.Quaternion.prototype.toString = function() {
+    return '(' + this._x + ', ' + this._y + ', ' + this._z + ', ' + this._w + ')';
 };
 
 /**
@@ -66,7 +66,7 @@ lanyard.geom.Quaternion.prototype.toString = function () {
  * @param {number} roll the roll of the euler representation.
  * @return {lanyard.geom.Quaternion} the new Quaternion.
  */
-lanyard.geom.Quaternion.prototype.fromEuler = function (yaw, pitch, roll) {
+lanyard.geom.Quaternion.prototype.fromEuler = function(yaw, pitch, roll) {
     var cy = Math.cos(yaw * 0.5);
     var cp = Math.cos(pitch * 0.5);
     var cr = Math.cos(roll * 0.5);
@@ -88,7 +88,7 @@ lanyard.geom.Quaternion.prototype.fromEuler = function (yaw, pitch, roll) {
  * @param {lanyard.geom.Quaternion} q the original quaternion.
  * @return {lanyard.geom.Point} the rotation transformed to euler angles, x=yaw, y=pitch, z=roll (radians).
  */
-lanyard.geom.Quaternion.prototype.toEuler = function (q) {
+lanyard.geom.Quaternion.prototype.toEuler = function(q) {
     var q0 = q._w;
     var q1 = q._x;
     var q2 = q._y;
@@ -110,7 +110,7 @@ lanyard.geom.Quaternion.prototype.toEuler = function (q) {
  * @param {number} z
  * @return {lanyard.geom.Quaternion} the new Quaternion.
  */
-lanyard.geom.Quaternion.prototype.fromAxisAngle = function (angle, x, y, z) {
+lanyard.geom.Quaternion.prototype.fromAxisAngle = function(angle, x, y, z) {
     var length = Math.sqrt(x * x + y * y + z * z);
 
     if (length > 0 && length !== 1) {
@@ -122,16 +122,16 @@ lanyard.geom.Quaternion.prototype.fromAxisAngle = function (angle, x, y, z) {
     var sinAngle = angle.sinHalfAngle();
     var cosAngle = angle.cosHalfAngle();
 
-    return new lanyard.geom.Quaternion(x * sinAngle, y * sinAngle, z * sinAngle, cosAngle);        
+    return new lanyard.geom.Quaternion(x * sinAngle, y * sinAngle, z * sinAngle, cosAngle);
 };
 
 /**
  * Convert a Quaternion to an axis angle.
- * 
+ *
  * @param {lanyard.geom.Quaternion} q the quaternion.
  * @return {lanyard.geom.Point} the new point.
  */
-lanyard.geom.Quaternion.prototype.toAxisAngle = function (q) {
+lanyard.geom.Quaternion.prototype.toAxisAngle = function(q) {
     var x, y, z;
     q = q.normalize();
 
@@ -158,7 +158,7 @@ lanyard.geom.Quaternion.prototype.toAxisAngle = function (q) {
  * @param {lanyard.geom.Quaternion} b the second Quaternion to add.
  * @return {lanyard.geom.Quaternion} the result of the addition.
  */
-lanyard.geom.Quaternion.prototype.add = function (a, b) {
+lanyard.geom.Quaternion.prototype.add = function(a, b) {
     return new lanyard.geom.Quaternion(a._x + b._x, a._y + b._y, a._z + b._z, a._w + b._w);
 };
 
@@ -169,7 +169,7 @@ lanyard.geom.Quaternion.prototype.add = function (a, b) {
  * @param {lanyard.geom.Quaternion} b quaternion to subtract from a.
  * @return {lanyard.geom.Quaternion} the result of the subtraction.
  */
-lanyard.geom.Quaternion.prototype.subtract = function (a, b) {
+lanyard.geom.Quaternion.prototype.subtract = function(a, b) {
     return new lanyard.geom.Quaternion(a._x - b._x, a._y - b._y, a._z - b._z, a._w - b._w);
 };
 
@@ -180,7 +180,7 @@ lanyard.geom.Quaternion.prototype.subtract = function (a, b) {
  * @param {lanyard.geom.Quaternion} b the second quaternion to multiply.
  * @return {lanyard.geom.Quaternion} the result of the multiplication.
  */
-lanyard.geom.Quaternion.prototype.multiplyQuaternionByQuaternion = function (a, b) {
+lanyard.geom.Quaternion.prototype.multiplyQuaternionByQuaternion = function(a, b) {
     var result = new lanyard.geom.Quaternion(
         a._w * b._x + a._x * b._w + a._y * b._z - a._z * b._y,
         a._w * b._y + a._y * b._w + a._z * b._x - a._x * b._z,
@@ -197,7 +197,7 @@ lanyard.geom.Quaternion.prototype.multiplyQuaternionByQuaternion = function (a, 
  * @param {lanyard.geom.Quaternion} q the quaternion.
  * @return {lanyard.geom.Quaternion} the result of the multiplication.
  */
-lanyard.geom.Quaternion.prototype.multiplyScalarByQuaternion = function (s, q) {
+lanyard.geom.Quaternion.prototype.multiplyScalarByQuaternion = function(s, q) {
     return new lanyard.geom.Quaternion(s * q._x, s * q._y, s * q._z, s * q._w);
 };
 
@@ -208,7 +208,7 @@ lanyard.geom.Quaternion.prototype.multiplyScalarByQuaternion = function (s, q) {
  * @param {number} s the scalar.
  * @return {lanyard.geom.Quaternion} the result of the multiplication.
  */
-lanyard.geom.Quaternion.prototype.multiplyQuaternionByScalar = function (q, s) {
+lanyard.geom.Quaternion.prototype.multiplyQuaternionByScalar = function(q, s) {
     return new lanyard.geom.Quaternion(s * q._x, s * q._y, s * q._z, s * q._w);
 };
 
@@ -219,7 +219,7 @@ lanyard.geom.Quaternion.prototype.multiplyQuaternionByScalar = function (q, s) {
  * @param {lanyard.geom.Quaternion} q the quaternion.
  * @return {lanyard.geom.Quaternion} the result of the operation.
  */
-lanyard.geom.Quaternion.prototype.multiply = function (v, q) {
+lanyard.geom.Quaternion.prototype.multiply = function(v, q) {
     var result = new lanyard.geom.Quaternion(
         v.getX() * q._w + v.getY() * q._z - v.getZ() * q._y,
         v.getY() * q._w + v.getZ() * q._x - v.getX() * q._z,
@@ -236,7 +236,7 @@ lanyard.geom.Quaternion.prototype.multiply = function (v, q) {
  * @param {number} s
  * @return {lanyard.geom.Quaternion}
  */
-lanyard.geom.Quaternion.prototype.divideByScalar = function (q, s) {
+lanyard.geom.Quaternion.prototype.divideByScalar = function(q, s) {
     return lanyard.geom.Quaternion.prototype.multiplyQuaternionByScalar(q, (1 / s));
 };
 
@@ -246,7 +246,7 @@ lanyard.geom.Quaternion.prototype.divideByScalar = function (q, s) {
  * @this {lanyard.geom.Quaternion}
  * @return {lanyard.geom.Quaternion} the conjugate of this quaternion.
  */
-lanyard.geom.Quaternion.prototype.conjugate = function () {
+lanyard.geom.Quaternion.prototype.conjugate = function() {
     return new lanyard.geom.Quaternion(-this._x, -this._y, -this._z, this._w);
 };
 
@@ -256,7 +256,7 @@ lanyard.geom.Quaternion.prototype.conjugate = function () {
  * @param {lanyard.geom.Quaternion} q
  * @return {number}
  */
-lanyard.geom.Quaternion.prototype.norm2 = function (q) {
+lanyard.geom.Quaternion.prototype.norm2 = function(q) {
     return q._x * q._x + q._y * q._y + q._z * q._z + q._w * q._w;
 };
 
@@ -266,7 +266,7 @@ lanyard.geom.Quaternion.prototype.norm2 = function (q) {
  * @param {lanyard.geom.Quaternion} q
  * @return {number}
  */
-lanyard.geom.Quaternion.prototype.abs = function (q) {
+lanyard.geom.Quaternion.prototype.abs = function(q) {
     return Math.sqrt(lanyard.geom.Quaternion.prototype.norm2(q));
 };
 
@@ -277,7 +277,7 @@ lanyard.geom.Quaternion.prototype.abs = function (q) {
  * @param {lanyard.geom.Quaternion} b
  * @return {lanyard.geom.Quaternion}
  */
-lanyard.geom.Quaternion.prototype.divideByQuaternion = function (a, b) {
+lanyard.geom.Quaternion.prototype.divideByQuaternion = function(a, b) {
     var result = lanyard.geom.Quaternion.prototype.multiplyQuaternionByQuaternion(
         a,
         lanyard.geom.Quaternion.prototype.divideByScalar(
@@ -296,7 +296,7 @@ lanyard.geom.Quaternion.prototype.divideByQuaternion = function (a, b) {
  * @param {lanyard.geom.Quaternion} b
  * @return {number}
  */
-lanyard.geom.Quaternion.prototype.dot = function (a, b) {
+lanyard.geom.Quaternion.prototype.dot = function(a, b) {
     return a._x * b._x + a._y * b._y + a._z * b._z + a._w * b._w;
 };
 
@@ -306,7 +306,7 @@ lanyard.geom.Quaternion.prototype.dot = function (a, b) {
  * @this {lanyard.geom.Quaternion}
  * @return {lanyard.geom.Quaternion} the normalized quaternion.
  */
-lanyard.geom.Quaternion.prototype.normalize = function () {
+lanyard.geom.Quaternion.prototype.normalize = function() {
     var len = this.length();
 
     return new lanyard.geom.Quaternion(
@@ -322,7 +322,7 @@ lanyard.geom.Quaternion.prototype.normalize = function () {
  * @this {lanyard.geom.Quaternion}
  * @return {number} the length of this quaternion.
  */
-lanyard.geom.Quaternion.prototype.length = function () {
+lanyard.geom.Quaternion.prototype.length = function() {
     return Math.sqrt(
         this._x * this._x + this._y * this._y + this._z * this._z + this._w * this._w);
 };
@@ -337,7 +337,7 @@ lanyard.geom.Quaternion.prototype.length = function () {
  * @param {number} t
  * @return {lanyard.geom.Quaternion}
  */
-lanyard.geom.Quaternion.prototype.slerp = function (q0, q1, t) {
+lanyard.geom.Quaternion.prototype.slerp = function(q0, q1, t) {
     var cosom = q0._x * q1._x + q0._y * q1._y + q0._z * q1._z + q0._w * q1._w;
     var tmp0, tmp1, tmp2, tmp3;
 
@@ -382,7 +382,7 @@ lanyard.geom.Quaternion.prototype.slerp = function (q0, q1, t) {
  * @param {lanyard.geom.Quaternion} q
  * @return {lanyard.geom.Quaternion}
  */
-lanyard.geom.Quaternion.prototype.ln = function (q) {
+lanyard.geom.Quaternion.prototype.ln = function(q) {
     var t;
 
     var s = Math.sqrt(q._x * q._x + q._y * q._y + q._z * q._z);
@@ -403,7 +403,7 @@ lanyard.geom.Quaternion.prototype.ln = function (q) {
  * @param {lanyard.geom.Quaternion} q
  * @return {lanyard.geom.Quaternion}
  */
-lanyard.geom.Quaternion.prototype.exp = function (q) {
+lanyard.geom.Quaternion.prototype.exp = function(q) {
     var sinom;
     var om = Math.sqrt(q._x * q._x + q._y * q._y + q._z * q._z);
 

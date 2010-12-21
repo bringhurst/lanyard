@@ -37,7 +37,7 @@ goog.require('lanyard.geom.Angle');
  * @param {lanyard.geom.Angle} longitude the postion longitude.
  * @param {number} elevation the position elevation.
  */
-lanyard.geom.Position = function (latitude, longitude, elevation) {
+lanyard.geom.Position = function(latitude, longitude, elevation) {
     /** @private */ this._latitude = latitude;
     /** @private */ this._longitude = longitude;
     /** @private */ this._elevation = elevation;
@@ -62,8 +62,8 @@ lanyard.geom.Position.prototype.ZERO = new lanyard.geom.Position(
  * @param {number} longitude the longitude in radians.
  * @param {number} elevation the elevation.
  * @return {lanyard.geom.Position} the new position.
- */ 
-lanyard.geom.Position.prototype.fromRadians = function (latitude, longitude, elevation) {
+ */
+lanyard.geom.Position.prototype.fromRadians = function(latitude, longitude, elevation) {
     return new lanyard.geom.Position(
         lanyard.geom.Angle.prototype.fromRadians(latitude),
         lanyard.geom.Angle.prototype.fromRadians(longitude),
@@ -79,7 +79,7 @@ lanyard.geom.Position.prototype.fromRadians = function (latitude, longitude, ele
  * @param {number} elevation the elevation.
  * @return {lanyard.geom.Position} the new position.
  */
-lanyard.geom.Position.prototype.fromDegrees = function (latitude, longitude, elevation) {
+lanyard.geom.Position.prototype.fromDegrees = function(latitude, longitude, elevation) {
     return new lanyard.geom.Position(
         lanyard.geom.Angle.prototype.fromDegrees(latitude),
         lanyard.geom.Angle.prototype.fromDegrees(longitude),
@@ -93,7 +93,7 @@ lanyard.geom.Position.prototype.fromDegrees = function (latitude, longitude, ele
  * @param {lanyard.geom.LatLon} latLon the latlon object to use.
  * @param {number} elevation the elevation to use.
  */
-lanyard.geom.Position.prototype.fromLatLon = function (latLon, elevation) {
+lanyard.geom.Position.prototype.fromLatLon = function(latLon, elevation) {
     return new lanyard.geom.Position(
         latLon.getLatitude(),
         latLon.getLongitude(),
@@ -106,7 +106,7 @@ lanyard.geom.Position.prototype.fromLatLon = function (latLon, elevation) {
  *
  * @return {lanyard.geom.Angle} this position's latitude.
  */
-lanyard.geom.Position.prototype.getLatitude = function () {
+lanyard.geom.Position.prototype.getLatitude = function() {
     return this._latitude;
 };
 
@@ -115,7 +115,7 @@ lanyard.geom.Position.prototype.getLatitude = function () {
  *
  * @return {lanyard.geom.Angle} this position's longitude.
  */
-lanyard.geom.Position.prototype.getLongitude = function () {
+lanyard.geom.Position.prototype.getLongitude = function() {
     return this._longitude;
 };
 
@@ -124,7 +124,7 @@ lanyard.geom.Position.prototype.getLongitude = function () {
  *
  * @return {number} this position's elevation.
  */
-lanyard.geom.Position.prototype.getElevation = function () {
+lanyard.geom.Position.prototype.getElevation = function() {
     return this._elevation;
 };
 
@@ -134,7 +134,7 @@ lanyard.geom.Position.prototype.getElevation = function () {
  * @param {lanyard.geom.Position} that the position to add.
  * @return {lanyard.geom.Position} the added positions.
  */
-lanyard.geom.Position.prototype.add = function (that) {
+lanyard.geom.Position.prototype.add = function(that) {
     /** @type {lanyard.geom.Angle} */
     var lat = lanyard.geom.Angle.prototype.fromDegrees(
         lanyard.geom.Angle.prototype.normalizedDegreesLatitude(
@@ -162,7 +162,7 @@ lanyard.geom.Position.prototype.add = function (that) {
  * @param {lanyard.geom.Position} that the position to subtract.
  * @return {lanyard.geom.Position} the result of the subtraction.
  */
-lanyard.geom.Position.prototype.subtract = function (that) {
+lanyard.geom.Position.prototype.subtract = function(that) {
     /** @type {lanyard.geom.Angle} */
     var lat = lanyard.geom.Angle.prototype.fromDegrees(
         lanyard.geom.Angle.prototype.normalizedDegreesLatitude(
@@ -189,10 +189,10 @@ lanyard.geom.Position.prototype.subtract = function (that) {
  *
  * @return {string} this position as a string.
  */
-lanyard.geom.Position.prototype.toString = function () {
+lanyard.geom.Position.prototype.toString = function() {
     /** @type {string} */
-    var ret = "A position with a longitude of " + this._longitude +
-        ", a latitude of " + this._latitude + " and an elevation of " +
+    var ret = 'A position with a longitude of ' + this._longitude +
+        ', a latitude of ' + this._latitude + ' and an elevation of ' +
         this._elevation;
 
     return ret;

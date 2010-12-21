@@ -31,10 +31,10 @@ goog.require('goog.debug.DivConsole');
 goog.require('goog.debug.ErrorHandler');
 
 goog.require('lanyard.BasicModel');
-goog.require('lanyard.BasicOrbitView')
+goog.require('lanyard.BasicOrbitView');
+goog.require('lanyard.Layer');
 goog.require('lanyard.demo.StatusBar');
 goog.require('lanyard.dom.InputHandler');
-goog.require('lanyard.Layer');
 goog.require('lanyard.layers.earth.BMNGOneImage');
 
 /**
@@ -46,7 +46,7 @@ goog.require('lanyard.layers.earth.BMNGOneImage');
  * @param {HTMLDivElement} layerListDiv The div where the layerList should be contained.
  * @param {HTMLDivElement} eventLogDiv The div where the event log is at.
  */
-lanyard.demo.BasicDemo = function (webGLCanvas, layerListDiv, eventLogDiv) {
+lanyard.demo.BasicDemo = function(webGLCanvas, layerListDiv, eventLogDiv) {
 
     /*
      * Keep in mind that stuff that goes on in this constructor will not
@@ -79,13 +79,13 @@ goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
  *
  * @this {lanyard.demo.BasicDemo}
  */
-lanyard.demo.BasicDemo.prototype.run = function () {
+lanyard.demo.BasicDemo.prototype.run = function() {
     // Setup the logging and layer divs for this demo.
     this.setupEventLog();
     this.setupLayerList();
 
-    if(!this._webGLCanvas) {
-        this._logger.severe("A valid canvas element was not found.");
+    if (!this._webGLCanvas) {
+        this._logger.severe('A valid canvas element was not found.');
     }
 
     // Setup the model with the layers used in the demo.
@@ -109,7 +109,7 @@ goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
  *
  * @this {lanyard.demo.BasicDemo}
  */
-lanyard.demo.BasicDemo.prototype.setupEventLog = function () {
+lanyard.demo.BasicDemo.prototype.setupEventLog = function() {
     goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
 
     /** @type {goog.debug.DivConsole} */
@@ -121,17 +121,17 @@ goog.exportSymbol('lanyard.demo.BasicDemo.prototype.setupEventLog',
 
 /**
  * Add a status bar.
- * 
+ *
  * @param {lanyard.demo.StatusBar} statusBar the bar to add.
  * @this {lanyard.demo.BasicDemo}
  */
-lanyard.demo.BasicDemo.prototype.addStatusBar = function (statusBar) {
-    if(!this.lanyardCanvas) {
-        this._logger.severe("A LanyardCanvas must exist before a status bar is added.");
+lanyard.demo.BasicDemo.prototype.addStatusBar = function(statusBar) {
+    if (!this.lanyardCanvas) {
+        this._logger.severe('A LanyardCanvas must exist before a status bar is added.');
     }
 
-    if(!statusBar) {
-        this._logger.severe("Attempted to attach an invalid status bar.");
+    if (!statusBar) {
+        this._logger.severe('Attempted to attach an invalid status bar.');
     }
 
     // A reference to statusBar is kept in InputHandler's eventListeners.
@@ -145,13 +145,13 @@ goog.exportSymbol('lanyard.demo.BasicDemo.prototype.addStatusBar',
  *
  * @this {lanyard.demo.BasicDemo}
  */
-lanyard.demo.BasicDemo.prototype.setupLayerList = function () {
+lanyard.demo.BasicDemo.prototype.setupLayerList = function() {
     // Add a basic blue marble layer
     this._layerList.push(new lanyard.layers.earth.BMNGOneImage());
 
     var i;
-    for(i = 0; i < this._layerList.length; i = i + 1) {
-        this._logger.fine("Adding layer with name = " + this._layerList[i].toString());
+    for (i = 0; i < this._layerList.length; i = i + 1) {
+        this._logger.fine('Adding layer with name = ' + this._layerList[i].toString());
 
         var layerLabel = goog.dom.createDom('p', {'style': 'background-color:#EEE'},
             this._layerList[i].getName());

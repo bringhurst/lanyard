@@ -32,7 +32,7 @@ goog.provide('lanyard.Renderable');
  *
  * @interface
  */
-lanyard.Renderable = function () {};
+lanyard.Renderable = function() {};
 
 /**
  * Causes this Renderable to render itself using the DrawContext provided. The
@@ -41,6 +41,6 @@ lanyard.Renderable = function () {};
  *
  * @param {lanyard.DrawContext} dc the DrawContext to be used.
  */
-lanyard.Renderable.prototype.render = function (dc) {};
+lanyard.Renderable.prototype.render = function(dc) {};
 
 /* EOF */

@@ -31,26 +31,26 @@ goog.provide('lanyard.Tile');
  * A way to hold tiles.
  *
  * @constructor
- * @param {lanyard.geom.Sector} sector the tile's sector
+ * @param {lanyard.geom.Sector} sector the tile's sector.
  * @param {lanyard.Level} level the level of the tile.
  * @param {number} row the row of the tile.
  * @param {number} column the column of the tile.
  */
-lanyard.Tile = function (sector, level, row, column) {
+lanyard.Tile = function(sector, level, row, column) {
     /**
      * @private
      */
     this._logger = goog.debug.Logger.getLogger('lanyard.Tile');
 
     if (!sector) {
-        this._logger.severe("Attempted to create a tile with an invalid sector.");
+        this._logger.severe('Attempted to create a tile with an invalid sector.');
     }
 
     /** @type {lanyard.geom.Sector} */
     this.sector = sector;
 
-    if(!row) {
-        if(!level) {
+    if (!row) {
+        if (!level) {
             /** @type {number} */
             this.row = 0;
         } else {
@@ -61,8 +61,8 @@ lanyard.Tile = function (sector, level, row, column) {
         }
     }
 
-    if(!column) {
-        if(!level) {
+    if (!column) {
+        if (!level) {
             /** @type {number} */
             this.column = 0;
         } else {
@@ -74,11 +74,11 @@ lanyard.Tile = function (sector, level, row, column) {
     }
 
     if (row < 0) {
-        this._logger.severe("Attempted to create a tile with an invalid row value.");
+        this._logger.severe('Attempted to create a tile with an invalid row value.');
     }
 
     if (column < 0) {
-        this._logger.severe("Attempted to create a tile with an invalid column value.");
+        this._logger.severe('Attempted to create a tile with an invalid column value.');
     }
 
     this.level = level;
@@ -91,9 +91,9 @@ lanyard.Tile = function (sector, level, row, column) {
  *
  * @return {string} the path of this tile.
  */
-lanyard.Tile.prototype.getPath = function () {
+lanyard.Tile.prototype.getPath = function() {
     if (!this.path) {
-        this.path = this.level.getPath() + "/" + this.row + "/" + this.row + "_" + this.column;
+        this.path = this.level.getPath() + '/' + this.row + '/' + this.row + '_' + this.column;
 
         if (!this.level.isEmpty()) {
             this.path += this.level.getFormatSuffix();
@@ -108,7 +108,7 @@ lanyard.Tile.prototype.getPath = function () {
  *
  * @return {lanyard.geom.Sector} the sector for this tile.
  */
-lanyard.Tile.prototype.getSector = function () {
+lanyard.Tile.prototype.getSector = function() {
     return this.sector;
 };
 
@@ -117,7 +117,7 @@ lanyard.Tile.prototype.getSector = function () {
  *
  * @return {lanyard.Level} the level for this tile.
  */
-lanyard.Tile.prototype.getLevel = function () {
+lanyard.Tile.prototype.getLevel = function() {
     return this.level;
 };
 
@@ -126,7 +126,7 @@ lanyard.Tile.prototype.getLevel = function () {
  *
  * @return {number} the level number of this tile.
  */
-lanyard.Tile.prototype.getLevelNumber = function () {
+lanyard.Tile.prototype.getLevelNumber = function() {
     return this.level ? this.level.getLevelNumber() : 0;
 };
 
@@ -135,8 +135,8 @@ lanyard.Tile.prototype.getLevelNumber = function () {
  *
  * @return {String} the name of this level.
  */
-lanyard.Tile.prototype.getLevelName = function () {
-    return this.level ? this.level.getLevelName() : "";
+lanyard.Tile.prototype.getLevelName = function() {
+    return this.level ? this.level.getLevelName() : '';
 };
 
 /**
@@ -144,7 +144,7 @@ lanyard.Tile.prototype.getLevelName = function () {
  *
  * @return {number} the row number of this tile.
  */
-lanyard.Tile.prototype.getRow = function () {
+lanyard.Tile.prototype.getRow = function() {
     return this.row;
 };
 
@@ -153,7 +153,7 @@ lanyard.Tile.prototype.getRow = function () {
  *
  * @return {number} the column number of this tile.
  */
-lanyard.Tile.prototype.getColumn = function () {
+lanyard.Tile.prototype.getColumn = function() {
     return this.column;
 };
 
@@ -162,7 +162,7 @@ lanyard.Tile.prototype.getColumn = function () {
  *
  * @return {string} the format suffix of this tile's data.
  */
-lanyard.Tile.prototype.getFormatSuffix = function () {
+lanyard.Tile.prototype.getFormatSuffix = function() {
     return this.level ? this.level.getFormatSuffix() : null;
 };
 
@@ -171,7 +171,7 @@ lanyard.Tile.prototype.getFormatSuffix = function () {
  *
  * @return {lanyard.TileKey} the tile key for this object.
  */
-lanyard.Tile.prototype.getTileKey = function () {
+lanyard.Tile.prototype.getTileKey = function() {
     return this.tileKey;
 };
 
@@ -180,7 +180,7 @@ lanyard.Tile.prototype.getTileKey = function () {
  *
  * @return {string} the url for this tile.
  */
-lanyard.Tile.prototype.getResourceURL = function () {
+lanyard.Tile.prototype.getResourceURL = function() {
     return this.level ? this.level.getTileResourceURL(this) : null;
 };
 
@@ -189,16 +189,16 @@ lanyard.Tile.prototype.getResourceURL = function () {
  *
  * @return {string} the label for this tile.
  */
-lanyard.Tile.prototype.getLabel = function () {
+lanyard.Tile.prototype.getLabel = function() {
     /** @type {string} */
     var label = parseInt(this.getLevelNumber(), 10);
 
-    label.concat("(");
+    label.concat('(');
     label.concat(this.getLevelName());
-    label.concat(")");
-    label.concat(", ");
+    label.concat(')');
+    label.concat(', ');
     label.concat(this.getRow());
-    label.concat(", ");
+    label.concat(', ');
     label.concat(this.getColumn());
 
     return label;
@@ -210,9 +210,9 @@ lanyard.Tile.prototype.getLabel = function () {
  * @param {lanyard.Tile} tile the tile to compare to.
  * @return {number} 0 if equal, -1 if less than, 1 if greater than.
  */
-lanyard.Tile.prototype.compareTo = function (tile) {
-    if(!tile) {
-        this._logger.severe("Attempted to compare a tile to an invalid object.");
+lanyard.Tile.prototype.compareTo = function(tile) {
+    if (!tile) {
+        this._logger.severe('Attempted to compare a tile to an invalid object.');
     }
 
     // No need to compare Sectors or path because they are redundant with row and column
@@ -252,17 +252,17 @@ lanyard.Tile.prototype.compareTo = function (tile) {
  * @param {lanyard.geom.Angle} latitude the latitude for which to compute the row index.
  * @return {number} the row index of the row containing the specified latitude.
  */
-lanyard.Tile.prototype.computeRow = function (delta, latitude) {
-    if(!delta || !latitude) {
-        this._logger.severe("Attempted to compute a row number with invalid values.");
+lanyard.Tile.prototype.computeRow = function(delta, latitude) {
+    if (!delta || !latitude) {
+        this._logger.severe('Attempted to compute a row number with invalid values.');
     }
 
-    if(delta.getDegrees() <= 0.0) {
-        this._logger.severe("Attempted to compute a row number with an out of range delta value.");
+    if (delta.getDegrees() <= 0.0) {
+        this._logger.severe('Attempted to compute a row number with an out of range delta value.');
     }
 
-    if(latitude.getDegrees() < -90.0 || latitude.getDegrees() > 90.0) {
-        this._logger.severe("Attempted to compute a row number with an out of range latitude value.");
+    if (latitude.getDegrees() < -90.0 || latitude.getDegrees() > 90.0) {
+        this._logger.severe('Attempted to compute a row number with an out of range latitude value.');
     }
 
     if (latitude.getDegrees() === 90.0) {
@@ -279,17 +279,17 @@ lanyard.Tile.prototype.computeRow = function (delta, latitude) {
  * @param {lanyard.geom.Angle} longitude the longitude for which to compute the column index.
  * @return {number} the column index of the column containing the specified latitude.
  */
-lanyard.Tile.prototype.computeColumn = function (delta, longitude) {
-    if(!delta || !longitude) {
-        this._logger.severe("Attempted to compute a column value with invalid data.");
-    }    
+lanyard.Tile.prototype.computeColumn = function(delta, longitude) {
+    if (!delta || !longitude) {
+        this._logger.severe('Attempted to compute a column value with invalid data.');
+    }
 
     if (delta.getDegrees() <= 0.0) {
-        this._logger.severe("Attempted to compute the column with an out of range delta.");
+        this._logger.severe('Attempted to compute the column with an out of range delta.');
     }
 
     if (longitude.getDegrees() < -180.0 || longitude.getDegrees() > 180.0) {
-        this._logger.severe("Attempted to compute the column number with an invalid longitude.");
+        this._logger.severe('Attempted to compute the column number with an invalid longitude.');
     }
 
     if (longitude.getDegrees() === 180.0) {
@@ -306,13 +306,13 @@ lanyard.Tile.prototype.computeColumn = function (delta, longitude) {
  * @param {lanyard.geom.Angle} delta the grid interval.
  * @return {lanyard.geom.Angle} the minimum latitude of the tile corresponding to the specified row.
  */
-lanyard.Tile.prototype.computeRowLatitude = function (row, delta) {
-    if(!row || !delta || row < 0) {
-        this._logger.severe("Attempted to compute the row latitude with invalid data.");
+lanyard.Tile.prototype.computeRowLatitude = function(row, delta) {
+    if (!row || !delta || row < 0) {
+        this._logger.severe('Attempted to compute the row latitude with invalid data.');
     }
-   
-    if(delta.getDegrees() <= 0.0) {
-        this._logger.severe("Attempted to compute the row latitude with na invalid delta.");
+
+    if (delta.getDegrees() <= 0.0) {
+        this._logger.severe('Attempted to compute the row latitude with na invalid delta.');
     }
 
     return lanyard.geom.Angle.prototype.fromDegrees(90.0 + delta.getDegrees() * row);
@@ -323,20 +323,20 @@ lanyard.Tile.prototype.computeRowLatitude = function (row, delta) {
  * a specified grid interval.
  *
  * @param {number} column the row index of the row in question.
- * @param {lanyard.geom.Angle} delta the grid interval
+ * @param {lanyard.geom.Angle} delta the grid interval.
  * @return {lanyard.geom.Angle} the minimum longitude of the tile corresponding to the specified column.
  */
-lanyard.Tile.prototype.computeColumnLongitude = function (column, delta) {
-    if(!delta || !column) {
-        this._logger.severe("Attempted to compute the column longitude with invalid data.");
+lanyard.Tile.prototype.computeColumnLongitude = function(column, delta) {
+    if (!delta || !column) {
+        this._logger.severe('Attempted to compute the column longitude with invalid data.');
     }
 
-    if(column < 0) {
-        this._logger.severe("Attempted to compute the column longitude with an invalid column value.");
+    if (column < 0) {
+        this._logger.severe('Attempted to compute the column longitude with an invalid column value.');
     }
 
-    if(delta.getDegrees() <= 0.0) {
-        this._logger.severe("Attempted to compute the column longitude with an invalid delta.");
+    if (delta.getDegrees() <= 0.0) {
+        this._logger.severe('Attempted to compute the column longitude with an invalid delta.');
     }
 
     return lanyard.Angle.prototype.fromDegrees(-180.0 + delta.getDegrees() * column);
@@ -347,7 +347,7 @@ lanyard.Tile.prototype.computeColumnLongitude = function (column, delta) {
  *
  * @return {number} the priority of this tile.
  */
-lanyard.Tile.prototype.getPriority = function () {
+lanyard.Tile.prototype.getPriority = function() {
     return this.priority;
 };
 
@@ -356,7 +356,7 @@ lanyard.Tile.prototype.getPriority = function () {
  *
  * @param {number} priority the priority of this tile.
  */
-lanyard.Tile.prototype.setPriority = function (priority) {
+lanyard.Tile.prototype.setPriority = function(priority) {
     this.priority = priority;
 };
 
@@ -365,7 +365,7 @@ lanyard.Tile.prototype.setPriority = function (priority) {
  *
  * @return {string} a string representation of this tile.
  */
-lanyard.Tile.prototype.toString = function () {
+lanyard.Tile.prototype.toString = function() {
     return this.getPath();
 };
 

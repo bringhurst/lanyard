@@ -53,7 +53,7 @@ lanyard.util.Point = function(x, y) {
  *
  * @return {lanyard.util.Point} a copy of this point.
  */
-lanyard.util.Point.prototype.getLocation = function () {
+lanyard.util.Point.prototype.getLocation = function() {
     return new lanyard.util.Point(this._x, this._y);
 };
 
@@ -62,7 +62,7 @@ lanyard.util.Point.prototype.getLocation = function () {
  *
  * @return {Array.<number>} a vector representation of this point, in [x, y].
  */
-lanyard.util.Point.prototype.getVec2 = function () {
+lanyard.util.Point.prototype.getVec2 = function() {
     return [this._x, this._y];
 };
 
@@ -71,7 +71,7 @@ lanyard.util.Point.prototype.getVec2 = function () {
  *
  * @return {number} the x value of this point.
  */
-lanyard.util.Point.prototype.getX = function () {
+lanyard.util.Point.prototype.getX = function() {
     return this._x;
 };
 
@@ -80,7 +80,7 @@ lanyard.util.Point.prototype.getX = function () {
  *
  * @return {number} the y value of this point.
  */
-lanyard.util.Point.prototype.getY = function () {
+lanyard.util.Point.prototype.getY = function() {
     return this._y;
 };
 
@@ -91,7 +91,7 @@ lanyard.util.Point.prototype.getY = function () {
  * @param {number} dx the x delta.
  * @param {number} dy the y delta.
  */
-lanyard.util.Point.prototype.translate = function (dx, dy) {
+lanyard.util.Point.prototype.translate = function(dx, dy) {
     this._x = this._x + dx;
     this._y = this._y + dy;
 };
@@ -101,8 +101,8 @@ lanyard.util.Point.prototype.translate = function (dx, dy) {
  *
  * @return {string} the string representation of this point.
  */
-lanyard.util.Point.prototype.toString = function () {
-    return "A string with coordinates of: x = " + this._x + ", y = " + this._y + ".";
+lanyard.util.Point.prototype.toString = function() {
+    return 'A string with coordinates of: x = ' + this._x + ', y = ' + this._y + '.';
 };
 
 /* EOF */

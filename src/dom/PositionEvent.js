@@ -32,7 +32,7 @@ goog.provide('lanyard.dom.PositionEvent');
  *
  * @constructor
  */
-lanyard.dom.PositionEvent = function (source, mouseEvent, previousPosition, position) {
+lanyard.dom.PositionEvent = function(source, mouseEvent, previousPosition, position) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.dom.PositionEvent');
 
     /** @type {*} */
@@ -53,7 +53,7 @@ lanyard.dom.PositionEvent = function (source, mouseEvent, previousPosition, posi
  *
  * @return {lanyard.geom.Position} the position.
  */
-lanyard.dom.PositionEvent.prototype.getPosition = function () {
+lanyard.dom.PositionEvent.prototype.getPosition = function() {
     return this.position;
 };
 
@@ -62,7 +62,7 @@ lanyard.dom.PositionEvent.prototype.getPosition = function () {
  *
  * @return {lanyard.geom.Position} the previous position.
  */
-lanyard.dom.PositionEvent.prototype.getPreviousPosition = function () {
+lanyard.dom.PositionEvent.prototype.getPreviousPosition = function() {
     return this.previousPosition;
 };
 
@@ -71,7 +71,7 @@ lanyard.dom.PositionEvent.prototype.getPreviousPosition = function () {
  *
  * @return {Event} the mouse event.
  */
-lanyard.dom.PositionEvent.prototype.getMouseEvent = function () {
+lanyard.dom.PositionEvent.prototype.getMouseEvent = function() {
     return this.mouseEvent;
 };
 
@@ -80,12 +80,12 @@ lanyard.dom.PositionEvent.prototype.getMouseEvent = function () {
  *
  * @return {string} a string representation of this position event.
  */
-lanyard.dom.PositionEvent.prototype.toString = function () {
+lanyard.dom.PositionEvent.prototype.toString = function() {
     /** @type {string} */
-    var val = "A position event: " +
-        this.previousPosition ? this.previousPosition.toString() : "null" +
-        " --> " +
-        this.position ? this.position.toString() : "null";
+    var val = 'A position event: ' +
+        this.previousPosition ? this.previousPosition.toString() : 'null' +
+        ' --> ' +
+        this.position ? this.position.toString() : 'null';
 
     return val;
 };

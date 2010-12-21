@@ -27,13 +27,13 @@
 
 goog.provide('lanyard.BasicDrawContext');
 
-goog.require('lanyard.util.Color');
 goog.require('goog.debug.Logger');
-goog.require('lanyard.util.PriorityQueue');
 goog.require('lanyard.OrderedRenderable');
-goog.require('lanyard.util.TextureCoords');
-goog.require('lanyard.render.SurfaceTileRenderer');
 goog.require('lanyard.render.GLSL');
+goog.require('lanyard.render.SurfaceTileRenderer');
+goog.require('lanyard.util.Color');
+goog.require('lanyard.util.PriorityQueue');
+goog.require('lanyard.util.TextureCoords');
 
 /**
  * A drawcontext implementation.
@@ -42,7 +42,7 @@ goog.require('lanyard.render.GLSL');
  * @implements {lanyard.DrawContext}
  * @param {lanyard.LanyardCanvas} lanyardCanvas the WebGL enabled canvas element.
  */
-lanyard.BasicDrawContext = function (lanyardCanvas) {
+lanyard.BasicDrawContext = function(lanyardCanvas) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.BasicDrawContext');
 
     /**
@@ -69,8 +69,8 @@ lanyard.BasicDrawContext = function (lanyardCanvas) {
      */
     this.lanyardCanvas = lanyardCanvas;
 
-    if(!this.lanyardCanvas) {
-        this._logger.severe("Attempted to create a draw context without a valid lanyard canvas.");
+    if (!this.lanyardCanvas) {
+        this._logger.severe('Attempted to create a draw context without a valid lanyard canvas.');
     }
 
     /**
@@ -127,8 +127,8 @@ lanyard.BasicDrawContext = function (lanyardCanvas) {
        *
        * @param {lanyard.OrderedRenderable} orA lvalue renderable.
        * @param {lanyard.OrderedRenderable} orB rvalue renderable.
-       */    
-      function (orA, orB) {
+       */
+      function(orA, orB) {
           /** @type {number} */
           var eA = orA.getDistanceFromEye();
 
@@ -146,11 +146,11 @@ lanyard.BasicDrawContext = function (lanyardCanvas) {
      * @private
      * @type {WebGLRenderingContext}
      */
-    this.gl = /** @type {WebGLRenderingContext} */ (domCanvas.getContext("experimental-webgl"));
+    this.gl = /** @type {WebGLRenderingContext} */ (domCanvas.getContext('experimental-webgl'));
     //this.gl = WebGLDebugUtils.makeDebugContext(this.lanyardCanvas.getWebGLCanvas().getContext("experimental-webgl"));
 
     if (!this.gl) {
-        this._logger.severe("The canvas specified does not seem to support WebGL.");
+        this._logger.severe('The canvas specified does not seem to support WebGL.');
     } else {
         //this._logger.fine("A WebGL context was successfully obtained from the canvas.");
     }
@@ -165,18 +165,18 @@ lanyard.BasicDrawContext = function (lanyardCanvas) {
     this.glsl = null;
 
     /** @type {string} */
-    this.vshaderId = "shader-vs";
+    this.vshaderId = 'shader-vs';
 
     /** @type {string} */
-    this.fshaderId = "shader-fs";
+    this.fshaderId = 'shader-fs';
 };
 
 /**
  * Setup the WebGL/draw context.
  */
-lanyard.BasicDrawContext.prototype.initialize = function () {
-    if(!this.lanyardCanvas) {
-        this._logger.severe("Attempt to initialize a draw context without a valid lanyard canvas.");
+lanyard.BasicDrawContext.prototype.initialize = function() {
+    if (!this.lanyardCanvas) {
+        this._logger.severe('Attempt to initialize a draw context without a valid lanyard canvas.');
     }
 
     this.gl.viewport(0, 0,
@@ -206,8 +206,8 @@ lanyard.BasicDrawContext.prototype.initialize = function () {
 /**
  * Setup the shaders for rendering the tiles.
  */
-lanyard.BasicDrawContext.prototype.setupShaders = function () {
-    if(!this.glsl && this.vshaderId && this.fshaderId)  {
+lanyard.BasicDrawContext.prototype.setupShaders = function() {
+    if (!this.glsl && this.vshaderId && this.fshaderId) {
         this.glsl = new lanyard.render.GLSL(this.gl);
 
         this.glsl.loadVertexShader(this.vshaderId);
@@ -226,7 +226,7 @@ lanyard.BasicDrawContext.prototype.setupShaders = function () {
  * @param {string} vshaderId the dom id of the vertex shader.
  * @param {string} fshaderId the dom id of the fragment shader.
  */
-lanyard.BasicDrawContext.prototype.loadShaders = function (vshaderId, fshaderId) {
+lanyard.BasicDrawContext.prototype.loadShaders = function(vshaderId, fshaderId) {
     this.vshaderId = vshaderId;
     this.fshaderId = fshaderId;
     this.glsl = null; // Force a reload.
@@ -237,7 +237,7 @@ lanyard.BasicDrawContext.prototype.loadShaders = function (vshaderId, fshaderId)
  *
  * @return {WebGLRenderingContext} the current rendering context.
  */
-lanyard.BasicDrawContext.prototype.getGL = function () {
+lanyard.BasicDrawContext.prototype.getGL = function() {
     return this.gl;
 };
 
@@ -246,7 +246,7 @@ lanyard.BasicDrawContext.prototype.getGL = function () {
  *
  * @return {lanyard.render.GLSL} the current shader context.
  */
-lanyard.BasicDrawContext.prototype.getGLSL = function () {
+lanyard.BasicDrawContext.prototype.getGLSL = function() {
     return this.glsl;
 };
 
@@ -255,7 +255,7 @@ lanyard.BasicDrawContext.prototype.getGLSL = function () {
  *
  * @return {lanyard.LanyardCanvas} the lanyard canvas.
  */
-lanyard.BasicDrawContext.prototype.getCanvas = function () {
+lanyard.BasicDrawContext.prototype.getCanvas = function() {
     return this.lanyardCanvas;
 };
 
@@ -264,7 +264,7 @@ lanyard.BasicDrawContext.prototype.getCanvas = function () {
  *
  * @param {lanyard.LanyardCanvas} lanyardCanvas the new canvas object.
  */
-lanyard.BasicDrawContext.prototype.setCanvas = function (lanyardCanvas) {
+lanyard.BasicDrawContext.prototype.setCanvas = function(lanyardCanvas) {
     this.lanyardCanvas = lanyardCanvas;
 };
 
@@ -273,7 +273,7 @@ lanyard.BasicDrawContext.prototype.setCanvas = function (lanyardCanvas) {
  *
  * @return {number} the drawable height of the canvas.
  */
-lanyard.BasicDrawContext.prototype.getDrawableHeight = function () {
+lanyard.BasicDrawContext.prototype.getDrawableHeight = function() {
     return this.lanyardCanvas.getWebGLCanvas().height;
 };
 
@@ -282,7 +282,7 @@ lanyard.BasicDrawContext.prototype.getDrawableHeight = function () {
  *
  * @return {number} the drawable width of the canvas.
  */
-lanyard.BasicDrawContext.prototype.getDrawableWidth = function () {
+lanyard.BasicDrawContext.prototype.getDrawableWidth = function() {
     return this.lanyardCanvas.getWebGLCanvas().width;
 };
 
@@ -293,7 +293,7 @@ lanyard.BasicDrawContext.prototype.getDrawableWidth = function () {
  * @param {WebGLRenderingContext} gl the rendering context.
  * @return {number} the number of available texture units.
  */
-lanyard.BasicDrawContext.prototype.queryMaxTextureUnits = function (gl) {
+lanyard.BasicDrawContext.prototype.queryMaxTextureUnits = function(gl) {
     return /** @type {number} */ (this.gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS));
 };
 
@@ -302,7 +302,7 @@ lanyard.BasicDrawContext.prototype.queryMaxTextureUnits = function (gl) {
  *
  * @param {lanyard.Model} model the new model to use in this context.
  */
-lanyard.BasicDrawContext.prototype.setModel = function (model) {
+lanyard.BasicDrawContext.prototype.setModel = function(model) {
     if (!model) {
         return;
     }
@@ -322,7 +322,7 @@ lanyard.BasicDrawContext.prototype.setModel = function (model) {
  *
  * @return {lanyard.Model} the current model.
  */
-lanyard.BasicDrawContext.prototype.getModel = function () {
+lanyard.BasicDrawContext.prototype.getModel = function() {
     return this.model;
 };
 
@@ -331,7 +331,7 @@ lanyard.BasicDrawContext.prototype.getModel = function () {
  *
  * @return {Array.<lanyard.Layer>} the current layer list.
  */
-lanyard.BasicDrawContext.prototype.getLayers = function () {
+lanyard.BasicDrawContext.prototype.getLayers = function() {
     return this.model.getLayers();
 };
 
@@ -340,7 +340,7 @@ lanyard.BasicDrawContext.prototype.getLayers = function () {
  *
  * @return {lanyard.geom.Sector} the currently visible sector.
  */
-lanyard.BasicDrawContext.prototype.getVisibleSector = function () {
+lanyard.BasicDrawContext.prototype.getVisibleSector = function() {
     return this.visibleSector;
 };
 
@@ -349,7 +349,7 @@ lanyard.BasicDrawContext.prototype.getVisibleSector = function () {
  *
  * @param {lanyard.geom.Sector} s the new currently visible sector.
  */
-lanyard.BasicDrawContext.prototype.setVisibleSector = function (s) {
+lanyard.BasicDrawContext.prototype.setVisibleSector = function(s) {
     this.visibleSector = s;
 };
 
@@ -358,7 +358,7 @@ lanyard.BasicDrawContext.prototype.setVisibleSector = function (s) {
  *
  * @param {lanyard.SectorGeometryList} surfaceGeometry the current surface geometry.
  */
-lanyard.BasicDrawContext.prototype.setSurfaceGeometry = function (surfaceGeometry) {
+lanyard.BasicDrawContext.prototype.setSurfaceGeometry = function(surfaceGeometry) {
     this.surfaceGeometry = surfaceGeometry;
 };
 
@@ -367,7 +367,7 @@ lanyard.BasicDrawContext.prototype.setSurfaceGeometry = function (surfaceGeometr
  *
  * @return {lanyard.SectorGeometryList} the current surface geometry.
  */
-lanyard.BasicDrawContext.prototype.getSurfaceGeometry = function () {
+lanyard.BasicDrawContext.prototype.getSurfaceGeometry = function() {
     return this.surfaceGeometry;
 };
 
@@ -376,7 +376,7 @@ lanyard.BasicDrawContext.prototype.getSurfaceGeometry = function () {
  *
  * @return {lanyard.Globe} the current globe.
  */
-lanyard.BasicDrawContext.prototype.getGlobe = function () {
+lanyard.BasicDrawContext.prototype.getGlobe = function() {
     return this.globe !== null ? this.globe : this.model.getGlobe();
 };
 
@@ -385,7 +385,7 @@ lanyard.BasicDrawContext.prototype.getGlobe = function () {
  *
  * @param {lanyard.View} view the new view to use.
  */
-lanyard.BasicDrawContext.prototype.setView = function (view) {
+lanyard.BasicDrawContext.prototype.setView = function(view) {
     this.view = view;
 };
 
@@ -394,7 +394,7 @@ lanyard.BasicDrawContext.prototype.setView = function (view) {
  *
  * @return {lanyard.View} the current view.
  */
-lanyard.BasicDrawContext.prototype.getView = function () {
+lanyard.BasicDrawContext.prototype.getView = function() {
     return this.view;
 };
 
@@ -403,7 +403,7 @@ lanyard.BasicDrawContext.prototype.getView = function () {
  *
  * @return {number} the current vertical exaggeration.
  */
-lanyard.BasicDrawContext.prototype.getVerticalExaggeration = function () {
+lanyard.BasicDrawContext.prototype.getVerticalExaggeration = function() {
     return this.verticalExaggeration;
 };
 
@@ -412,7 +412,7 @@ lanyard.BasicDrawContext.prototype.getVerticalExaggeration = function () {
  *
  * @param {number} verticalExaggeration the new vertical exaggeration to use.
  */
-lanyard.BasicDrawContext.prototype.setVerticalExaggeration = function (verticalExaggeration) {
+lanyard.BasicDrawContext.prototype.setVerticalExaggeration = function(verticalExaggeration) {
     this.verticalExaggeration = verticalExaggeration;
 };
 
@@ -421,7 +421,7 @@ lanyard.BasicDrawContext.prototype.setVerticalExaggeration = function (verticalE
  *
  * @return {lanyard.util.Color} the new unique pick color.
  */
-lanyard.BasicDrawContext.prototype.getUniquePickColor = function () {
+lanyard.BasicDrawContext.prototype.getUniquePickColor = function() {
     return lanyard.util.Color.prototype.GREEN;
 
   /*** TODO: pick an actual random color...
@@ -449,30 +449,30 @@ lanyard.BasicDrawContext.prototype.getUniquePickColor = function () {
  *
  * @return {lanyard.util.Color} the current clear color.
  */
-lanyard.BasicDrawContext.prototype.getClearColor = function () {
+lanyard.BasicDrawContext.prototype.getClearColor = function() {
     return this.clearColor;
 };
 
 /**
  * Get the current picking mode.
  *
- * @return {boolean} true if the Picking mode is active, otherwise return false
+ * @return {boolean} true if the Picking mode is active, otherwise return false.
  */
-lanyard.BasicDrawContext.prototype.isPickingMode = function () {
+lanyard.BasicDrawContext.prototype.isPickingMode = function() {
     return this._isPickingMode;
 };
 
 /**
  * Enables color picking mode.
  */
-lanyard.BasicDrawContext.prototype.enablePickingMode = function () {
+lanyard.BasicDrawContext.prototype.enablePickingMode = function() {
     this._isPickingMode = true;
 };
 
 /**
  * Disables color picking mode.
  */
-lanyard.BasicDrawContext.prototype.disablePickingMode = function () {
+lanyard.BasicDrawContext.prototype.disablePickingMode = function() {
     this._isPickingMode = false;
 };
 
@@ -481,7 +481,7 @@ lanyard.BasicDrawContext.prototype.disablePickingMode = function () {
  *
  * @param {lanyard.OrderedRenderable} orderedRenderable an ordered renderable.
  */
-lanyard.BasicDrawContext.prototype.addOrderedRenderable = function (orderedRenderable) {
+lanyard.BasicDrawContext.prototype.addOrderedRenderable = function(orderedRenderable) {
     this.orderedRenderables.offer(orderedRenderable);
 };
 
@@ -490,15 +490,15 @@ lanyard.BasicDrawContext.prototype.addOrderedRenderable = function (orderedRende
  *
  * @return {lanyard.util.PriorityQueue} the current ordered renderables.
  */
-lanyard.BasicDrawContext.prototype.getOrderedRenderables = function () {
+lanyard.BasicDrawContext.prototype.getOrderedRenderables = function() {
     return this.orderedRenderables;
 };
 
 /**
  * Draw a unit quad to the current context.
  */
-lanyard.BasicDrawContext.prototype.drawUnitQuad = function () {
-    this._logger.fine("Drawing a unit quad.");
+lanyard.BasicDrawContext.prototype.drawUnitQuad = function() {
+    this._logger.fine('Drawing a unit quad.');
 
     /** @type {WebGLRenderingContext} */
     var gl = this.getGL();
@@ -516,9 +516,9 @@ lanyard.BasicDrawContext.prototype.drawUnitQuad = function () {
     ];
 
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(this.glsl.getAttribLocation("aVertexPosition"), 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(this.glsl.getAttribLocation('aVertexPosition'), 3, gl.FLOAT, false, 0, 0);
 
-    this._logger.fine("Calling draw arrays.");
+    this._logger.fine('Calling draw arrays.');
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
 /*
@@ -538,7 +538,7 @@ lanyard.BasicDrawContext.prototype.drawUnitQuad = function () {
  *
  * @param {lanyard.util.TextureCoords} texCoords the texture coordinates.
  */
-lanyard.BasicDrawContext.prototype.drawUnitQuadWithTexCoords = function (texCoords) {
+lanyard.BasicDrawContext.prototype.drawUnitQuadWithTexCoords = function(texCoords) {
 /*
     var gl = this.getGL();
 
@@ -560,7 +560,7 @@ lanyard.BasicDrawContext.prototype.drawUnitQuadWithTexCoords = function (texCoor
  *
  * @return {number} the number of texture units.
  */
-lanyard.BasicDrawContext.prototype.getNumTextureUnits = function () {
+lanyard.BasicDrawContext.prototype.getNumTextureUnits = function() {
     return this.numTextureUnits;
 };
 
@@ -569,7 +569,7 @@ lanyard.BasicDrawContext.prototype.getNumTextureUnits = function () {
  *
  * @param {number} numTextureUnits the number of texture units.
  */
-lanyard.BasicDrawContext.prototype.setNumTextureUnits = function (numTextureUnits) {
+lanyard.BasicDrawContext.prototype.setNumTextureUnits = function(numTextureUnits) {
     this.numTextureUnits = numTextureUnits;
 };
 
@@ -580,7 +580,7 @@ lanyard.BasicDrawContext.prototype.setNumTextureUnits = function (numTextureUnit
  * @param {lanyard.geom.Angle} longitude the longitude.
  * @return {lanyard.geom.Point} the point.
  */
-lanyard.BasicDrawContext.prototype.getPointOnGlobe = function (latitude, longitude) {
+lanyard.BasicDrawContext.prototype.getPointOnGlobe = function(latitude, longitude) {
     if (!this.getVisibleSector().contains(latitude, longitude)) {
         return null;
     }
@@ -611,7 +611,7 @@ lanyard.BasicDrawContext.prototype.getPointOnGlobe = function (latitude, longitu
  *
  * @return {lanyard.render.SurfaceTileRenderer} the surface tile renderer.
  */
-lanyard.BasicDrawContext.prototype.getSurfaceTileRenderer = function () {
+lanyard.BasicDrawContext.prototype.getSurfaceTileRenderer = function() {
     return this.surfaceTileRenderer;
 };
 
@@ -621,7 +621,7 @@ lanyard.BasicDrawContext.prototype.getSurfaceTileRenderer = function () {
  * @param {string} name the shader name of the matrix.
  * @param {lanyard.geom.MatrixFour} matrix the matrix to load.
  */
-lanyard.BasicDrawContext.prototype.loadMatrix = function (name, matrix) {
+lanyard.BasicDrawContext.prototype.loadMatrix = function(name, matrix) {
     this.gl.uniformMatrix4fv(
         this.glsl.getUniformLocation(name),
         false,
@@ -631,10 +631,10 @@ lanyard.BasicDrawContext.prototype.loadMatrix = function (name, matrix) {
 
 /**
  * Load the identity matrix into the specified uniform.
- *  
+ *
  * @param {string} name the shader name of the matrix.
- */     
-lanyard.BasicDrawContext.prototype.loadIdentity = function (name) {
+ */
+lanyard.BasicDrawContext.prototype.loadIdentity = function(name) {
     // Matrix constructor defaults to identity.
     this.loadMatrix(name, new lanyard.geom.MatrixFour(null));
 };

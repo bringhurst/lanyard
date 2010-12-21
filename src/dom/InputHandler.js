@@ -42,7 +42,7 @@ goog.require('lanyard.dom.ViewProperties');
  *
  * @constructor
  */
-lanyard.dom.InputHandler = function () {
+lanyard.dom.InputHandler = function() {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.dom.InputHandler');
 
     /**
@@ -160,21 +160,21 @@ lanyard.dom.InputHandler = function () {
  *
  * @param {lanyard.LanyardCanvas} lanyardCanvas the event source.
  */
-lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
+lanyard.dom.InputHandler.prototype.setEventSource = function(lanyardCanvas) {
 
-    if(!lanyardCanvas) {
-        this._logger.severe("Attempted to use an invalid object as an event source.");
+    if (!lanyardCanvas) {
+        this._logger.severe('Attempted to use an invalid object as an event source.');
     }
 
-    if(!lanyardCanvas.getView()) {
-        this._logger.severe("Attempted to set an event source without a valid view.");
+    if (!lanyardCanvas.getView()) {
+        this._logger.severe('Attempted to set an event source without a valid view.');
     }
 
     /** @type {HTMLCanvasElement} */
     var domCanvas = lanyardCanvas.getWebGLCanvas();
 
-    if(!domCanvas) {
-        this._logger.severe("Attempted to use an input source without a valid dom node.");
+    if (!domCanvas) {
+        this._logger.severe('Attempted to use an input source without a valid dom node.');
     }
 
     /** @type {lanyard.LanyardCanvas} */
@@ -182,7 +182,7 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
 
     // Setup a listener for key events.
     var keyEventHandler = new goog.events.KeyHandler(domCanvas);
-    goog.events.listen(keyEventHandler, "key", this.keysPolled, false, this);
+    goog.events.listen(keyEventHandler, 'key', this.keysPolled, false, this);
 
     // Setup a listener for the mouse wheel
     var mouseWheelHandler = new goog.events.MouseWheelHandler(domCanvas);
@@ -205,7 +205,7 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
 
     // Setup a listener for when the mouse moves.
     //goog.events.listen(domCanvas, goog.events.EventType.MOUSEMOVE,
-    //   this.mouseMoved, false, this); 
+    //   this.mouseMoved, false, this);
 
     // Things to do on canvas unload.
     goog.events.listen(domCanvas, 'unload', function(e) {
@@ -220,7 +220,7 @@ lanyard.dom.InputHandler.prototype.setEventSource = function (lanyardCanvas) {
  *
  * @return {lanyard.LanyardCanvas} the event source of this input handler.
  */
-lanyard.dom.InputHandler.prototype.getEventSource = function () {
+lanyard.dom.InputHandler.prototype.getEventSource = function() {
     return this.lanyardCanvas;
 };
 
@@ -229,14 +229,14 @@ lanyard.dom.InputHandler.prototype.getEventSource = function () {
  *
  * @param {Event} keyEvent the key event.
  */
-lanyard.dom.InputHandler.prototype.keysPolled = function (keyEvent) {
-    if(!this.lanyardCanvas) {
+lanyard.dom.InputHandler.prototype.keysPolled = function(keyEvent) {
+    if (!this.lanyardCanvas) {
         return;
     }
 
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();
-    if(!view) {
+    if (!view) {
         return;
     }
 
@@ -268,7 +268,7 @@ lanyard.dom.InputHandler.prototype.keysPolled = function (keyEvent) {
         latFactor = -cosHeading;
         lonFactor = -sinHeading;
     }
-  
+
     if (latFactor !== 0 || lonFactor !== 0) {
         /** @type {lanyard.Globe} */
         var globe = this.lanyardCanvas.getModel().getGlobe();
@@ -295,7 +295,7 @@ lanyard.dom.InputHandler.prototype.keysPolled = function (keyEvent) {
  *
  * @param {Event} mouseEvent the mouse event.
  */
-lanyard.dom.InputHandler.prototype.mouseMoved = function (mouseEvent) {
+lanyard.dom.InputHandler.prototype.mouseMoved = function(mouseEvent) {
 
     if (!this.lanyardCanvas) {
         return;
@@ -342,31 +342,31 @@ lanyard.dom.InputHandler.prototype.mouseMoved = function (mouseEvent) {
  *
  * @param {Event} mouseEvent the mouse event.
  */
-lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
+lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
 
     if (!this.lanyardCanvas) {
-        this._logger.severe("Attempted to handle a drag event without a valid canvas.");
+        this._logger.severe('Attempted to handle a drag event without a valid canvas.');
         return;
     }
 
-    if(!mouseEvent) {
-        this._logger.severe("Attempted to handle a drag event without a valid event.");
+    if (!mouseEvent) {
+        this._logger.severe('Attempted to handle a drag event without a valid event.');
         return;
     }
 
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();
 
-    if(!view) {
-        this._logger.severe("Attempted to handle a drag event without a valid view.");
+    if (!view) {
+        this._logger.severe('Attempted to handle a drag event without a valid view.');
         return;
     }
 
     /** @type {lanyard.Model} */
     var model = this.lanyardCanvas.getModel();
 
-    if(!model) {
-        this._logger.severe("Attempted to handle a drag event without a valid model.");
+    if (!model) {
+        this._logger.severe('Attempted to handle a drag event without a valid model.');
         return;
     }
 
@@ -405,7 +405,7 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
 
             latLonChange = this.computeViewLatLonChange(view, globe, latFactor, lonFactor, false);
         } else {
-            this._logger.severe("Attempted to perform a drag event without a valid globe.");
+            this._logger.severe('Attempted to perform a drag event without a valid globe.');
         }
     }
 
@@ -413,7 +413,7 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
         this.setViewLatLon(view, this.computeNewViewLatLon(view, latLonChange.getLatitude(),
             latLonChange.getLongitude()));
     } else {
-        this._logger.severe("A failure occured in the drag event result.");
+        this._logger.severe('A failure occured in the drag event result.');
     }
 
     /**** FIXME: handle the view angle when command is held down....
@@ -445,9 +445,9 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function (mouseEvent) {
  * @param {lanyard.View} view the view to use.
  * @param {lanyard.geom.LatLon} newLatLon the latlon to use.
  */
-lanyard.dom.InputHandler.prototype.setViewLatLon = function (view, newLatLon) {
+lanyard.dom.InputHandler.prototype.setViewLatLon = function(view, newLatLon) {
     if (!newLatLon) {
-        this._logger.severe("Attempted to set the view to an invalid latlon.");
+        this._logger.severe('Attempted to set the view to an invalid latlon.');
     }
 
     this.viewTarget = new lanyard.dom.ViewProperties();
@@ -466,14 +466,14 @@ lanyard.dom.InputHandler.prototype.setViewLatLon = function (view, newLatLon) {
  * @param {boolean} slow should the transisition be slow or not.
  * @return {lanyard.geom.LatLon} the computed latlon.
  */
-lanyard.dom.InputHandler.prototype.computeViewLatLonChange = function (
+lanyard.dom.InputHandler.prototype.computeViewLatLonChange = function(
         view, globe, latFactor, lonFactor, slow) {
 
     /** @type {lanyard.geom.Point} */
     var eye = view.getEyePoint();
 
     if (!eye) {
-        this._logger.severe("Attempted to compute a latlon change without a valid eye.");
+        this._logger.severe('Attempted to compute a latlon change without a valid eye.');
         return null;
     }
 
@@ -497,7 +497,7 @@ lanyard.dom.InputHandler.prototype.computeViewLatLonChange = function (
  * @param {lanyard.geom.Angle} lonChange the change in longitude.
  * @return {lanyard.geom.LatLon} the computed latlon.
  */
-lanyard.dom.InputHandler.prototype.computeNewViewLatLon = function (view, latChange, lonChange) {
+lanyard.dom.InputHandler.prototype.computeNewViewLatLon = function(view, latChange, lonChange) {
     /** @type {number} */
     var latDegrees;
 
@@ -538,14 +538,14 @@ lanyard.dom.InputHandler.prototype.computeNewViewLatLon = function (view, latCha
  *
  * @param {goog.events.MouseWheelEvent} mouseWheelEvent the mouse wheel event.
  */
-lanyard.dom.InputHandler.prototype.mouseWheelMoved = function (mouseWheelEvent) {
-    if(!this.lanyardCanvas) {
-        this._logger.severe("A mouse wheel event was thrown away due to a missing event source.");
+lanyard.dom.InputHandler.prototype.mouseWheelMoved = function(mouseWheelEvent) {
+    if (!this.lanyardCanvas) {
+        this._logger.severe('A mouse wheel event was thrown away due to a missing event source.');
         return;
     }
 
-    if(!mouseWheelEvent) {
-        this._logger.severe("Attempted to handle an invalid mouse wheel event.");
+    if (!mouseWheelEvent) {
+        this._logger.severe('Attempted to handle an invalid mouse wheel event.');
         return;
     }
 
@@ -555,8 +555,8 @@ lanyard.dom.InputHandler.prototype.mouseWheelMoved = function (mouseWheelEvent) 
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();
 
-    if(!view) {
-        this._logger.severe("Attempted to handle a mouse wheel event without a valid view.");
+    if (!view) {
+        this._logger.severe('Attempted to handle a mouse wheel event without a valid view.');
         return;
     }
 
@@ -589,7 +589,7 @@ lanyard.dom.InputHandler.prototype.mouseWheelMoved = function (mouseWheelEvent) 
  * @param {number} change the zoom delta.
  * @return {number} the new zoom value.
  */
-lanyard.dom.InputHandler.prototype.computeNewViewZoom = function (view, change) {
+lanyard.dom.InputHandler.prototype.computeNewViewZoom = function(view, change) {
     /** @type {number} */
     var logZoom;
 
@@ -614,7 +614,7 @@ lanyard.dom.InputHandler.prototype.computeNewViewZoom = function (view, change) 
  * @param {boolean} slow if the zoom is slow or not.
  * @return {number} the zoom view change.
  */
-lanyard.dom.InputHandler.prototype.computeZoomViewChange = function (factor, slow) {
+lanyard.dom.InputHandler.prototype.computeZoomViewChange = function(factor, slow) {
     return factor * this.viewZoomChangeFactor * (slow ? 2.5e-1 : 1.0);
 };
 
@@ -624,7 +624,7 @@ lanyard.dom.InputHandler.prototype.computeZoomViewChange = function (factor, slo
  * @param {lanyard.View} view the view to use.
  * @param {number} newZoom the new zoom to set things to.
  */
-lanyard.dom.InputHandler.prototype.setViewZoom = function (view, newZoom) {
+lanyard.dom.InputHandler.prototype.setViewZoom = function(view, newZoom) {
     this.viewTarget = new lanyard.dom.ViewProperties();
     this.viewTarget.zoom = newZoom;
 
@@ -642,10 +642,10 @@ lanyard.dom.InputHandler.prototype.setViewZoom = function (view, newZoom) {
  * @param {boolean} forceSmooth if we should force the transistion to be smooth.
  */
 lanyard.dom.InputHandler.prototype.setViewProperties =
-        function (view, newProperties, stepCoefficient, errorThreshold, forceSmooth) {
+        function(view, newProperties, stepCoefficient, errorThreshold, forceSmooth) {
 
     if (!view) {
-        this._logger.severe("Attempted to set properties on a null view.");
+        this._logger.severe('Attempted to set properties on a null view.');
     }
 
     if (newProperties.latLon) {
@@ -676,7 +676,7 @@ lanyard.dom.InputHandler.prototype.setViewProperties =
  * @param {number} max
  * @return {number} the clamped value.
  */
-lanyard.dom.InputHandler.prototype.clamp = function (x, min, max) {
+lanyard.dom.InputHandler.prototype.clamp = function(x, min, max) {
     return x < min ? min : (x > max ? max : x);
 };
 
@@ -685,9 +685,9 @@ lanyard.dom.InputHandler.prototype.clamp = function (x, min, max) {
  *
  * @param {*} listener a position listener.
  */
-lanyard.dom.InputHandler.prototype.addPositionListener = function (listener) {
-    if(!listener) {
-        this._logger.severe("Attempted to add an invalid position listener.");
+lanyard.dom.InputHandler.prototype.addPositionListener = function(listener) {
+    if (!listener) {
+        this._logger.severe('Attempted to add an invalid position listener.');
     }
 
     listener.isPositionListener = true;
@@ -699,9 +699,9 @@ lanyard.dom.InputHandler.prototype.addPositionListener = function (listener) {
  *
  * @param {lanyard.dom.PositionEvent} positionEvent the position event.
  */
-lanyard.dom.InputHandler.prototype.callPositionListeners = function (positionEvent) {
-    for(var i = 0; i < this.eventListeners.length; i = i + 1) {
-        if(this.eventListeners[i].isPositionListener && this.eventListeners[i].moved) {
+lanyard.dom.InputHandler.prototype.callPositionListeners = function(positionEvent) {
+    for (var i = 0; i < this.eventListeners.length; i = i + 1) {
+        if (this.eventListeners[i].isPositionListener && this.eventListeners[i].moved) {
             this.eventListeners[i].moved(positionEvent);
         }
     }

@@ -36,7 +36,7 @@ goog.require('lanyard.globes.EllipsoidalGlobe');
  * @constructor
  * @this {lanyard.globes.moon}
  */
-lanyard.globes.Moon = function () {
+lanyard.globes.Moon = function() {
 
     /**
      * The ellipsoid equatorial radius of the moon, in meters.
@@ -82,7 +82,7 @@ goog.inherits(lanyard.globes.Moon, lanyard.globes.EllipsoidalGlobe);
  *
  * @return {number} the radius of the moon.
  */
-lanyard.globes.Moon.prototype.getRadius = function () {
+lanyard.globes.Moon.prototype.getRadius = function() {
     return this.equatorialRadius;
 };
 

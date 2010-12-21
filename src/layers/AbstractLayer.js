@@ -34,7 +34,7 @@ goog.provide('lanyard.layers.AbstractLayer');
  * @implements {lanyard.Layer}
  * @this {lanyard.layers.AbstractLayer}
  */
-lanyard.layers.AbstractLayer = function () {
+lanyard.layers.AbstractLayer = function() {
     /** @private */
     this._logger = goog.debug.Logger.getLogger('lanyard.layers.AbstractLayer');
 
@@ -68,7 +68,7 @@ lanyard.layers.AbstractLayer = function () {
      * @private
      * @type {string}
      */
-    this.displayName = "Untitled Layer";
+    this.displayName = 'Untitled Layer';
 };
 goog.exportSymbol('lanyard.layers.AbstractLayer', lanyard.layers.AbstractLayer);
 
@@ -78,7 +78,7 @@ goog.exportSymbol('lanyard.layers.AbstractLayer', lanyard.layers.AbstractLayer);
  * @this {lanyard.layers.AbstractLayer}
  * @return {boolean} if this layer is enabled or not.
  */
-lanyard.layers.AbstractLayer.prototype.isEnabled = function () {
+lanyard.layers.AbstractLayer.prototype.isEnabled = function() {
     return this.enabled;
 };
 
@@ -88,7 +88,7 @@ lanyard.layers.AbstractLayer.prototype.isEnabled = function () {
  * @this {lanyard.layers.AbstractLayer}
  * @param {boolean} enabled if this layer should be enabled or not.
  */
-lanyard.layers.AbstractLayer.prototype.setEnabled = function (enabled) {
+lanyard.layers.AbstractLayer.prototype.setEnabled = function(enabled) {
     this.enabled = enabled;
 };
 
@@ -97,7 +97,7 @@ lanyard.layers.AbstractLayer.prototype.setEnabled = function (enabled) {
  *
  * @return {string} the name of this layer.
  */
-lanyard.layers.AbstractLayer.prototype.getName = function () {
+lanyard.layers.AbstractLayer.prototype.getName = function() {
     return this.myName();
 };
 
@@ -107,7 +107,7 @@ lanyard.layers.AbstractLayer.prototype.getName = function () {
  * @this {lanyard.layers.AbstractLayer}
  * @param {string} name the new name of this layer.
  */
-lanyard.layers.AbstractLayer.prototype.setName = function (name) {
+lanyard.layers.AbstractLayer.prototype.setName = function(name) {
     this.displayName = name;
 };
 
@@ -116,7 +116,7 @@ lanyard.layers.AbstractLayer.prototype.setName = function (name) {
  *
  * @return {string} a string representation of this layer.
  */
-lanyard.layers.AbstractLayer.prototype.toString = function () {
+lanyard.layers.AbstractLayer.prototype.toString = function() {
     return this.myName();
 };
 
@@ -125,7 +125,7 @@ lanyard.layers.AbstractLayer.prototype.toString = function () {
  *
  * @return {string} the display name of this layer.
  */
-lanyard.layers.AbstractLayer.prototype.myName = function () {
+lanyard.layers.AbstractLayer.prototype.myName = function() {
     return this.displayName;
 };
 
@@ -134,7 +134,7 @@ lanyard.layers.AbstractLayer.prototype.myName = function () {
  *
  * @return {number} the opacity of this layer.
  */
-lanyard.layers.AbstractLayer.prototype.getOpacity = function () {
+lanyard.layers.AbstractLayer.prototype.getOpacity = function() {
     return this.opacity;
 };
 
@@ -143,7 +143,7 @@ lanyard.layers.AbstractLayer.prototype.getOpacity = function () {
  *
  * @param {number} opacity the new opacity of this layer.
  */
-lanyard.layers.AbstractLayer.prototype.setOpacity = function (opacity) {
+lanyard.layers.AbstractLayer.prototype.setOpacity = function(opacity) {
     this.opacity = opacity;
 };
 
@@ -152,7 +152,7 @@ lanyard.layers.AbstractLayer.prototype.setOpacity = function (opacity) {
  *
  * @return {number} the minimum active altitude of this layer.
  */
-lanyard.layers.AbstractLayer.prototype.getMinActiveAltitude = function () {
+lanyard.layers.AbstractLayer.prototype.getMinActiveAltitude = function() {
     return this.minActiveAltitude;
 };
 
@@ -161,7 +161,7 @@ lanyard.layers.AbstractLayer.prototype.getMinActiveAltitude = function () {
  *
  * @param {number} minActiveAltitude the minimum active altitude of this layer.
  */
-lanyard.layers.AbstractLayer.prototype.setMinActiveAltitude = function (minActiveAltitude) {
+lanyard.layers.AbstractLayer.prototype.setMinActiveAltitude = function(minActiveAltitude) {
     this.minActiveAltitude = minActiveAltitude;
 };
 
@@ -170,7 +170,7 @@ lanyard.layers.AbstractLayer.prototype.setMinActiveAltitude = function (minActiv
  *
  * @return {number} the maximum active altitude for this layer.
  */
-lanyard.layers.AbstractLayer.prototype.getMaxActiveAltitude = function () {
+lanyard.layers.AbstractLayer.prototype.getMaxActiveAltitude = function() {
     return this.maxActiveAltitude;
 };
 
@@ -179,7 +179,7 @@ lanyard.layers.AbstractLayer.prototype.getMaxActiveAltitude = function () {
  *
  * @param {number} maxActiveAltitude the maximum active altitude for this layer.
  */
-lanyard.layers.AbstractLayer.prototype.setMaxActiveAltitude = function (maxActiveAltitude) {
+lanyard.layers.AbstractLayer.prototype.setMaxActiveAltitude = function(maxActiveAltitude) {
     this.maxActiveAltitude = maxActiveAltitude;
 };
 
@@ -191,7 +191,7 @@ lanyard.layers.AbstractLayer.prototype.setMaxActiveAltitude = function (maxActiv
  * @param {lanyard.DrawContext} dc the current draw context.
  * @return {boolean} true if the layer is in the view, false otherwise.
  */
-lanyard.layers.AbstractLayer.prototype.isLayerInView = function (dc) {
+lanyard.layers.AbstractLayer.prototype.isLayerInView = function(dc) {
     return true;
 };
 
@@ -204,7 +204,7 @@ lanyard.layers.AbstractLayer.prototype.isLayerInView = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  * @return {boolean} true if the layer is active, false otherwise.
  */
-lanyard.layers.AbstractLayer.prototype.isLayerActive = function (dc) {
+lanyard.layers.AbstractLayer.prototype.isLayerActive = function(dc) {
     /** @type {number} */
     var altitude = dc.getView().getAltitude();
 
@@ -219,7 +219,7 @@ lanyard.layers.AbstractLayer.prototype.isLayerActive = function (dc) {
  *
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.layers.AbstractLayer.prototype.render = function (dc) {
+lanyard.layers.AbstractLayer.prototype.render = function(dc) {
     //this._logger.fine("Abstract layer render was called.");
 
     if (!this.enabled) {

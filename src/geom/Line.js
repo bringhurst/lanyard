@@ -37,7 +37,7 @@ goog.require('lanyard.geom.Point');
  * @param {lanyard.geom.Point} origin the origin of the line.
  * @param {lanyard.geom.Point} direction the direction of the line.
  */
-lanyard.geom.Line = function (origin, direction) {
+lanyard.geom.Line = function(origin, direction) {
     /** @private */ this._origin = origin;
     /** @private */ this._direction = direction;
 };
@@ -48,7 +48,7 @@ goog.exportSymbol('lanyard.geom.Line', lanyard.geom.Line);
  *
  * @return {lanyard.geom.Point} the direction of this line.
  */
-lanyard.geom.Line.prototype.getDirection = function () {
+lanyard.geom.Line.prototype.getDirection = function() {
     return this._direction;
 };
 
@@ -57,7 +57,7 @@ lanyard.geom.Line.prototype.getDirection = function () {
  *
  * @return {lanyard.geom.Point} the origin of this line.
  */
-lanyard.geom.Line.prototype.getOrigin = function () {
+lanyard.geom.Line.prototype.getOrigin = function() {
     return this._origin;
 };
 
@@ -67,7 +67,7 @@ lanyard.geom.Line.prototype.getOrigin = function () {
  * @param {number} t
  * @return {lanyard.geom.Point}
  */
-lanyard.geom.Line.prototype.getPointAt = function (t) {
+lanyard.geom.Line.prototype.getPointAt = function(t) {
     return lanyard.geom.Point.prototype.fromOriginAndDirection(t, this._direction, this._origin);
 };
 
@@ -76,7 +76,7 @@ lanyard.geom.Line.prototype.getPointAt = function (t) {
  *
  * @return {number}
  */
-lanyard.geom.Line.prototype.selfDot = function () {
+lanyard.geom.Line.prototype.selfDot = function() {
     return this._origin.dot(this._direction);
 };
 
@@ -87,7 +87,7 @@ lanyard.geom.Line.prototype.selfDot = function () {
  * @param {lanyard.geom.Point} p the Point whose distance from this Line will be calculated.
  * @return {number} the distance between this Line and the specified Point.
  */
-lanyard.geom.Line.prototype.distanceTo = function (p) {
+lanyard.geom.Line.prototype.distanceTo = function(p) {
     var origin = this.getOrigin();
     var sideB = origin.subtract(p); // really a vector
 
@@ -107,9 +107,9 @@ lanyard.geom.Line.prototype.distanceTo = function (p) {
  *
  * @return {string} a string representation of this line.
  */
-lanyard.geom.Line.prototype.toString = function () {
-    return "Origin: " + this._origin.toString() +
-        ", Direction: " + this._direction.toString();
+lanyard.geom.Line.prototype.toString = function() {
+    return 'Origin: ' + this._origin.toString() +
+        ', Direction: ' + this._direction.toString();
 };
 
 /* EOF */

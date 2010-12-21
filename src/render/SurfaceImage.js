@@ -35,9 +35,9 @@ goog.provide('lanyard.render.SurfaceImage');
  * @implements {lanyard.render.SurfaceTile}
  * @param {string} imageSource can be a local image path or a url pointing to another server.
  * @param {lanyard.geom.Sector} sector the sector covered by the image.
- * @param {lanyard.Layer|null} layer a reference to the layer handling this image.
+ * @param {?lanyard.Layer} layer a reference to the layer handling this image.
  */
-lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
+lanyard.render.SurfaceImage = function(imageSource, sector, layer) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.SurfaceImage');
 
     /**
@@ -60,7 +60,7 @@ lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
 
     /**
      * @private
-     * @type {lanyard.util.Texture|null}
+     * @type {?lanyard.util.Texture}
      */
     this.textureData = null;
 
@@ -100,11 +100,11 @@ lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
     this.layer = layer;
 
     if (!this.imageSource) {
-        this._logger.severe("The image source is null.");
+        this._logger.severe('The image source is null.');
     }
 
     if (!this.sector) {
-        this._logger.severe("The sector is null.");
+        this._logger.severe('The sector is null.');
     }
 };
 
@@ -113,9 +113,9 @@ lanyard.render.SurfaceImage = function (imageSource, sector, layer) {
  *
  * @param {lanyard.geom.Sector} sector the new sector.
  */
-lanyard.render.SurfaceImage.prototype.setSector = function (sector) {
+lanyard.render.SurfaceImage.prototype.setSector = function(sector) {
     if (!sector) {
-        this._logger.severe("The sector was null.");
+        this._logger.severe('The sector was null.');
     }
 
     this.sector = sector;
@@ -127,7 +127,7 @@ lanyard.render.SurfaceImage.prototype.setSector = function (sector) {
  *
  * @return {lanyard.geom.Sector} the sector for the surface image.
  */
-lanyard.render.SurfaceImage.prototype.getSector = function () {
+lanyard.render.SurfaceImage.prototype.getSector = function() {
     return this.sector;
 };
 
@@ -137,9 +137,9 @@ lanyard.render.SurfaceImage.prototype.getSector = function () {
  * @param {lanyard.DrawContext} dc the current draw context.
  * @return {lanyard.geom.Extent} the extent of the image.
  */
-lanyard.render.SurfaceImage.prototype.getExtent = function (dc) {
+lanyard.render.SurfaceImage.prototype.getExtent = function(dc) {
     if (!dc) {
-        this._logger.severe("The draw context is null.");
+        this._logger.severe('The draw context is null.');
     }
 
     if (!this.extent || this.extentVerticalExaggertion !== dc.getVerticalExaggeration()) {
@@ -158,11 +158,11 @@ lanyard.render.SurfaceImage.prototype.getExtent = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  * @return {lanyard.util.Texture} the texture.
  */
-lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
+lanyard.render.SurfaceImage.prototype.initializeTexture = function(dc) {
     //this._logger.fine("Initializing a texture.");
 
     if (!dc) {
-        this._logger.severe("The draw context was null.");
+        this._logger.severe('The draw context was null.');
     }
 
     /** @type {WebGLRenderingContext} */
@@ -177,7 +177,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
     /** @type {Image} */
     var surfaceImage = new Image();
 
-    surfaceImage.onload = function () {
+    surfaceImage.onload = function() {
         //self._logger.fine("Loaded image at: " + self.imageSource + "<img src=" + self.imageSource + ">");
 
         surfaceTexture.bind();
@@ -197,18 +197,18 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
         dc.getCanvas().display();
     };
 
-    surfaceImage.onerror = function () {
-        self._logger.warning("An image failed to load from: " + self.imageSource);
+    surfaceImage.onerror = function() {
+        self._logger.warning('An image failed to load from: ' + self.imageSource);
         self.hasProblem = true;
     };
 
-    surfaceImage.onabort = function () {
-        self._logger.warning("An image load was aborted: " + self.imageSource);
+    surfaceImage.onabort = function() {
+        self._logger.warning('An image load was aborted: ' + self.imageSource);
         self.hasProblem = true;
     };
 
     // Fire it off
-    surfaceImage.src = this.imageSource;  
+    surfaceImage.src = this.imageSource;
 
     return surfaceTexture;
 };
@@ -219,11 +219,11 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function (dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  * @return {boolean} if the bind was a success.
  */
-lanyard.render.SurfaceImage.prototype.bind = function (dc) {
+lanyard.render.SurfaceImage.prototype.bind = function(dc) {
     //this._logger.fine("Surface image bind was called.");
 
     if (!dc) {
-        this._logger.severe("The draw context is null.");
+        this._logger.severe('The draw context is null.');
     }
 
     /** @type {lanyard.util.Texture} */
@@ -252,9 +252,9 @@ lanyard.render.SurfaceImage.prototype.bind = function (dc) {
  *
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.render.SurfaceImage.prototype.applyInternalTransform = function (dc) {
+lanyard.render.SurfaceImage.prototype.applyInternalTransform = function(dc) {
     if (!dc) {
-        this._logger.severe("The draw context was null.");
+        this._logger.severe('The draw context was null.');
     }
 
     /** @type {lanyard.util.Texture} */
@@ -270,15 +270,15 @@ lanyard.render.SurfaceImage.prototype.applyInternalTransform = function (dc) {
  *
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.render.SurfaceImage.prototype.render = function (dc) {
+lanyard.render.SurfaceImage.prototype.render = function(dc) {
     //this._logger.fine("The surface image render was called.");
 
     if (!dc) {
-        this._logger.severe("The draw context is null.");
+        this._logger.severe('The draw context is null.');
     }
 
     if (!this.sector.intersects(dc.getVisibleSector())) {
-        this._logger.fine("The surface image does not intersect with a visible sector.");
+        this._logger.fine('The surface image does not intersect with a visible sector.');
         return;
     }
 
@@ -317,9 +317,9 @@ lanyard.render.SurfaceImage.prototype.render = function (dc) {
  *
  * @param {lanyard.geom.Position} position the new position to move to.
  */
-lanyard.render.SurfaceImage.prototype.move = function (position) {
+lanyard.render.SurfaceImage.prototype.move = function(position) {
     if (!position) {
-        this._logger.severe("The position was null.");
+        this._logger.severe('The position was null.');
     }
 
     // Increase the current sector position.
@@ -362,9 +362,9 @@ lanyard.render.SurfaceImage.prototype.move = function (position) {
  *
  * @param {lanyard.geom.Position} position the new position to move to.
  */
-lanyard.render.SurfaceImage.prototype.moveTo = function (position) {
+lanyard.render.SurfaceImage.prototype.moveTo = function(position) {
     if (!position) {
-        this._logger.severe("The new position was null.");
+        this._logger.severe('The new position was null.');
     }
 
     // Calculate new position
@@ -408,7 +408,7 @@ lanyard.render.SurfaceImage.prototype.moveTo = function (position) {
  *
  * @return {lanyard.geom.Position} the reference position of this surface image.
  */
-lanyard.render.SurfaceImage.prototype.getReferencePosition = function () {
+lanyard.render.SurfaceImage.prototype.getReferencePosition = function() {
     return this.referencePosition;
 };
 
@@ -417,8 +417,8 @@ lanyard.render.SurfaceImage.prototype.getReferencePosition = function () {
  *
  * @return {string} the string representation of this object.
  */
-lanyard.render.SurfaceImage.prototype.toString = function () {
-    return "A SurfaceImage with a path of: " + this.imageSource;
+lanyard.render.SurfaceImage.prototype.toString = function() {
+    return 'A SurfaceImage with a path of: ' + this.imageSource;
 };
 
 /* EOF */

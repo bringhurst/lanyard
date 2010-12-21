@@ -36,26 +36,26 @@ goog.provide('lanyard.TileKey');
  * @param {string} cacheName the cache name.
  * @implements {lanyard.TileKey}
  */
-lanyard.TileKey = function (level, row, col, cacheName) {
+lanyard.TileKey = function(level, row, col, cacheName) {
     /**
      * @private
      */
     this._logger = goog.debug.Logger.getLogger('lanyard.TileKey');
 
     if (level < 0) {
-        this._logger.severe("Tile key level is less than 0.");
+        this._logger.severe('Tile key level is less than 0.');
     }
 
     if (row < 0) {
-        this._logger.severe("The row index is out of range.");
+        this._logger.severe('The row index is out of range.');
     }
 
     if (col < 0) {
-        this._logger.severe("The column index is out of range.");
+        this._logger.severe('The column index is out of range.');
     }
 
     if (!cacheName || cacheName.length < 1) {
-        this._logger.severe("Attempted to use an invalid cache name.");
+        this._logger.severe('Attempted to use an invalid cache name.');
     }
 
     /** @type {number} */
@@ -79,7 +79,7 @@ lanyard.TileKey = function (level, row, col, cacheName) {
  * @param {lanyard.Level} level the level of the tile.
  * @return {lanyard.TileKey} the generated tile key.
  */
-lanyard.TileKey.prototype.fromAngles = function (latitude, longitude, level) {
+lanyard.TileKey.prototype.fromAngles = function(latitude, longitude, level) {
     /** @type {lanyard.TileKey} */
     var tk = new lanyard.TileKey(
         level.getLevelNumber(),
@@ -97,7 +97,7 @@ lanyard.TileKey.prototype.fromAngles = function (latitude, longitude, level) {
  * @param {lanyard.Tile} tile the tile to create a tile key from.
  * @return {lanyard.TileKey} the generated tile key.
  */
-lanyard.TileKey.prototype.fromTile = function (tile) {
+lanyard.TileKey.prototype.fromTile = function(tile) {
     /** @type {lanyard.TileKey} */
     var tk = new lanyard.TileKey(
         tile.getLevelNumber(),
@@ -114,7 +114,7 @@ lanyard.TileKey.prototype.fromTile = function (tile) {
  *
  * @return {number} the level number of this tile key.
  */
-lanyard.TileKey.prototype.getLevelNumber = function () {
+lanyard.TileKey.prototype.getLevelNumber = function() {
     return this.level;
 };
 
@@ -123,7 +123,7 @@ lanyard.TileKey.prototype.getLevelNumber = function () {
  *
  * @return {number} get the row of this tile key.
  */
-lanyard.TileKey.prototype.getRow = function () {
+lanyard.TileKey.prototype.getRow = function() {
     return this.row;
 };
 
@@ -132,7 +132,7 @@ lanyard.TileKey.prototype.getRow = function () {
  *
  * @return {number} the column of this tile key.
  */
-lanyard.TileKey.prototype.getColumn = function () {
+lanyard.TileKey.prototype.getColumn = function() {
     return this.col;
 };
 
@@ -141,7 +141,7 @@ lanyard.TileKey.prototype.getColumn = function () {
  *
  * @return {string} the cache name.
  */
-lanyard.TileKey.prototype.getCacheName = function () {
+lanyard.TileKey.prototype.getCacheName = function() {
     return this.cacheName;
 };
 
@@ -151,9 +151,9 @@ lanyard.TileKey.prototype.getCacheName = function () {
  * @param {lanyard.TileKey} key the tile key to compare to.
  * @return {number} 0 if equal, -1 if less, 1 if more.
  */
-lanyard.TileKey.prototype.compareTo = function (key) {
-    if(!key) {
-        this._logger.severe("Attempted to compare to an invalid tile key.");
+lanyard.TileKey.prototype.compareTo = function(key) {
+    if (!key) {
+        this._logger.severe('Attempted to compare to an invalid tile key.');
     }
 
     // No need to compare Sectors because they are redundant with row and column
@@ -191,8 +191,8 @@ lanyard.TileKey.prototype.compareTo = function (key) {
  *
  * @return {string} a string representation of this tile key.
  */
-lanyard.TileKey.prototype.toString = function () {
-    return this.cacheName + "/" + this.level + "/" + this.row + "/" + this.col;
+lanyard.TileKey.prototype.toString = function() {
+    return this.cacheName + '/' + this.level + '/' + this.row + '/' + this.col;
 };
 
 /* EOF */

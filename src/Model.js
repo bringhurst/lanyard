@@ -34,97 +34,97 @@ goog.require('lanyard.Tessellator');
  *
  * @interface
  */
-lanyard.Model = function () {};
+lanyard.Model = function() {};
 
 /**
  * Extent accessor.
  *
  * @return {lanyard.geom.Extent}
  */
-lanyard.Model.prototype.getExtent = function () {};
+lanyard.Model.prototype.getExtent = function() {};
 
 /**
  * Globe accessor.
  *
  * @return {lanyard.Globe} the globe.
  */
-lanyard.Model.prototype.getGlobe = function () {};
+lanyard.Model.prototype.getGlobe = function() {};
 
 /**
  * Get the layers.
  *
  * @return {Array.<lanyard.Layer>} the layer list.
  */
-lanyard.Model.prototype.getLayers = function () {};
+lanyard.Model.prototype.getLayers = function() {};
 
 /**
  * The globe mutator.
  *
  * @param {lanyard.Globe} globe the new globe.
  */
-lanyard.Model.prototype.setGlobe = function (globe) {};
+lanyard.Model.prototype.setGlobe = function(globe) {};
 
 /**
  * Layers mutator.
  *
  * @param {Array.<lanyard.Layer>} layers the new layer list.
  */
-lanyard.Model.prototype.setLayers = function (layers) {};
+lanyard.Model.prototype.setLayers = function(layers) {};
 
 /**
  * Tessellator accessor.
  *
  * @return {lanyard.Tessellator} the tessellator.
  */
-lanyard.Model.prototype.getTessellator = function () {};
+lanyard.Model.prototype.getTessellator = function() {};
 
 /**
  * The tessellator mutator.
  *
  * @param {lanyard.Tessellator} tessellator the new tessellator.
  */
-lanyard.Model.prototype.setTessellator = function (tessellator) {};
+lanyard.Model.prototype.setTessellator = function(tessellator) {};
 
 /**
  * Set the show wireframe interior flag.
  *
  * @param {boolean} show if we should show the wireframe interior or not.
  */
-lanyard.Model.prototype.setShowWireframeInterior = function (show) {};
+lanyard.Model.prototype.setShowWireframeInterior = function(show) {};
 
 /**
  * Set the show wireframe exterior flag.
  *
  * @param {boolean} show if we should show the wireframe exterior or not.
  */
-lanyard.Model.prototype.setShowWireframeExterior = function (show) {};
+lanyard.Model.prototype.setShowWireframeExterior = function(show) {};
 
 /**
  * Accessor for the wireframe interior flag.
  *
  * @return {boolean} true if the wireframe interior flag is set, false otherwise.
  */
-lanyard.Model.prototype.isShowWireframeInterior = function () {};
+lanyard.Model.prototype.isShowWireframeInterior = function() {};
 
 /**
  * Accessor for the show wireframe exterior flag.
  *
  * @return {boolean} true if the wireframe exterior flag is set, false otherwise.
  */
-lanyard.Model.prototype.isShowWireframeExterior = function () {};
+lanyard.Model.prototype.isShowWireframeExterior = function() {};
 
 /**
  * Accessor for the flag to show the tessellation bounding volumes.
  *
  * @return {boolean} true if the tessellation bounding volumes are showing, false otherwise.
  */
-lanyard.Model.prototype.isShowTessellationBoundingVolumes = function () {};
+lanyard.Model.prototype.isShowTessellationBoundingVolumes = function() {};
 
 /**
  * Mutator for the flag to show the tessellation bounding volumes.
  *
  * @param {boolean} showTileBoundingVolumes set if the tessellation bounding volumes should show.
  */
-lanyard.Model.prototype.setShowTessellationBoundingVolumes = function (showTileBoundingVolumes) {};
+lanyard.Model.prototype.setShowTessellationBoundingVolumes = function(showTileBoundingVolumes) {};
 
 /* EOF */

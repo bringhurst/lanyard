@@ -32,7 +32,7 @@ goog.provide('lanyard.Tessellator');
  *
  * @interface
  */
-lanyard.Tessellator = function () {};
+lanyard.Tessellator = function() {};
 
 /**
  * Perform tessellation and return the sector geometries.
@@ -40,6 +40,6 @@ lanyard.Tessellator = function () {};
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {lanyard.SectorGeometryList} the list of sector geometries.
  */
-lanyard.Tessellator.prototype.tessellate = function (dc) {};
+lanyard.Tessellator.prototype.tessellate = function(dc) {};
 
 /* EOF */

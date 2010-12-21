@@ -67,7 +67,7 @@ lanyard.util.TextureCoords = function(left, bottom, right, t) {
  *
  * @return {number} the left coordinate.
  */
-lanyard.util.TextureCoords.prototype.left = function () {
+lanyard.util.TextureCoords.prototype.left = function() {
     return this._left;
 };
 
@@ -76,7 +76,7 @@ lanyard.util.TextureCoords.prototype.left = function () {
  *
  * @return {number} the bottom coordinate.
  */
-lanyard.util.TextureCoords.prototype.bottom = function () {
+lanyard.util.TextureCoords.prototype.bottom = function() {
     return this._bottom;
 };
 
@@ -85,7 +85,7 @@ lanyard.util.TextureCoords.prototype.bottom = function () {
  *
  * @return {number} the right coordinate.
  */
-lanyard.util.TextureCoords.prototype.right = function () {
+lanyard.util.TextureCoords.prototype.right = function() {
     return this._right;
 };
 
@@ -94,7 +94,7 @@ lanyard.util.TextureCoords.prototype.right = function () {
  *
  * @return {number} the top coordinate.
  */
-lanyard.util.TextureCoords.prototype.t = function () {
+lanyard.util.TextureCoords.prototype.t = function() {
     return this._t;
 };
 

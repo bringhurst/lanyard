@@ -33,7 +33,7 @@ goog.provide('lanyard.Elevations');
  *
  * @interface
  */
-lanyard.Elevations = function () {};
+lanyard.Elevations = function() {};
 
 /**
  * Indicates whether the object contains useful elevations. An Elevations instance may exist
@@ -44,7 +44,7 @@ lanyard.Elevations = function () {};
  * @return {boolean} true if a call to getElevation(double, double) will return valid elevations,
  *         otherwise false indicating that the value 0 will always be returned from that method.
  */
-lanyard.Elevations.prototype.hasElevations = function () {};
+lanyard.Elevations.prototype.hasElevations = function() {};
 
 /**
  * Returns the elevation at a specific latitude and longitude, each specified in radians.
@@ -53,7 +53,7 @@ lanyard.Elevations.prototype.hasElevations = function () {};
  * @param {number} lonRadians the position's longitude in radians, in the range [-pi, +pi].
  * @return {number} The elevation at the given position, or 0 if elevations are not available.
  */
-lanyard.Elevations.prototype.getElevation = function (latRadians, lonRadians) {};
+lanyard.Elevations.prototype.getElevation = function(latRadians, lonRadians) {};
 
 /**
  * Returns the resolution value of the elevations. The meaning and use of this value is defined
@@ -61,13 +61,13 @@ lanyard.Elevations.prototype.getElevation = function (latRadians, lonRadians) {}
  *
  * @return {number} the resolution associated with this.
  */
-lanyard.Elevations.prototype.getResolution = function () {};
+lanyard.Elevations.prototype.getResolution = function() {};
 
 /**
  * Returns the {lanyard.geom.Sector} the elevations pertain to.
  *
  * @return {lanyard.geom.Sector} the sector the elevations pertain to.
  */
-lanyard.Elevations.prototype.getSector = function () {};
+lanyard.Elevations.prototype.getSector = function() {};
 
 /* EOF */

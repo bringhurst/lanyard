@@ -27,11 +27,11 @@
 
 goog.provide('lanyard.globes.EllipsoidRectangularTessellator');
 
-goog.require('lanyard.globes.RectTile');
-goog.require('lanyard.geom.Sector');
 goog.require('lanyard.SectorGeometryList');
-goog.require('lanyard.View');
 goog.require('lanyard.Tessellator');
+goog.require('lanyard.View');
+goog.require('lanyard.geom.Sector');
+goog.require('lanyard.globes.RectTile');
 
 /**
  * A rectangular tessellator for ellipsoids.
@@ -41,7 +41,7 @@ goog.require('lanyard.Tessellator');
  * @this {lanyard.globes.EllipsoidRectangularTessellator}
  * @param {lanyard.Globe} globe the globe to tessellate.
  */
-lanyard.globes.EllipsoidRectangularTessellator = function (globe) {
+lanyard.globes.EllipsoidRectangularTessellator = function(globe) {
     /**
      * @private
      */
@@ -128,7 +128,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_NUM_LON_SUBDIVI
  *
  * @return {lanyard.geom.Sector} the sector.
  */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.getSector = function () {
+lanyard.globes.EllipsoidRectangularTessellator.prototype.getSector = function() {
     return this.sector;
 };
 
@@ -141,7 +141,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.getSector = function ()
  * @return {Array.<lanyard.globes.RectTile>} the top level tiles.
  */
 lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
-        function (globe, nRows, nCols) {
+        function(globe, nRows, nCols) {
 
     /** @type {Array.<lanyard.globes.RectTile>} */
     var tops = [];
@@ -176,7 +176,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
 
             /** @type {lanyard.globes.RectTile} */
             var newTile = new lanyard.globes.RectTile(
-                globe, 0, 
+                globe, 0,
                 lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_DENSITY,
                 new lanyard.geom.Sector(lastLat, lat, lastLon, lon)
             );
@@ -196,11 +196,11 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.createTopLevelTiles =
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {lanyard.SectorGeometryList} the sector geometries.
  */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (dc) {
+lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function(dc) {
     //this._logger.fine("Tessellating the draw context geometries.");
 
-    if(!dc) {
-        this._logger.severe("Attempted to tessellate without a valid draw context.");
+    if (!dc) {
+        this._logger.severe('Attempted to tessellate without a valid draw context.');
     }
 
     this.currentTiles.clear();
@@ -212,7 +212,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
 
     //this._logger.fine("Number of top level tiles: " + this.topLevels.length);
 
-    for(var i = 0; i < this.topLevels.length; i = i + 1) {
+    for (var i = 0; i < this.topLevels.length; i = i + 1) {
         this.selectVisibleTiles(dc, this.topLevels[i]);
     }
 
@@ -220,7 +220,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
 
     //this._logger.fine("Number of current tiles: " + this.currentTiles.length());
 
-    for(var j = 0; j < this.currentTiles.length(); j = j + 1) {
+    for (var j = 0; j < this.currentTiles.length(); j = j + 1) {
         /** @type {lanyard.SectorGeometry} */
         var t = this.currentTiles.at(j);
 
@@ -238,7 +238,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.tessellate = function (
  * @param {lanyard.DrawContext} dc the draw context.
  * @param {lanyard.globes.RectTile} tile the tile.
  */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = function (dc, tile) {
+lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = function(dc, tile) {
 
     /** @type {boolean} */
     var doesIntersectFrustum = tile.getExtent().intersectsFrustum(this.currentFrustum);
@@ -254,7 +254,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
 
         var subtiles = tile.split(dc, tile);
 
-        for(var i = 1; i < subtiles.length; i = i + 1) {
+        for (var i = 1; i < subtiles.length; i = i + 1) {
             this.selectVisibleTiles(dc, subtiles[i]);
         }
 
@@ -274,10 +274,10 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
  * @param {lanyard.globes.RectTile} tile the tile.
  * @return {boolean} if we should split or not.
  */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function (dc, tile) {
+lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function(dc, tile) {
 
-    if(!tile || !(tile.getSector())) {
-        this._logger.error("Attempted to perform a split check on an invalid tile.");
+    if (!tile || !(tile.getSector())) {
+        this._logger.error('Attempted to perform a split check on an invalid tile.');
     } else {
     //    this._logger.fine("Split check with sector: " + tile.getSector().toString());
     }
@@ -312,7 +312,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
     /** @type {number} */
     var d5 = view.getEyePoint().distanceTo(centerPoint);
 
-    //this._logger.fine("d1/min = " + d1 + "; d2 = " + d2 + "; d3 = " + d3 + 
+    //this._logger.fine("d1/min = " + d1 + "; d2 = " + d2 + "; d3 = " + d3 +
     //  "; d4 = " + d4 + "; d5 = " + d5);
 
     /** @type {number} */
@@ -354,7 +354,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function 
  *
  * @return {string} this tessellator as a string.
  */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.toString = function () {
+lanyard.globes.EllipsoidRectangularTessellator.prototype.toString = function() {
     /** @type {number} */
     var density = 5;
 
@@ -365,7 +365,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.toString = function () 
     var indices = lanyard.globes.RectTile.prototype.getIndices(density);
 
     /** @type {string} */
-    var ret = "";
+    var ret = '';
 
     /** @type {number} */
     var i;
@@ -373,7 +373,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.toString = function () 
         /** @type {number} */
         var index = indices[i];
 
-        ret += index + ": " + tcs[2 * index] + ", " + tcs[2 * index + 1];
+        ret += index + ': ' + tcs[2 * index] + ', ' + tcs[2 * index + 1];
     }
 
     return ret;

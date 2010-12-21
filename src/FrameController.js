@@ -32,27 +32,27 @@ goog.provide('lanyard.FrameController');
  *
  * @interface
  */
-lanyard.FrameController = function () {};
+lanyard.FrameController = function() {};
 
 /**
  * Initialize the frame.
  *
  * @param {lanyard.DrawContext} dc the context where the frame is located.
  */
-lanyard.FrameController.prototype.initializeFrame = function (dc) {};
+lanyard.FrameController.prototype.initializeFrame = function(dc) {};
 
 /**
  * Draw the frame.
  *
  * @param {lanyard.DrawContext} dc the context where the frame is located.
  */
-lanyard.FrameController.prototype.drawFrame = function (dc) {};
+lanyard.FrameController.prototype.drawFrame = function(dc) {};
 
 /**
  * Finalize the frame.
  *
  * @param {lanyard.DrawContext} dc the context where the frame is located.
  */
-lanyard.FrameController.prototype.finalizeFrame = function (dc) {};
+lanyard.FrameController.prototype.finalizeFrame = function(dc) {};
 
 /* EOF */

@@ -32,7 +32,7 @@ goog.provide('lanyard.OrderedRenderable');
  *
  * @interface
  */
-lanyard.OrderedRenderable = function () {};
+lanyard.OrderedRenderable = function() {};
 
 /**
  * Causes this OrderedRenderable to render itself using the DrawContext provided. The
@@ -41,13 +41,13 @@ lanyard.OrderedRenderable = function () {};
  *
  * @param {lanyard.DrawContext} dc the DrawContext to be used.
  */
-lanyard.OrderedRenderable.prototype.render = function (dc) {};
+lanyard.OrderedRenderable.prototype.render = function(dc) {};
 
 /**
  * Get this distance from this renderable to the eye.
  *
  * @return {number} the distance from the eye.
  */
-lanyard.OrderedRenderable.prototype.getDistanceFromEye = function () {};
+lanyard.OrderedRenderable.prototype.getDistanceFromEye = function() {};
 
 /* EOF */

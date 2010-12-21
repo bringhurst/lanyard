@@ -33,21 +33,21 @@ goog.provide('lanyard.SectorGeometry');
  * @interface
  * @implements {lanyard.Renderable}
  */
-lanyard.SectorGeometry = function () {};
+lanyard.SectorGeometry = function() {};
 
 /**
  * Extent accessor.
  *
  * @return {lanyard.geom.Extent} the extent geometry.
  */
-lanyard.SectorGeometry.prototype.getExtent = function () {};
+lanyard.SectorGeometry.prototype.getExtent = function() {};
 
 /**
  * Sector accessor.
  *
  * @return {lanyard.geom.Sector} the sector geometry.
  */
-lanyard.SectorGeometry.prototype.getSector = function () {};
+lanyard.SectorGeometry.prototype.getSector = function() {};
 
 /**
  * Obtain the surface point at the specified location.
@@ -57,7 +57,7 @@ lanyard.SectorGeometry.prototype.getSector = function () {};
  * @param {number} metersOffset the meters offset.
  * @return {lanyard.geom.Point} the surface point.
  */
-lanyard.SectorGeometry.prototype.getSurfacePoint = function (latitude, longitude, metersOffset) {};
+lanyard.SectorGeometry.prototype.getSurfacePoint = function(latitude, longitude, metersOffset) {};
 
 /**
  * Render the wireframe.
@@ -66,20 +66,20 @@ lanyard.SectorGeometry.prototype.getSurfacePoint = function (latitude, longitude
  * @param {boolean} interior render the interior wireframe.
  * @param {boolean} exterior render the exterior wireframe.
  */
-lanyard.SectorGeometry.prototype.renderWireframe = function (dc, interior, exterior) {};
+lanyard.SectorGeometry.prototype.renderWireframe = function(dc, interior, exterior) {};
 
 /**
  * Render the bounding volume.
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.SectorGeometry.prototype.renderBoundingVolume = function (dc) {};
+lanyard.SectorGeometry.prototype.renderBoundingVolume = function(dc) {};
 
 /**
  * Render this sector geometry using multiple texture units.
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.SectorGeometry.prototype.render = function (dc) {};
+lanyard.SectorGeometry.prototype.render = function(dc) {};
 
 /* EOF */

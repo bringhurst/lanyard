@@ -34,11 +34,11 @@ goog.provide('lanyard.LevelSet');
  * @param {Array.<*>} params the array of params for this level set.
  * @param {lanyard.LevelSet} source another level set to copy.
  */
-lanyard.LevelSet = function (params, source) {
+lanyard.LevelSet = function(params, source) {
     /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.LevelSet');
 
-    if(!(params ? !source : source)) {
-        this._logger.severe("A level set may be created or copied, but not both at the same time.");
+    if (!(params ? !source : source)) {
+        this._logger.severe('A level set may be created or copied, but not both at the same time.');
     }
 
     /** @type {lanyard.geom.Sector} */
@@ -53,7 +53,7 @@ lanyard.LevelSet = function (params, source) {
     /** @type {Array.<lanyard.Level>} */
     this.levels = [];
 
-    if(params) {
+    if (params) {
         /** @type {lanyard.geom.LatLon} */
         this.levelZeroTileDelta = params.levelZeroTileDelta;
 
@@ -61,7 +61,7 @@ lanyard.LevelSet = function (params, source) {
         this.sector = params.sector;
 
         for (var i = 0; i < params.numLevels; i = i + 1) {
-            params.levelName = i < params.numEmptyLevels ? "" : parseInt(i - params.numEmptyLevels, 10);
+            params.levelName = i < params.numEmptyLevels ? '' : parseInt(i - params.numEmptyLevels, 10);
             params.levelNumber = i;
 
             /** @type {lanyard.geom.Angle} */
@@ -86,13 +86,13 @@ lanyard.LevelSet = function (params, source) {
         this.sector = source.sector;
         this.numLevelZeroColumns = source.numLevelZeroColumns;
 
-        for(var j = 0; j < source.levels.length; j = j + 1) {
+        for (var j = 0; j < source.levels.length; j = j + 1) {
             // Levels are final, so it's safe to copy references.
             this.levels.push(source.levels[j]);
         }
 
     } else {
-        this._logger.severe("Invalid params were specified for a new level set.");
+        this._logger.severe('Invalid params were specified for a new level set.');
     }
 };
 
@@ -101,7 +101,7 @@ lanyard.LevelSet = function (params, source) {
  *
  * @return {lanyard.geom.Sector} the sector for this level set.
  */
-lanyard.LevelSet.prototype.getSector = function () {
+lanyard.LevelSet.prototype.getSector = function() {
     return this.sector;
 };
 
@@ -110,7 +110,7 @@ lanyard.LevelSet.prototype.getSector = function () {
  *
  * @return {lanyard.geom.LatLon} the level zero tile delta.
  */
-lanyard.LevelSet.prototype.getLevelZeroTileDelta = function () {
+lanyard.LevelSet.prototype.getLevelZeroTileDelta = function() {
     return this.levelZeroTileDelta;
 };
 
@@ -119,7 +119,7 @@ lanyard.LevelSet.prototype.getLevelZeroTileDelta = function () {
  *
  * @return {Array.<lanyard.Level>} the current levels.
  */
-lanyard.LevelSet.prototype.getLevels = function () {
+lanyard.LevelSet.prototype.getLevels = function() {
     return this.levels;
 };
 
@@ -129,7 +129,7 @@ lanyard.LevelSet.prototype.getLevels = function () {
  * @param {number} levelNumber the specified level number.
  * @return {lanyard.Level} the level at the specified level number.
  */
-lanyard.LevelSet.prototype.getLevel = function (levelNumber) {
+lanyard.LevelSet.prototype.getLevel = function(levelNumber) {
     return (levelNumber >= 0 && levelNumber < this.levels.length) ? this.levels[levelNumber] : null;
 };
 
@@ -138,7 +138,7 @@ lanyard.LevelSet.prototype.getLevel = function (levelNumber) {
  *
  * @return {number} the number of levels in this level set.
  */
-lanyard.LevelSet.prototype.getNumLevels = function () {
+lanyard.LevelSet.prototype.getNumLevels = function() {
     return this.levels.length;
 };
 
@@ -147,7 +147,7 @@ lanyard.LevelSet.prototype.getNumLevels = function () {
  *
  * @return {lanyard.Level} the first level in the level set.
  */
-lanyard.LevelSet.prototype.getFirstLevel = function () {
+lanyard.LevelSet.prototype.getFirstLevel = function() {
     return this.getLevel(0);
 };
 
@@ -156,7 +156,7 @@ lanyard.LevelSet.prototype.getFirstLevel = function () {
  *
  * @return {lanyard.Level} the last level in this level set.
  */
-lanyard.LevelSet.prototype.getLastLevel = function () {
+lanyard.LevelSet.prototype.getLastLevel = function() {
     return this.getLevel(this.getNumLevels() - 1);
 };
 
@@ -166,7 +166,7 @@ lanyard.LevelSet.prototype.getLastLevel = function () {
  * @param {number} levelNum the specified level.
  * @return {boolean} true if it's the last level, false otherwise.
  */
-lanyard.LevelSet.prototype.isFinalLevel = function (levelNum) {
+lanyard.LevelSet.prototype.isFinalLevel = function(levelNum) {
     return (levelNum === this.getNumLevels() - 1);
 };
 
@@ -176,7 +176,7 @@ lanyard.LevelSet.prototype.isFinalLevel = function (levelNum) {
  * @param {number} levelNumber the level number to check.
  * @return {boolean} true if the level is empty, false otherwise.
  */
-lanyard.LevelSet.prototype.isLevelEmpty = function (levelNumber) {
+lanyard.LevelSet.prototype.isLevelEmpty = function(levelNumber) {
     return this.levels[levelNumber].isEmpty();
 };
 
@@ -186,7 +186,7 @@ lanyard.LevelSet.prototype.isLevelEmpty = function (levelNumber) {
  * @param {lanyard.Level} level the level to check.
  * @return {number} the number of columns in the specified level.
  */
-lanyard.LevelSet.prototype.numColumnsInLevel = function (level) {
+lanyard.LevelSet.prototype.numColumnsInLevel = function(level) {
     /** @type {number} */
     var levelDelta = level.getLevelNumber() - this.getFirstLevel().getLevelNumber();
 
@@ -202,7 +202,7 @@ lanyard.LevelSet.prototype.numColumnsInLevel = function (level) {
  * @param {lanyard.Tile} the tile to check.
  * @return {number} the number of the specified tile.
  */
-lanyard.LevelSet.prototype.getTileNumber = function (tile) {
+lanyard.LevelSet.prototype.getTileNumber = function(tile) {
     return tile.getRow() * this.numColumnsInLevel(tile.getLevel()) + tile.getColumn();
 };
 
@@ -211,9 +211,9 @@ lanyard.LevelSet.prototype.getTileNumber = function (tile) {
  *
  * @param {lanyard.LevelSet} tile The tile to mark as having an absent resource.
  */
-lanyard.LevelSet.prototype.markResourceAbsent = function (tile) {
+lanyard.LevelSet.prototype.markResourceAbsent = function(tile) {
     if (!tile) {
-        this._logger.severe("Attempted to mark an invalid tile as problematic.");
+        this._logger.severe('Attempted to mark an invalid tile as problematic.');
     }
 
     tile.getLevel().markResourceAbsent(this.getTileNumber(tile));
@@ -225,9 +225,9 @@ lanyard.LevelSet.prototype.markResourceAbsent = function (tile) {
  * @param {lanyard.Tile} tile the tile in question.
  * @return {boolean} true if the tile is marked absent, otherwise false.
  */
-lanyard.LevelSet.prototype.isResourceAbsent = function (tile) {
-    if(!tile) {
-        this._logger.severe("Attempted to check absense on an invalid tile.");
+lanyard.LevelSet.prototype.isResourceAbsent = function(tile) {
+    if (!tile) {
+        this._logger.severe('Attempted to check absense on an invalid tile.');
     }
 
     if (tile.getLevel().isEmpty()) {
@@ -245,9 +245,9 @@ lanyard.LevelSet.prototype.isResourceAbsent = function (tile) {
  *
  * @param {lanyard.Tile} tile the tile to unmark.
  */
-lanyard.LevelSet.prototype.unmarkResourceAbsent = function (tile) {
-    if(!tile) {
-        this._logger.severe("Attempted to unmark absence of an invalid tile.");
+lanyard.LevelSet.prototype.unmarkResourceAbsent = function(tile) {
+    if (!tile) {
+        this._logger.severe('Attempted to unmark absence of an invalid tile.');
     }
 
     tile.getLevel().unmarkResourceAbsent(this.getTileNumber(tile));

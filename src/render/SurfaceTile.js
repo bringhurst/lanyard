@@ -32,7 +32,7 @@ goog.provide('lanyard.render.SurfaceTile');
  *
  * @interface
  */
-lanyard.render.SurfaceTile = function () {};
+lanyard.render.SurfaceTile = function() {};
 
 /**
  * Bind the tile to a draw context.
@@ -40,21 +40,21 @@ lanyard.render.SurfaceTile = function () {};
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {boolean} true if the bind was successful, false otherwise.
  */
-lanyard.render.SurfaceTile.prototype.bind = function (dc) {};
+lanyard.render.SurfaceTile.prototype.bind = function(dc) {};
 
 /**
  * Apply the internal transform.
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.render.SurfaceTile.prototype.applyInternalTransform = function (dc) {};
+lanyard.render.SurfaceTile.prototype.applyInternalTransform = function(dc) {};
 
 /**
  * Get the sector of this surface tile.
  *
  * @return {lanyard.geom.Sector} the sector of the surface tile.
  */
-lanyard.render.SurfaceTile.prototype.getSector = function () {};
+lanyard.render.SurfaceTile.prototype.getSector = function() {};
 
 /**
  * Get the extent of this surface tile.
@@ -62,6 +62,6 @@ lanyard.render.SurfaceTile.prototype.getSector = function () {};
  * @param {lanyard.DrawContext} dc the draw context.
  * @return {lanyard.geom.Extent} the extent of this surface tile.
  */
-lanyard.render.SurfaceTile.prototype.getExtent = function (dc) {};
+lanyard.render.SurfaceTile.prototype.getExtent = function(dc) {};
 
 /* EOF */

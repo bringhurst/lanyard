@@ -39,7 +39,7 @@ goog.provide('lanyard.globes.RenderInfo');
  * @param {number} resolution
  * @param {lanyard.globes.RectTile} tile the tile this info is for.
  */
-lanyard.globes.RenderInfo = function (density, vertices, texCoords, refCenter, resolution, tile) {
+lanyard.globes.RenderInfo = function(density, vertices, texCoords, refCenter, resolution, tile) {
     /** @public */ this.density = density;
     /** @public */ this.vertices = vertices;
     /** @public */ this.texCoords = texCoords;

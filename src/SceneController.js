@@ -27,83 +27,83 @@
 
 goog.provide('lanyard.SceneController');
 
+goog.require('lanyard.FrameController');
 goog.require('lanyard.Model');
 goog.require('lanyard.View');
-goog.require('lanyard.FrameController');
 
 /**
  * An interface for scene controllers.
  *
  * @interface
  */
-lanyard.SceneController = function () {};
+lanyard.SceneController = function() {};
 
 /**
  * Accessor for the model.
  *
  * @return {lanyard.Model} the model.
  */
-lanyard.SceneController.prototype.getModel = function () {};
+lanyard.SceneController.prototype.getModel = function() {};
 
 /**
  * Mutator for the model.
  *
  * @param {lanyard.Model} model the model.
  */
-lanyard.SceneController.prototype.setModel = function (model) {};
+lanyard.SceneController.prototype.setModel = function(model) {};
 
 /**
  * Accessor for the view.
  *
  * @return {lanyard.View} the view.
  */
-lanyard.SceneController.prototype.getView = function () {};
+lanyard.SceneController.prototype.getView = function() {};
 
 /**
  * Mutator for the view.
  *
  * @param {lanyard.View} view the view.
  */
-lanyard.SceneController.prototype.setView = function (view) {};
+lanyard.SceneController.prototype.setView = function(view) {};
 
 /**
  * Accessor for the frame controller.
  *
  * @return {lanyard.FrameController} the frame controller.
  */
-lanyard.SceneController.prototype.getFrameController = function () {};
+lanyard.SceneController.prototype.getFrameController = function() {};
 
 /**
  * Mutator for the frame controller.
  *
  * @param {lanyard.FrameController} frameController the new frame controller.
  */
-lanyard.SceneController.prototype.setFrameController = function (frameController) {};
+lanyard.SceneController.prototype.setFrameController = function(frameController) {};
 
 /**
  * Repaint the scene.
  */
-lanyard.SceneController.prototype.repaint = function () {};
+lanyard.SceneController.prototype.repaint = function() {};
 
 /**
  * Set the vertical exaggeration.
  *
  * @param {Number} verticalExaggeration the vertical exaggeration.
  */
-lanyard.SceneController.prototype.setVerticalExaggeration = function (verticalExaggeration) {};
+lanyard.SceneController.prototype.setVerticalExaggeration = function(verticalExaggeration) {};
 
 /**
  * Accessor to the vertical exaggeration.
  *
  * @return {Number} the vertical exaggeration.
  */
-lanyard.SceneController.prototype.getVerticalExaggeration = function () {};
+lanyard.SceneController.prototype.getVerticalExaggeration = function() {};
 
 /**
  * Get the current frames per second.
  *
  * @return {Number} the current frames per second.
  */
-lanyard.SceneController.prototype.getFramesPerSecond = function () {};
+lanyard.SceneController.prototype.getFramesPerSecond = function() {};
 
 /* EOF */

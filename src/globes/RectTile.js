@@ -27,12 +27,12 @@
 
 goog.provide('lanyard.globes.RectTile');
 
-goog.require('lanyard.geom.Point');
-goog.require('lanyard.geom.Angle');
-goog.require('lanyard.globes.RenderInfo');
 goog.require('lanyard.ElevationModel');
-goog.require('lanyard.geom.Position');
 goog.require('lanyard.SectorGeometry');
+goog.require('lanyard.geom.Angle');
+goog.require('lanyard.geom.Point');
+goog.require('lanyard.geom.Position');
+goog.require('lanyard.globes.RenderInfo');
 
 /**
  * A representation of a rectangular tile.
@@ -44,7 +44,7 @@ goog.require('lanyard.SectorGeometry');
  * @implements {lanyard.SectorGeometry}
  * @constructor
  */
-lanyard.globes.RectTile = function (globe, level, density, sector) {
+lanyard.globes.RectTile = function(globe, level, density, sector) {
     /**
      * @private
      */
@@ -73,7 +73,7 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
      * @private
      */
     this._minColorCode = 0;
-    
+
     /**
      * @type {number}
      * @private
@@ -100,10 +100,10 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
      * @type {number}
      * @private
      */
-    this._log10CellSize = Math.log(cellSize) / Math.LN10;;
+    this._log10CellSize = Math.log(cellSize) / Math.LN10;
 
     /**
-     * @type {lanyard.globes.RenderInfo|null}
+     * @type {?lanyard.globes.RenderInfo}
      * @private
      */
     this._ri = null;
@@ -128,7 +128,7 @@ lanyard.globes.RectTile = function (globe, level, density, sector) {
  *
  * @return {number} the log10 cell size.
  */
-lanyard.globes.RectTile.prototype.getLog10CellSize = function () {
+lanyard.globes.RectTile.prototype.getLog10CellSize = function() {
     return this._log10CellSize;
 };
 
@@ -137,7 +137,7 @@ lanyard.globes.RectTile.prototype.getLog10CellSize = function () {
  *
  * @return {lanyard.geom.Sector} the current sector.
  */
-lanyard.globes.RectTile.prototype.getSector = function () {
+lanyard.globes.RectTile.prototype.getSector = function() {
     return this._sector;
 };
 
@@ -146,7 +146,7 @@ lanyard.globes.RectTile.prototype.getSector = function () {
  *
  * @return {lanyard.geom.Extent} the current extent.
  */
-lanyard.globes.RectTile.prototype.getExtent = function () {
+lanyard.globes.RectTile.prototype.getExtent = function() {
     return this._extent;
 };
 
@@ -157,7 +157,7 @@ lanyard.globes.RectTile.prototype.getExtent = function () {
  * @param {lanyard.globes.RectTile} tile the tile to split.
  * @return {Array.<lanyard.globes.RectTile>} the split tiles.
  */
-lanyard.globes.RectTile.prototype.split = function (dc, tile) {
+lanyard.globes.RectTile.prototype.split = function(dc, tile) {
     /** @type {Array.<lanyard.geom.Sector>} */
     var sectors = this._sector.subdivide();
 
@@ -176,7 +176,7 @@ lanyard.globes.RectTile.prototype.split = function (dc, tile) {
  *
  * @param {lanyard.DrawContext} dc the drawcontext.
  */
-lanyard.globes.RectTile.prototype.makeVerts = function (dc) {
+lanyard.globes.RectTile.prototype.makeVerts = function(dc) {
     //this._logger.fine("Make verts called.");
 
     // FIXME
@@ -202,7 +202,7 @@ lanyard.globes.RectTile.prototype.makeVerts = function (dc) {
  * @param {boolean} makeSkirts should we make skirts to hide tile edges.
  * @return {lanyard.globes.RenderInfo} the render info.
  */
-lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution, makeSkirts) {
+lanyard.globes.RectTile.prototype.buildVerts = function(dc, density, resolution, makeSkirts) {
     /** @type {number} */
     var numVertices = (density + 3) * (density + 3);
 
@@ -268,7 +268,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
     /** @type {number} */
     var j;
     for (j = 0; j <= density + 2; j = j + 1) {
-        /** @type {number} */ 
+        /** @type {number} */
         var cosLat = Math.cos(lat);
 
         /** @type {number} */
@@ -344,7 +344,7 @@ lanyard.globes.RectTile.prototype.buildVerts = function (dc, density, resolution
  * @param {number} numTextureUnits the number of texture units available.
  * @return {number} the number of triangles rendered.
  */
-lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
+lanyard.globes.RectTile.prototype.render = function(dc, numTextureUnits) {
     //this._logger.fine("Render was called.");
 
     /** @type {Array.<number>} */
@@ -354,7 +354,7 @@ lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
 
     dc.getView().pushModelViewReferenceCenter(dc, this._ri.referenceCenter);
 
-    if(!this.posBuffer) {
+    if (!this.posBuffer) {
         this.posBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.vertices), gl.STATIC_DRAW);
@@ -362,13 +362,13 @@ lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
     }
 
-    gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
-    gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+    gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation('aVertexPosition'));
+    gl.vertexAttribPointer(dc.getGLSL().getAttribLocation('aVertexPosition'),
         3, gl.FLOAT, false, 0, 0);
 
     //FIXME: support more than one texture unit
 
-    if(!this.texBuffer) {
+    if (!this.texBuffer) {
         this.texBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.texCoords), gl.STATIC_DRAW);
@@ -376,11 +376,11 @@ lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texBuffer);
     }
 
-    gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aTextureCoord0"));
-    gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aTextureCoord0"),
-        2, gl.FLOAT, false, 0, 0)
+    gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation('aTextureCoord0'));
+    gl.vertexAttribPointer(dc.getGLSL().getAttribLocation('aTextureCoord0'),
+        2, gl.FLOAT, false, 0, 0);
 
-    if(!this.idxBuffer) {
+    if (!this.idxBuffer) {
         this.idxBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.idxBuffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
@@ -401,7 +401,7 @@ lanyard.globes.RectTile.prototype.render = function (dc, numTextureUnits) {
  * @param {boolean} showTriangles show the individual triangles.
  * @param {boolean} showTileBoundary show the boundaries of the tiles.
  */
-lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles, showTileBoundary) {
+lanyard.globes.RectTile.prototype.renderWireframe = function(dc, showTriangles, showTileBoundary) {
     /** @type {Array.<number>} */
     var indices = this.getIndices(this._ri.density);
 
@@ -415,8 +415,8 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
         gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._ri.vertices), gl.STATIC_DRAW);
 
-        gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation("aVertexPosition"));
-        gl.vertexAttribPointer(dc.getGLSL().getAttribLocation("aVertexPosition"),
+        gl.enableVertexAttribArray(dc.getGLSL().getAttribLocation('aVertexPosition'));
+        gl.vertexAttribPointer(dc.getGLSL().getAttribLocation('aVertexPosition'),
             3, gl.FLOAT, false, 0, 0);
 
         var idxBuffer = gl.createBuffer();
@@ -443,7 +443,7 @@ lanyard.globes.RectTile.prototype.renderWireframe = function (dc, showTriangles,
  * @param {lanyard.DrawContext} dc the draw context.
  * @param {WebGLRenderingContext} gl the webgl context.
  */
-lanyard.globes.RectTile.prototype.renderPatchBoundary = function (dc, gl) {
+lanyard.globes.RectTile.prototype.renderPatchBoundary = function(dc, gl) {
 /**************
     // TODO: Currently only works if called from renderWireframe because no state is set here.
     // TODO: Draw the boundary using the vertices along the boundary rather than just at the corners.
@@ -464,7 +464,7 @@ lanyard.globes.RectTile.prototype.renderPatchBoundary = function (dc, gl) {
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
-lanyard.globes.RectTile.prototype.renderBoundingVolume = function (dc) {
+lanyard.globes.RectTile.prototype.renderBoundingVolume = function(dc) {
     this.getExtent().render(dc);
 };
 
@@ -475,7 +475,7 @@ lanyard.globes.RectTile.prototype.renderBoundingVolume = function (dc) {
  * @param {lanyard.DrawContext} dc the draw context.
  * @param {lanyard.globes.RenderInfo} ri the renderinfo.
  */
-lanyard.globes.RectTile.prototype.renderTrianglesWithUniqueColors = function (dc, ri) {
+lanyard.globes.RectTile.prototype.renderTrianglesWithUniqueColors = function(dc, ri) {
 /****************
     var gl = dc.getGL();
 
@@ -522,7 +522,7 @@ lanyard.globes.RectTile.prototype.renderTrianglesWithUniqueColors = function (dc
  * @param {number} metersOffset the meters offset.
  * @return {lanyard.geom.Point} the surface point.
  */
-lanyard.globes.RectTile.prototype.getSurfacePoint = function (latitude, longitude, metersOffset) {
+lanyard.globes.RectTile.prototype.getSurfacePoint = function(latitude, longitude, metersOffset) {
 
     if (!this._sector.contains(latitude, longitude)) {
         // not on this geometry
@@ -588,7 +588,7 @@ lanyard.globes.RectTile.prototype.getSurfacePoint = function (latitude, longitud
  * @param {number} metersOffset the magnitude of the offset.
  * @return {lanyard.geom.Point} point offset along its surface normal as if it were on globe.
  */
-lanyard.globes.RectTile.prototype.applyOffset = function (globe, point, metersOffset) {
+lanyard.globes.RectTile.prototype.applyOffset = function(globe, point, metersOffset) {
     /** @type {lanyard.geom.Point} */
     var normal = globe.computeSurfaceNormalAtPoint(point);
     point = lanyard.geom.Point.prototype.fromOriginAndDirection(metersOffset, normal, point);
@@ -606,7 +606,7 @@ lanyard.globes.RectTile.prototype.applyOffset = function (globe, point, metersOf
  * @return {number} a decimal ranged [0,1] representing the position between two columns or rows,
  *     rather than between two edges of the sector.
  */
-lanyard.globes.RectTile.prototype.createPosition = function (start, decimal, density) {
+lanyard.globes.RectTile.prototype.createPosition = function(start, decimal, density) {
     /** @type {number} */
     var l = start / density;
 
@@ -629,7 +629,7 @@ lanyard.globes.RectTile.prototype.createPosition = function (start, decimal, den
  * @return {lanyard.geom.Point} a Point geometrically within or on the boundary of the
  *     quadrilateral whose bottom left corner is indexed by (row, column).
  */
-lanyard.globes.RectTile.prototype.interpolate = function (row, column, xDec, yDec, ri) {
+lanyard.globes.RectTile.prototype.interpolate = function(row, column, xDec, yDec, ri) {
     row++;
     column++;
 
@@ -678,7 +678,7 @@ lanyard.globes.RectTile.prototype.interpolate = function (row, column, xDec, yDe
  * @param {number} yDec how far along, [0,1] 0 = bottom edge, 1 = top edge.
  * @return {lanyard.geom.Point} the point xDec, yDec in the co-ordinate system defined by bL, bR, tR, tL.
  */
-lanyard.globes.RectTile.prototype.interpolateTriangles = function (bL, bR, tR, tL, xDec, yDec) {
+lanyard.globes.RectTile.prototype.interpolateTriangles = function(bL, bR, tR, tL, xDec, yDec) {
     /** @type {number} */
     var pos = xDec + yDec;
 
@@ -716,8 +716,8 @@ lanyard.globes.RectTile.prototype.interpolateTriangles = function (bL, bR, tR, t
  *
  * @return {string} this RectTile, as a string.
  */
-lanyard.globes.RectTile.prototype.toString = function () {
-    return "level " + this._level + ", density " + this._density + ", sector " + this._sector;
+lanyard.globes.RectTile.prototype.toString = function() {
+    return 'level ' + this._level + ', density ' + this._density + ', sector ' + this._sector;
 };
 
 /**
@@ -726,7 +726,7 @@ lanyard.globes.RectTile.prototype.toString = function () {
  * @param {number} density
  * @return {Array.<number>}
  */
-lanyard.globes.RectTile.prototype.getParameterization = function (density) {
+lanyard.globes.RectTile.prototype.getParameterization = function(density) {
     if (density < 1) {
         density = 1;
     }
@@ -737,7 +737,7 @@ lanyard.globes.RectTile.prototype.getParameterization = function (density) {
     var one = 0.999999;
 
 
-    if(this && this._parameterizations && this._parameterizations.density) {
+    if (this && this._parameterizations && this._parameterizations.density) {
         return this._parameterizations.density;
     }
 
@@ -820,7 +820,7 @@ lanyard.globes.RectTile.prototype.getParameterization = function (density) {
         p[k++] = p[kk++];
     }
 
-    if(this._parameterizations) {
+    if (this._parameterizations) {
         this._parameterizations.density = p;
     }
 
@@ -833,13 +833,13 @@ lanyard.globes.RectTile.prototype.getParameterization = function (density) {
  * @param {number} density the density.
  * @return {Array.<number>} the indices.
  */
-lanyard.globes.RectTile.prototype.getIndices = function (density) {
+lanyard.globes.RectTile.prototype.getIndices = function(density) {
     if (density < 1) {
         density = 1;
     }
 
     // return a pre-computed buffer if possible.
-    if(this._indexLists && this._indexLists.density) {
+    if (this._indexLists && this._indexLists.density) {
         return this._indexLists.density;
     }
 
@@ -888,7 +888,7 @@ lanyard.globes.RectTile.prototype.getIndices = function (density) {
         }
     }
 
-    if(this._indexLists) {
+    if (this._indexLists) {
         this._indexLists.density = buffer;
     }
 

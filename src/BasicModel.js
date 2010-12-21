@@ -27,8 +27,8 @@
 
 goog.provide('lanyard.BasicModel');
 
-goog.require('lanyard.globes.EllipsoidRectangularTessellator');
 goog.require('lanyard.globes.Earth');
+goog.require('lanyard.globes.EllipsoidRectangularTessellator');
 
 /**
  * A model implementation.
@@ -36,7 +36,7 @@ goog.require('lanyard.globes.Earth');
  * @constructor
  * @implements {lanyard.Model}
  */
-lanyard.BasicModel = function () {
+lanyard.BasicModel = function() {
     /**
      * @private
      * @type {lanyard.Globe}
@@ -52,7 +52,7 @@ lanyard.BasicModel = function () {
     /**
      * @private
      * @type {Array.<lanyard.Layer>}
-     */   
+     */
     this.layers = [];
 
     /**
@@ -82,7 +82,7 @@ lanyard.BasicModel = function () {
  *
  * @private
  */
-lanyard.BasicModel.prototype.createLayers = function () {
+lanyard.BasicModel.prototype.createLayers = function() {
     /** @type {Array.<lanyard.Layer>} */
     var layers = [
         /* A plain blue marble layer. */
@@ -97,7 +97,7 @@ lanyard.BasicModel.prototype.createLayers = function () {
  *
  * @param {lanyard.Globe} globe the new globe for this model.
  */
-lanyard.BasicModel.prototype.setGlobe = function (globe) {
+lanyard.BasicModel.prototype.setGlobe = function(globe) {
     this.globe = globe;
 };
 
@@ -106,7 +106,7 @@ lanyard.BasicModel.prototype.setGlobe = function (globe) {
  *
  * @param {Array.<lanyard.Layer>} layers the new layer list to replace the current one.
  */
-lanyard.BasicModel.prototype.setLayers = function (layers) {
+lanyard.BasicModel.prototype.setLayers = function(layers) {
     this.layers = layers;
 };
 
@@ -115,7 +115,7 @@ lanyard.BasicModel.prototype.setLayers = function (layers) {
  *
  * @return {lanyard.Globe} the globe used in this model.
  */
-lanyard.BasicModel.prototype.getGlobe = function () {
+lanyard.BasicModel.prototype.getGlobe = function() {
     return this.globe;
 };
 
@@ -124,7 +124,7 @@ lanyard.BasicModel.prototype.getGlobe = function () {
  *
  * @return {Array.<lanyard.Layer>} the current layer list used for this model.
  */
-lanyard.BasicModel.prototype.getLayers = function () {
+lanyard.BasicModel.prototype.getLayers = function() {
     return this.layers;
 };
 
@@ -134,7 +134,7 @@ lanyard.BasicModel.prototype.getLayers = function () {
  *
  * @return {lanyard.Tessellator} the tessellator currently used for this model.
  */
-lanyard.BasicModel.prototype.getTessellator = function () {
+lanyard.BasicModel.prototype.getTessellator = function() {
     if (!this.tessellator && this.globe) {
         this.tessellator = new lanyard.globes.EllipsoidRectangularTessellator(this.globe);
     }
@@ -147,7 +147,7 @@ lanyard.BasicModel.prototype.getTessellator = function () {
  *
  * @param {lanyard.Tessellator} tessellator the new tessellator for this model to use.
  */
-lanyard.BasicModel.prototype.setTessellator = function (tessellator) {
+lanyard.BasicModel.prototype.setTessellator = function(tessellator) {
     this.tessellator = tessellator;
 };
 
@@ -156,7 +156,7 @@ lanyard.BasicModel.prototype.setTessellator = function (tessellator) {
  *
  * @param {boolean} show true if the wireframe interior should be drawn, false otherwise.
  */
-lanyard.BasicModel.prototype.setShowWireframeInterior = function (show) {
+lanyard.BasicModel.prototype.setShowWireframeInterior = function(show) {
     this.showWireframeInterior = show;
 };
 
@@ -165,7 +165,7 @@ lanyard.BasicModel.prototype.setShowWireframeInterior = function (show) {
  *
  * @param {boolean} show true if the wireframe exterior should be drawn, false otherwise.
  */
-lanyard.BasicModel.prototype.setShowWireframeExterior = function (show) {
+lanyard.BasicModel.prototype.setShowWireframeExterior = function(show) {
     this.showWireframeExterior = show;
 };
 
@@ -174,7 +174,7 @@ lanyard.BasicModel.prototype.setShowWireframeExterior = function (show) {
  *
  * @return {boolean} true if the wireframe interior is to be drawn, false otherwise.
  */
-lanyard.BasicModel.prototype.isShowWireframeInterior = function () {
+lanyard.BasicModel.prototype.isShowWireframeInterior = function() {
     return this.showWireframeInterior;
 };
 
@@ -183,7 +183,7 @@ lanyard.BasicModel.prototype.isShowWireframeInterior = function () {
  *
  * @return {boolean} true if the wireframe exterior is to be drawn, false otherwise.
  */
-lanyard.BasicModel.prototype.isShowWireframeExterior = function () {
+lanyard.BasicModel.prototype.isShowWireframeExterior = function() {
     return this.showWireframeExterior;
 };
 
@@ -192,7 +192,7 @@ lanyard.BasicModel.prototype.isShowWireframeExterior = function () {
  *
  * @return {boolean} true if the tessellation bounding volume should be drawn, false otherwise.
  */
-lanyard.BasicModel.prototype.isShowTessellationBoundingVolumes = function () {
+lanyard.BasicModel.prototype.isShowTessellationBoundingVolumes = function() {
     return this.showTessellationBoundingVolumes;
 };
 
@@ -201,7 +201,7 @@ lanyard.BasicModel.prototype.isShowTessellationBoundingVolumes = function () {
  *
  * @param {boolean} showTessellationBoundingVolumes true if it should be drawn, false otherwise.
  */
-lanyard.BasicModel.prototype.setShowTessellationBoundingVolumes = function (showTessellationBoundingVolumes) {
+lanyard.BasicModel.prototype.setShowTessellationBoundingVolumes = function(showTessellationBoundingVolumes) {
     this.showTessellationBoundingVolumes = showTessellationBoundingVolumes;
 };
 
@@ -210,7 +210,7 @@ lanyard.BasicModel.prototype.setShowTessellationBoundingVolumes = function (show
  *
  * @return {lanyard.geom.Extent} the extent of the model contents.
  */
-lanyard.BasicModel.prototype.getExtent = function () {
+lanyard.BasicModel.prototype.getExtent = function() {
     // See if the layers have it.
     /** @type {Array.<lanyard.Layer>} */
     var layers = this.getLayers();
@@ -218,12 +218,12 @@ lanyard.BasicModel.prototype.getExtent = function () {
     if (layers) {
         /** @type {number} */
         var i;
-        for(i = 0; i < layers.length; i = i + 1) {
+        for (i = 0; i < layers.length; i = i + 1) {
             /** @type {lanyard.Layer} */
             var l = layers[i];
 
-            if(typeof l.getExtent === "function") {
-                /** @type {lanyard.geom.Extent|null} */
+            if (typeof l.getExtent === 'function') {
+                /** @type {?lanyard.geom.Extent} */
                 var e = l.getExtent();
 
                 if (e) {
@@ -237,7 +237,7 @@ lanyard.BasicModel.prototype.getExtent = function () {
     /** @type {lanyard.Globe} */
     var globe = this.getGlobe();
     if (globe) {
-        /** @type {lanyard.geom.Extent|null} */
+        /** @type {?lanyard.geom.Extent} */
         var ge = globe.getExtent();
         if (ge) {
             return ge;

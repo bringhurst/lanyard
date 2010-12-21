@@ -32,7 +32,7 @@ goog.provide('lanyard.util.Stack');
  *
  * @constructor
  */
-lanyard.util.Stack = function () {
+lanyard.util.Stack = function() {
     /**
      * @private
      * @type {Array.<Object>}
@@ -45,8 +45,8 @@ lanyard.util.Stack = function () {
  *
  * @return {boolean} true if the stack is empty, false otherwise.
  */
-lanyard.util.Stack.prototype.empty = function () {
-    if(!this.contents) {
+lanyard.util.Stack.prototype.empty = function() {
+    if (!this.contents) {
         return true;
     }
     return (this.contents.length === 0) ? true : false;
@@ -57,8 +57,8 @@ lanyard.util.Stack.prototype.empty = function () {
  *
  * @return {Object} the object on the top of the stack.
  */
-lanyard.util.Stack.prototype.peek = function () {
-    if(!this.contents || this.contents.length < 1) {
+lanyard.util.Stack.prototype.peek = function() {
+    if (!this.contents || this.contents.length < 1) {
         return null;
     }
     return this.contents[this.contents.length - 1];
@@ -69,7 +69,7 @@ lanyard.util.Stack.prototype.peek = function () {
  *
  * @return {Object} the object that was on the top of the stack.
  */
-lanyard.util.Stack.prototype.pop = function () {
+lanyard.util.Stack.prototype.pop = function() {
     return this.contents ? this.contents.pop() : null;
 };
 
@@ -78,8 +78,8 @@ lanyard.util.Stack.prototype.pop = function () {
  *
  * @param {Object} item the item to be placed on the top of the stack.
  */
-lanyard.util.Stack.prototype.push = function (item) {
-    if(!this.contents) {
+lanyard.util.Stack.prototype.push = function(item) {
+    if (!this.contents) {
         this.contents = [item];
     } else {
         this.contents.push(item);

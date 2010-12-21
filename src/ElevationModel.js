@@ -52,21 +52,21 @@ goog.require('lanyard.geom.Angle');
  *
  * @interface
  */
-lanyard.ElevationModel = function () {};
+lanyard.ElevationModel = function() {};
 
 /**
  * Determine if this elevation model is enabled or not.
  *
  * @return {boolean} if this elevation model is enabled or not.
  */
-lanyard.ElevationModel.prototype.isEnabled = function () {};
+lanyard.ElevationModel.prototype.isEnabled = function() {};
 
 /**
  * Set the enabled state of this elevation model.
  *
  * @param {boolean} enable if this elevation model is enabled or not.
  */
-lanyard.ElevationModel.prototype.setEnabled = function (enable) {};
+lanyard.ElevationModel.prototype.setEnabled = function(enable) {};
 
 /**
  * Returns the maximum elevation contained in the elevation model.
@@ -74,7 +74,7 @@ lanyard.ElevationModel.prototype.setEnabled = function (enable) {};
  *
  * @return {number} the maximum elevation of the model.
  */
-lanyard.ElevationModel.prototype.getMaximumElevation = function () {};
+lanyard.ElevationModel.prototype.getMaximumElevation = function() {};
 
 /**
  * Returns the minimum elevation contained in the elevation model.
@@ -84,7 +84,7 @@ lanyard.ElevationModel.prototype.getMaximumElevation = function () {};
  *
  * @return {number} the minimum elevation of the model.
  */
-lanyard.ElevationModel.prototype.getMinimumElevation = function () {};
+lanyard.ElevationModel.prototype.getMinimumElevation = function() {};
 
 /**
  * Computes and returns an Elevations object for the specified Sector
@@ -103,7 +103,7 @@ lanyard.ElevationModel.prototype.getMinimumElevation = function () {};
  * @param {number} resolution a value interpreted in a class-specific way by implementing classes.
  * @return {lanyard.Elevations} an object representing the elevations for the specified sector.
  */
-lanyard.ElevationModel.prototype.getElevations = function (sector, resolution) {};
+lanyard.ElevationModel.prototype.getElevations = function(sector, resolution) {};
 
 /**
  * Returns the resolution appropriate to the given Sector and view parameters.
@@ -118,7 +118,7 @@ lanyard.ElevationModel.prototype.getElevations = function (sector, resolution) {
  * @param {lanyard.geom.Sector} sector the Sector to compute the target resolution for.
  * @return {number} he appropriate resolution for the sector and draw context values.
  */
-lanyard.ElevationModel.prototype.getTargetResolution = function (dc, sector, density) {};
+lanyard.ElevationModel.prototype.getTargetResolution = function(dc, sector, density) {};
 
 /**
  * Find the elevation of the specified coordinate.
@@ -127,6 +127,6 @@ lanyard.ElevationModel.prototype.getTargetResolution = function (dc, sector, den
  * @param {lanyard.geom.Angle} longitude the longitude of the coordinate.
  * @return {number} the elevation at the specified coordinate.
  */
-lanyard.ElevationModel.prototype.getElevation = function (latitude, longitude) {};
+lanyard.ElevationModel.prototype.getElevation = function(latitude, longitude) {};
 
 /* EOF */

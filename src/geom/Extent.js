@@ -27,46 +27,46 @@
 
 goog.provide('lanyard.geom.Extent');
 
-goog.require('lanyard.geom.Point');
-goog.require('lanyard.geom.Plane');
 goog.require('lanyard.geom.Frustum');
-goog.require('lanyard.geom.Line')
 goog.require('lanyard.geom.Intersection');
+goog.require('lanyard.geom.Line');
+goog.require('lanyard.geom.Plane');
+goog.require('lanyard.geom.Point');
 
 /**
  * An extent interface.
  *
  * @interface
  */
-lanyard.geom.Extent = function () {};
+lanyard.geom.Extent = function() {};
 
 /**
  * Render this extent.
  *
  * @param {lanyard.DrawContext} dc the draw context to render to.
  */
-lanyard.geom.Extent.prototype.render = function (dc) {};
+lanyard.geom.Extent.prototype.render = function(dc) {};
 
 /**
  * Accessor for the center point.
  *
  * @return {lanyard.geom.Point}
  */
-lanyard.geom.Extent.prototype.getCenter = function () {};
+lanyard.geom.Extent.prototype.getCenter = function() {};
 
 /**
  * Accessor for the diameter.
  *
  * @return {number}
  */
-lanyard.geom.Extent.prototype.getDiameter = function () {};
+lanyard.geom.Extent.prototype.getDiameter = function() {};
 
 /**
  * Accessor for the radius.
  *
  * @return {number}
  */
-lanyard.geom.Extent.prototype.getRadius = function () {};
+lanyard.geom.Extent.prototype.getRadius = function() {};
 
 /**
  * Tests whether or not this Extent intersects frustum. Returns true if any part of these
@@ -76,7 +76,7 @@ lanyard.geom.Extent.prototype.getRadius = function () {};
  * @param {lanyard.geom.Frustum} frustum the Frustum with which to test for intersection.
  * @return {boolean} true if there is an intersection, false otherwise.
  */
-lanyard.geom.Extent.prototype.intersectsFrustum = function (frustum) {};
+lanyard.geom.Extent.prototype.intersectsFrustum = function(frustum) {};
 
 /**
  * Obtain the intersections of this extent with line. The returned array may be either
@@ -88,7 +88,7 @@ lanyard.geom.Extent.prototype.intersectsFrustum = function (frustum) {};
  * @return {Array.<lanyard.geom.Intersection>} an array of intersections representing
  *     all the points where line enters or leave this extent.
  */
-lanyard.geom.Extent.prototype.intersect = function (line) {};
+lanyard.geom.Extent.prototype.intersect = function(line) {};
 
 /**
  * Calculate whether or not line intersects this Extent. This method may be faster than
@@ -99,7 +99,7 @@ lanyard.geom.Extent.prototype.intersect = function (line) {};
  * @param {lanyard.geom.Line} line the Line with which to test for intersection.
  * @return {boolean} true if an intersection is found, false otherwise.
  */
-lanyard.geom.Extent.prototype.intersectsLine = function (line) {};
+lanyard.geom.Extent.prototype.intersectsLine = function(line) {};
 
 /**
  * Calculate whether or not this Extent is intersected by plane.
@@ -107,6 +107,6 @@ lanyard.geom.Extent.prototype.intersectsLine = function (line) {};
  * @param {lanyard.geom.Plane} plane the Plane with which to test for intersection.
  * @return {boolean} true if plane is found to intersect this Extent.
  */
-lanyard.geom.Extent.prototype.intersectsPlane = function (plane) {};
+lanyard.geom.Extent.prototype.intersectsPlane = function(plane) {};
 
 /* EOF */

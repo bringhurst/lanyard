@@ -29,8 +29,8 @@ goog.provide('lanyard.render.SurfaceTileRenderer');
 
 goog.require('goog.debug.Logger');
 
-goog.require('lanyard.util.Texture');
 goog.require('lanyard.render.SurfaceTile');
+goog.require('lanyard.util.Texture');
 
 /**
  * A surface tile renderer.
@@ -38,11 +38,11 @@ goog.require('lanyard.render.SurfaceTile');
  * @constructor
  * @param {WebGLRenderingContext} gl the current gl context.
  */
-lanyard.render.SurfaceTileRenderer = function (gl) {
+lanyard.render.SurfaceTileRenderer = function(gl) {
     /** @type {lanyard.util.Texture} */
     this.alphaTexture = null;
-   
-    /** @type {lanyard.util.Texture} */ 
+
+    /** @type {lanyard.util.Texture} */
     this.outlineTexture = null;
 
     /** @type {boolean} */
@@ -87,7 +87,7 @@ lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE = 2;
  * @param {lanyard.DrawContext} dc the draw context to use.
  * @param {lanyard.SectorGeometry} sg the sector geometry to work with.
  */
-lanyard.render.SurfaceTileRenderer.prototype.preComputeTransform = function (dc, sg) {
+lanyard.render.SurfaceTileRenderer.prototype.preComputeTransform = function(dc, sg) {
     /** @type {lanyard.geom.Sector} */
     var st = sg.getSector();
 
@@ -104,7 +104,7 @@ lanyard.render.SurfaceTileRenderer.prototype.preComputeTransform = function (dc,
  * @param {lanyard.render.SurfaceTile} tile the tile to transform.
  * @param {Object} t the transformation object.
  */
-lanyard.render.SurfaceTileRenderer.prototype.computeTransform = function (dc, tile, t) {
+lanyard.render.SurfaceTileRenderer.prototype.computeTransform = function(dc, tile, t) {
     /** @type {lanyard.geom.Sector} */
     var st = tile.getSector();
 
@@ -140,7 +140,7 @@ lanyard.render.SurfaceTileRenderer.prototype.isShowImageTileOutlines = function(
  *
  * @param {boolean} showImageTileOutlines true if they should display, false otherwise.
  */
-lanyard.render.SurfaceTileRenderer.prototype.setShowImageTileOutlines = function (showImageTileOutlines) {
+lanyard.render.SurfaceTileRenderer.prototype.setShowImageTileOutlines = function(showImageTileOutlines) {
     this.showImageTileOutlines = showImageTileOutlines;
 };
 
@@ -150,11 +150,11 @@ lanyard.render.SurfaceTileRenderer.prototype.setShowImageTileOutlines = function
  * @param {lanyard.DrawContext} dc the draw context to render to.
  * @param {lanyard.render.SurfaceTile} tile the tile to render.
  */
-lanyard.render.SurfaceTileRenderer.prototype.renderTile = function (dc, tile) {
+lanyard.render.SurfaceTileRenderer.prototype.renderTile = function(dc, tile) {
     //this._logger.fine("renderTile was called.");
 
-    if(!tile) {
-        this._logger.fine("Attempted to render a null tile.");
+    if (!tile) {
+        this._logger.fine('Attempted to render a null tile.');
         return;
     }
 
@@ -167,7 +167,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTile = function (dc, tile) {
  * @param {lanyard.DrawContext} dc the draw context to render to.
  * @param {Array.<lanyard.render.SurfaceTile>} tiles the tiles to render.
  */
-lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) {
+lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function(dc, tiles) {
     //this._logger.fine("renderTiles was called.");
 
     /** @type {WebGLRenderingContext} */
@@ -184,7 +184,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
     gl.depthFunc(gl.LEQUAL);
 
     gl.activeTexture(gl.TEXTURE0);
-    //gl.enable(gl.TEXTURE_2D); 
+    //gl.enable(gl.TEXTURE_2D);
 
     /** @type {lanyard.SectorGeometryList} */
     var sectorGeoms = dc.getSurfaceGeometry();
@@ -192,7 +192,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
     /** @type {number} */
     var i;
 
-    for(i = 0; i < sectorGeoms.geometryList.length; i = i + 1) {
+    for (i = 0; i < sectorGeoms.geometryList.length; i = i + 1) {
         /** @type {Array.<lanyard.render.SurfaceTile>} */
         var tilesToRender = this.getIntersectingTiles(sectorGeoms.geometryList[i], tiles);
 
@@ -220,7 +220,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
             if (tilesToRender[j].bind(dc)) {
 
                 gl.activeTexture(gl.TEXTURE0);
-                gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerTileImage"), 0);
+                gl.uniform1i(dc.getGLSL().getUniformLocation('uSamplerTileImage'), 0);
 
                 tilesToRender[j].applyInternalTransform(dc);
 
@@ -232,17 +232,17 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
                     this.transform.HScale, 0.0, 0.0, 0.0,
                     0.0, this.transform.VScale, 0.0, 0.0,
                     0.0, 0.0, 1.0, 0.0,
-                    0.0, 0.0, 0.0, 1.0 ]);
+                    0.0, 0.0, 0.0, 1.0]);
 
                 // Now translate it
                 textureMatrix.translate(this.transform.HShift, this.transform.VShift, 0.0);
 
-                dc.loadMatrix("uTextureMatrix", textureMatrix);
+                dc.loadMatrix('uTextureMatrix', textureMatrix);
 
-                // We will apply the transform to alpha mask in the vertex shader using texture 0 matrix 
+                // We will apply the transform to alpha mask in the vertex shader using texture 0 matrix
                 gl.activeTexture(gl.TEXTURE1);
                 this.alphaTexture.bind();
-                gl.uniform1i(dc.getGLSL().getUniformLocation("uSamplerAlphaMask"), 1);
+                gl.uniform1i(dc.getGLSL().getUniformLocation('uSamplerAlphaMask'), 1);
 
                 // Render the geometry tile
                 sectorGeoms.geometryList[i].render(dc);
@@ -260,7 +260,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function (dc, tiles) 
  * @param {Array.<lanyard.render.SurfaceTile>} tiles the tiles.
  * @return {Array.<lanyard.render.SurfaceTile>} the intersecting tiles.
  */
-lanyard.render.SurfaceTileRenderer.prototype.getIntersectingTiles = function (sg, tiles) {
+lanyard.render.SurfaceTileRenderer.prototype.getIntersectingTiles = function(sg, tiles) {
     /** @type {Array.<lanyard.render.SurfaceTile>} */
     var intersectingTiles = [];
 
@@ -283,12 +283,12 @@ lanyard.render.SurfaceTileRenderer.prototype.getIntersectingTiles = function (sg
  * @param {number} size the size fo the specified tile.
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function (size, dc) {
+lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function(size, dc) {
     /** @type {Element} */
-    var textureCanvas = goog.dom.createElement("canvas");
+    var textureCanvas = goog.dom.createElement('canvas');
     textureCanvas.width = textureCanvas.height = size;
 
-    var textureContext = textureCanvas.getContext("2d");
+    var textureContext = textureCanvas.getContext('2d');
     var textureImage = textureContext.createImageData(size, size);
 
     for (var i = 0; i < size; i += 1) {
@@ -320,12 +320,12 @@ lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function (size, 
  * @param {number} size the size of the texture to create.
  * @param {lanyard.DrawContext} dc the current draw context.
  */
-lanyard.render.SurfaceTileRenderer.prototype.initOutlineTexture = function (size, dc) {
+lanyard.render.SurfaceTileRenderer.prototype.initOutlineTexture = function(size, dc) {
     /** @type {Element} */
-    var textureCanvas = goog.dom.createElement("canvas");
+    var textureCanvas = goog.dom.createElement('canvas');
     textureCanvas.width = textureCanvas.height = size;
 
-    var textureContext = textureCanvas.getContext("2d");
+    var textureContext = textureCanvas.getContext('2d');
     var textureImage = textureContext.createImageData(size, size);
 
     for (var i = 0; i < size; i += 1) {
