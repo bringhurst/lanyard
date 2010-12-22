@@ -78,21 +78,21 @@ Int8Array.prototype.length;
  * @param {number} index
  * @return {number}
  */
-Int8Array.prototype.get = function (index) {};
+Int8Array.prototype.get = function(index) {};
 
 /**
  * @param {number|Array.<*>} x
  * @param {number} value
  * @return {undefined}
  */
-Int8Array.prototype.set = function (x, value) {};
+Int8Array.prototype.set = function(x, value) {};
 
 /**
  * @param {number} start
  * @param {number} end
  * @return {Array.<*>}
  */
-Int8Array.prototype.slice = function (start, end) {};
+Int8Array.prototype.slice = function(start, end) {};
 
 /**
  * @constructor
@@ -116,20 +116,20 @@ Int16Array.prototype.length;
  * @param {number} index
  * @return {number}
  */
-Int16Array.prototype.get = function (index) {};
+Int16Array.prototype.get = function(index) {};
 
 /**
  * @param {number|Array.<*>} x
  * @param {number} value
  * @return {undefined}
  */
-Int16Array.prototype.set = function (x, value) {};
+Int16Array.prototype.set = function(x, value) {};
 
 /**
  * @param {number} start
  * @param {number} end
  */
-Int16Array.prototype.slice = function (start, end) {};
+Int16Array.prototype.slice = function(start, end) {};
 
 /**
  * @constructor
@@ -152,21 +152,21 @@ Uint16Array.prototype.length;
 /**
  * @param {number} index
  */
-Uint16Array.prototype.get = function (index) {};
+Uint16Array.prototype.get = function(index) {};
 
 /**
  * @param {number|Array.<*>} x
  * @param {number} value
  * @return {undefined}
  */
-Uint16Array.prototype.set = function (x, value) {};
+Uint16Array.prototype.set = function(x, value) {};
 
 /**
  * @param {number} start
  * @param {number} end
  * @return {Array.<*>}
  */
-Uint16Array.prototype.slice = function (start, end) {};
+Uint16Array.prototype.slice = function(start, end) {};
 
 /**
  * @constructor
@@ -190,21 +190,21 @@ Int32Array.prototype.length;
  * @param {number} index
  * @return {number}
  */
-Int32Array.prototype.get = function (index) {};
+Int32Array.prototype.get = function(index) {};
 
 /**
  * @param {number|Array.<*>} x
  * @param {number} value
  * @return {undefined}
  */
-Int32Array.prototype.set = function (x, value) {};
+Int32Array.prototype.set = function(x, value) {};
 
 /**
  * @param {number} start
  * @param {number} end
  * @return {Array.<*>}
  */
-Int32Array.prototype.slice = function (start, end) {};
+Int32Array.prototype.slice = function(start, end) {};
 
 /**
  * @constructor
@@ -228,21 +228,21 @@ Uint32Array.prototype.length;
  * @param {number} index
  * @return {number}
  */
-Uint32Array.prototype.get = function (index) {};
+Uint32Array.prototype.get = function(index) {};
 
 /**
  * @param {number|Array.<*>} x
  * @param {number} value
  * @return {undefined}
  */
-Uint32Array.prototype.set = function (x, value) {};
+Uint32Array.prototype.set = function(x, value) {};
 
 /**
  * @param {number} start
  * @param {number} end
  * @return {Array.<*>}
  */
-Uint32Array.prototype.slice = function (start, end) {};
+Uint32Array.prototype.slice = function(start, end) {};
 
 /**
  * @constructor
@@ -266,21 +266,21 @@ Float32Array.prototype.length;
  * @param {number} index
  * @return {number}
  */
-Float32Array.prototype.get = function (index) {};
+Float32Array.prototype.get = function(index) {};
 
 /**
  * @param {number|Array.<*>} x
  * @param {number} value
  * @return {undefined}
  */
-Float32Array.prototype.set = function (x, value) {};
+Float32Array.prototype.set = function(x, value) {};
 
 /**
  * @param {number} start
  * @param {number} end
  * @return {Array.<*>}
  */
-Float32Array.prototype.slice = function (start, end) {};
+Float32Array.prototype.slice = function(start, end) {};
 
 /**
  * @constructor
@@ -304,21 +304,21 @@ Float64Array.prototype.length;
  * @param {number} index
  * @return {number}
  */
-Float64Array.prototype.get = function (index) {};
+Float64Array.prototype.get = function(index) {};
 
 /**
  * @param {number|Array.<*>} x
  * @param {number} value
  * @return {Array.<*>}
  */
-Float64Array.prototype.set = function (x, value) {};
+Float64Array.prototype.set = function(x, value) {};
 
 /**
  * @param {number} start
  * @param {number} end
  * @return {Array.<*>}
  */
-Float64Array.prototype.slice = function (start, end) {};
+Float64Array.prototype.slice = function(start, end) {};
 
 /**
  * @constructor
@@ -331,107 +331,107 @@ function DataView(value) {}
  * @param {number} byteOffset
  * @return {number}
  */
-DataView.prototype.getInt8 = function (byteOffset) {};
+DataView.prototype.getInt8 = function(byteOffset) {};
 
 /**
  * @param {number} byteOffset
  * @return {number}
  */
-DataView.prototype.getUint8 = function (byteOffset) {};
-
-/**
- * @param {number} byteOffset
- * @param {boolean} littleEndian
- * @return {number}
- */
-DataView.prototype.getInt16 = function (byteOffset, littleEndian) {};
+DataView.prototype.getUint8 = function(byteOffset) {};
 
 /**
  * @param {number} byteOffset
  * @param {boolean} littleEndian
  * @return {number}
  */
-DataView.prototype.getUint16 = function (byteOffset, littleEndian) {};
+DataView.prototype.getInt16 = function(byteOffset, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {boolean} littleEndian
  * @return {number}
  */
-DataView.prototype.getInt32 = function (byteOffset, littleEndian) {};
+DataView.prototype.getUint16 = function(byteOffset, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {boolean} littleEndian
  * @return {number}
  */
-DataView.prototype.getUint32 = function (byteOffset, littleEndian) {};
+DataView.prototype.getInt32 = function(byteOffset, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {boolean} littleEndian
  * @return {number}
  */
-DataView.prototype.getFloat32 = function (byteOffset, littleEndian) {};
+DataView.prototype.getUint32 = function(byteOffset, littleEndian) {};
+
+/**
+ * @param {number} byteOffset
+ * @param {boolean} littleEndian
+ * @return {number}
+ */
+DataView.prototype.getFloat32 = function(byteOffset, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {boolean} littleEndian
  */
-DataView.prototype.getFloat64 = function (byteOffset, littleEndian) {};
+DataView.prototype.getFloat64 = function(byteOffset, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
  */
-DataView.prototype.setInt8 = function (byteOffset, value) {};
+DataView.prototype.setInt8 = function(byteOffset, value) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
  */
-DataView.prototype.setUint8 = function (byteOffset, value) {};
-
-/**
- * @param {number} byteOffset
- * @param {number} value
- * @param {boolean} littleEndian
- */
-DataView.prototype.setInt16 = function (byteOffset, value, littleEndian) {};
-
-/**
- * @param {number} byteOffset
- * @param {number} value
- * @param {boolean} littleEndian
- */
-DataView.prototype.setUint16 = function (byteOffset, value, littleEndian) {};
+DataView.prototype.setUint8 = function(byteOffset, value) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
  * @param {boolean} littleEndian
  */
-DataView.prototype.setInt32 = function (byteOffset, value, littleEndian) {};
+DataView.prototype.setInt16 = function(byteOffset, value, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
  * @param {boolean} littleEndian
  */
-DataView.prototype.setUint32 = function (byteOffset, value, littleEndian) {};
+DataView.prototype.setUint16 = function(byteOffset, value, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
  * @param {boolean} littleEndian
  */
-DataView.prototype.setFloat32 = function (byteOffset, value, littleEndian) {};
+DataView.prototype.setInt32 = function(byteOffset, value, littleEndian) {};
 
 /**
  * @param {number} byteOffset
  * @param {number} value
  * @param {boolean} littleEndian
  */
-DataView.prototype.setFloat64 = function (byteOffset, value, littleEndian) {};
+DataView.prototype.setUint32 = function(byteOffset, value, littleEndian) {};
+
+/**
+ * @param {number} byteOffset
+ * @param {number} value
+ * @param {boolean} littleEndian
+ */
+DataView.prototype.setFloat32 = function(byteOffset, value, littleEndian) {};
+
+/**
+ * @param {number} byteOffset
+ * @param {number} value
+ * @param {boolean} littleEndian
+ */
+DataView.prototype.setFloat64 = function(byteOffset, value, littleEndian) {};
 
 /* EOF */

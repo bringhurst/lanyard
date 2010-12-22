@@ -1938,65 +1938,65 @@ WebGLRenderingContext.prototype.canvas;
 /**
  * @return {WebGLContextAttributes}
  */
-WebGLRenderingContext.prototype.getContextAttributed = function () {};
+WebGLRenderingContext.prototype.getContextAttributed = function() {};
 
 /**
  * @return {boolean}
  */
-WebGLRenderingContext.prototype.isContextLost = function () {};
+WebGLRenderingContext.prototype.isContextLost = function() {};
 
 /**
  * @return {string}
  */
-WebGLRenderingContext.prototype.getSupportedExtensions = function () {};
+WebGLRenderingContext.prototype.getSupportedExtensions = function() {};
 
 /**
  * @param {string} name
  * @return {Object}
  */
-WebGLRenderingContext.prototype.getExtension = function (name) {};
+WebGLRenderingContext.prototype.getExtension = function(name) {};
 
 /**
  * @param {number} texture
  */
-WebGLRenderingContext.prototype.activeTexture = function (texture) {};
+WebGLRenderingContext.prototype.activeTexture = function(texture) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {WebGLShader} shader
  */
-WebGLRenderingContext.prototype.attachShader = function (program, shader) {};
+WebGLRenderingContext.prototype.attachShader = function(program, shader) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {number} index
  * @param {string} name
  */
-WebGLRenderingContext.prototype.bindAttribLocation = function (program, index, name) {};
+WebGLRenderingContext.prototype.bindAttribLocation = function(program, index, name) {};
 
 /**
  * @param {number} target
  * @param {WebGLBuffer} buffer
  */
-WebGLRenderingContext.prototype.bindBuffer = function (target, buffer) {};
+WebGLRenderingContext.prototype.bindBuffer = function(target, buffer) {};
 
 /**
  * @param {number} target
  * @param {WebGLFramebuffer} framebuffer
  */
-WebGLRenderingContext.prototype.bindFramebuffer = function (target, framebuffer) {};
+WebGLRenderingContext.prototype.bindFramebuffer = function(target, framebuffer) {};
 
 /**
  * @param {number} target
  * @param {WebGLRenderbuffer} renderbuffer
  */
-WebGLRenderingContext.prototype.bindRenderbuffer = function (target, renderbuffer) {};
+WebGLRenderingContext.prototype.bindRenderbuffer = function(target, renderbuffer) {};
 
 /**
  * @param {number} target
  * @param {WebGLTexture} texture
  */
-WebGLRenderingContext.prototype.bindTexture = function (target, texture) {};
+WebGLRenderingContext.prototype.bindTexture = function(target, texture) {};
 
 /**
  * @param {number} red
@@ -2004,24 +2004,24 @@ WebGLRenderingContext.prototype.bindTexture = function (target, texture) {};
  * @param {number} blue
  * @param {number} alpha
  */
-WebGLRenderingContext.prototype.blendColor = function (red, green, blue, alpha) {};
+WebGLRenderingContext.prototype.blendColor = function(red, green, blue, alpha) {};
 
 /**
  * @param {number} mode
  */
-WebGLRenderingContext.prototype.blendEquation = function (mode) {};
+WebGLRenderingContext.prototype.blendEquation = function(mode) {};
 
 /**
  * @param {number} modeRGB
  * @param {number} modeAlpha
  */
-WebGLRenderingContext.prototype.blendEquationSeparate = function (modeRGB, modeAlpha) {};
+WebGLRenderingContext.prototype.blendEquationSeparate = function(modeRGB, modeAlpha) {};
 
 /**
  * @param {number} sfactor
  * @param {number} dfactor
  */
-WebGLRenderingContext.prototype.blendFunc = function (sfactor, dfactor) {};
+WebGLRenderingContext.prototype.blendFunc = function(sfactor, dfactor) {};
 
 /**
  * @param {number} srcRGB
@@ -2029,32 +2029,32 @@ WebGLRenderingContext.prototype.blendFunc = function (sfactor, dfactor) {};
  * @param {number} srcAlpha
  * @param {number} dstAlpha
  */
-WebGLRenderingContext.prototype.blendFuncSeparate = function (srcRGB, dstRGB, srcAlpha, dstAlpha) {};
+WebGLRenderingContext.prototype.blendFuncSeparate = function(srcRGB, dstRGB, srcAlpha, dstAlpha) {};
 
 /**
  * @param {number} target
- * @param {number|ArrayBufferView|ArrayBuffer} x size, data
+ * @param {number|ArrayBufferView|ArrayBuffer} x size, data.
  * @param {number} usage
  */
-WebGLRenderingContext.prototype.bufferData = function (target, x, usage) {};
+WebGLRenderingContext.prototype.bufferData = function(target, x, usage) {};
 
 /**
  * @param {number} target
  * @param {number} offset
  * @param {ArrayBufferView|ArrayBuffer} data
  */
-WebGLRenderingContext.prototype.bufferSubData = function (target, offset, data) {};
+WebGLRenderingContext.prototype.bufferSubData = function(target, offset, data) {};
 
 /**
  * @param {number} target
  * @return {number}
  */
-WebGLRenderingContext.prototype.checkFramebufferStatus = function (target) {};
+WebGLRenderingContext.prototype.checkFramebufferStatus = function(target) {};
 
 /**
  * @param {number} mask
  */
-WebGLRenderingContext.prototype.clear = function (mask) {};
+WebGLRenderingContext.prototype.clear = function(mask) {};
 
 /**
  * @param {number} red
@@ -2062,17 +2062,17 @@ WebGLRenderingContext.prototype.clear = function (mask) {};
  * @param {number} blue
  * @param {number} alpha
  */
-WebGLRenderingContext.prototype.clearColor = function (red, green, blue, alpha) {};
+WebGLRenderingContext.prototype.clearColor = function(red, green, blue, alpha) {};
 
 /**
  * @param {number} depth
  */
-WebGLRenderingContext.prototype.clearDepth = function (depth) {};
+WebGLRenderingContext.prototype.clearDepth = function(depth) {};
 
 /**
  * @param {number} s
  */
-WebGLRenderingContext.prototype.clearStencil = function (s) {};
+WebGLRenderingContext.prototype.clearStencil = function(s) {};
 
 /**
  * @param {boolean} red
@@ -2080,12 +2080,12 @@ WebGLRenderingContext.prototype.clearStencil = function (s) {};
  * @param {boolean} blue
  * @param {boolean} alpha
  */
-WebGLRenderingContext.prototype.colorMask = function (red, green, blue, alpha) {};
+WebGLRenderingContext.prototype.colorMask = function(red, green, blue, alpha) {};
 
 /**
  * @param {WebGLShader} shader
  */
-WebGLRenderingContext.prototype.compileShader = function (shader) {};
+WebGLRenderingContext.prototype.compileShader = function(shader) {};
 
 /**
  * @param {number} target
@@ -2098,7 +2098,7 @@ WebGLRenderingContext.prototype.compileShader = function (shader) {};
  * @param {number} border
  */
 WebGLRenderingContext.prototype.copyTexImage2D =
-    function (target, level, internalformat, x, y, width, height, border) {};
+    function(target, level, internalformat, x, y, width, height, border) {};
 
 /**
  * @param {number} target
@@ -2111,112 +2111,112 @@ WebGLRenderingContext.prototype.copyTexImage2D =
  * @param {number} height
  */
 WebGLRenderingContext.prototype.copyTexSubImage2D =
-    function (target, level, xoffset, yoffset, x, y, width, height) {};
+    function(target, level, xoffset, yoffset, x, y, width, height) {};
 
 /**
  * @return {WebGLBuffer}
  */
-WebGLRenderingContext.prototype.createBuffer = function () {};
+WebGLRenderingContext.prototype.createBuffer = function() {};
 
 /**
  * @return {WebGLFramebuffer}
  */
-WebGLRenderingContext.prototype.createFramebuffer = function () {};
+WebGLRenderingContext.prototype.createFramebuffer = function() {};
 
 /**
  * @return {WebGLProgram}
  */
-WebGLRenderingContext.prototype.createProgram = function () {};
+WebGLRenderingContext.prototype.createProgram = function() {};
 
 /**
  * @return {WebGLRenderbuffer}
  */
-WebGLRenderingContext.prototype.createRenderbuffer = function () {};
+WebGLRenderingContext.prototype.createRenderbuffer = function() {};
 
 /**
  * @param {number} type
  * @return {WebGLShader}
  */
-WebGLRenderingContext.prototype.createShader = function (type) {};
+WebGLRenderingContext.prototype.createShader = function(type) {};
 
 /**
  * @return {WebGLTexture}
  */
-WebGLRenderingContext.prototype.createTexture = function () {};
+WebGLRenderingContext.prototype.createTexture = function() {};
 
 /**
  * @param {number} mode
  */
-WebGLRenderingContext.prototype.cullFace = function (mode) {};
+WebGLRenderingContext.prototype.cullFace = function(mode) {};
 
 /**
  * @param {WebGLBuffer} buffer
  */
-WebGLRenderingContext.prototype.deleteBuffer = function (buffer) {};
+WebGLRenderingContext.prototype.deleteBuffer = function(buffer) {};
 
 /**
  * @param {WebGLFramebuffer} framebuffer
  */
-WebGLRenderingContext.prototype.deleteFramebuffer = function (framebuffer) {};
+WebGLRenderingContext.prototype.deleteFramebuffer = function(framebuffer) {};
 
 /**
  * @param {WebGLProgram} program
  */
-WebGLRenderingContext.prototype.deleteProgram = function (program) {};
+WebGLRenderingContext.prototype.deleteProgram = function(program) {};
 
 /**
  * @param {WebGLRenderbuffer} renderbuffer
  */
-WebGLRenderingContext.prototype.deleteRenderbuffer = function (renderbuffer) {};
+WebGLRenderingContext.prototype.deleteRenderbuffer = function(renderbuffer) {};
 
 /**
  * @param {WebGLShader} shader
  */
-WebGLRenderingContext.prototype.deleteShader = function (shader) {};
+WebGLRenderingContext.prototype.deleteShader = function(shader) {};
 
 /**
  * @param {WebGLTexture} texture
  */
-WebGLRenderingContext.prototype.deleteTexture = function (texture) {};
+WebGLRenderingContext.prototype.deleteTexture = function(texture) {};
 
 /**
  * @param {number} func
  */
-WebGLRenderingContext.prototype.depthFunc = function (func) {};
+WebGLRenderingContext.prototype.depthFunc = function(func) {};
 
 /**
  * @param {boolean} flag
  */
-WebGLRenderingContext.prototype.depthMask = function (flag) {};
+WebGLRenderingContext.prototype.depthMask = function(flag) {};
 
 /**
  * @param {number} zNear
  * @param {number} zFar
  */
-WebGLRenderingContext.prototype.depthRange = function (zNear, zFar) {};
+WebGLRenderingContext.prototype.depthRange = function(zNear, zFar) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {WebGLShader} shader
  */
-WebGLRenderingContext.prototype.detachShader = function (program, shader) {};
+WebGLRenderingContext.prototype.detachShader = function(program, shader) {};
 
 /**
  * @param {number} cap
  */
-WebGLRenderingContext.prototype.disable = function (cap) {};
+WebGLRenderingContext.prototype.disable = function(cap) {};
 
 /**
  * @param {number} index
  */
-WebGLRenderingContext.prototype.disableVertexAttribArray = function (index) {};
+WebGLRenderingContext.prototype.disableVertexAttribArray = function(index) {};
 
 /**
  * @param {number} mode
  * @param {number} first
  * @param {number} count
  */
-WebGLRenderingContext.prototype.drawArrays = function (mode, first, count) {};
+WebGLRenderingContext.prototype.drawArrays = function(mode, first, count) {};
 
 /**
  * @param {number} mode
@@ -2224,25 +2224,25 @@ WebGLRenderingContext.prototype.drawArrays = function (mode, first, count) {};
  * @param {number} type
  * @param {number} offset
  */
-WebGLRenderingContext.prototype.drawElements = function (mode, count, type, offset) {};
+WebGLRenderingContext.prototype.drawElements = function(mode, count, type, offset) {};
 
 /**
  * @param {number} cap
  */
-WebGLRenderingContext.prototype.enable = function (cap) {};
+WebGLRenderingContext.prototype.enable = function(cap) {};
 
 /**
  * @param {number} index
  */
-WebGLRenderingContext.prototype.enableVertexAttribArray = function (index) {};
+WebGLRenderingContext.prototype.enableVertexAttribArray = function(index) {};
 
 /**
  */
-WebGLRenderingContext.prototype.finish = function () {};
+WebGLRenderingContext.prototype.finish = function() {};
 
 /**
  */
-WebGLRenderingContext.prototype.flush = function () {};
+WebGLRenderingContext.prototype.flush = function() {};
 
 /**
  * @param {number} target
@@ -2251,7 +2251,7 @@ WebGLRenderingContext.prototype.flush = function () {};
  * @param {WebGLRenderbuffer} renderbuffer
  */
 WebGLRenderingContext.prototype.framebufferRenderbuffer =
-    function (target, attachment, renderbuffertarget, renderbuffer) {};
+    function(target, attachment, renderbuffertarget, renderbuffer) {};
 
 /**
  * @param {number} target
@@ -2261,62 +2261,62 @@ WebGLRenderingContext.prototype.framebufferRenderbuffer =
  * @param {number} level
  */
 WebGLRenderingContext.prototype.framebufferTexture2D =
-    function (target, attachment, textarget, texture, level) {};
+    function(target, attachment, textarget, texture, level) {};
 
 /**
  * @param {number} mode
  */
-WebGLRenderingContext.prototype.frontFace = function (mode) {};
+WebGLRenderingContext.prototype.frontFace = function(mode) {};
 
 /**
  * @param {number} target
  */
-WebGLRenderingContext.prototype.generateMipmap = function (target) {};
+WebGLRenderingContext.prototype.generateMipmap = function(target) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {number} index
  * @return {WebGLActiveInfo}
  */
-WebGLRenderingContext.prototype.getActiveAttrib = function (program, index) {};
+WebGLRenderingContext.prototype.getActiveAttrib = function(program, index) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {number} index
  * @return {WebGLActiveInfo}
  */
-WebGLRenderingContext.prototype.getActiveUniform = function (program, index) {};
+WebGLRenderingContext.prototype.getActiveUniform = function(program, index) {};
 
 /**
  * @param {WebGLProgram} program
  * @return {Array.<WebGLShader>}
  */
-WebGLRenderingContext.prototype.getAttachedShaders = function (program) {};
+WebGLRenderingContext.prototype.getAttachedShaders = function(program) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {string} name
  * @return {number}
  */
-WebGLRenderingContext.prototype.getAttribLocation = function (program, name) {};
+WebGLRenderingContext.prototype.getAttribLocation = function(program, name) {};
 
 /**
  * @param {number} pname
  * @return {*}
  */
-WebGLRenderingContext.prototype.getParameter = function (pname) {};
+WebGLRenderingContext.prototype.getParameter = function(pname) {};
 
 /**
  * @param {number} target
  * @param {number} pname
  * @return {*}
  */
-WebGLRenderingContext.prototype.getBufferParameter = function (target, pname) {};
+WebGLRenderingContext.prototype.getBufferParameter = function(target, pname) {};
 
 /**
  * @return {number}
  */
-WebGLRenderingContext.prototype.getError = function () {};
+WebGLRenderingContext.prototype.getError = function() {};
 
 /**
  * @param {number} target
@@ -2325,151 +2325,151 @@ WebGLRenderingContext.prototype.getError = function () {};
  * @return {*}
  */
 WebGLRenderingContext.prototype.getFramebufferAttachmentParameter =
-    function (target, attachment, pname) {};
+    function(target, attachment, pname) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {number} pname
  * @return {*}
  */
-WebGLRenderingContext.prototype.getProgramParameter = function (program, pname) {};
+WebGLRenderingContext.prototype.getProgramParameter = function(program, pname) {};
 
 /**
  * @param {WebGLProgram} program
  * @return {string}
  */
-WebGLRenderingContext.prototype.getProgramInfoLog = function (program) {};
+WebGLRenderingContext.prototype.getProgramInfoLog = function(program) {};
 
 /**
  * @param {number} target
  * @param {number} pname
  * @return {*}
  */
-WebGLRenderingContext.prototype.getRenderbufferParameter = function (target, pname) {};
+WebGLRenderingContext.prototype.getRenderbufferParameter = function(target, pname) {};
 
 /**
  * @param {WebGLShader} shader
  * @param {number} pname
  * @return {*}
  */
-WebGLRenderingContext.prototype.getShaderParameter = function (shader, pname) {};
+WebGLRenderingContext.prototype.getShaderParameter = function(shader, pname) {};
 
 /**
  * @param {WebGLShader} shader
  * @return {string}
  */
-WebGLRenderingContext.prototype.getShaderInfoLog = function (shader) {};
+WebGLRenderingContext.prototype.getShaderInfoLog = function(shader) {};
 
 /**
  * @param {WebGLShader} shader
  * @return {string}
  */
-WebGLRenderingContext.prototype.getShaderSource = function (shader) {};
+WebGLRenderingContext.prototype.getShaderSource = function(shader) {};
 
 /**
  * @param {number} target
  * @param {number} pname
  * @return {*}
  */
-WebGLRenderingContext.prototype.getTexParameter = function (target, pname) {};
+WebGLRenderingContext.prototype.getTexParameter = function(target, pname) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {WebGLUniformLocation} loc
  * @return {*}
  */
-WebGLRenderingContext.prototype.getUniform = function (program, loc) {};
+WebGLRenderingContext.prototype.getUniform = function(program, loc) {};
 
 /**
  * @param {WebGLProgram} program
  * @param {string} name
  * @return {WebGLUniformLocation}
  */
-WebGLRenderingContext.prototype.getUniformLocation = function (program, name) {};
+WebGLRenderingContext.prototype.getUniformLocation = function(program, name) {};
 
 /**
  * @param {number} index
  * @param {number} pname
  * @return {*}
  */
-WebGLRenderingContext.prototype.getVertexAttrib = function (index, pname) {};
+WebGLRenderingContext.prototype.getVertexAttrib = function(index, pname) {};
 
 /**
  * @param {number} index
  * @param {number} pname
  * @return {number}
  */
-WebGLRenderingContext.prototype.getVertexAttribOffset = function (index, pname) {};
+WebGLRenderingContext.prototype.getVertexAttribOffset = function(index, pname) {};
 
 /**
  * @param {number} target
  * @param {number} mode
  */
-WebGLRenderingContext.prototype.hint = function (target, mode) {};
+WebGLRenderingContext.prototype.hint = function(target, mode) {};
 
 /**
  * @param {WebGLBuffer} buffer
  * @return {boolean}
  */
-WebGLRenderingContext.prototype.isBuffer = function (buffer) {};
+WebGLRenderingContext.prototype.isBuffer = function(buffer) {};
 
 /**
  * @param {number} cap
  * @return {boolean}
  */
-WebGLRenderingContext.prototype.isEnabled = function (cap) {};
+WebGLRenderingContext.prototype.isEnabled = function(cap) {};
 
 /**
  * @param {WebGLFramebuffer} framebuffer
  * @return {boolean}
  */
-WebGLRenderingContext.prototype.isFramebuffer = function (framebuffer) {};
+WebGLRenderingContext.prototype.isFramebuffer = function(framebuffer) {};
 
 /**
  * @param {WebGLProgram} program
  * @return {boolean}
  */
-WebGLRenderingContext.prototype.isProgram = function (program) {};
+WebGLRenderingContext.prototype.isProgram = function(program) {};
 
 /**
  * @param {WebGLRenderbuffer} renderbuffer
  * @return {boolean}
  */
-WebGLRenderingContext.prototype.isRenderbuffer = function (renderbuffer) {};
+WebGLRenderingContext.prototype.isRenderbuffer = function(renderbuffer) {};
 
 /**
  * @param {WebGLShader} shader
  * @return {boolean}
  */
-WebGLRenderingContext.prototype.isShader = function (shader) {};
+WebGLRenderingContext.prototype.isShader = function(shader) {};
 
 /**
  * @param {WebGLTexture} texture
  * @return {boolean}
  */
-WebGLRenderingContext.prototype.isTexture = function (texture) {};
+WebGLRenderingContext.prototype.isTexture = function(texture) {};
 
 /**
  * @param {number} width
  */
-WebGLRenderingContext.prototype.lineWidth = function (width) {};
+WebGLRenderingContext.prototype.lineWidth = function(width) {};
 
 /**
  * @param {WebGLProgram} program
  */
-WebGLRenderingContext.prototype.linkProgram = function (program) {};
+WebGLRenderingContext.prototype.linkProgram = function(program) {};
 
 /**
  * @param {number} pname
  * @param {number} param
  */
-WebGLRenderingContext.prototype.pixelStorei = function (pname, param) {};
+WebGLRenderingContext.prototype.pixelStorei = function(pname, param) {};
 
 /**
  * @param {number} factor
  * @param {number} units
  */
-WebGLRenderingContext.prototype.polygonOffset = function (factor, units) {};
+WebGLRenderingContext.prototype.polygonOffset = function(factor, units) {};
 
 /**
  * @param {number} x
@@ -2481,7 +2481,7 @@ WebGLRenderingContext.prototype.polygonOffset = function (factor, units) {};
  * @param {ArrayBufferView} pixels
  */
 WebGLRenderingContext.prototype.readPixels =
-    function (x, y, width, height, format, type, pixels) {};
+    function(x, y, width, height, format, type, pixels) {};
 
 /**
  * @param {number} target
@@ -2490,13 +2490,13 @@ WebGLRenderingContext.prototype.readPixels =
  * @param {number} height
  */
 WebGLRenderingContext.prototype.renderbufferStorage =
-    function (target, internalformat, width, height) {};
+    function(target, internalformat, width, height) {};
 
 /**
  * @param {number} value
  * @param {boolean} invert
  */
-WebGLRenderingContext.prototype.sampleCoverage = function (value, invert) {};
+WebGLRenderingContext.prototype.sampleCoverage = function(value, invert) {};
 
 /**
  * @param {number} x
@@ -2504,20 +2504,20 @@ WebGLRenderingContext.prototype.sampleCoverage = function (value, invert) {};
  * @param {number} width
  * @param {number} height
  */
-WebGLRenderingContext.prototype.scissor = function (x, y, width, height) {};
+WebGLRenderingContext.prototype.scissor = function(x, y, width, height) {};
 
 /**
  * @param {WebGLShader} shader
  * @param {string} source
  */
-WebGLRenderingContext.prototype.shaderSource = function (shader, source) {};
+WebGLRenderingContext.prototype.shaderSource = function(shader, source) {};
 
 /**
  * @param {number} func
  * @param {number} ref
  * @param {number} mask
  */
-WebGLRenderingContext.prototype.stencilFunc = function (func, ref, mask) {};
+WebGLRenderingContext.prototype.stencilFunc = function(func, ref, mask) {};
 
 /**
  * @param {number} face
@@ -2525,25 +2525,25 @@ WebGLRenderingContext.prototype.stencilFunc = function (func, ref, mask) {};
  * @param {number} ref
  * @param {number} mask
  */
-WebGLRenderingContext.prototype.stencilFuncSeparate = function (face, func, ref, mask) {};
+WebGLRenderingContext.prototype.stencilFuncSeparate = function(face, func, ref, mask) {};
 
 /**
  * @param {number} mask
  */
-WebGLRenderingContext.prototype.stencilMask = function (mask) {};
+WebGLRenderingContext.prototype.stencilMask = function(mask) {};
 
 /**
  * @param {number} face
  * @param {number} mask
  */
-WebGLRenderingContext.prototype.stencilMaskSeparate = function (face, mask) {};
+WebGLRenderingContext.prototype.stencilMaskSeparate = function(face, mask) {};
 
 /**
  * @param {number} fail
  * @param {number} zfail
  * @param {number} zpass
  */
-WebGLRenderingContext.prototype.stencilOp = function (fail, zfail, zpass) {};
+WebGLRenderingContext.prototype.stencilOp = function(fail, zfail, zpass) {};
 
 /**
  * @param {number} face
@@ -2551,61 +2551,61 @@ WebGLRenderingContext.prototype.stencilOp = function (fail, zfail, zpass) {};
  * @param {number} zfail
  * @param {number} zpass
  */
-WebGLRenderingContext.prototype.stencilOpSeparate = function (face, fail, zfail, zpass) {};
+WebGLRenderingContext.prototype.stencilOpSeparate = function(face, fail, zfail, zpass) {};
 
 /**
  * @param {number} target
  * @param {number} level
  * @param {number} internalformat
- * @param {number} x width, format
- * @param {number} y height, type
- * @param {number|ImageData|Image|HTMLCanvasElement|HTMLVideoElement} z border, pixels, image, canvas, video
+ * @param {number} x width, format.
+ * @param {number} y height, type.
+ * @param {number|ImageData|Image|HTMLCanvasElement|HTMLVideoElement} z border, pixels, image, canvas, video.
  * @param {number=} format
  * @param {number=} type
  * @param {ArrayBufferView=} pixels
  */
 WebGLRenderingContext.prototype.texImage2D =
-    function (target, level, internalformat, x, y, z, format, type, pixels) {};
+    function(target, level, internalformat, x, y, z, format, type, pixels) {};
 
 /**
  * @param {number} target
  * @param {number} pname
  * @param {number} param
  */
-WebGLRenderingContext.prototype.texParameterf = function (target, pname, param) {};
+WebGLRenderingContext.prototype.texParameterf = function(target, pname, param) {};
 
 /**
  * @param {number} target
  * @param {number} pname
  * @param {number} param
  */
-WebGLRenderingContext.prototype.texParameteri = function (target, pname, param) {};
+WebGLRenderingContext.prototype.texParameteri = function(target, pname, param) {};
 
 /**
  * @param {number} target
  * @param {number} level
  * @param {number} xoffset
  * @param {number} yoffset
- * @param {number} x width, format
- * @param {number} y height, type
- * @param {number|Image|HTMLCanvasElement|HTMLVideoElement} z format, pixels, canvas, video
+ * @param {number} x width, format.
+ * @param {number} y height, type.
+ * @param {number|Image|HTMLCanvasElement|HTMLVideoElement} z format, pixels, canvas, video.
  * @param {number=} type
  * @param {ArrayBufferView=} pixels
  */
 WebGLRenderingContext.prototype.texSubImage2D =
-    function (target, level, xoffset, yoffset, x, y, z, type, pixels) {};
+    function(target, level, xoffset, yoffset, x, y, z, type, pixels) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {number} x
  */
-WebGLRenderingContext.prototype.uniform1f = function (loc, x) {};
+WebGLRenderingContext.prototype.uniform1f = function(loc, x) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {Float32Array} v
  */
-WebGLRenderingContext.prototype.uniform1fv = function (loc, v) {};
+WebGLRenderingContext.prototype.uniform1fv = function(loc, v) {};
 
 //WebGLRenderingContext.prototype.uniform1fv(WebGLUniformLocation location, sequence<float> v);
 
@@ -2613,13 +2613,13 @@ WebGLRenderingContext.prototype.uniform1fv = function (loc, v) {};
  * @param {WebGLUniformLocation} loc
  * @param {number} x
  */
-WebGLRenderingContext.prototype.uniform1i = function (loc, x) {};
+WebGLRenderingContext.prototype.uniform1i = function(loc, x) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {Int32Array} v
  */
-WebGLRenderingContext.prototype.uniform1iv = function (loc, v) {};
+WebGLRenderingContext.prototype.uniform1iv = function(loc, v) {};
 
 //WebGLRenderingContext.prototype.uniform1iv(WebGLUniformLocation location, sequence<long> v);
 
@@ -2628,13 +2628,13 @@ WebGLRenderingContext.prototype.uniform1iv = function (loc, v) {};
  * @param {number} x
  * @param {number} y
  */
-WebGLRenderingContext.prototype.uniform2f = function (loc, x, y) {};
+WebGLRenderingContext.prototype.uniform2f = function(loc, x, y) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {Float32Array} v
  */
-WebGLRenderingContext.prototype.uniform2fv = function (loc, v) {};
+WebGLRenderingContext.prototype.uniform2fv = function(loc, v) {};
 
 //WebGLRenderingContext.prototype.uniform2fv(WebGLUniformLocation location, sequence<float> v);
 
@@ -2643,13 +2643,13 @@ WebGLRenderingContext.prototype.uniform2fv = function (loc, v) {};
  * @param {number} x
  * @param {number} y
  */
-WebGLRenderingContext.prototype.uniform2i = function (loc, x, y) {};
+WebGLRenderingContext.prototype.uniform2i = function(loc, x, y) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {Int32Array} v
  */
-WebGLRenderingContext.prototype.uniform2iv = function (loc, v) {};
+WebGLRenderingContext.prototype.uniform2iv = function(loc, v) {};
 
 //WebGLRenderingContext.prototype.uniform2iv(WebGLUniformLocation location, sequence<long> v);
 
@@ -2659,13 +2659,13 @@ WebGLRenderingContext.prototype.uniform2iv = function (loc, v) {};
  * @param {number} y
  * @param {number} z
  */
-WebGLRenderingContext.prototype.uniform3f = function (loc, x, y, z) {};
+WebGLRenderingContext.prototype.uniform3f = function(loc, x, y, z) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {Float32Array} v
  */
-WebGLRenderingContext.prototype.uniform3fv = function (loc, v) {};
+WebGLRenderingContext.prototype.uniform3fv = function(loc, v) {};
 
 //WebGLRenderingContext.prototype.uniform3fv(WebGLUniformLocation location, sequence<float> v);
 
@@ -2675,13 +2675,13 @@ WebGLRenderingContext.prototype.uniform3fv = function (loc, v) {};
  * @param {number} y
  * @param {number} z
  */
-WebGLRenderingContext.prototype.uniform3i = function (loc, x, y, z) {};
+WebGLRenderingContext.prototype.uniform3i = function(loc, x, y, z) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {Int32Array} v
  */
-WebGLRenderingContext.prototype.uniform3iv = function (loc, v) {};
+WebGLRenderingContext.prototype.uniform3iv = function(loc, v) {};
 
 //WebGLRenderingContext.prototype.uniform3iv(WebGLUniformLocation location, sequence<long> v);
 
@@ -2692,13 +2692,13 @@ WebGLRenderingContext.prototype.uniform3iv = function (loc, v) {};
  * @param {number} z
  * @param {number} w
  */
-WebGLRenderingContext.prototype.uniform4f = function (loc, x, y, z, w) {};
+WebGLRenderingContext.prototype.uniform4f = function(loc, x, y, z, w) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {Float32Array} v
  */
-WebGLRenderingContext.prototype.uniform4fv = function (loc, v) {};
+WebGLRenderingContext.prototype.uniform4fv = function(loc, v) {};
 
 //WebGLRenderingContext.prototype.uniform4fv(WebGLUniformLocation location, sequence<float> v);
 
@@ -2709,13 +2709,13 @@ WebGLRenderingContext.prototype.uniform4fv = function (loc, v) {};
  * @param {number} z
  * @param {number} w
  */
-WebGLRenderingContext.prototype.uniform4i = function (loc, x, y, z, w) {};
+WebGLRenderingContext.prototype.uniform4i = function(loc, x, y, z, w) {};
 
 /**
  * @param {WebGLUniformLocation} loc
  * @param {Int32Array} v
  */
-WebGLRenderingContext.prototype.uniform4iv = function (loc, v) {};
+WebGLRenderingContext.prototype.uniform4iv = function(loc, v) {};
 
 //WebGLRenderingContext.prototype.uniform4iv(WebGLUniformLocation location, sequence<long> v);
 
@@ -2724,9 +2724,9 @@ WebGLRenderingContext.prototype.uniform4iv = function (loc, v) {};
  * @param {boolean} transpose
  * @param {Float32Array} value
  */
-WebGLRenderingContext.prototype.uniformMatrix2fv = function (loc, transpose, value) {};
+WebGLRenderingContext.prototype.uniformMatrix2fv = function(loc, transpose, value) {};
 
-//WebGLRenderingContext.prototype.uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
+//WebGLRenderingContext.prototype.uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose,
 //                          sequence<float> value);
 
 /**
@@ -2734,9 +2734,9 @@ WebGLRenderingContext.prototype.uniformMatrix2fv = function (loc, transpose, val
  * @param {boolean} transpose
  * @param {Float32Array} value
  */
-WebGLRenderingContext.prototype.uniformMatrix3fv = function (loc, transpose, value) {};
+WebGLRenderingContext.prototype.uniformMatrix3fv = function(loc, transpose, value) {};
 
-//WebGLRenderingContext.prototype.uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
+//WebGLRenderingContext.prototype.uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose,
 //                          sequence<float> value);
 
 /**
@@ -2744,32 +2744,32 @@ WebGLRenderingContext.prototype.uniformMatrix3fv = function (loc, transpose, val
  * @param {boolean} transpose
  * @param {Float32Array} value
  */
-WebGLRenderingContext.prototype.uniformMatrix4fv = function (loc, transpose, value) {};
+WebGLRenderingContext.prototype.uniformMatrix4fv = function(loc, transpose, value) {};
 
-//WebGLRenderingContext.prototype.uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
+//WebGLRenderingContext.prototype.uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose,
 //                          sequence<float> value);
 
 /**
  * @param {WebGLProgram} program
  */
-WebGLRenderingContext.prototype.useProgram = function (program) {};
+WebGLRenderingContext.prototype.useProgram = function(program) {};
 
 /**
  * @param {WebGLProgram} program
  */
-WebGLRenderingContext.prototype.validateProgram = function (program) {};
+WebGLRenderingContext.prototype.validateProgram = function(program) {};
 
 /**
  * @param {number} indx
  * @param {number} x
  */
-WebGLRenderingContext.prototype.vertexAttrib1f = function (indx, x) {};
+WebGLRenderingContext.prototype.vertexAttrib1f = function(indx, x) {};
 
 /**
  * @param {number} indx
  * @param {Float32Array} values
  */
-WebGLRenderingContext.prototype.vertexAttrib1fv = function (indx, values) {};
+WebGLRenderingContext.prototype.vertexAttrib1fv = function(indx, values) {};
 
 //WebGLRenderingContext.prototype.vertexAttrib1fv(GLuint indx, sequence<float> values);
 
@@ -2778,13 +2778,13 @@ WebGLRenderingContext.prototype.vertexAttrib1fv = function (indx, values) {};
  * @param {number} x
  * @param {number} y
  */
-WebGLRenderingContext.prototype.vertexAttrib2f = function (indx, x, y) {};
+WebGLRenderingContext.prototype.vertexAttrib2f = function(indx, x, y) {};
 
 /**
  * @param {number} indx
  * @param {Float32Array} values
  */
-WebGLRenderingContext.prototype.vertexAttrib2fv = function (indx, values) {};
+WebGLRenderingContext.prototype.vertexAttrib2fv = function(indx, values) {};
 
 //WebGLRenderingContext.prototype.vertexAttrib2fv(GLuint indx, sequence<float> values);
 
@@ -2794,13 +2794,13 @@ WebGLRenderingContext.prototype.vertexAttrib2fv = function (indx, values) {};
  * @param {number} y
  * @param {number} z
  */
-WebGLRenderingContext.prototype.vertexAttrib3f = function (indx, x, y, z) {};
+WebGLRenderingContext.prototype.vertexAttrib3f = function(indx, x, y, z) {};
 
 /**
  * @param {number} indx
  * @param {Float32Array} values
  */
-WebGLRenderingContext.prototype.vertexAttrib3fv = function (indx, values) {};
+WebGLRenderingContext.prototype.vertexAttrib3fv = function(indx, values) {};
 
 //WebGLRenderingContext.prototype.vertexAttrib3fv(GLuint indx, sequence<float> values);
 
@@ -2811,13 +2811,13 @@ WebGLRenderingContext.prototype.vertexAttrib3fv = function (indx, values) {};
  * @param {number} z
  * @param {number} w
  */
-WebGLRenderingContext.prototype.vertexAttrib4f = function (indx, x, y, z, w) {};
+WebGLRenderingContext.prototype.vertexAttrib4f = function(indx, x, y, z, w) {};
 
 /**
  * @param {number} indx
  * @param {Float32Array} values
  */
-WebGLRenderingContext.prototype.vertexAttrib4fv = function (indx, values) {};
+WebGLRenderingContext.prototype.vertexAttrib4fv = function(indx, values) {};
 
 //WebGLRenderingContext.prototype.vertexAttrib4fv(GLuint indx, sequence<float> values);
 
@@ -2830,7 +2830,7 @@ WebGLRenderingContext.prototype.vertexAttrib4fv = function (indx, values) {};
  * @param {number} offset
  */
 WebGLRenderingContext.prototype.vertexAttribPointer =
-    function (indx, size, type, normalized, stride, offset) {};
+    function(indx, size, type, normalized, stride, offset) {};
 
 /**
  * @param {number} x
@@ -2838,7 +2838,7 @@ WebGLRenderingContext.prototype.vertexAttribPointer =
  * @param {number} width
  * @param {number} height
  */
-WebGLRenderingContext.prototype.viewport = function (x, y, width, height) {};
+WebGLRenderingContext.prototype.viewport = function(x, y, width, height) {};
 
 /**
  * @constructor
@@ -2858,6 +2858,6 @@ WebGLContextEvent.prototype.statusMessage;
  * @param {string} statusMessageArg
  */
 WebGLContextEvent.prototype.initWebGLContextEvent =
-    function (typeArg, canBubbleArg, cancelableArg, statusMessageArg) {};
+    function(typeArg, canBubbleArg, cancelableArg, statusMessageArg) {};
 
 /* EOF */
