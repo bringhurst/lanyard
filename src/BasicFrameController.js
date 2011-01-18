@@ -74,7 +74,7 @@ lanyard.BasicFrameController.prototype.finalizeFrame = function(dc) {
 
     // Note that in WebGL, a flush is implied.
 
-    dc.getGLSL().endShader();
+    //dc.getGLSL().endShader();
 };
 
 /**
