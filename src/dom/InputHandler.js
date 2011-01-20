@@ -277,6 +277,7 @@ lanyard.dom.InputHandler.prototype.keysPolled = function(keyEvent) {
             /** @type {lanyard.geom.LatLon} */
             var latLonChange =
                 this.computeViewLatLonChange(view, globe, 10 * latFactor, 10 * lonFactor, false);
+
             this.setViewLatLon(view,
                 this.computeNewViewLatLon(
                     view,
@@ -665,7 +666,7 @@ lanyard.dom.InputHandler.prototype.setViewProperties =
     }
 
     // Trigger a repaint
-    this.lanyardCanvas.display();
+    //this.lanyardCanvas.display(this); 
 };
 
 /**
