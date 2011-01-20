@@ -39,7 +39,7 @@ lanyard.util.Point = function(x, y) {
      * @private
      * @type {number}
      */
-    this._x = y;
+    this._x = x;
 
     /**
      * @private
