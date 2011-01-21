@@ -1,4 +1,4 @@
-/*global goog, lanyard */
+/*global goog, lanyard, window, document */
 /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 /**
@@ -326,18 +326,7 @@ lanyard.dom.InputHandler.prototype.mouseMoved = function(mouseEvent) {
 
     // Check to see if a mouse button is pressed
     if (this.mouseDownCount) {
-        if (this.mouseDown[0]) {
-            //this._logger.fine("The left mouse button is pressed.");
-            this.mouseDragged(mouseEvent);
-        }
-
-        if (this.mouseDown[1]) {
-            this._logger.fine('The center mouse button is pressed.');
-        }
-
-        if (this.mouseDown[2]) {
-            this._logger.fine('The right mouse button is pressed.');
-        }
+        this.mouseDragged(mouseEvent);
     }
 
     /** @type {lanyard.Model} */
@@ -416,75 +405,177 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
             document.documentElement.scrollTop - this.domCanvas.offsetTop -
                 this.lastMousePoint.getY());
 
-    /** @type {lanyard.geom.LatLon} */
-    var latLonChange = null;
+    if (this.mouseDown[0]) {
+        this._logger.fine("The left mouse button is pressed.");
 
-    /** @type {lanyard.geom.Position} */
-    var prev = view.computePositionFromScreenPoint(this.lastMousePoint.getX(), this.lastMousePoint.getY());
+        /** @type {lanyard.geom.LatLon} */
+        var latLonChange = null;
 
-    /** @type {lanyard.geom.Position} */
-    var cur = view.computePositionFromScreenPoint(
-        mouseEvent.clientX + document.body.scrollLeft +
-            document.documentElement.scrollLeft - this.domCanvas.offsetLeft,
-        mouseEvent.clientY + document.body.scrollTop +
-            document.documentElement.scrollTop - this.domCanvas.offsetTop);
+        /** @type {lanyard.geom.Position} */
+        var prev = view.computePositionFromScreenPoint(this.lastMousePoint.getX(), this.lastMousePoint.getY());
 
-    if (prev && cur) {
-        latLonChange = new lanyard.geom.LatLon(prev.getLatitude().subtract(cur.getLatitude()),
-            prev.getLongitude().subtract(cur.getLongitude()));
-    } else {
-        /** @type {lanyard.Globe} */
-        var globe = this.lanyardCanvas.getModel().getGlobe();
+        /** @type {lanyard.geom.Position} */
+        var cur = view.computePositionFromScreenPoint(
+            mouseEvent.clientX + document.body.scrollLeft +
+                document.documentElement.scrollLeft - this.domCanvas.offsetLeft,
+            mouseEvent.clientY + document.body.scrollTop +
+                document.documentElement.scrollTop - this.domCanvas.offsetTop);
 
-        if (globe) {
-            /** @type {number} */
-            var sinHeading = view.getHeading().sin();
-
-            /** @type {number} */
-            var cosHeading = view.getHeading().cos();
-
-            /** @type {number} */
-            var latFactor = cosHeading * mouseMove.getY() + sinHeading * mouseMove.getX();
-            //this._logger.fine('latitude factor = ' + latFactor.toString());
-
-            /** @type {number} */
-            var lonFactor = sinHeading * mouseMove.getY() - cosHeading * mouseMove.getX();
-            //this._logger.fine('longitude factor = ' + lonFactor.toString());
-
-            if (latFactor !== 0 || lonFactor !== 0) {
-                latLonChange = this.computeViewLatLonChange(view, globe, latFactor, lonFactor, false);
-            }
+        if (prev && cur) {
+            latLonChange = new lanyard.geom.LatLon(prev.getLatitude().subtract(cur.getLatitude()),
+                prev.getLongitude().subtract(cur.getLongitude()));
         } else {
-            this._logger.severe('Attempted to perform a drag event without a valid globe.');
+            /** @type {lanyard.Globe} */
+            var globe = this.lanyardCanvas.getModel().getGlobe();
+
+            if (globe) {
+                /** @type {number} */
+                var sinHeading = view.getHeading().sin();
+
+                /** @type {number} */
+                var cosHeading = view.getHeading().cos();
+
+                /** @type {number} */
+                var latFactor = cosHeading * mouseMove.getY() + sinHeading * mouseMove.getX();
+                //this._logger.fine('latitude factor = ' + latFactor.toString());
+
+                /** @type {number} */
+                var lonFactor = sinHeading * mouseMove.getY() - cosHeading * mouseMove.getX();
+                //this._logger.fine('longitude factor = ' + lonFactor.toString());
+
+                if (latFactor !== 0 || lonFactor !== 0) {
+                    latLonChange = this.computeViewLatLonChange(view, globe, latFactor, lonFactor, false);
+                }
+            } else {
+                this._logger.severe('Attempted to perform a drag event without a valid globe.');
+            }
         }
+
+        if (latLonChange) {
+            this.setViewLatLon(view, this.computeNewViewLatLon(view, latLonChange.getLatitude(),
+                latLonChange.getLongitude()));
+        } else {
+            this._logger.severe('A failure occured in the drag event result.');
+        }
+
+    } // end left mouse button held down
+
+    if (this.mouseDown[1]) {
+        this._logger.fine("The center mouse button is pressed.");
     }
 
-    if (latLonChange) {
-        this.setViewLatLon(view, this.computeNewViewLatLon(view, latLonChange.getLatitude(),
-            latLonChange.getLongitude()));
-    } else {
-        this._logger.severe('A failure occured in the drag event result.');
-    }
-
-    /**** FIXME: handle the view angle when command is held down....
-
-    if( command key is held down during the drag ) {
+    if (this.mouseDown[2]) {
+        this._logger.fine('The right mouse button is pressed.');
 
         var headingDirection = 1;
-        var source = mouseEvent.getSource();
 
-        if (source) {
-            if (mouseEvent.getPoint().y < source.getHeight() / 2) {
+        if (this.domCanvas) {
+            if (mouseEvent.clientY + document.body.scrollTop +
+                document.documentElement.scrollTop - this.domCanvas.offsetTop <
+                    this.domCanvas.height / 2) {
+
                 headingDirection = -1;
             }
         }
 
         this.setViewAngle(view,
-            this.computeNewViewHeading(view, this.computeViewAngleChange(headingDirection * mouseMove.x, false)),
-            this.computeNewViewPitch(view, this.computeViewAngleChange(mouseMove.y, false)));
+            this.computeNewViewHeading(view,
+                this.computeViewAngleChange(headingDirection * mouseMove.getX(), false)),
+            this.computeNewViewPitch(view,
+                this.computeViewAngleChange(mouseMove.getY(), false))
+        );
+    }
+};
+
+/**
+ * Compute a new view heading.
+ *
+ * @param {lanyard.View} view the view to use.
+ * @param {lanyard.geom.Angle} change the angle to change by.
+ * @return {lanyard.geom.Angle} the new view heading.
+ */
+lanyard.dom.InputHandler.prototype.computeNewViewHeading = function(view, change) {
+
+    /** @type {number} */
+    var degrees;
+
+    if (this.viewTarget && this.viewTarget.heading) {
+        degrees = this.viewTarget.heading.getDegrees();
+    } else {
+        degrees = view.getHeading().getDegrees();
     }
 
-    ****/
+    degrees = degrees + change.getDegrees();
+
+    if (degrees < 0) {
+        degrees = degrees + 360;
+    } else if (degrees > 360) {
+        degrees = degrees - 360;
+    }
+
+    return lanyard.geom.Angle.prototype.fromDegrees(degrees);
+};
+
+/**
+ * Set the view angle.
+ *
+ * @param {lanyard.View} view the current view.
+ * @param {lanyard.geom.Angle} newHeading the new heading.
+ * @param {lanyard.geom.Angle} newPitch the new pitch.
+ */
+lanyard.dom.InputHandler.prototype.setViewAngle = function(view, newHeading, newPitch) {
+
+    if (!newHeading && !newPitch) {
+        this._logger.severe('Attempted to set the view angle without a specified angle.');
+    }
+
+    this.viewTarget = this.viewTarget = new lanyard.dom.ViewProperties();
+    this.viewTarget.heading = newHeading;
+    this.viewTarget.pitch = newPitch;
+    this.setViewProperties(view, this.viewTarget,
+        this.viewAngleStepCoefficient, this.viewAngleErrorThreshold, false);
+};
+
+/**
+ * Compute the view angle change.
+ *
+ * @param {number} factor the factor to change by.
+ * @param {boolean} slow if true, go slow.
+ * @return {lanyard.geom.Angle} the angle change.
+ */
+lanyard.dom.InputHandler.prototype.computeViewAngleChange = function(factor, slow) {
+    return lanyard.geom.Angle.prototype.fromDegrees(factor * this.viewAngleChangeFactor * (slow ? 2.5e-1 : 1));
+};
+
+/**
+ * Compute the new view pitch.
+ *
+ * @param {lanyard.View} view the view to use.
+ * @param {lanyard.geom.Angle} change the angle to change by.
+ * @return {lanyard.geom.Angle} the new view pitch.
+ */
+lanyard.dom.InputHandler.prototype.computeNewViewPitch = function(view, change) {
+    /** @type {number} */
+    var degrees;
+
+    if (this.viewTarget && this.viewTarget.pitch) {
+        degrees = this.viewTarget.pitch.getDegrees();
+    } else {
+        degrees = view.getPitch().getDegrees();
+    }
+
+    degrees = degrees + change.getDegrees();
+
+    /** @type {Array.<lanyard.geom.Angle>} */
+    var constraints = view.getPitchConstraints();
+
+    /** @type {lanyard.geom.Angle} */
+    var newViewPitch = lanyard.geom.Angle.prototype.fromDegrees(
+        this.clamp(
+            degrees, constraints[0].getDegrees(), constraints[1].getDegrees())
+    );
+
+    return newViewPitch;
 };
 
 /**
@@ -752,7 +843,7 @@ lanyard.dom.InputHandler.prototype.addPositionListener = function(listener) {
 lanyard.dom.InputHandler.prototype.callPositionListeners = function(positionEvent) {
     //this._logger.fine("Calling position listeners (" + this.eventListeners.length + ").");
 
-    for (var i = 0; i < this.eventListeners.length; i++) {
+    for (var i = 0; i < this.eventListeners.length; i = i + 1) {
         if (this.eventListeners[i].moved && this.eventListeners[i].isPositionListener) {
             this.eventListeners[i].moved(positionEvent);
         }
