@@ -389,8 +389,7 @@ lanyard.globes.EllipsoidalGlobe.prototype.getIntersectionPosition = function(lin
         return null;
     }
 
-    this._logger.fine("Intersection point: " + intersections[0].getIntersectionPoint().toString());
-
+    //this._logger.fine("Intersection point: " + intersections[0].getIntersectionPoint().toString());
     return this.computePositionFromPoint(intersections[0].getIntersectionPoint());
 };
 

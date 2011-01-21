@@ -424,11 +424,11 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
 
             /** @type {number} */
             var latFactor = cosHeading * mouseMove.getY() + sinHeading * mouseMove.getX();
-            this._logger.fine('latitude factor = ' + latFactor.toString());
+            //this._logger.fine('latitude factor = ' + latFactor.toString());
 
             /** @type {number} */
             var lonFactor = sinHeading * mouseMove.getY() - cosHeading * mouseMove.getX();
-            this._logger.fine('longitude factor = ' + lonFactor.toString());
+            //this._logger.fine('longitude factor = ' + lonFactor.toString());
 
             if (latFactor !== 0 || lonFactor !== 0) {
                 latLonChange = this.computeViewLatLonChange(view, globe, latFactor, lonFactor, false);
