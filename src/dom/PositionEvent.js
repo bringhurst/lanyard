@@ -31,11 +31,15 @@ goog.provide('lanyard.dom.PositionEvent');
  * A position event.
  *
  * @constructor
+ * @param {lanyard.LanyardCanvas} source the canvas to use as an event source.
+ * @param {Event} mouseEvent the original mouse event.
+ * @param {lanyard.geom.Position} previousPosition the previous position.
+ * @param {lanyard.geom.Position} position the current position.
  */
 lanyard.dom.PositionEvent = function(source, mouseEvent, previousPosition, position) {
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.dom.PositionEvent');
+    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.dom.PositionEvent'); 
 
-    /** @type {*} */
+    /** @type {lanyard.LanyardCanvas} */
     this.source = source;
 
     /** @type {Event} */

@@ -56,18 +56,17 @@ lanyard.demo.BasicDemo = function(webGLCanvas, layerListDiv, eventLogDiv) {
 
     /**
      * @type {HTMLCanvasElement}
-     * @private
      */
     this._webGLCanvas = webGLCanvas;
 
-    /** @private */ this._layerListDiv = layerListDiv;
-    /** @private */ this._eventLogDiv = eventLogDiv;
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.demo.BasicDemo');
+    this._layerListDiv = layerListDiv;
+    this._eventLogDiv = eventLogDiv;
 
-    /** @private */ this.lanyardCanvas = null;
+    this._logger = goog.debug.Logger.getLogger('lanyard.demo.BasicDemo');
+
+    this.lanyardCanvas = null;
 
     /**
-     * @private
      * @type {Array.<lanyard.Layer>}
      */
     this._layerList = [];
@@ -102,14 +101,12 @@ lanyard.demo.BasicDemo.prototype.run = function() {
     var self = this;
 
     // Start it up.
-    (function loop(){
-        setTimeout(function(){
+    (function loop() {
+        setTimeout(function() {
             self.lanyardCanvas.display();
             loop();
         }, 15);
     })();
-
-    //this.lanyardCanvas.display();
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
     lanyard.demo.BasicDemo.prototype.run);

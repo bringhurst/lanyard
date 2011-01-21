@@ -979,21 +979,34 @@ lanyard.BasicOrbitView.prototype.computeVisibleLatLonRange = function() {
  * @param {lanyard.geom.Point} windowPoint the window point.
  */
 lanyard.BasicOrbitView.prototype.unProject = function(windowPoint) {
+    if(!windowPoint) {
+        this._logger.severe("Attempted to unproject an invalid window point.");
+    }
 
     if (!this.modelView || !this.projection || !this.viewport) {
         return null;
     }
 
     /** @type {Array.<number>} */
+    var projectionMatrix = this.projection.getEntries();
+
+    /** @type {Array.<number>} */
+    var modelViewMatrix = this.modelView.getEntries();
+
+    /** @type {Array.<number>} */
     var viewport = [this.viewport.getX(), this.viewport.getY(),
-        this.viewport.getWidth(), this.viewport.getHeight()];
+        this.viewport.getWidth(), this.viewport.getHeight()]
 
-    /** @type {lanyard.geom.Point} */
-    var modelPoint = lanyard.util.GLU.prototype.unProject(
-        windowPoint.getX(), windowPoint.getY(), windowPoint.getZ(),
-        this.modelView, this.projection, viewport);
+    /** @type {Array.<number>} */
+    var modelPoint = [3];
 
-    return modelPoint;
+    if(lanyard.util.GLU.prototype.unProject(
+            windowPoint.getX(), windowPoint.getY(), windowPoint.getZ(),
+            modelViewMatrix, projectionMatrix, viewport, modelPoint)) {
+        return new lanyard.geom.Point(modelPoint[0], modelPoint[1], modelPoint[2], 0.0);
+    } else {
+        return null;
+    }
 };
 
 /**
@@ -1080,6 +1093,7 @@ lanyard.BasicOrbitView.prototype.computeHorizonDistanceHere = function() {
  * @return {lanyard.geom.Line} the ray.
  */
 lanyard.BasicOrbitView.prototype.computeRayFromScreenPoint = function(x, y) {
+
     if (!this.viewport) {
         return null;
     }
@@ -1097,7 +1111,11 @@ lanyard.BasicOrbitView.prototype.computeRayFromScreenPoint = function(x, y) {
         return null;
     }
 
-    return new lanyard.geom.Line(a, b.subtract(a).normalize());
+    /** @type {lanyard.geom.Line} */
+    var ray = new lanyard.geom.Line(a, b.subtract(a).normalize())
+    //this._logger.fine("Created ray line: " + ray.toString());
+
+    return ray;
 };
 
 /**
