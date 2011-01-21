@@ -420,8 +420,6 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function(dc) {
     var eye = modelView.getInverse().transform(new lanyard.geom.Point(0, 0, 0, 1));
     //this._logger.fine("Eye is: " + eye.toString());
 
-
-
     /** @type {lanyard.geom.Position} */
     var polarEye = globe.computePositionFromPoint(eye);
 

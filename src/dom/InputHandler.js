@@ -56,6 +56,11 @@ lanyard.dom.InputHandler = function() {
     this.lanyardCanvas = null;
 
     /**
+     * @type {HTMLCanvasElement}
+     */
+    this.domCanvas = null;
+
+    /**
      * Current mouse state.
      *
      * @private
@@ -179,10 +184,9 @@ lanyard.dom.InputHandler.prototype.setEventSource = function(lanyardCanvas) {
         this._logger.severe('Attempted to set an event source without a valid view.');
     }
 
-    /** @type {HTMLCanvasElement} */
-    var domCanvas = lanyardCanvas.getWebGLCanvas();
+    this.domCanvas = lanyardCanvas.getWebGLCanvas();
 
-    if (!domCanvas) {
+    if (!this.domCanvas) {
         this._logger.severe('Attempted to use an input source without a valid dom node.');
     }
 
@@ -190,33 +194,33 @@ lanyard.dom.InputHandler.prototype.setEventSource = function(lanyardCanvas) {
     this.lanyardCanvas = lanyardCanvas;
 
     // Setup a listener for key events.
-    var keyEventHandler = new goog.events.KeyHandler(domCanvas);
+    var keyEventHandler = new goog.events.KeyHandler(this.domCanvas);
     goog.events.listen(keyEventHandler, 'key', this.keysPolled, false, this);
 
     // Setup a listener for the mouse wheel
-    var mouseWheelHandler = new goog.events.MouseWheelHandler(domCanvas);
+    var mouseWheelHandler = new goog.events.MouseWheelHandler(this.domCanvas);
     goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
         this.mouseWheelMoved, false, this);
 
     // Setup a listener for mouse clicks
     goog.events.listen(window, goog.events.EventType.MOUSEDOWN, function(e) {
-        this._logger.fine('Received a mouse down event.');
+        //this._logger.fine('Received a mouse down event.');
         ++this.mouseDown[e.button];
         ++this.mouseDownCount;
     }, false, this);
 
     goog.events.listen(window, goog.events.EventType.MOUSEUP, function(e) {
-        this._logger.fine('Received a mouse up event.');
+        //this._logger.fine('Received a mouse up event.');
         --this.mouseDown[e.button];
         --this.mouseDownCount;
     }, false, this);
 
     // Setup a listener for when the mouse moves.
-    goog.events.listen(domCanvas, goog.events.EventType.MOUSEMOVE,
+    goog.events.listen(this.domCanvas, goog.events.EventType.MOUSEMOVE,
        this.mouseMoved, false, this);
 
     // Things to do on canvas unload.
-    goog.events.listen(domCanvas, 'unload', function(e) {
+    goog.events.listen(this.domCanvas, 'unload', function(e) {
         // Remove the mouse wheel listener
         goog.events.unlisten(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
             this.mouseWheelMoved);
@@ -355,11 +359,19 @@ lanyard.dom.InputHandler.prototype.mouseMoved = function(mouseEvent) {
             this.lanyardCanvas,
             mouseEvent,
             view.computePositionFromScreenPoint(this.lastMousePoint.getX(), this.lastMousePoint.getY()),
-            view.computePositionFromScreenPoint(mouseEvent.clientX, mouseEvent.clientY)
+            view.computePositionFromScreenPoint(
+                mouseEvent.clientX + document.body.scrollLeft +
+                    document.documentElement.scrollLeft - this.domCanvas.offsetLeft,
+                mouseEvent.clientY + document.body.scrollTop +
+                    document.documentElement.scrollTop - this.domCanvas.offsetTop)
         )
     );
 
-    this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
+    this.lastMousePoint = new lanyard.util.Point(
+        mouseEvent.clientX + document.body.scrollLeft +
+            document.documentElement.scrollLeft - this.domCanvas.offsetLeft,
+        mouseEvent.clientY + document.body.scrollTop +
+            document.documentElement.scrollTop - this.domCanvas.offsetTop);
 };
 
 /**
@@ -396,8 +408,13 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
     }
 
     /** @type {lanyard.util.Point} */
-    var mouseMove = new lanyard.util.Point(mouseEvent.clientX - this.lastMousePoint.getX(),
-        mouseEvent.clientY - this.lastMousePoint.getY());
+    var mouseMove = new lanyard.util.Point(
+        mouseEvent.clientX + document.body.scrollLeft +
+            document.documentElement.scrollLeft - this.domCanvas.offsetLeft -
+                this.lastMousePoint.getX(),
+        mouseEvent.clientY + document.body.scrollTop +
+            document.documentElement.scrollTop - this.domCanvas.offsetTop -
+                this.lastMousePoint.getY());
 
     /** @type {lanyard.geom.LatLon} */
     var latLonChange = null;
@@ -406,7 +423,11 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
     var prev = view.computePositionFromScreenPoint(this.lastMousePoint.getX(), this.lastMousePoint.getY());
 
     /** @type {lanyard.geom.Position} */
-    var cur = view.computePositionFromScreenPoint(mouseEvent.clientX, mouseEvent.clientY);
+    var cur = view.computePositionFromScreenPoint(
+        mouseEvent.clientX + document.body.scrollLeft +
+            document.documentElement.scrollLeft - this.domCanvas.offsetLeft,
+        mouseEvent.clientY + document.body.scrollTop +
+            document.documentElement.scrollTop - this.domCanvas.offsetTop);
 
     if (prev && cur) {
         latLonChange = new lanyard.geom.LatLon(prev.getLatitude().subtract(cur.getLatitude()),

@@ -60,7 +60,7 @@ lanyard.globes.Earth = function() {
      * @type {number}
      * @private
      */
-    this.es = 0.00669437999013;
+    this.es = 0; //0.00669437999013
 
     /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
 
