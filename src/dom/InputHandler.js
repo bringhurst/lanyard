@@ -28,11 +28,10 @@
 goog.provide('lanyard.dom.InputHandler');
 
 goog.require('goog.debug.Logger');
+goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.events.MouseWheelHandler');
-goog.require('goog.fx.Dragger');
-goog.require('goog.fx.Dragger.EventType');
 
 goog.require('lanyard.dom.PositionEvent');
 goog.require('lanyard.dom.ViewProperties');
@@ -65,10 +64,20 @@ lanyard.dom.InputHandler = function() {
     this.lastMousePoint = new lanyard.util.Point(0, 0);
 
     /**
+     * Track the mouse button down count.
+     *
      * @private
-     * @type {boolean}
+     * @type {number}
      */
-    this.isHovering = false;
+    this.mouseDownCount = 0;
+
+    /**
+     * Track each mouse button down (assume no more than 4 mouse buttons).
+     *
+     * @private
+     * @type {Array.<number>}
+     */
+    this.mouseDown = [0, 0, 0, 0];
 
     /**
      * @private
@@ -189,23 +198,22 @@ lanyard.dom.InputHandler.prototype.setEventSource = function(lanyardCanvas) {
     goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
         this.mouseWheelMoved, false, this);
 
-    // Setup a listener for dragging the mouse.
-    goog.events.listen(domCanvas, goog.events.EventType.MOUSEDOWN, function(e) {
-        var dragger = new goog.fx.Dragger(domCanvas);
+    // Setup a listener for mouse clicks
+    goog.events.listen(window, goog.events.EventType.MOUSEDOWN, function(e) {
+        this._logger.fine('Received a mouse down event.');
+        ++this.mouseDown[e.button];
+        ++this.mouseDownCount;
+    }, false, this);
 
-        goog.events.listen(dragger, goog.fx.Dragger.EventType.DRAG,
-            this.mouseDragged, false, this);
-
-        goog.events.listen(dragger, goog.fx.Dragger.EventType.END, function(e) {
-            dragger.dispose();
-        });
-
-        dragger.startDrag(e);
+    goog.events.listen(window, goog.events.EventType.MOUSEUP, function(e) {
+        this._logger.fine('Received a mouse up event.');
+        --this.mouseDown[e.button];
+        --this.mouseDownCount;
     }, false, this);
 
     // Setup a listener for when the mouse moves.
-    //goog.events.listen(domCanvas, goog.events.EventType.MOUSEMOVE,
-    //   this.mouseMoved, false, this);
+    goog.events.listen(domCanvas, goog.events.EventType.MOUSEMOVE,
+       this.mouseMoved, false, this);
 
     // Things to do on canvas unload.
     goog.events.listen(domCanvas, 'unload', function(e) {
@@ -306,12 +314,26 @@ lanyard.dom.InputHandler.prototype.mouseMoved = function(mouseEvent) {
         return;
     }
 
-    this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
-
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();
     if (!view) {
         return;
+    }
+
+    // Check to see if a mouse button is pressed
+    if (this.mouseDownCount) {
+        if (this.mouseDown[0]) {
+            //this._logger.fine("The left mouse button is pressed.");
+            this.mouseDragged(mouseEvent);
+        }
+
+        if (this.mouseDown[1]) {
+            this._logger.fine('The center mouse button is pressed.');
+        }
+
+        if (this.mouseDown[2]) {
+            this._logger.fine('The right mouse button is pressed.');
+        }
     }
 
     /** @type {lanyard.Model} */
@@ -332,10 +354,12 @@ lanyard.dom.InputHandler.prototype.mouseMoved = function(mouseEvent) {
         new lanyard.dom.PositionEvent(
             this.lanyardCanvas,
             mouseEvent,
-            null /* this.previousPickPosition */,
-            null /* p */
+            view.computePositionFromScreenPoint(this.lastMousePoint.getX(), this.lastMousePoint.getY()),
+            view.computePositionFromScreenPoint(mouseEvent.clientX, mouseEvent.clientY)
         )
     );
+
+    this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
 };
 
 /**
@@ -400,11 +424,15 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
 
             /** @type {number} */
             var latFactor = cosHeading * mouseMove.getY() + sinHeading * mouseMove.getX();
+            this._logger.fine('latitude factor = ' + latFactor.toString());
 
             /** @type {number} */
             var lonFactor = sinHeading * mouseMove.getY() - cosHeading * mouseMove.getX();
+            this._logger.fine('longitude factor = ' + lonFactor.toString());
 
-            latLonChange = this.computeViewLatLonChange(view, globe, latFactor, lonFactor, false);
+            if (latFactor !== 0 || lonFactor !== 0) {
+                latLonChange = this.computeViewLatLonChange(view, globe, latFactor, lonFactor, false);
+            }
         } else {
             this._logger.severe('Attempted to perform a drag event without a valid globe.');
         }
@@ -436,8 +464,6 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
     }
 
     ****/
-
-    this.lastMousePoint = new lanyard.util.Point(mouseEvent.clientX, mouseEvent.clientY);
 };
 
 /**
@@ -666,7 +692,7 @@ lanyard.dom.InputHandler.prototype.setViewProperties =
     }
 
     // Trigger a repaint
-    //this.lanyardCanvas.display(this); 
+    //this.lanyardCanvas.display(this);
 };
 
 /**
@@ -687,6 +713,8 @@ lanyard.dom.InputHandler.prototype.clamp = function(x, min, max) {
  * @param {*} listener a position listener.
  */
 lanyard.dom.InputHandler.prototype.addPositionListener = function(listener) {
+    //this._logger.fine("Adding a new position listener.");
+
     if (!listener) {
         this._logger.severe('Attempted to add an invalid position listener.');
     }
@@ -701,8 +729,10 @@ lanyard.dom.InputHandler.prototype.addPositionListener = function(listener) {
  * @param {lanyard.dom.PositionEvent} positionEvent the position event.
  */
 lanyard.dom.InputHandler.prototype.callPositionListeners = function(positionEvent) {
-    for (var i = 0; i < this.eventListeners.length; i = i + 1) {
-        if (this.eventListeners[i].isPositionListener && this.eventListeners[i].moved) {
+    //this._logger.fine("Calling position listeners (" + this.eventListeners.length + ").");
+
+    for (var i = 0; i < this.eventListeners.length; i++) {
+        if (this.eventListeners[i].moved && this.eventListeners[i].isPositionListener) {
             this.eventListeners[i].moved(positionEvent);
         }
     }
