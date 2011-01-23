@@ -28,17 +28,10 @@
 goog.provide('lanyard.layers.tiled.LevelComparer');
 
 /**
- * Creates a tiled layer level comparer.
- */
-lanyard.layers.tiled.LevelComparer = function() {
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
-};
-
-/**
  * Compare two texture tiles.
  *
- * @param {lanyard.layers.tiled.TextureTile} ta
- * @param {lanyard.layers.tiled.TextureTile} tb
+ * @param {lanyard.layers.tiled.TextureTile} ta a texture tile.
+ * @param {lanyard.layers.tiled.TextureTile} tb a texture tile to compare to.
  * @return {number} 0 if equal, 1 if greater, -1 if less than.
  */
 lanyard.layers.tiled.LevelComparer.prototype.compare = function(ta, tb) {
