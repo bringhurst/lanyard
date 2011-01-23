@@ -194,7 +194,7 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function(dc) {
         self.textureData = surfaceTexture;
 
         // Fire off a repaint
-        dc.getCanvas().display();
+        //dc.getCanvas().display();
     };
 
     surfaceImage.onerror = function() {

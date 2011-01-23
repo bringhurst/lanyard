@@ -782,7 +782,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.requestTexture = function(dc, til
             tile.textureData = new Image();
             tile.textureData.src = tile.getResourceURL();
             tile.textureData.onload = function() {
-                dc.getCanvas().display();
+                //dc.getCanvas().display();
             };
         }
         // FIXME: On a load failure, call self.levels.markResourceAbsent(tile);
