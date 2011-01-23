@@ -105,7 +105,7 @@ lanyard.demo.BasicDemo.prototype.run = function() {
         setTimeout(function() {
             self.lanyardCanvas.display();
             loop();
-        }, 15);
+        }, 10);
     })();
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
