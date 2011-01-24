@@ -1,4 +1,4 @@
-/*global goog, lanyard */
+/*global goog, lanyard, window */
 /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 /**
@@ -36,6 +36,7 @@ goog.require('lanyard.Layer');
 goog.require('lanyard.demo.StatusBar');
 goog.require('lanyard.dom.InputHandler');
 goog.require('lanyard.layers.earth.BMNGOneImage');
+//goog.require('lanyard.layers.earth.PoliticalBoundariesLayer');
 
 /**
  * A basic demo of Lanyard.
@@ -102,7 +103,7 @@ lanyard.demo.BasicDemo.prototype.run = function() {
 
     // Start it up.
     (function loop() {
-        setTimeout(function() {
+        window.setTimeout(function() {
             self.lanyardCanvas.display();
             loop();
         }, 10);
@@ -155,6 +156,9 @@ goog.exportSymbol('lanyard.demo.BasicDemo.prototype.addStatusBar',
 lanyard.demo.BasicDemo.prototype.setupLayerList = function() {
     // Add a basic blue marble layer
     this._layerList.push(new lanyard.layers.earth.BMNGOneImage());
+
+    // Add a political boundaries WMS layer.
+    //this._layerList.push(new lanyard.layers.earth.PoliticalBoundariesLayer());
 
     var i;
     for (i = 0; i < this._layerList.length; i = i + 1) {
