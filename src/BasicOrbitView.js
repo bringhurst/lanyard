@@ -996,7 +996,7 @@ lanyard.BasicOrbitView.prototype.unProject = function(windowPoint) {
         this.viewport.getWidth(), this.viewport.getHeight()]
 
     /** @type {Array.<number>} */
-    var modelPoint = [3];
+    var modelPoint = [];
 
     if(lanyard.util.GLU.prototype.unProject(
             windowPoint.getX(), windowPoint.getY(), windowPoint.getZ(),
