@@ -25,7 +25,7 @@
  * See http://worldwind.arc.nasa.gov/ for further information about NASA World Wind.
  */
 
-goog.provide('lanyard.layers.TiledImageLayer');
+goog.provide('lanyard.layers.tiled.TiledImageLayer');
 
 goog.require('lanyard.layers.AbstractLayer');
 
