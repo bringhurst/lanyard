@@ -101,13 +101,23 @@ lanyard.demo.BasicDemo.prototype.run = function() {
     /** @type {lanyard.demo.BasicDemo} */
     var self = this;
 
-    // Start it up.
-    (function loop() {
-        window.setTimeout(function() {
+    if(window['requestAnimationFrame']) {
+        this._logger.fine("Using animation frame requests for rendering.");
+        function step(event) {
             self.lanyardCanvas.display();
-            loop();
-        }, 10);
-    })();
+            window['requestAnimationFrame']();
+        }
+        window.addEventListener("BeforePaint", step, false);
+        window['requestAnimationFrame']();
+    } else {
+        this._logger.fine("Using setTimeout for rendering.");
+        (function loop() {
+            window.setTimeout(function() {
+                self.lanyardCanvas.display();
+                loop();
+            }, 10);
+        })();
+    }
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.run',
     lanyard.demo.BasicDemo.prototype.run);
