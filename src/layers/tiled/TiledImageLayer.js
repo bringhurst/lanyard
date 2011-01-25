@@ -27,7 +27,10 @@
 
 goog.provide('lanyard.layers.tiled.TiledImageLayer');
 
+goog.require('lanyard.LevelSet');
+goog.require('lanyard.Tile');
 goog.require('lanyard.layers.AbstractLayer');
+goog.require('lanyard.layers.tiled.TextureTile');
 
 /**
  * Creates a new tiled image layer with the specified level set.
@@ -36,7 +39,7 @@ goog.require('lanyard.layers.AbstractLayer');
  * @extends {lanyard.layers.AbstractLayer}
  * @param {lanyard.LevelSet} levelSet the level set to use for this layer.
  */
-lanyard.layers.TiledImageLayer = function(levelSet) {
+lanyard.layers.tiled.TiledImageLayer = function(levelSet) {
     lanyard.layers.AbstractLayer.call(this);
 
     this._logger = goog.debug.Logger.getLogger('lanyard.layers.TiledImageLayer');
@@ -936,10 +939,10 @@ lanyard.layers.tiled.TiledImageLayer.prototype.resolveColor =
     var sector = tile.getSector();
 
     /** @type {number} */
-    var dLat = sector.getMaxLatitude().degrees - latitude.getDegrees();
+    var dLat = sector.getMaxLatitude().getDegrees() - latitude.getDegrees();
 
     /** @type {number} */
-    var dLon = longitude.degrees - sector.getMinLongitude().getDegrees();
+    var dLon = longitude.getDegrees() - sector.getMinLongitude().getDegrees();
 
     /** @type {number} */
     var sLat = dLat / sector.getDeltaLat().getDegrees();

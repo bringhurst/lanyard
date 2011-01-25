@@ -37,15 +37,11 @@ goog.require('lanyard.layers.tiled.TiledImageLayer');
  * @this {lanyard.layers.earth.PoliticalBoundariesLayer}
  */
 lanyard.layers.earth.PoliticalBoundariesLayer = function() {
-    lanyard.layers.PoliticalBoundariesLayer.call(this, null);
+    lanyard.layers.tiled.TiledImageLayer.call(this, null);
 
-    /** @private */
     this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
 
-    // Method called into super()
     this.makeLevels();
-
-    // Method called into super()
     this.setUseTransparentTextures(true);
 };
 

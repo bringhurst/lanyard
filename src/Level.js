@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.Level');
 
+goog.require('lanyard.AbsentResourceList');
+
 /**
  * A representation of a level.
  *
@@ -72,7 +74,7 @@ lanyard.Level = function(params) {
     /** @type {string} */
     this.formatSuffix = this.params.formatSuffix;
 
-    /** @type {function} */
+    /** @type {Function} */
     this.urlbuilder = this.params.tileUrlBuilder;
 
     /** @type {number} */

@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.LevelSet');
 
+goog.require('lanyard.Level');
+
 /**
  * A representation of a level set. Created from params or another level set (copied).
  *
@@ -41,23 +43,20 @@ lanyard.LevelSet = function(params, source) {
         this._logger.severe('A level set may be created or copied, but not both at the same time.');
     }
 
-    /** @type {lanyard.geom.Sector} */
+    /** @type {lanyard.geom.Sector?} */
     this.sector = null;
 
-    /** @type {lanyard.geom.LatLon} */
+    /** @type {lanyard.geom.LatLon?} */
     this.levelZeroTileDelta = null;
 
-    /** @type {number} */
+    /** @type {number?} */
     this.numLevelZeroColumns = null;
 
     /** @type {Array.<lanyard.Level>} */
     this.levels = [];
 
     if (params) {
-        /** @type {lanyard.geom.LatLon} */
         this.levelZeroTileDelta = params.levelZeroTileDelta;
-
-        /** @type {lanyard.geom.Sector} */
         this.sector = params.sector;
 
         for (var i = 0; i < params.numLevels; i = i + 1) {
@@ -75,7 +74,6 @@ lanyard.LevelSet = function(params, source) {
             this.levels.add(new lanyard.Level(params));
         }
 
-        /** @type {number} */
         this.numLevelZeroColumns =
             Math.round(this.sector.getDeltaLon().divide(this.levelZeroTileDelta.getLongitude()));
 

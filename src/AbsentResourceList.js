@@ -47,20 +47,18 @@ lanyard.AbsentResourceList = function(maxTries, minCheckInterval) {
     /** @type {number} */
     this.DEFAULT_MIN_ABSENT_RESOURCE_CHECK_INTERVAL = 10000;
 
+    /** @type {number} */
+    this.maxTries = this.DEFAULT_MAX_ABSENT_RESOURCE_TRIES;
+
     if (maxTries) {
-        /** @type {number} */
         this.maxTries = Math.max(maxTries, 1);
-    } else {
-        /** @type {number} */
-        this.maxTries = this.DEFAULT_MAX_ABSENT_RESOURCE_TRIES;
     }
 
+    /** @type {number} */
+    this.minCheckInterval = this.DEFAULT_MIN_ABSENT_RESOURCE_CHECK_INTERVAL;
+
     if (minCheckInterval) {
-        /** @type {number} */
         this.minCheckInterval = Math.max(minCheckInterval, 500);
-    } else {
-        /** @type {number} */
-        this.minCheckInterval = this.DEFAULT_MIN_ABSENT_RESOURCE_CHECK_INTERVAL;
     }
 
     /** @type {Object} */

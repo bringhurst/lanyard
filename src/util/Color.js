@@ -35,7 +35,7 @@ goog.provide('lanyard.util.Color');
  * @param {number} green a green value, normalized to [0.0, 1.0].
  * @param {number} blue a blue value, normalized to [0.0, 1.0].
  * @param {number} alpha an alpha value, normalized to [0.0, 1.0].
- * @param {string} hex the html hex value of the color.
+ * @param {string?} hex the html hex value of the color.
  */
 lanyard.util.Color = function(red, green, blue, alpha, hex) {
     /**
@@ -64,11 +64,11 @@ lanyard.util.Color = function(red, green, blue, alpha, hex) {
 
     /**
      * @private
-     * @type {string}
+     * @type {string?}
      */
     this._hex = hex;
 
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.util.Color');
+    this._logger = goog.debug.Logger.getLogger('lanyard.util.Color');
 };
 
 /**
@@ -191,6 +191,31 @@ lanyard.util.Color.prototype.CLEAR =
     new lanyard.util.Color(0.0, 0.0, 0.0, 0.0, '00000000');
 
 /**
+ * Creates an opaque sRGB color with the specified combined RGB value
+ * consisting of the red component in bits 16-23, the green component
+ * in bits 8-15, and the blue component in bits 0-7.
+ *
+ * @param {number} rgb the rgb value.
+ * @return  {lanyard.util.Color} the new color.
+ */
+lanyard.util.Color.prototype.fromRGB = function(rgb) {
+    /** @type {number} */
+    var r = (rgb & 0xFF0000) >>> 16;
+
+    /** @type {number} */
+    var g = (rgb & 0xFF00) >>> 8;
+
+    /** @type {number} */
+    var b = (rgb * 0xFF);
+
+    // FIXME: does this always get formatted right (no)?
+    /** @type {string} */
+    var hexString = r.toString(16) + g.toString(16) + b.toString(16);
+
+    return new lanyard.util.Color(r, g, b, 1, hexString);
+};
+
+/**
  * Create a {lanyard.util.Color} object from a kml or html color hex string.
  *
  * @param {string} hexString the hex string of the color in RRGGBB or RRGGBBAA format.
@@ -247,7 +272,7 @@ lanyard.util.Color.prototype.toVec3 = function() {
 /**
  * Find the hex value of this color.
  *
- * @return {string} the string value of this color.
+ * @return {string?} the string value of this color, or null if not set.
  */
 lanyard.util.Color.prototype.toHex = function() {
     return this._hex;
