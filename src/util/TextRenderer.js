@@ -62,6 +62,15 @@ lanyard.util.TextRenderer.prototype.draw =
 };
 
 /**
+ * Set the color of text to be rendered.
+ *
+ * @param {lanyard.util.Color} color the color of the text.
+ */
+lanyard.util.TextRenderer.prototype.setColor = function (color) {
+
+};
+
+/**
  * Restore the state matrices.
  */
 lanyard.util.TextRenderer.prototype.endRendering = function() {

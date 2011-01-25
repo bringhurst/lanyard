@@ -208,11 +208,9 @@ lanyard.util.Color.prototype.fromRGB = function(rgb) {
     /** @type {number} */
     var b = (rgb * 0xFF);
 
-    // FIXME: does this always get formatted right (no)?
-    /** @type {string} */
-    var hexString = r.toString(16) + g.toString(16) + b.toString(16);
+    //var hexString = r.toString(16) + g.toString(16) + b.toString(16);
 
-    return new lanyard.util.Color(r, g, b, 1, hexString);
+    return new lanyard.util.Color(r, g, b, 1, null);
 };
 
 /**

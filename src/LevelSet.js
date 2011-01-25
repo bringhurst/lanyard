@@ -71,7 +71,7 @@ lanyard.LevelSet = function(params, source) {
 
             params.tileDelta = new lanyard.geom.LatLon(latDelta, lonDelta);
 
-            this.levels.add(new lanyard.Level(params));
+            this.levels.push(new lanyard.Level(params));
         }
 
         this.numLevelZeroColumns =

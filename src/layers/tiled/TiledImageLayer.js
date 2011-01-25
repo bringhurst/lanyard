@@ -31,6 +31,8 @@ goog.require('lanyard.LevelSet');
 goog.require('lanyard.Tile');
 goog.require('lanyard.layers.AbstractLayer');
 goog.require('lanyard.layers.tiled.TextureTile');
+goog.require('lanyard.util.TextRenderer');
+goog.require('lanyard.layers.tiled.LevelComparer');
 
 /**
  * Creates a new tiled image layer with the specified level set.
@@ -79,7 +81,7 @@ lanyard.layers.tiled.TiledImageLayer = function(levelSet) {
     this.drawTileIDs = false;
 
     /** @type {boolean} */
-    this.drawBoundingVolumes = false;
+    this._drawBoundingVolumes = false;
 
     /** @type {lanyard.util.TextRenderer} */
     this.textRenderer = null;
@@ -112,7 +114,7 @@ lanyard.layers.tiled.TiledImageLayer = function(levelSet) {
     }
 
     // Textures are assumed to be terrain unless specifically indicated otherwise.
-    this.setPickEnabled(false);
+    //this.setPickEnabled(false);
 };
 
 /**
@@ -251,7 +253,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.setShowImageTileOutlines = functi
  * @return {boolean} if we should draw the bounding volumes or not.
  */
 lanyard.layers.tiled.TiledImageLayer.prototype.isDrawBoundingVolumes = function() {
-    return this.drawBoundingVolumes;
+    return this._drawBoundingVolumes;
 };
 
 /**
@@ -260,7 +262,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.isDrawBoundingVolumes = function(
  * @param {boolean} drawBoundingVolumes if we should draw the bounding volumes or not.
  */
 lanyard.layers.tiled.TiledImageLayer.prototype.setDrawBoundingVolumes = function(drawBoundingVolumes) {
-    this.drawBoundingVolumes = drawBoundingVolumes;
+    this._drawBoundingVolumes = drawBoundingVolumes;
 };
 
 /**
@@ -294,7 +296,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.createTopLevelTiles = function() 
         level.getTileDelta().getLatitude(), sector.getMaxLatitude());
 
     /** @type {number} */
-    var lastCol = lanyard.Tile.computeColumn(
+    var lastCol = lanyard.Tile.prototype.computeColumn(
         level.getTileDelta().getLongitude(), sector.getMaxLongitude());
 
     /** @type {number} */
@@ -320,7 +322,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.createTopLevelTiles = function() 
             /** @type {lanyard.geom.Angle} */
             var t2 = t1.add(dLon);
 
-            this.topLevels.add(
+            this.topLevels.push(
                 new lanyard.layers.tiled.TextureTile(
                     new lanyard.geom.Sector(p1, p2, t1, t2),
                     level, row, col
@@ -466,7 +468,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.addTile = function(dc, tile) {
  * @param {lanyard.layers.tiled.TextureTile} tile the tile to add.
  */
 lanyard.layers.tiled.TiledImageLayer.prototype.addTileToCurrent = function(tile) {
-    this.currentTiles.add(tile);
+    this.currentTiles.push(tile);
 };
 
 /**
@@ -478,7 +480,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.addTileToCurrent = function(tile)
  */
 lanyard.layers.tiled.TiledImageLayer.prototype.isTileVisible = function(dc, tile) {
     /** @type {boolean} */
-    var ret = tile.getExtent(dc).intersects(
+    var ret = tile.getExtent(dc).intersectsFrustum(
             dc.getView().getFrustumInModelCoordinates()
         ) && (!dc.getVisibleSector() || dc.getVisibleSector().intersects(
             tile.getSector()
@@ -557,7 +559,8 @@ lanyard.layers.tiled.TiledImageLayer.prototype.needToSplit = function(dc, sector
     var cellSize = (Math.PI * sector.getDeltaLatRadians() * dc.getGlobe().getRadius()) / density;
 
     /** @type {boolean} */
-    var doesNeedToSplit = (Math.log10(cellSize) <= (Math.log10(minDistance) - 1));
+    var doesNeedToSplit = (Math.log(cellSize) / Math.log(10) <= (Math.log(minDistance) / Math.log(10) - 1));
+
     return !doesNeedToSplit;
 };
 
@@ -567,7 +570,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.needToSplit = function(dc, sector
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.layers.tiled.TiledImageLayer.prototype.doRender = function(dc) {
-    if (!dc.getSurfaceGeometry() || dc.getSurfaceGeometry().size() < 1) {
+    if (!dc.getSurfaceGeometry() || dc.getSurfaceGeometry().length() < 1) {
         this._logger.severe('Attempted to render without valid surface geometry.');
         return;
     }
@@ -598,9 +601,9 @@ lanyard.layers.tiled.TiledImageLayer.prototype.draw = function(dc) {
 
     this.assembleTiles(dc); // Determine the tiles to draw.
 
-    if (this.currentTiles.size() >= 1) {
+    if (this.currentTiles.length > 0) {
         /** @type {Array.<lanyard.layers.tiled.TextureTile>} */
-        var sortedTiles = this.currentTiles.toArray(sortedTiles);
+        var sortedTiles = this.currentTiles;
         sortedTiles.sort(lanyard.layers.tiled.LevelComparer.prototype.compare);
 
         //dc.getGL().glPushAttrib(GL.GL_COLOR_BUFFER_BIT | GL.GL_POLYGON_BIT);
@@ -614,7 +617,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.draw = function(dc) {
         dc.getGL().enable(dc.getGL().CULL_FACE);
         //dc.getGL().glCullFace(GL.GL_BACK);
 
-        this._logger.info(this.getName() + ' ' + this.currentTiles.size());
+        this._logger.info(this.getName() + ' ' + this.currentTiles.length);
 
         dc.getSurfaceTileRenderer().renderTiles(dc, this.currentTiles);
 
@@ -624,11 +627,11 @@ lanyard.layers.tiled.TiledImageLayer.prototype.draw = function(dc) {
             this.drawTileIDs(dc, this.currentTiles);
         }
 
-        if (this.drawBoundingVolumes) {
+        if (this._drawBoundingVolumes) {
             this.drawBoundingVolumes(dc, this.currentTiles);
         }
 
-        this.currentTiles.clear();
+        this.currentTiles = [];;
     }
 
     this.sendRequests();
@@ -640,11 +643,11 @@ lanyard.layers.tiled.TiledImageLayer.prototype.draw = function(dc) {
  */
 lanyard.layers.tiled.TiledImageLayer.prototype.sendRequests = function() {
     /** @type {Function} */
-    var task = this.requestQ.poll();
+    var task = (/** @type {Function} */ this.requestQ.poll());
 
     while (task) {
         window.setTimeout(task, 50);
-        task = this.requestQ.poll();
+        task = (/** @type {Function} */ this.requestQ.poll());
     }
 };
 
@@ -672,7 +675,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.isLayerInView = function(dc) {
         dc.getGlobe(), dc.getVerticalExaggeration(), this.levels.getSector()
     );
 
-    return e.intersects(dc.getView().getFrustumInModelCoordinates());
+    return e.intersectsFrustum(dc.getView().getFrustumInModelCoordinates());
 };
 
 /**
@@ -696,7 +699,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.computeReferencePoint = function(
             continue;
         }
 
-        return dc.getGlobe().computePointFromPosition(pos.getLatitude(), pos.getLongitude(), 0.0);
+        return dc.getGlobe().computePointFromPositionAngles(pos.getLatitude(), pos.getLongitude(), 0.0);
     }
 
     return null;
@@ -713,7 +716,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.drawTileIDs = function(dc, tiles)
     var viewport = dc.getView().getViewport();
 
     if (!this.textRenderer) {
-        this.textRenderer = new lanyard.util.TextRenderer('13pt Arial');
+        this.textRenderer = new lanyard.util.TextRenderer('13pt Arial', dc);
     }
 
     dc.getGL().disable(dc.getGL().DEPTH_TEST);
@@ -721,7 +724,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.drawTileIDs = function(dc, tiles)
     dc.getGL().disable(dc.getGL().TEXTURE_2D);
 
     this.textRenderer.setColor(lanyard.util.Color.prototype.YELLOW);
-    this.textRenderer.beginRendering(viewport.width, viewport.height);
+    this.textRenderer.beginRendering();
 
     for (var i = 0; i < tiles.length; i = i + 1) {
         /** @type {string} */
@@ -736,7 +739,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.drawTileIDs = function(dc, tiles)
 
         /** @type {lanyard.geom.Point} */
         var pt = dc.getView().project(
-            dc.getGlobe().computePointFromPosition(
+            dc.getGlobe().computePointFromPositionAngles(
                 ll.getLatitude(), ll.getLongitude(),
                 dc.getGlobe().getElevation(
                     ll.getLatitude(), ll.getLongitude()
@@ -791,7 +794,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.requestTexture = function(dc, til
         // FIXME: On a load failure, call self.levels.markResourceAbsent(tile);
     };
 
-    this.requestQ.add(task);
+    this.requestQ.offer(task);
 };
 
 /**
@@ -835,59 +838,6 @@ lanyard.layers.tiled.TiledImageLayer.prototype.isTextureInMemory = function(tile
 };
 
 /**
- * Get the color at the specified longitude and latitude.
- *
- * @param {lanyard.geom.Angle} latitude the latitude of the location.
- * @param {lanyard.geom.Angle} longitude the longitude of the location.
- * @param {number} levelNumber the level number of the tile.
- * @return {lanyard.util.Color} the color of the location.
- */
-lanyard.layers.tiled.TiledImageLayer.prototype.getColor =
-        function(latitude, longitude, levelNumber) {
-
-    // Find the tile containing the position in the specified level.
-
-    /** @type {lanyard.layers.tiled.TextureTile} */
-    var containingTile;
-
-    for (var i = 0; i < this.topLevels.length; i = i + 1) {
-        containingTile = this.getContainingTile(this.topLevels[i], latitude, longitude, levelNumber);
-        if (containingTile) {
-            break;
-        }
-    }
-
-    if (!containingTile) {
-        return null;
-    }
-
-    /** @type {string} */
-    var pathBase = containingTile.getPath().substring(0, containingTile.getPath().lastIndexOf('.'));
-
-    /** @type {string} */
-    var cacheKey = pathBase + '.BufferedImage';
-
-    // Read the image since it's not in memory.
-    /** @type {Image} */
-    var image = this.requestImage(containingTile, cacheKey);
-    if (image) {
-        return this.resolveColor(containingTile, image, latitude, longitude);
-    }
-
-    // Retrieve it from the net since it's not here
-    this.downloadImage(containingTile);
-
-    // Try to read from disk again after retrieving it from the net.
-    image = this.requestImage(containingTile, cacheKey);
-    if (image) {
-        return this.resolveColor(containingTile, image, latitude, longitude);
-    }
-
-    // All attempts to find the image have failed.
-    return null;
-};
-
-/**
  * Get the containing child tile.
  *
  * @param {lanyard.layers.tiled.TextureTile} tile the texture tile.
@@ -921,117 +871,6 @@ lanyard.layers.tiled.TiledImageLayer.prototype.getContainingTile =
     }
 
     return null;
-};
-
-/**
- * Resolve the color for the specified tile and location.
- *
- * @param {lanyard.layers.tiled.TextureTile} tile the texture tile.
- * @param {Image} image the actual image.
- * @param {lanyard.geom.Angle} latitude the latitude of the color location.
- * @param {lanyard.geom.Angle} longitude the longitude of the color location.
- * @return {lanyard.util.Color} the color for the specified location and tile.
- */
-lanyard.layers.tiled.TiledImageLayer.prototype.resolveColor =
-        function(tile, image, latitude, longitude) {
-
-    /** @type {lanyard.geom.Sector} */
-    var sector = tile.getSector();
-
-    /** @type {number} */
-    var dLat = sector.getMaxLatitude().getDegrees() - latitude.getDegrees();
-
-    /** @type {number} */
-    var dLon = longitude.getDegrees() - sector.getMinLongitude().getDegrees();
-
-    /** @type {number} */
-    var sLat = dLat / sector.getDeltaLat().getDegrees();
-
-    /** @type {number} */
-    var sLon = dLon / sector.getDeltaLon().getDegrees();
-
-    /** @type {number} */
-    var tileHeight = tile.getLevel().getTileHeight();
-
-    /** @type {number} */
-    var tileWidth = tile.getLevel().getTileWidth();
-
-    /** @type {number} */
-    var x = ((tileWidth - 1) * sLon);
-
-    /** @type {number} */
-    var y = ((tileHeight - 1) * sLat);
-
-    /** @type {number} */
-    var w = x < (tileWidth - 1) ? 1 : 0;
-
-    /** @type {number} */
-    var h = y < (tileHeight - 1) ? 1 : 0;
-
-    /** @type {number} */
-    var dh = sector.getDeltaLat().getDegrees() / (tileHeight - 1);
-
-    /** @type {number} */
-    var dw = sector.getDeltaLon().getDegrees() / (tileWidth - 1);
-
-    /** @type {number} */
-    var ssLat = (dLat - y * dh) / dh;
-
-    /** @type {number} */
-    var ssLon = (dLon - x * dw) / dw;
-
-    /** @type {number} */
-    var sw = image.getRGB(x, y);
-
-    /** @type {number} */
-    var se = image.getRGB(x + w, y);
-
-    /** @type {number} */
-    var ne = image.getRGB(x + w, y + h);
-
-    /** @type {number} */
-    var nw = image.getRGB(x, y + h);
-
-    /** @type {lanyard.util.Color} */
-    var csw = new lanyard.util.Color.prototype.fromRGB(sw);
-
-    /** @type {lanyard.util.Color} */
-    var cse = new lanyard.util.Color.prototype.fromRGB(se);
-
-    /** @type {lanyard.util.Color} */
-    var cne = new lanyard.util.Color.prototype.fromRGB(ne);
-
-    /** @type {lanyard.util.Color} */
-    var cnw = new lanyard.util.Color.prototype.fromRGB(nw);
-
-    /** @type {lanyard.util.Color} */
-    var ctop = this.interpolateColors(cnw, cne, ssLon);
-
-    /** @type {lanyard.util.Color} */
-    var cbot = this.interpolateColors(csw, cse, ssLon);
-
-    return this.interpolateColors(cbot, ctop, ssLat);
-};
-
-/**
- * Interpolate the specified colors.
- *
- * @param {lanyard.util.Color} ca the first color.
- * @param {lanyard.util.Color} cb the second color.
- * @param {number} s the strength factor.
- * @return {lanyard.util.Color} the interpolated color.
- */
-lanyard.layers.tiled.TiledImageLayer.prototype.interpolateColors = function(ca, cb, s) {
-    /** @type {number} */
-    var r = (s * ca.getRed() + (1 - s) * cb.getRed());
-
-    /** @type {number} */
-    var g = (s * ca.getGreen() + (1 - s) * cb.getGreen());
-
-    /** @type {number} */
-    var b = (s * ca.getBlue() + (1 - s) * cb.getBlue());
-
-    return new lanyard.util.Color(r, g, b, 1.0, null);
 };
 
 /**

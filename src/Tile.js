@@ -49,24 +49,22 @@ lanyard.Tile = function(sector, level, row, column) {
     /** @type {lanyard.geom.Sector} */
     this.sector = sector;
 
+    /** @type {number} */
+    this.row = 0;
+
     if (!row) {
-        if (!level) {
-            /** @type {number} */
-            this.row = 0;
-        } else {
-            /** @type {number} */
+        if (level) {
             this.row = lanyard.Tile.prototype.computeRow(
                 sector.getDeltaLat(), sector.getMinLatitude()
             );
         }
     }
 
+    /** @type {number} */
+    this.column = 0;
+
     if (!column) {
-        if (!level) {
-            /** @type {number} */
-            this.column = 0;
-        } else {
-            /** @type {number} */
+        if (level) {
             this.column = lanyard.Tile.prototype.computeColumn(
                 sector.getDeltaLon(), sector.getMinLongitude()
             );

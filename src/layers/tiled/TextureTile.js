@@ -33,9 +33,9 @@ goog.provide('lanyard.layers.tiled.TextureTile');
  * @constructor
  * @extends {lanyard.Tile}
  * @param {lanyard.geom.Sector} sector the sector to use for this tile.
- * @param {lanyard.Level=} level the level to display this tile at.
- * @param {number=} row the row for this tile.
- * @param {number=} col the column for this tile.
+ * @param {lanyard.Level} level the level to display this tile at.
+ * @param {number} row the row for this tile.
+ * @param {number} col the column for this tile.
  */
 lanyard.layers.tiled.TextureTile = function(sector, level, row, col) {
     // FIXME: call super
@@ -374,10 +374,10 @@ lanyard.layers.tiled.TextureTile.prototype.applyTextureTransform = function(dc) 
             return; // bad texture or something, skip it
         }
 
-        if (this.getTexture().getMustFlipVertically()) {
+        //if (this.getTexture().getMustFlipVertically()) {
             //gl.glScaled(1, -1, 1);
             //gl.glTranslated(0, -1, 0);
-        }
+        //}
 
 //        this.getTexture().bind();
 
@@ -394,10 +394,10 @@ lanyard.layers.tiled.TextureTile.prototype.applyTextureTransform = function(dc) 
             return; // bad texture or something, skip it
         }
 
-        if (resourceTile.getTexture().getMustFlipVertically()) {
+        //if (resourceTile.getTexture().getMustFlipVertically()) {
             //gl.glScaled(1, -1, 1);
             //gl.glTranslated(0, -1, 0);
-        }
+        //}
 
         this.applyResourceTextureTransform(dc);
 //         resourceTile.getTexture().bind();
