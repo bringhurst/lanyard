@@ -242,6 +242,7 @@ lanyard.dom.InputHandler.prototype.getEventSource = function() {
  * @param {Event} keyEvent the key event.
  */
 lanyard.dom.InputHandler.prototype.keysPolled = function(keyEvent) {
+
     if (!this.lanyardCanvas) {
         return;
     }
@@ -380,6 +381,8 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
         return;
     }
 
+    mouseEvent.preventDefault();
+
     /** @type {lanyard.View} */
     var view = this.lanyardCanvas.getView();
 
@@ -405,9 +408,7 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
             document.documentElement.scrollTop - this.domCanvas.offsetTop -
                 this.lastMousePoint.getY());
 
-    if (this.mouseDown[0]) {
-        this._logger.fine("The left mouse button is pressed.");
-
+    if (!mouseEvent.altKey) {
         /** @type {lanyard.geom.LatLon} */
         var latLonChange = null;
 
@@ -458,14 +459,8 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
             this._logger.severe('A failure occured in the drag event result.');
         }
 
-    } // end left mouse button held down
-
-    if (this.mouseDown[1]) {
-        this._logger.fine("The center mouse button is pressed.");
-    }
-
-    if (this.mouseDown[2]) {
-        this._logger.fine('The right mouse button is pressed.');
+    } else {
+        //this._logger.fine("the alt key is pressed");
 
         var headingDirection = 1;
 
