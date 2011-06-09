@@ -31,6 +31,7 @@ goog.require('goog.module.ModuleInfo');
 goog.require('goog.module.ModuleLoadCallback');
 
 
+
 /**
  * The ModuleManager keeps track of all modules in the environment.
  * Since modules may not have their code loaded, we must keep track of them.
@@ -101,6 +102,7 @@ goog.module.ModuleManager = function() {
 };
 goog.inherits(goog.module.ModuleManager, goog.Disposable);
 goog.addSingletonGetter(goog.module.ModuleManager);
+
 
 /**
 * The type of callbacks that can be registered with the module manager,.
@@ -253,7 +255,7 @@ goog.module.ModuleManager.prototype.setAllModuleInfo = function(infoMap) {
  */
 goog.module.ModuleManager.prototype.setAllModuleInfoString = function(
     opt_info) {
-  if (!opt_info) {
+  if (!goog.isString(opt_info)) {
     // The call to this method is generated in two steps, the argument is added
     // after some of the compilation passes.  This means that the initial code
     // doesn't have any arguments and causes compiler errors.  We make it
@@ -436,7 +438,7 @@ goog.module.ModuleManager.prototype.
     d.callback(this.moduleContext_);
   } else {
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (!this.isModuleLoading(id)) {
       this.loadModuleOrEnqueue_(id);
     }
@@ -462,6 +464,18 @@ goog.module.ModuleManager.prototype.loadModuleOrEnqueue_ = function(id) {
     this.requestedModuleIdsQueue_.push(id);
     this.dispatchActiveIdleChangeIfNeeded_();
   }
+};
+
+
+/**
+ * Gets the amount of delay to wait before sending a request for more modules.
+ * If a certain module request fails, we backoff a little bit and try again.
+ * @return {number} Delay, in ms.
+ * @private
+ */
+goog.module.ModuleManager.prototype.getBackOff_ = function() {
+  // 5 seconds after one error, 20 seconds after 2.
+  return Math.pow(this.consecutiveFailures_, 2) * 5000;
 };
 
 
@@ -510,11 +524,20 @@ goog.module.ModuleManager.prototype.loadModule_ = function(
   // Dispatch an active/idle change if needed.
   this.dispatchActiveIdleChangeIfNeeded_();
 
-  this.loader_.loadModules(
-      goog.array.clone(ids), this.moduleInfoMap_, null,
-      goog.bind(this.handleLoadError_, this),
-      goog.bind(this.handleLoadTimeout_, this),
-      !!opt_forceReload);
+  function load() {
+    this.loader_.loadModules(
+        goog.array.clone(ids), this.moduleInfoMap_, null,
+        goog.bind(this.handleLoadError_, this),
+        goog.bind(this.handleLoadTimeout_, this),
+        !!opt_forceReload);
+  }
+
+  var delay = this.getBackOff_();
+  if (delay) {
+    window.setTimeout(goog.bind(load, this), delay);
+  } else {
+    load.call(this);
+  }
 };
 
 
@@ -568,6 +591,12 @@ goog.module.ModuleManager.prototype.maybeFinishBaseLoad_ = function() {
  * @param {string} id A module id.
  */
 goog.module.ModuleManager.prototype.setLoaded = function(id) {
+  if (this.isDisposed()) {
+    this.logger_.warning(
+        'Module loaded after module manager was disposed: ' + id);
+    return;
+  }
+
   this.logger_.info('Module loaded: ' + id);
 
   this.moduleInfoMap_[id].onLoad(goog.bind(this.getModuleContext, this));
@@ -642,7 +671,7 @@ goog.module.ModuleManager.prototype.execOnLoad = function(
     callbackWrapper = moduleInfo.registerCallback(fn, opt_handler);
     if (opt_userInitiated) {
       this.logger_.info('User initiated module already loading: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
       this.dispatchActiveIdleChangeIfNeeded_();
     }
   } else {
@@ -651,7 +680,7 @@ goog.module.ModuleManager.prototype.execOnLoad = function(
     if (!opt_noLoad) {
       if (opt_userInitiated) {
         this.logger_.info('User initiated module load: ' + moduleId);
-        this.userInitiatedLoadingModuleIds_.push(moduleId);
+        this.addUserIntiatedLoadingModule_(moduleId);
       }
       this.logger_.info('Initiating module load: ' + moduleId);
       this.loadModuleOrEnqueue_(moduleId);
@@ -681,20 +710,20 @@ goog.module.ModuleManager.prototype.load = function(
   } else if (this.isModuleLoading(moduleId)) {
     this.logger_.info(moduleId + ' module already loading');
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (opt_userInitiated) {
       this.logger_.info('User initiated module already loading: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
       this.dispatchActiveIdleChangeIfNeeded_();
     }
 
   } else {
     this.logger_.info('Registering callback for module: ' + moduleId);
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (opt_userInitiated) {
       this.logger_.info('User initiated module load: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
     } else {
       this.logger_.info('Initiating module load: ' + moduleId);
     }
@@ -702,6 +731,21 @@ goog.module.ModuleManager.prototype.load = function(
   }
 
   return d;
+};
+
+
+/**
+ * Ensures that the module with the given id is listed as a user-initiated
+ * module that is being loaded. This method guarantees that a module will never
+ * get listed more than once.
+ * @param {string} id Identifier of the module.
+ * @private
+ */
+goog.module.ModuleManager.prototype.addUserIntiatedLoadingModule_ = function(
+    id) {
+  if (!goog.array.contains(this.userInitiatedLoadingModuleIds_, id)) {
+    this.userInitiatedLoadingModuleIds_.push(id);
+  }
 };
 
 

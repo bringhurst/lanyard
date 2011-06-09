@@ -36,6 +36,7 @@ goog.require('goog.ui.ServerChart.ChartType');
 goog.require('goog.ui.TableSorter');
 
 
+
 /**
  * A component for running multiple tests within the browser.
  * @param {goog.dom.DomHelper=} opt_domHelper A DOM helper.
@@ -533,6 +534,7 @@ goog.testing.MultiTestRunner.prototype.getTestsThatFailed = function() {
   return failedTests;
 };
 
+
 /**
  * Deletes and re-creates the progress table inside the progess element.
  * @private
@@ -591,8 +593,8 @@ goog.testing.MultiTestRunner.prototype.createDom = function() {
   el.appendChild(this.statsEl_);
 
   this.logTabEl_ = this.dom_.createDom('div', null, 'Log');
-  this.logTabEl_.className =
-      goog.getCssName('goog-testrunner-logtab goog-testrunner-activetab');
+  this.logTabEl_.className = goog.getCssName('goog-testrunner-logtab') + ' ' +
+      goog.getCssName('goog-testrunner-activetab');
   el.appendChild(this.logTabEl_);
 
   this.reportTabEl_ = this.dom_.createDom('div', null, 'Report');

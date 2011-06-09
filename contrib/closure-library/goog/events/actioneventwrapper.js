@@ -25,6 +25,7 @@ goog.require('goog.events.EventWrapper');
 goog.require('goog.events.KeyCodes');
 
 
+
 /**
  * Event wrapper for action handling. Fires when an element is activated either
  * by clicking it or by focusing it and pressing Enter.
@@ -75,13 +76,13 @@ goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
     opt_capt, opt_scope, opt_eventHandler) {
   var callback = function(e) {
     if (e.type == goog.events.EventType.CLICK &&
-        e.isButton(goog.events.BrowserEvent.MouseButton.LEFT) ||
+        e.isMouseActionButton() ||
         e.type == goog.events.EventType.KEYPRESS && (
             e.keyCode == goog.events.KeyCodes.ENTER ||
             e.keyCode == goog.events.KeyCodes.MAC_ENTER)) {
       listener.call(opt_scope, e);
     }
-  }
+  };
   callback.listener_ = listener;
   callback.scope_ = opt_scope;
 

@@ -66,6 +66,7 @@ goog.require('goog.events');
 goog.require('goog.ui.Component');
 
 
+
 /**
  * Builds a DrilldownRow component, which can overlay a tree
  * structure onto sections of an HTML table.
@@ -161,6 +162,7 @@ goog.ui.DrilldownRow.sampleProperties = {
 // Implementations of Component methods.
 //
 
+
 /**
  * The base class method calls its superclass method and this
  * drilldown's 'decorator' method as defined in the constructor.
@@ -208,7 +210,7 @@ goog.ui.DrilldownRow.prototype.addChildAt = function(child, index, opt_render) {
 /** @inheritDoc */
 goog.ui.DrilldownRow.prototype.removeChild = function(child) {
   goog.dom.removeNode(child.getElement());
-  goog.ui.DrilldownRow.superClass_.removeChild.call(this, child);
+  return goog.ui.DrilldownRow.superClass_.removeChild.call(this, child);
 };
 
 
@@ -273,11 +275,7 @@ goog.ui.DrilldownRow.prototype.findIndex = function() {
   if (!parent) {
     throw Error('Component has no parent');
   }
-  for (var i = 0; i < parent.getChildCount(); i++) {
-    if (parent.getChildAt(i) == this) {
-      return i;
-    }
-  }
+  return parent.indexOfChild(this);
 };
 
 
@@ -381,6 +379,7 @@ goog.ui.DrilldownRow.decorate = function(selfObj) {
 //
 // Private methods
 //
+
 
 /**
  * Turn display of a DrilldownRow on or off.  If the DrilldownRow has not

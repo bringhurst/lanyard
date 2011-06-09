@@ -21,7 +21,6 @@ goog.provide('goog.ui.registry');
 goog.require('goog.dom.classes');
 
 
-
 /**
  * Given a {@link goog.ui.Component} constructor, returns an instance of its
  * default renderer.  If the default renderer is a singleton, returns the
@@ -36,7 +35,7 @@ goog.ui.registry.getDefaultRenderer = function(componentCtor) {
   // Locate the default renderer based on the constructor's unique ID.  If no
   // renderer is registered for this class, walk up the superClass_ chain.
   var key;
-  var /** @constructor */ rendererCtor;
+  /** @type {Function|undefined} */ var rendererCtor;
   while (componentCtor) {
     key = goog.getUid(componentCtor);
     if ((rendererCtor = goog.ui.registry.defaultRenderers_[key])) {

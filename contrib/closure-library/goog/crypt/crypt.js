@@ -18,6 +18,7 @@
 
 goog.provide('goog.crypt');
 
+goog.require('goog.array');
 
 
 /**
@@ -49,6 +50,20 @@ goog.crypt.stringToByteArray = function(str) {
  */
 goog.crypt.byteArrayToString = function(array) {
   return String.fromCharCode.apply(null, array);
+};
+
+
+/**
+ * Turns an array of numbers into the hex string given by the concatenation of
+ * the hex values to which the numbers correspond.
+ * @param {Array} array Array of numbers representing characters.
+ * @return {string} Hex string.
+ */
+goog.crypt.byteArrayToHex = function(array) {
+  return goog.array.map(array, function(numByte) {
+    var hexByte = numByte.toString(16);
+    return hexByte.length > 1 ? hexByte : '0' + hexByte;
+  }).join('');
 };
 
 

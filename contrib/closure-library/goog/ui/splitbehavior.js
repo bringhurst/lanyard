@@ -39,6 +39,7 @@ goog.require('goog.ui.decorate');
 goog.require('goog.ui.registry');
 
 
+
 /**
  * Creates a behavior for combining two controls. The behavior is triggered
  * by a given event type which applies the behavior handler.
@@ -58,6 +59,7 @@ goog.require('goog.ui.registry');
  */
 goog.ui.SplitBehavior = function(first, second, opt_behaviorHandler,
     opt_eventType, opt_domHelper) {
+  goog.Disposable.call(this);
 
   /**
    * @type {goog.ui.Control}

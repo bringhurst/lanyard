@@ -61,7 +61,7 @@ goog.i18n.MessageFormat = function(pattern) {
   /**
    * All encountered literals during parse stage. Indices tell us the order of
    * replacement.
-   * @type {!Array}
+   * @type {!Array.<string>}
    * @private
    */
   this.literals_ = [];
@@ -75,7 +75,7 @@ goog.i18n.MessageFormat = function(pattern) {
 
   /**
    * Locale aware number formatter.
-   * @type {Object}
+   * @type {goog.i18n.NumberFormat}
    * @private
    */
   this.numberFormatter_ = new goog.i18n.NumberFormat(
@@ -176,7 +176,7 @@ goog.i18n.MessageFormat.prototype.format = function(namedParameters) {
 
 
 /**
- * Parse generic block and return a formatted string.
+ * Parses generic block and returns a formatted string.
  * @param {!Array.<!Object>} parsedPattern Holds parsed tree.
  * @param {!Object} namedParameters Parameters that either influence
  *     the formatting or are used as actual data.
@@ -192,22 +192,44 @@ goog.i18n.MessageFormat.prototype.formatBlock_ = function(
         result.push(parsedPattern[i].value);
         break;
       case goog.i18n.MessageFormat.BlockType_.SIMPLE:
-        var value = namedParameters[parsedPattern[i].value];
-        goog.asserts.assertString(value, 'Format parameter is undefined.');
-        result.push(value);
+        var pattern = parsedPattern[i].value;
+        this.formatSimplePlaceholder_(pattern, namedParameters, result);
         break;
       case goog.i18n.MessageFormat.BlockType_.SELECT:
         var pattern = parsedPattern[i].value;
-      this.formatSelectBlock_(pattern, namedParameters, result);
+        this.formatSelectBlock_(pattern, namedParameters, result);
         break;
       case goog.i18n.MessageFormat.BlockType_.PLURAL:
         var pattern = parsedPattern[i].value;
-      this.formatPluralBlock_(pattern, namedParameters, result);
+        this.formatPluralBlock_(pattern, namedParameters, result);
         break;
       default:
         goog.asserts.fail('Unrecognized block type.');
     }
   }
+};
+
+
+/**
+ * Formats simple placeholder.
+ * @param {!Object} parsedPattern JSON object containing placeholder info.
+ * @param {!Object} namedParameters Parameters that are used as actual data.
+ * @param {!Array.<!string>} result Each formatting stage appends its product
+ *     to the result.
+ * @private
+ */
+goog.i18n.MessageFormat.prototype.formatSimplePlaceholder_ = function(
+    parsedPattern, namedParameters, result) {
+  var value = namedParameters[parsedPattern];
+  if (!goog.isDef(value)) {
+    result.push('Undefined parameter - ' + parsedPattern);
+    return;
+  }
+
+  // Don't push the value yet, it may contain any of # { } in it which
+  // will break formatter. Insert a placeholder and replace at the end.
+  this.literals_.push(value);
+  result.push(this.buildPlaceholder_(this.literals_));
 };
 
 
@@ -223,6 +245,11 @@ goog.i18n.MessageFormat.prototype.formatBlock_ = function(
 goog.i18n.MessageFormat.prototype.formatSelectBlock_ = function(
     parsedPattern, namedParameters, result) {
   var argumentIndex = parsedPattern.argumentIndex;
+  if (!goog.isDef(namedParameters[argumentIndex])) {
+    result.push('Undefined parameter - ' + argumentIndex);
+    return;
+  }
+
   var option = parsedPattern[namedParameters[argumentIndex]];
   if (!goog.isDef(option)) {
     option = parsedPattern[goog.i18n.MessageFormat.OTHER_];
@@ -247,7 +274,12 @@ goog.i18n.MessageFormat.prototype.formatPluralBlock_ = function(
     parsedPattern, namedParameters, result) {
   var argumentIndex = parsedPattern.argumentIndex;
   var argumentOffset = parsedPattern.argumentOffset;
-  var diff = namedParameters[argumentIndex] - argumentOffset;
+  var pluralValue = +namedParameters[argumentIndex];
+  if (isNaN(pluralValue)) {
+    result.push('Undefined or invalid parameter - ' + argumentIndex);
+    return;
+  }
+  var diff = pluralValue - argumentOffset;
 
   // Check if there is an exact match.
   var option = parsedPattern[namedParameters[argumentIndex]];
@@ -258,15 +290,22 @@ goog.i18n.MessageFormat.prototype.formatPluralBlock_ = function(
     goog.asserts.assertString(item, 'Invalid plural key.');
 
     option = parsedPattern[item];
+
+    // If option is not provided fall back to "other".
+    if (!goog.isDef(option)) {
+      option = parsedPattern[goog.i18n.MessageFormat.OTHER_];
+    }
+
     goog.asserts.assertArray(
-        option, 'Invalid option or missing other option for select block.');
+        option, 'Invalid option or missing other option for plural block.');
   }
 
-  this.formatBlock_(option, namedParameters, result);
-  var localeAwareDiff = this.numberFormatter_.format(diff);
-  var plural = result.pop();
+  var pluralResult = [];
+  this.formatBlock_(option, namedParameters, pluralResult);
+  var plural = pluralResult.join('');
   goog.asserts.assertString(plural, 'Empty block in plural.');
-  result.push(plural.replace(/#/g, function() { return localeAwareDiff }));
+  var localeAwareDiff = this.numberFormatter_.format(diff);
+  result.push(plural.replace(/#/g, function() { return localeAwareDiff; }));
 };
 
 
@@ -297,7 +336,7 @@ goog.i18n.MessageFormat.prototype.parsePattern_ = function(pattern) {
  */
 goog.i18n.MessageFormat.prototype.insertPlaceholders_ = function(pattern) {
   var literals = this.literals_;
-  var buildPlaceholder = this.buildPlaceholder_;
+  var buildPlaceholder = goog.bind(this.buildPlaceholder_, this);
 
   // First replace '' with single quote placeholder since they can be found
   // inside other literals.
@@ -333,7 +372,7 @@ goog.i18n.MessageFormat.prototype.extractParts_ = function(pattern) {
   braces.lastIndex = 0;  // lastIndex doesn't get set to 0 so we have to.
   var match;
 
-  while ((match = braces.exec(pattern))) {
+  while (match = braces.exec(pattern)) {
     var pos = match.index;
     if (match[0] == '}') {
       var brace = braceStack.pop();
@@ -388,15 +427,15 @@ goog.i18n.MessageFormat.prototype.extractParts_ = function(pattern) {
  * @private
  */
 goog.i18n.MessageFormat.prototype.parseBlockType_ = function(pattern) {
-  if (/\s*\w+\s*,\s*plural.*/.test(pattern)) {
+  if (/^\s*\w+\s*,\s*plural.*/.test(pattern)) {
     return goog.i18n.MessageFormat.BlockType_.PLURAL;
   }
 
-  if (/\s*\w+\s*,\s*select.*/.test(pattern)) {
+  if (/^\s*\w+\s*,\s*select.*/.test(pattern)) {
     return goog.i18n.MessageFormat.BlockType_.SELECT;
   }
 
-  if (/\s*\w+\s*/.test(pattern)) {
+  if (/^\s*\w+\s*/.test(pattern)) {
     return goog.i18n.MessageFormat.BlockType_.SIMPLE;
   }
 
@@ -532,7 +571,7 @@ goog.i18n.MessageFormat.prototype.parsePluralBlock_ = function(pattern) {
   }
 
   goog.asserts.assertArray(result[goog.i18n.MessageFormat.OTHER_],
-                           'Missing other key in select statement.');
+                           'Missing other key in plural statement.');
 
   return result;
 };

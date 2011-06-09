@@ -19,6 +19,7 @@
  * TODO(user):  If the renderer framework works well, pull it into Component.
  *
  * @see ../demos/control.html
+ * @see http://code.google.com/p/closure-library/wiki/IntroToControls
  */
 
 goog.provide('goog.ui.Control');
@@ -41,6 +42,7 @@ goog.require('goog.ui.ControlRenderer');
 goog.require('goog.ui.decorate');
 goog.require('goog.ui.registry');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -626,37 +628,25 @@ goog.ui.Control.prototype.setContentInternal = function(content) {
 
 
 /**
- * Returns the text caption of the component.
- * @param {function(Node): string} getChildElementContent Function that takes an
- *     element and returns a string.
- * @return {?string} Text caption of the component (null if none).
- */
-goog.ui.Control.prototype.getCaptionInternal =
-    function(getChildElementContent) {
-  var content = this.getContent();
-  if (!content || goog.isString(content)) {
-    return content;
-  }
-
-  var caption = goog.isArray(content) ?
-      goog.array.map(content, getChildElementContent).join('') :
-      goog.dom.getTextContent(/** @type {!Node} */ (content));
-  return caption && goog.string.trim(caption);
-};
-
-
-/**
- * Returns the text caption of the component.
- * @return {?string} Text caption of the component (null if none).
+ * @return {string} Text caption of the control or empty string if none.
  */
 goog.ui.Control.prototype.getCaption = function() {
-  return this.getCaptionInternal(goog.dom.getTextContent);
+  var content = this.getContent();
+  if (!content) {
+    return '';
+  }
+  var caption =
+      goog.isString(content) ? content :
+      goog.isArray(content) ? goog.array.map(content,
+          goog.dom.getRawTextContent).join('') :
+      goog.dom.getTextContent(/** @type {!Node} */ (content));
+  return goog.string.collapseBreakingSpaces(caption);
 };
 
 
 /**
  * Sets the text caption of the component.
- * @param {string} caption Text caption of the component (null to clear).
+ * @param {string} caption Text caption of the component.
  */
 goog.ui.Control.prototype.setCaption = function(caption) {
   this.setContent(caption);
@@ -1177,7 +1167,7 @@ goog.ui.Control.prototype.handleMouseDown = function(e) {
 
     // For the left button only, activate the control, and focus its key event
     // target (if supported).
-    if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT)) {
+    if (e.isMouseActionButton()) {
       if (this.isAutoState(goog.ui.Component.State.ACTIVE)) {
         this.setActive(true);
       }
@@ -1188,8 +1178,7 @@ goog.ui.Control.prototype.handleMouseDown = function(e) {
   }
 
   // Cancel the default action unless the control allows text selection.
-  if (!this.isAllowTextSelection() &&
-      e.isButton(goog.events.BrowserEvent.MouseButton.LEFT)) {
+  if (!this.isAllowTextSelection() && e.isMouseActionButton()) {
     e.preventDefault();
   }
 };
@@ -1259,8 +1248,9 @@ goog.ui.Control.prototype.performActionInternal = function(e) {
   var actionEvent = new goog.events.Event(goog.ui.Component.EventType.ACTION,
       this);
   if (e) {
-    var properties = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey',
-        'platformModifierKey'];
+    var properties = [
+      'altKey', 'ctrlKey', 'metaKey', 'shiftKey', 'platformModifierKey'
+    ];
     for (var property, i = 0; property = properties[i]; i++) {
       actionEvent[property] = e[property];
     }

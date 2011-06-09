@@ -252,6 +252,19 @@ goog.string.normalizeSpaces = function(str) {
 
 
 /**
+ * Removes the breaking spaces from the left and right of the string and
+ * collapses the sequences of breaking spaces in the middle into single spaces.
+ * The original and the result strings render the same way in HTML.
+ * @param {string} str A string in which to collapse spaces.
+ * @return {string} Copy of the string with normalized breaking spaces.
+ */
+goog.string.collapseBreakingSpaces = function(str) {
+  return str.replace(/[\t\r\n ]+/g, ' ').replace(
+      /^[\t\r\n ]+|[\t\r\n ]+$/g, '');
+};
+
+
+/**
  * Trims white spaces to the left and right of a string.
  * @param {string} str The string to trim.
  * @return {string} A trimmed copy of {@code str}.
@@ -395,6 +408,7 @@ goog.string.numerateCompare = function(str1, str2) {
  * @private
  */
 goog.string.encodeUriRegExp_ = /^[a-zA-Z0-9\-_.!~*'()]*$/;
+
 
 /**
  * URL-encodes a string
@@ -560,9 +574,7 @@ goog.string.unescapeEntities = function(str) {
     // We are careful not to use a DOM if we do not have one. We use the []
     // notation so that the JSCompiler will not complain about these objects and
     // fields in the case where we have no DOM.
-    // If the string contains < then there could be a script tag in there and in
-    // that case we fall back to a non DOM solution as well.
-    if ('document' in goog.global && !goog.string.contains(str, '<')) {
+    if ('document' in goog.global) {
       return goog.string.unescapeEntitiesUsingDom_(str);
     } else {
       // Fall back on pure XML entities
@@ -574,32 +586,45 @@ goog.string.unescapeEntities = function(str) {
 
 
 /**
- * Unescapes an HTML string using a DOM. Don't use this function directly, it
- * should only be used by unescapeEntities. If used directly you will be
- * vulnerable to XSS attacks.
+ * Unescapes an HTML string using a DOM to resolve non-XML, non-numeric
+ * entities. This function is XSS-safe and whitespace-preserving.
  * @private
  * @param {string} str The string to unescape.
  * @return {string} The unescaped {@code str} string.
  */
 goog.string.unescapeEntitiesUsingDom_ = function(str) {
-  // Use a DIV as FF3 generates bogus markup for A > PRE.
-  var el = goog.global['document']['createElement']('div');
-  // Wrap in PRE to preserve whitespace in IE.
-  // The PRE must be part of the innerHTML markup,
-  // just setting innerHTML on a PRE element does not work.
-  // Also include a leading character since conforming HTML5
-  // UAs will strip leading newlines inside a PRE element.
-  el['innerHTML'] = '<pre>x' + str + '</pre>';
-  // Accesing the function directly triggers some virus scanners.
-  if (el['firstChild'][goog.string.NORMALIZE_FN_]) {
-    el['firstChild'][goog.string.NORMALIZE_FN_]();
-  }
-  // Remove the leading character we added.
-  str = el['firstChild']['firstChild']['nodeValue'].slice(1);
-  el['innerHTML'] = '';
-  // IE will also return non-standard newlines for TextNode.nodeValue,
-  // switching \r and \n, so canonicalize them before returning.
-  return goog.string.canonicalizeNewlines(str);
+  var seen = {'&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"'};
+  var div = document.createElement('div');
+  // Match as many valid entity characters as possible. If the actual entity
+  // happens to be shorter, it will still work as innerHTML will return the
+  // trailing characters unchanged. Since the entity characters do not include
+  // open angle bracket, there is no chance of XSS from the innerHTML use.
+  // Since no whitespace is passed to innerHTML, whitespace is preserved.
+  return str.replace(goog.string.HTML_ENTITY_PATTERN_, function(s, entity) {
+    // Check for cached entity.
+    var value = seen[s];
+    if (value) {
+      return value;
+    }
+    // Check for numeric entity.
+    if (entity.charAt(0) == '#') {
+      // Prefix with 0 so that hex entities (e.g. &#x10) parse as hex numbers.
+      var n = Number('0' + entity.substr(1));
+      if (!isNaN(n)) {
+        value = String.fromCharCode(n);
+      }
+    }
+    // Fall back to innerHTML otherwise.
+    if (!value) {
+      // Append a non-entity character to avoid a bug in Webkit that parses
+      // an invalid entity at the end of innerHTML text as the empty string.
+      div.innerHTML = s + ' ';
+      // Then remove the trailing character from the result.
+      value = div.firstChild.nodeValue.slice(0, -1);
+    }
+    // Cache and return.
+    return seen[s] = value;
+  });
 };
 
 
@@ -622,6 +647,7 @@ goog.string.unescapePureXmlEntities_ = function(str) {
         return '"';
       default:
         if (entity.charAt(0) == '#') {
+          // Prefix with 0 so that hex entities (e.g. &#x10) parse as hex.
           var n = Number('0' + entity.substr(1));
           if (!isNaN(n)) {
             return String.fromCharCode(n);
@@ -633,13 +659,15 @@ goog.string.unescapePureXmlEntities_ = function(str) {
   });
 };
 
+
 /**
- * String name for the node.normalize function. Anti-virus programs use this as
- * a signature for some viruses so we need a work around (temporary).
+ * Regular expression that matches an HTML entity.
+ * See also HTML5: Tokenization / Tokenizing character references.
  * @private
- * @type {string}
+ * @type {!RegExp}
  */
-goog.string.NORMALIZE_FN_ = 'normalize';
+goog.string.HTML_ENTITY_PATTERN_ = /&([^;\s<&]+);?/g;
+
 
 /**
  * Do escaping of whitespace to preserve spatial formatting. We use character
@@ -714,15 +742,25 @@ goog.string.truncate = function(str, chars, opt_protectEscapedCharacters) {
  * @param {number} chars Max number of characters.
  * @param {boolean=} opt_protectEscapedCharacters Whether to protect escaped
  *     characters from being cutoff in the middle.
+ * @param {number=} opt_trailingChars Optional number of trailing characters to
+ *     leave at the end of the string, instead of truncating as close to the
+ *     middle as possible.
  * @return {string} A truncated copy of {@code str}.
  */
 goog.string.truncateMiddle = function(str, chars,
-    opt_protectEscapedCharacters) {
+    opt_protectEscapedCharacters, opt_trailingChars) {
   if (opt_protectEscapedCharacters) {
     str = goog.string.unescapeEntities(str);
   }
 
-  if (str.length > chars) {
+  if (opt_trailingChars && str.length > chars) {
+    if (opt_trailingChars > chars) {
+      opt_trailingChars = chars;
+    }
+    var endPoint = str.length - opt_trailingChars;
+    var startPoint = chars - opt_trailingChars;
+    str = str.substring(0, startPoint) + '...' + str.substring(endPoint);
+  } else if (str.length > chars) {
     // Favor the beginning of the string:
     var half = Math.floor(chars / 2);
     var endPos = str.length - half;
@@ -850,7 +888,7 @@ goog.string.escapeChar = function(c) {
  * @param {string} s The string to build the map from.
  * @return {Object} The map of characters used.
  */
-// TODO(user): It seems like we should have a generic goog.array.toMap. But do
+// TODO(arv): It seems like we should have a generic goog.array.toMap. But do
 //            we want a dependency on goog.array in goog.string?
 goog.string.toMap = function(s) {
   var rv = {};
@@ -1006,8 +1044,9 @@ goog.string.buildString = function(var_args) {
  * @return {string} A random string, e.g. sn1s7vb4gcic.
  */
 goog.string.getRandomString = function() {
-  return Math.floor(Math.random() * 2147483648).toString(36) +
-         (Math.floor(Math.random() * 2147483648) ^ goog.now()).toString(36);
+  var x = 2147483648;
+  return Math.floor(Math.random() * x).toString(36) +
+         Math.abs(Math.floor(Math.random() * x) ^ goog.now()).toString(36);
 };
 
 
@@ -1154,4 +1193,50 @@ goog.string.toNumber = function(str) {
     return NaN;
   }
   return num;
+};
+
+
+/**
+ * A memoized cache for goog.string.toCamelCase.
+ * @type {Object.<string>}
+ * @private
+ */
+goog.string.toCamelCaseCache_ = {};
+
+
+/**
+ * Converts a string from selector-case to camelCase (e.g. from
+ * "multi-part-string" to "multiPartString"), useful for converting
+ * CSS selectors and HTML dataset keys to their equivalent JS properties.
+ * @param {string} str The string in selector-case form.
+ * @return {string} The string in camelCase form.
+ */
+goog.string.toCamelCase = function(str) {
+  return goog.string.toCamelCaseCache_[str] ||
+      (goog.string.toCamelCaseCache_[str] =
+          String(str).replace(/\-([a-z])/g, function(all, match) {
+            return match.toUpperCase();
+          }));
+};
+
+
+/**
+ * A memoized cache for goog.string.toSelectorCase.
+ * @type {Object.<string>}
+ * @private
+ */
+goog.string.toSelectorCaseCache_ = {};
+
+
+/**
+ * Converts a string from camelCase to selector-case (e.g. from
+ * "multiPartString" to "multi-part-string"), useful for converting JS
+ * style and dataset properties to equivalent CSS selectors and HTML keys.
+ * @param {string} str The string in camelCase form.
+ * @return {string} The string in selector-case form.
+ */
+goog.string.toSelectorCase = function(str) {
+  return goog.string.toSelectorCaseCache_[str] ||
+      (goog.string.toSelectorCaseCache_[str] =
+          String(str).replace(/([A-Z])/g, '-$1').toLowerCase());
 };

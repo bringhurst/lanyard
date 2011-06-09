@@ -70,6 +70,7 @@ goog.require('goog.ui.media.MediaModel.Player');
 goog.require('goog.ui.media.MediaRenderer');
 
 
+
 /**
  * Subclasses a goog.ui.media.MediaRenderer to provide a FlickrSet specific
  * media renderer.
@@ -162,7 +163,7 @@ goog.ui.media.FlickrSet.prototype.createDom = function(control) {
   var div = goog.ui.media.FlickrSet.superClass_.createDom.call(this, control);
 
   var model =
-    /** @type {goog.ui.media.FlickrSetModel} */ (control.getDataModel());
+      /** @type {goog.ui.media.FlickrSetModel} */ (control.getDataModel());
 
   // TODO(user): find out what is the policy about hosting this SWF. figure out
   // if it works over https.
@@ -187,6 +188,7 @@ goog.ui.media.FlickrSet.prototype.createDom = function(control) {
 goog.ui.media.FlickrSet.prototype.getCssClass = function() {
   return goog.ui.media.FlickrSet.CSS_CLASS;
 };
+
 
 
 /**
@@ -227,12 +229,12 @@ goog.ui.media.FlickrSetModel = function(userId,
   this.setId_ = setId;
 
   var flashVars = {
-      'offsite': 'true',
-      'lang': 'en',
-      'page_show_url': '/photos/' + userId + '/sets/' + setId + '/show/',
-      'page_show_back_url': '/photos/' + userId + '/sets/' + setId,
-      'set_id': setId
-    };
+    'offsite': 'true',
+    'lang': 'en',
+    'page_show_url': '/photos/' + userId + '/sets/' + setId + '/show/',
+    'page_show_back_url': '/photos/' + userId + '/sets/' + setId,
+    'set_id': setId
+  };
 
   var player = new goog.ui.media.MediaModel.Player(
       goog.ui.media.FlickrSet.flashUrl_, flashVars);
@@ -250,9 +252,10 @@ goog.inherits(goog.ui.media.FlickrSetModel, goog.ui.media.MediaModel);
  *
  * @type {RegExp}
  * @private
+ * @const
  */
-goog.ui.media.FlickrSetModel.matcher_ =
-    /https?:\/\/(?:www.)?flickr.com\/(?:photos\/([\d\w@]+)\/sets\/(\d+))\/?/i;
+goog.ui.media.FlickrSetModel.MATCHER_ =
+    /(?:http:\/\/)?(?:www\.)?flickr\.com\/(?:photos\/([\d\w@\-]+)\/sets\/(\d+))\/?/i;
 
 
 /**
@@ -268,8 +271,8 @@ goog.ui.media.FlickrSetModel.matcher_ =
 goog.ui.media.FlickrSetModel.newInstance = function(flickrSetUrl,
                                                     opt_caption,
                                                     opt_description) {
-  if (goog.ui.media.FlickrSetModel.matcher_.test(flickrSetUrl)) {
-    var data = goog.ui.media.FlickrSetModel.matcher_.exec(flickrSetUrl);
+  if (goog.ui.media.FlickrSetModel.MATCHER_.test(flickrSetUrl)) {
+    var data = goog.ui.media.FlickrSetModel.MATCHER_.exec(flickrSetUrl);
     return new goog.ui.media.FlickrSetModel(
         data[1], data[2], opt_caption, opt_description);
   }

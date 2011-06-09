@@ -36,6 +36,7 @@ goog.require('goog.iter.StopIteration');
 goog.require('goog.userAgent');
 
 
+
 /**
  * Create a new control selection with no properties.  Do not use this
  * constructor: use one of the goog.dom.Range.createFrom* methods instead.
@@ -345,6 +346,7 @@ goog.dom.ControlRange.prototype.collapse = function(toAnchor) {
 // SAVED RANGE OBJECTS
 
 
+
 /**
  * A SavedRange implementation using DOM endpoints.
  * @param {goog.dom.ControlRange} range The range to save.
@@ -387,6 +389,7 @@ goog.dom.DomSavedControlRange_.prototype.disposeInternal = function() {
 // RANGE ITERATION
 
 
+
 /**
  * Subclass of goog.dom.TagIterator that iterates over a DOM range.  It
  * adds functions to determine the portion of each text node that is selected.
@@ -399,7 +402,8 @@ goog.dom.ControlRangeIterator = function(range) {
   if (range) {
     this.elements_ = range.getSortedElements();
     this.startNode_ = this.elements_.shift();
-    this.endNode_ = goog.array.peek(this.elements_) || this.startNode_;
+    this.endNode_ = /** @type {Node} */ (goog.array.peek(this.elements_)) ||
+        this.startNode_;
   }
 
   goog.dom.RangeIterator.call(this, this.startNode_, false);

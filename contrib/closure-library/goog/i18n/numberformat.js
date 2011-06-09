@@ -16,10 +16,14 @@
  * @fileoverview Number format/parse library with locale support.
  */
 
+
 /**
  * Namespace for locale number format functions
  */
 goog.provide('goog.i18n.NumberFormat');
+// TODO(user): Re-add this when test failures are sorted out. Required,
+// due to lint warnings whenever the enum is referenced.
+//goog.provide('goog.i18n.NumberFormat.Format');
 
 goog.require('goog.i18n.NumberFormatSymbols');
 goog.require('goog.i18n.currencyCodeMap');
@@ -45,6 +49,7 @@ goog.i18n.NumberFormat = function(pattern, opt_currency) {
   this.maximumFractionDigits_ = 3; // invariant, >= minFractionDigits
   this.minimumFractionDigits_ = 0;
   this.minExponentDigits_ = 0;
+  this.useSignForPositiveExponent_ = false;
 
   this.positivePrefix_ = '';
   this.positiveSuffix_ = '';
@@ -302,8 +307,8 @@ goog.i18n.NumberFormat.prototype.format = function(number) {
 
     number *= this.multiplier_;
     this.useExponentialNotation_ ?
-      this.subformatExponential_(number, parts) :
-      this.subformatFixed_(number, this.minimumIntegerDigits_, parts);
+        this.subformatExponential_(number, parts) :
+        this.subformatFixed_(number, this.minimumIntegerDigits_, parts);
   }
 
   parts.push(isNegative ? this.negativeSuffix_ : this.positiveSuffix_);
@@ -396,6 +401,8 @@ goog.i18n.NumberFormat.prototype.addExponentPart_ = function(exponent, parts) {
   if (exponent < 0) {
     exponent = -exponent;
     parts.push(goog.i18n.NumberFormatSymbols.MINUS_SIGN);
+  } else if (this.useSignForPositiveExponent_) {
+    parts.push(goog.i18n.NumberFormatSymbols.PLUS_SIGN);
   }
 
   var exponentDigits = '' + exponent;
@@ -539,6 +546,14 @@ goog.i18n.NumberFormat.PATTERN_SEPARATOR_ = ';';
  * @private
  */
 goog.i18n.NumberFormat.PATTERN_EXPONENT_ = 'E';
+
+
+/**
+ * An plus character.
+ * @type {string}
+ * @private
+ */
+goog.i18n.NumberFormat.PATTERN_PLUS_ = '+';
 
 
 /**
@@ -693,6 +708,13 @@ goog.i18n.NumberFormat.prototype.parseTrunk_ = function(pattern, pos) {
         this.useExponentialNotation_ = true;
         this.minExponentDigits_ = 0;
 
+        // exponent pattern can have a optional '+'.
+        if ((pos[0] + 1) < len && pattern.charAt(pos[0] + 1) ==
+            goog.i18n.NumberFormat.PATTERN_PLUS_) {
+          pos[0]++;
+          this.useSignForPositiveExponent_ = true;
+        }
+
         // Use lookahead to parse out the exponential part
         // of the pattern, then jump into phase 2.
         while ((pos[0] + 1) < len && pattern.charAt(pos[0] + 1) ==
@@ -727,9 +749,9 @@ goog.i18n.NumberFormat.prototype.parseTrunk_ = function(pattern, pos) {
 
   // Do syntax checking on the digits.
   if (decimalPos < 0 && digitRightCount > 0 ||
-       decimalPos >= 0 && (decimalPos < digitLeftCount ||
-                           decimalPos > digitLeftCount + zeroDigitCount) ||
-       groupingCount == 0) {
+      decimalPos >= 0 && (decimalPos < digitLeftCount ||
+                          decimalPos > digitLeftCount + zeroDigitCount) ||
+      groupingCount == 0) {
     throw Error('Malformed pattern "' + pattern + '"');
   }
   var totalDigits = digitLeftCount + zeroDigitCount + digitRightCount;

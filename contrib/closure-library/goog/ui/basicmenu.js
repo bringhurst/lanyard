@@ -37,6 +37,7 @@ goog.require('goog.ui.AttachableMenu');
 goog.require('goog.ui.ItemEvent');
 
 
+
 /**
  * Class that extends AttachableMenu and creates a simple menu, purely from
  * code.The ITEM_EVENT instead of returning the DOM node returns a reference the
@@ -130,6 +131,7 @@ goog.ui.BasicMenu.prototype.getZIndex = function() {
   return this.zIndex_;
 };
 
+
 /**
  * Sets the z-index. The change will take effect the next time
  * setVisible(true) is called.
@@ -139,6 +141,7 @@ goog.ui.BasicMenu.prototype.getZIndex = function() {
 goog.ui.BasicMenu.prototype.setZIndex = function(zIndex) {
   this.zIndex_ = zIndex;
 };
+
 
 /**
  * Add a menu item.
@@ -526,7 +529,7 @@ goog.ui.BasicMenu.prototype.onDocumentMouseDown_ = function(e) {
   // Mousedown on anchor element, set clickToClose_ to true to prevent the
   // mouseup event from opening the menu.
   if (this.anchorElement_ == e.target ||
-      goog.dom.contains(this.anchorElement_, e.target)) {
+      goog.dom.contains(this.anchorElement_, /** @type {Node} */ (e.target))) {
     this.clickToClose_ = true;
   }
 
@@ -897,6 +900,7 @@ goog.ui.BasicMenu.Item.prototype.closeSubmenu = function() {
     this.submenu_.setVisible(false);
   }
 };
+
 
 
 /**

@@ -26,6 +26,7 @@ goog.require('goog.net.xpc');
 goog.require('goog.net.xpc.Transport');
 
 
+
 /**
  * The native messaging transport
  *
@@ -62,6 +63,7 @@ goog.net.xpc.NativeMessagingTransport = function(channel, peerHostname,
 };
 goog.inherits(goog.net.xpc.NativeMessagingTransport, goog.net.xpc.Transport);
 
+
 /**
  * Flag indicating if this instance of the transport has been initialized.
  * @type {boolean}
@@ -69,12 +71,14 @@ goog.inherits(goog.net.xpc.NativeMessagingTransport, goog.net.xpc.Transport);
  */
 goog.net.xpc.NativeMessagingTransport.prototype.initialized_ = false;
 
+
 /**
  * The transport type.
  * @type {number}
  */
 goog.net.xpc.NativeMessagingTransport.prototype.transportType =
-  goog.net.xpc.TransportTypes.NATIVE_MESSAGING;
+    goog.net.xpc.TransportTypes.NATIVE_MESSAGING;
+
 
 /**
  * Tracks the number of NativeMessagingTransport channels that have been
@@ -85,6 +89,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.transportType =
  * @private
  */
 goog.net.xpc.NativeMessagingTransport.activeCount_ = {};
+
 
 /**
  * Initializes this transport. Registers a listener for 'message'-events
@@ -110,6 +115,7 @@ goog.net.xpc.NativeMessagingTransport.initialize_ = function(listenWindow) {
   }
   goog.net.xpc.NativeMessagingTransport.activeCount_[uid] = value + 1;
 };
+
 
 /**
  * Processes an incoming message-event.
@@ -144,7 +150,7 @@ goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
   //  - channel has become stale (e.g. caching iframes and back clicks)
   var channel = goog.net.xpc.channels_[channelName];
   if (channel) {
-    channel.deliver_(service, payload);
+    channel.deliver_(service, payload, msgEvt.getBrowserEvent().origin);
     return true;
   }
 
@@ -256,7 +262,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.send = function(service,
  * Disposes of the transport.
  */
 goog.net.xpc.NativeMessagingTransport.prototype.disposeInternal = function() {
-  goog.net.xpc.NativeMessagingTransport.superClass_.disposeInternal.call(this);
+  goog.base(this, 'disposeInternal');
   if (this.initialized_) {
     var listenWindow = this.getWindow();
     var uid = goog.getUid(listenWindow);

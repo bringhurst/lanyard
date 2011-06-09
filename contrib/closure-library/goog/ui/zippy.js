@@ -31,6 +31,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.style');
 
 
+
 /**
  * Zippy widget. Expandable/collapsible container, clicking the header toggles
  * the visibility of the content.
@@ -128,6 +129,7 @@ goog.ui.Zippy.Events = {
   TOGGLE: 'toggle'
 };
 
+
 /**
  * Destroys widget and removes all event listeners.
  */
@@ -140,6 +142,16 @@ goog.ui.Zippy.prototype.disposeInternal = function() {
   }
   goog.ui.Zippy.superClass_.disposeInternal.call(this);
 };
+
+
+/**
+ * @return {Element} The content element.
+ * @protected
+ */
+goog.ui.Zippy.prototype.getContentElement = function() {
+  return this.elContent_;
+};
+
 
 /**
  * Expands content pane.
@@ -185,14 +197,25 @@ goog.ui.Zippy.prototype.setExpanded = function(expanded) {
     goog.style.showElement(this.elExpandedHeader_, expanded);
   } else {
     // Update header image, if any.
-    this.updateHeaderClassName_(expanded);
+    this.updateHeaderClassName(expanded);
   }
 
-  this.expanded_ = expanded;
+  this.setExpandedInternal(expanded);
 
   // Fire toggle event
   this.dispatchEvent(new goog.ui.ZippyEvent(goog.ui.Zippy.Events.TOGGLE,
                                             this, this.expanded_));
+}
+
+
+/**
+ * Sets expanded internal state.
+ *
+ * @param {boolean} expanded Expanded/visibility state.
+ * @protected
+ */
+goog.ui.Zippy.prototype.setExpandedInternal = function(expanded) {
+  this.expanded_ = expanded;
 };
 
 
@@ -208,9 +231,9 @@ goog.ui.Zippy.prototype.isExpanded = function() {
  * Updates the header element's className
  *
  * @param {boolean} expanded Expanded/visibility state.
- * @private
+ * @protected
  */
-goog.ui.Zippy.prototype.updateHeaderClassName_ = function(expanded) {
+goog.ui.Zippy.prototype.updateHeaderClassName = function(expanded) {
   if (this.elHeader_) {
     goog.dom.classes.enable(this.elHeader_,
         goog.getCssName('goog-zippy-expanded'), expanded);

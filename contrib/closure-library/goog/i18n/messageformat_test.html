@@ -3,7 +3,7 @@
 <!--
 Copyright 2010 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <head>
@@ -37,20 +37,18 @@ function testEmptyPattern() {
 }
 
 function testMissingLeftCurlyBrace() {
-  try {
-    var fmt = new goog.i18n.MessageFormat('\'\'{}}');
-  } catch (err) {
-    assertEquals('Assertion failed: No matching { for }.', err.message);
-  }
+  var err = assertThrows(function() {
+    new goog.i18n.MessageFormat('\'\'{}}');
+  });
+  assertEquals('Assertion failed: No matching { for }.', err.message);
 }
 
 function testTooManyLeftCurlyBraces() {
-  try {
-    var fmt = new goog.i18n.MessageFormat('{} {');
-  } catch (err) {
-    assertEquals('Assertion failed: There are mismatched { or } ' +
-                 'in the pattern.', err.message);
-  }
+  var err = assertThrows(function() {
+    new goog.i18n.MessageFormat('{} {');
+  });
+  assertEquals('Assertion failed: There are mismatched { or } in the pattern.',
+      err.message);
 }
 
 function testSimpleReplacement() {
@@ -74,10 +72,10 @@ function testSimpleSelect() {
 
 function testSimplePlural() {
   var fmt = new goog.i18n.MessageFormat('I see {NUM_PEOPLE, plural, offset:1 ' +
-      '=0 {no one at all} ' +
-      '=1 {{PERSON}} ' +
-      'one {{PERSON} and one other person} ' +
-      'other {{PERSON} and # other people}} in {PLACE}.');
+      '=0 {no one at all in {PLACE}.} ' +
+      '=1 {{PERSON} in {PLACE}.} ' +
+      'one {{PERSON} and one other person in {PLACE}.} ' +
+      'other {{PERSON} and # other people in {PLACE}.}}');
 
   assertEquals('I see no one at all in Belgrade.',
                fmt.format({'NUM_PEOPLE': 0,
@@ -137,6 +135,27 @@ function testSelectNestedInPlural() {
                fmt.format({'GENDER': 'male',
                            'WHO': 'Milan',
                            'CIRCLES': 1234}));
+}
+
+function testPluralNestedInSelect() {
+  // Added offset just for testing purposes. It doesn't make sense
+  // to have it otherwise.
+  var fmt = new goog.i18n.MessageFormat('{GENDER, select, ' +
+      'female {{NUM_GROUPS, plural, ' +
+      '  one {{WHO} added you to her group} ' +
+      '  other {{WHO} added you to her # groups}}} ' +
+      'other {{NUM_GROUPS, plural, offset:1' +
+      '  one {{WHO} added you to his group} ' +
+      '  other {{WHO} added you to his # groups}}}}');
+
+  assertEquals('Jelena added you to her group',
+               fmt.format({'GENDER': 'female',
+                           'WHO': 'Jelena',
+                           'NUM_GROUPS': 1}));
+  assertEquals('Milan added you to his 1,233 groups',
+               fmt.format({'GENDER': 'male',
+                           'WHO': 'Milan',
+                           'NUM_GROUPS': 1234}));
 }
 
 function testLiteralOpenCurlyBrace() {
@@ -289,6 +308,24 @@ function testSerbianSelectNestedInPlural() {
                            'CIRCLES': 1235}));
 }
 
+function testFallbackToOtherOptionInPlurals() {
+  // Use Arabic plural rules since they have all six cases.
+  // Only locale and numbers matter, the actual language of the message
+  // does not.
+  stubs.set(goog.i18n.pluralRules, 'select', goog.i18n.pluralRules.arSelect_);
+
+  var fmt = new goog.i18n.MessageFormat('{NUM_MINUTES, plural, ' +
+      'other {# minutes}}');
+
+  // These numbers exercise all cases for the arabic plural rules.
+  assertEquals('0 minutes', fmt.format({'NUM_MINUTES': 0}));
+  assertEquals('1 minutes', fmt.format({'NUM_MINUTES': 1}));
+  assertEquals('2 minutes', fmt.format({'NUM_MINUTES': 2}));
+  assertEquals('3 minutes', fmt.format({'NUM_MINUTES': 3}));
+  assertEquals('11 minutes', fmt.format({'NUM_MINUTES': 11}));
+  assertEquals('1.5 minutes', fmt.format({'NUM_MINUTES': 1.5}));
+}
+
 function testPoundShowsNumberMinusOffsetInAllCases() {
   var fmt = new goog.i18n.MessageFormat('{SOME_NUM, plural, offset:1 ' +
       '=0 {#} =1 {#} =2 {#}one {#} other {#}}');
@@ -297,6 +334,47 @@ function testPoundShowsNumberMinusOffsetInAllCases() {
   assertEquals('0', fmt.format({'SOME_NUM': '1'}));
   assertEquals('1', fmt.format({'SOME_NUM': '2'}));
   assertEquals('20', fmt.format({'SOME_NUM': '21'}));
+}
+
+function testSpecialCharactersInParamaterDontChangeFormat() {
+  var fmt = new goog.i18n.MessageFormat('{SOME_NUM, plural,' +
+      'other {# {GROUP}}}');
+
+  // Test pound sign.
+  assertEquals('10 group#1',
+               fmt.format({'SOME_NUM': '10', 'GROUP': 'group#1'}));
+  // Test other special characters in parameters, like { and }.
+  assertEquals('10 } {', fmt.format({'SOME_NUM': '10', 'GROUP': '} {'}));
+}
+
+function testMissingOrInvalidPluralParameter() {
+  var fmt = new goog.i18n.MessageFormat('{SOME_NUM, plural,' +
+      'other {result}}');
+
+  // Key name doesn't match A != SOME_NUM.
+  assertEquals('Undefined or invalid parameter - SOME_NUM',
+               fmt.format({A: '10'}));
+
+  // Value is not a number.
+  assertEquals('Undefined or invalid parameter - SOME_NUM',
+               fmt.format({'SOME_NUM': 'Value'}));
+}
+
+function testMissingSelectParameter() {
+  var fmt = new goog.i18n.MessageFormat('{GENDER, select,' +
+      'other {result}}');
+
+  // Key name doesn't match A != GENDER.
+  assertEquals('Undefined parameter - GENDER',
+               fmt.format({A: 'female'}));
+}
+
+function testMissingSimplePlaceholder() {
+  var fmt = new goog.i18n.MessageFormat('{result}');
+
+  // Key name doesn't match A != result.
+  assertEquals('Undefined parameter - result',
+               fmt.format({A: 'none'}));
 }
 
 </script>

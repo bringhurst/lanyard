@@ -5,7 +5,7 @@
 <!--
 Copyright 2009 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <head>
@@ -18,6 +18,7 @@ See the COPYING file for details.
   goog.require('goog.debug.Logger');
   goog.require('goog.dom');
   goog.require('goog.net.xpc.CrossPageChannel');
+  goog.require('goog.object');
   goog.require('goog.testing.AsyncTestCase');
   goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.jsunit');
@@ -114,6 +115,64 @@ function testExistingIframeConnect() {
   driver.connect();
 }
 
+function testEscapeServiceName() {
+  var escape = goog.net.xpc.CrossPageChannel.prototype.escapeServiceName_;
+  assertEquals('Shouldn\'t escape alphanumeric name',
+               'fooBar123', escape('fooBar123'));
+  assertEquals('Shouldn\'t escape most non-alphanumeric characters',
+               '`~!@#$^&*()_-=+ []{}\'";,<.>/?\\',
+               escape('`~!@#$^&*()_-=+ []{}\'";,<.>/?\\'));
+  assertEquals('Should escape %, |, and :',
+               'foo%3ABar%7C123%25', escape('foo:Bar|123%'));
+  assertEquals('Should escape tp', '%25tp', escape('tp'));
+  assertEquals('Should escape %tp', '%25%25tp', escape('%tp'));
+  assertEquals('Should not escape stp', 'stp', escape('stp'));
+  assertEquals('Should not escape s%tp', 's%25tp', escape('s%tp'));
+}
+
+function testSameDomainCheck_noMessageOrigin() {
+  var channel = new goog.net.xpc.CrossPageChannel(goog.object.create(
+      goog.net.xpc.CfgFields.PEER_HOSTNAME, 'http://foo.com'));
+  assertTrue(channel.isMessageOriginAcceptable_(undefined));
+}
+
+function testSameDomainCheck_noPeerHostname() {
+  var channel = new goog.net.xpc.CrossPageChannel({});
+  assertTrue(channel.isMessageOriginAcceptable_('http://foo.com'));
+}
+
+function testSameDomainCheck_unconfigured() {
+  var channel = new goog.net.xpc.CrossPageChannel({});
+  assertTrue(channel.isMessageOriginAcceptable_(undefined));
+}
+
+function testSameDomainCheck_originsMatch() {
+  var channel = new goog.net.xpc.CrossPageChannel(goog.object.create(
+      goog.net.xpc.CfgFields.PEER_HOSTNAME, 'http://foo.com'));
+  assertTrue(channel.isMessageOriginAcceptable_('http://foo.com'));
+}
+
+function testSameDomainCheck_originsMismatch() {
+  var channel = new goog.net.xpc.CrossPageChannel(goog.object.create(
+      goog.net.xpc.CfgFields.PEER_HOSTNAME, 'http://foo.com'));
+  assertFalse(channel.isMessageOriginAcceptable_('http://nasty.com'));
+}
+
+function testUnescapeServiceName() {
+  var unescape = goog.net.xpc.CrossPageChannel.prototype.unescapeServiceName_;
+  assertEquals('Shouldn\'t modify alphanumeric name',
+               'fooBar123', unescape('fooBar123'));
+  assertEquals('Shouldn\'t modify most non-alphanumeric characters',
+               '`~!@#$^&*()_-=+ []{}\'";,<.>/?\\',
+               unescape('`~!@#$^&*()_-=+ []{}\'";,<.>/?\\'));
+  assertEquals('Should unescape URL-escapes',
+               'foo:Bar|123%', unescape('foo%3ABar%7C123%25'));
+  assertEquals('Should unescape tp', 'tp', unescape('%25tp'));
+  assertEquals('Should unescape %tp', '%tp', unescape('%25%25tp'));
+  assertEquals('Should not escape stp', 'stp', unescape('stp'));
+  assertEquals('Should not escape s%tp', 's%tp', unescape('s%25tp'));
+}
+
 
 /**
  * Driver for the tests for CrossPageChannel.
@@ -122,6 +181,8 @@ function testExistingIframeConnect() {
  * @extends {goog.Disposable}
  */
 Driver = function() {
+  goog.Disposable.call(this);
+
   /**
    * The peer iframe.
    * @type {!Element}
@@ -157,7 +218,7 @@ goog.inherits(Driver, goog.Disposable);
  * Disposes of the channel.
  */
 Driver.prototype.disposeInternal = function() {
-  goog.net.xpc.CrossPageChannel.superClass_.disposeInternal.call(this);
+  goog.base(this, 'disposeInternal');
 
   if (this.channel_) {
     this.channel_.dispose();
@@ -192,6 +253,13 @@ Driver.prototype.createChannel = function(opt_iframeId, opt_domHelper) {
   cfg[goog.net.xpc.CfgFields.CHANNEL_NAME] = 'test_channel' + uniqueId++;
   cfg[goog.net.xpc.CfgFields.LOCAL_POLL_URI] = 'does-not-exist.html';
   cfg[goog.net.xpc.CfgFields.PEER_POLL_URI] = 'does-not-exist.html';
+  function resolveUri(fieldName) {
+    cfg[fieldName] =
+        goog.Uri.resolve(window.location.href, cfg[fieldName]).toString();
+  }
+  resolveUri(goog.net.xpc.CfgFields.PEER_URI);
+  resolveUri(goog.net.xpc.CfgFields.LOCAL_POLL_URI);
+  resolveUri(goog.net.xpc.CfgFields.PEER_POLL_URI);
 
   this.channel_ = new goog.net.xpc.CrossPageChannel(cfg, opt_domHelper);
   this.channel_.registerService('msg', goog.bind(this.msgHandler_, this));

@@ -17,6 +17,7 @@
  * design pattern that all UI components should follow.
  *
  * @see ../demos/samplecomponent.html
+ * @see http://code.google.com/p/closure-library/wiki/IntroToComponents
  */
 
 goog.provide('goog.ui.Component');
@@ -25,15 +26,14 @@ goog.provide('goog.ui.Component.EventType');
 goog.provide('goog.ui.Component.State');
 
 goog.require('goog.array');
+goog.require('goog.array.ArrayLike');
 goog.require('goog.dom');
-goog.require('goog.dom.DomHelper');
-goog.require('goog.events');
-goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.ui.IdGenerator');
+
 
 
 /**
@@ -421,8 +421,13 @@ goog.ui.Component.prototype.childIndex_ = null;
 
 /**
  * Flag used to keep track of whether a component decorated an already existing
- * element or whether it created the DOM itself.  If an element was decorated
- * dispose will remove the node from the document, it is left up to the app.
+ * element or whether it created the DOM itself.
+ *
+ * If an element is decorated, dispose will leave the node in the document.
+ * It is up to the app to remove the node.
+ *
+ * If an element was rendered, dispose will remove the node automatically.
+ *
  * @type {boolean}
  * @private
  */
@@ -481,6 +486,30 @@ goog.ui.Component.prototype.getElement = function() {
  */
 goog.ui.Component.prototype.setElementInternal = function(element) {
   this.element_ = element;
+};
+
+
+/**
+ * Returns an array of all the elements in this component's DOM with the
+ * provided className.
+ * @param {string} className The name of the class to look for.
+ * @return {!goog.array.ArrayLike} The items found with the class name provided.
+ */
+goog.ui.Component.prototype.getElementsByClass = function(className) {
+  return this.element_ ?
+      this.dom_.getElementsByClass(className, this.element_) : [];
+};
+
+
+/**
+ * Returns the first element in this component's DOM with the provided
+ * className.
+ * @param {string} className The name of the class to look for.
+ * @return {?Element} The first item with the class name provided.
+ */
+goog.ui.Component.prototype.getElementByClass = function(className) {
+  return this.element_ ?
+      this.dom_.getElementByClass(className, this.element_) : null;
 };
 
 
@@ -795,13 +824,29 @@ goog.ui.Component.prototype.disposeInternal = function() {
 
 /**
  * Helper function for subclasses that gets a unique id for a given fragment,
- * this can be used by components to
- * generate unique string ids for DOM elements
+ * this can be used by components to generate unique string ids for DOM
+ * elements.
  * @param {string} idFragment A partial id.
  * @return {string} Unique element id.
  */
 goog.ui.Component.prototype.makeId = function(idFragment) {
   return this.getId() + '.' + idFragment;
+};
+
+
+/**
+ * Makes a collection of ids.  This is a convenience method for makeId.  The
+ * object's values are the id fragments and the new values are the generated
+ * ids.  The key will remain the same.
+ * @param {Object} object The object that will be used to create the ids.
+ * @return {Object} An object of id keys to generated ids.
+ */
+goog.ui.Component.prototype.makeIds = function(object) {
+  var ids = {};
+  for (var key in object) {
+    ids[key] = this.makeId(object[key]);
+  }
+  return ids;
 };
 
 

@@ -3,7 +3,7 @@
 <!--
 Copyright 2008 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
@@ -36,6 +36,11 @@ See the COPYING file for details.
 <button onclick="drawTargets(targets, 10)">draw targets 1</button><br>
 <button onclick="drawTargets(targets2, 1)">draw targets 2</button><br>
 <button onclick="drawTargets(targets3, 10)">draw targets 3</button>
+
+<div id="container1">
+  <div id="child1"></div>
+  <div id="child2"></div>
+</div>
 
 <script>
 
@@ -339,6 +344,36 @@ function testMaybeCreateDummyTargetForPosition4() {
 }
 
 
+function testCalculateTargetBox() {
+  var testGroup = new goog.fx.AbstractDragDrop();
+  testGroup.targetList_ = [];
+  goog.array.forEach(targets, function(target) {
+    testGroup.targetList_.push(target);
+    testGroup.calculateTargetBox_(target.box_);
+  });
+  assertTrue(goog.math.Box.equals(testGroup.targetBox_,
+             new goog.math.Box(0, 9, 10, 1)));
+
+  testGroup = new goog.fx.AbstractDragDrop();
+  testGroup.targetList_ = [];
+  goog.array.forEach(targets2, function(target) {
+    testGroup.targetList_.push(target);
+    testGroup.calculateTargetBox_(target.box_);
+  });
+  assertTrue(goog.math.Box.equals(testGroup.targetBox_,
+             new goog.math.Box(10, 50, 80, 10)));
+
+  testGroup = new goog.fx.AbstractDragDrop();
+  testGroup.targetList_ = [];
+  goog.array.forEach(targets3, function(target) {
+    testGroup.targetList_.push(target);
+    testGroup.calculateTargetBox_(target.box_);
+  });
+  assertTrue(goog.math.Box.equals(testGroup.targetBox_,
+             new goog.math.Box(0, 6, 6, 0)));
+}
+
+
 function testIsInside() {
   var add = new goog.fx.AbstractDragDrop();
   // The box in question.
@@ -377,6 +412,77 @@ function testIsInside() {
   add.dispose();
 }
 
+function testAddingRemovingScrollableContainers() {
+  var group = new goog.fx.AbstractDragDrop();
+  var el1 = document.createElement('div');
+  var el2 = document.createElement('div');
+
+  assertEquals(0, group.scrollableContainers_.length);
+
+  group.addScrollableContainer(el1);
+  assertEquals(1, group.scrollableContainers_.length);
+
+  group.addScrollableContainer(el2);
+  assertEquals(2, group.scrollableContainers_.length);
+
+  group.removeAllScrollableContainers();
+  assertEquals(0, group.scrollableContainers_.length);
+}
+
+
+function testScrollableContainersCalculation() {
+  var group = new goog.fx.AbstractDragDrop();
+  var target = new goog.fx.AbstractDragDrop();
+
+  group.addTarget(target);
+  group.addScrollableContainer(document.getElementById('container1'));
+  var container = group.scrollableContainers_[0];
+
+  var item1 = new goog.fx.DragDropItem(document.getElementById('child1'));
+  var item2 = new goog.fx.DragDropItem(document.getElementById('child2'));
+
+  target.items_.push(item1);
+  group.recalculateDragTargets();
+  group.recalculateScrollableContainers();
+
+  assertEquals(1, container.containedTargets_.length);
+  assertEquals(container, group.targetList_[0].scrollableContainer_);
+
+  target.items_.push(item2);
+  group.recalculateDragTargets();
+  assertEquals(1, container.containedTargets_.length);
+  assertNull(group.targetList_[0].scrollableContainer_);
+
+  group.recalculateScrollableContainers();
+  assertEquals(2, container.containedTargets_.length);
+  assertEquals(container, group.targetList_[1].scrollableContainer_);
+}
+
+function testMouseMove_mouseOutBeforeThreshold() {
+  // Setup dragdrop and item
+  var itemEl = document.createElement('div');
+  var add = new goog.fx.AbstractDragDrop();
+  var item = new goog.fx.DragDropItem(itemEl);
+  item.setParent(add);
+  add.items_.push(item);
+
+  // Simulate maybeStartDrag
+  item.startPosition_ = new goog.math.Coordinate(10, 10);
+  add.currentDragElement_ = itemEl;
+
+  // Test
+  var draggedItem = null;
+  add.startDrag = function(event, item) {
+    draggedItem = item;
+  };
+
+  var event = {'clientX': 8, 'clientY': 10, // Drag distance is only 2
+      'type': goog.events.EventType.MOUSEOUT};
+  item.mouseMove_(event);
+
+  assertEquals("dragStart event fired", item, draggedItem);
+}
+
 
 // Helper function for manual debugging.
 function drawTargets(targets, multiplier) {
@@ -398,3 +504,4 @@ function drawTargets(targets, multiplier) {
 </script>
 </body>
 </html>
+

@@ -26,6 +26,7 @@ goog.require('goog.gears.WorkerPool');
 goog.require('goog.net.XmlHttp');
 
 
+
 /**
  * This class implements a fake worker pool. It has the same interface as
  * the Gears WorkerPool object but uses an iframe and timers to emulate the
@@ -119,7 +120,7 @@ goog.gears.FakeWorkerPool_.prototype.createWorker =
   // We cannot just set these to undefined because the properties are read
   // only. We therefore use a with statement to hide them to the scope.
   doc.write('<script>with ({window: undefined, document: undefined, ' +
-            'navigator: undefined}) {' + code + '}</script>');
+            'navigator: undefined}) {' + code + '}</' + 'script>');
   doc.close();
 
   return id;
@@ -226,7 +227,6 @@ goog.gears.FakeWorkerPool_.prototype.getWindow_ = function(workerId) {
   }
   throw Error('Could not access worker');
 };
-
 
 
 

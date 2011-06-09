@@ -35,7 +35,7 @@ goog.provide('goog.net.xpc.NixTransport');
 
 goog.require('goog.net.xpc');
 goog.require('goog.net.xpc.Transport');
-
+goog.require('goog.reflect');
 
 
 /**
@@ -92,6 +92,7 @@ goog.inherits(goog.net.xpc.NixTransport, goog.net.xpc.Transport);
 // reason, so we need to make these names quite unique, as they will go into
 // the global namespace.
 
+
 /**
  * Global name of the Wrapper VBScript class.
  * Note that this class will be stored in the *global*
@@ -110,12 +111,14 @@ goog.net.xpc.NixTransport.NIX_WRAPPER = 'GCXPC____NIXVBS_wrapper';
  */
 goog.net.xpc.NixTransport.NIX_GET_WRAPPER = 'GCXPC____NIXVBS_get_wrapper';
 
+
 /**
  * The name of the handle message method used by the wrapper class
  * when calling the transport.
  * @type {string}
  */
 goog.net.xpc.NixTransport.NIX_HANDLE_MESSAGE = 'GCXPC____NIXJS_handle_message';
+
 
 /**
  * The name of the create channel method used by the wrapper class
@@ -124,6 +127,7 @@ goog.net.xpc.NixTransport.NIX_HANDLE_MESSAGE = 'GCXPC____NIXJS_handle_message';
  */
 goog.net.xpc.NixTransport.NIX_CREATE_CHANNEL = 'GCXPC____NIXJS_create_channel';
 
+
 /**
  * A "unique" identifier that is stored in the wrapper
  * class so that the wrapper can be distinguished from
@@ -131,6 +135,27 @@ goog.net.xpc.NixTransport.NIX_CREATE_CHANNEL = 'GCXPC____NIXJS_create_channel';
  * @type {string}
  */
 goog.net.xpc.NixTransport.NIX_ID_FIELD = 'GCXPC____NIXVBS_container';
+
+
+/**
+ * Determines if the installed version of IE supports accessing window.opener
+ * after it has been set to a non-Window/null value. NIX relies on this being
+ * possible.
+ * @return {boolean} Whether window.opener behavior is compatible with NIX.
+ */
+goog.net.xpc.NixTransport.isNixSupported = function() {
+  var isSupported = false;
+  try {
+    var oldOpener = window.opener;
+    // The compiler complains (as it should!) if we set window.opener to
+    // something other than a window or null.
+    window.opener = /** @type {Window} */ ({});
+    isSupported = goog.reflect.canAccessProperty(window, 'opener');
+    window.opener = oldOpener;
+  } catch(e) { }
+  return isSupported;
+};
+
 
 /**
  * Conducts the global setup work for the NIX transport method.
@@ -232,6 +257,7 @@ goog.net.xpc.NixTransport.conductGlobalSetup_ = function(listenWindow) {
   }
 };
 
+
 /**
  * The transport type.
  * @type {number}
@@ -249,6 +275,7 @@ goog.net.xpc.NixTransport.prototype.transportType =
  * @private
  */
 goog.net.xpc.NixTransport.prototype.localSetupCompleted_ = false;
+
 
 /**
  * The NIX channel used to talk to the other page. This
@@ -312,6 +339,7 @@ goog.net.xpc.NixTransport.prototype.attemptOuterSetup_ = function() {
   }
 };
 
+
 /**
  * Attempts to setup the channel from the perspective
  * of the inner (read: iframe) page. This method
@@ -369,6 +397,7 @@ goog.net.xpc.NixTransport.prototype.attemptInnerSetup_ = function() {
   }
 };
 
+
 /**
  * Internal method called by the inner page, via the
  * NIX wrapper, to complete the setup of the channel.
@@ -398,6 +427,7 @@ goog.net.xpc.NixTransport.prototype.createChannel_ = function(channel) {
    // and ready to use.
    this.channel_.notifyConnected_();
 };
+
 
 /**
  * Internal method called by the other page, via the NIX wrapper,
@@ -439,6 +469,6 @@ goog.net.xpc.NixTransport.prototype.send = function(service, payload) {
  * Disposes of the transport.
  */
 goog.net.xpc.NixTransport.prototype.disposeInternal = function() {
-  goog.net.xpc.NixTransport.superClass_.disposeInternal.call(this);
+  goog.base(this, 'disposeInternal');
   this.nixChannel_ = null;
 };

@@ -39,6 +39,7 @@ goog.require('goog.ds.EmptyNodeList');
 goog.require('goog.string');
 
 
+
 /**
  * Create a new expression. An expression uses a string expression language, and
  * from this string and a passed in DataNode can evaluate to a value, DataNode,
@@ -193,11 +194,6 @@ goog.ds.Expr.prototype.getValue = function(opt_ds) {
   if (opt_ds == null) {
     opt_ds = goog.ds.DataManager.getInstance();
   } else if (this.isAbsolute_) {
-
-    // TODO(user): Remove once JSCompiler's undefined properties warnings
-    // don't error for guarded properties.
-    var magicProps = {getDataRoot: 0};
-
     opt_ds = opt_ds.getDataRoot ? opt_ds.getDataRoot() :
         goog.ds.DataManager.getInstance();
   }
@@ -496,11 +492,13 @@ goog.ds.Expr.String_ = {
  * Standard expressions
  */
 
+
 /**
  * The current node
  */
 goog.ds.Expr.CURRENT = goog.ds.Expr.create(
     goog.ds.Expr.String_.CURRENT_NODE_EXPR);
+
 
 /**
  * For DOM interop - all DOM child nodes (text + element).
@@ -509,11 +507,13 @@ goog.ds.Expr.CURRENT = goog.ds.Expr.create(
 goog.ds.Expr.ALL_CHILD_NODES =
     goog.ds.Expr.create(goog.ds.Expr.String_.ALL_CHILD_NODES_EXPR);
 
+
 /**
  * For DOM interop - all DOM element child nodes
  */
 goog.ds.Expr.ALL_ELEMENTS =
     goog.ds.Expr.create(goog.ds.Expr.String_.ALL_ELEMENTS_EXPR);
+
 
 /**
  * For DOM interop - all DOM attribute nodes
@@ -522,15 +522,18 @@ goog.ds.Expr.ALL_ELEMENTS =
 goog.ds.Expr.ALL_ATTRIBUTES =
     goog.ds.Expr.create(goog.ds.Expr.String_.ALL_ATTRIBUTES_EXPR);
 
+
 /**
  * Get the dataName of a node
  */
 goog.ds.Expr.NAME = goog.ds.Expr.create(goog.ds.Expr.String_.NAME_EXPR);
 
+
 /**
  * Get the count of nodes matching an expression
  */
 goog.ds.Expr.COUNT = goog.ds.Expr.create(goog.ds.Expr.String_.COUNT_EXPR);
+
 
 /**
  * Get the position of the "current" node in the current node list

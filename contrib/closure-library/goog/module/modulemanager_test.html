@@ -3,7 +3,7 @@
 <!--
 Copyright 2008 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
@@ -272,6 +272,47 @@ See the COPYING file for details.
         'setLoaded should only be called once for "d"', 2, calls[1]);
     assertEquals(
         'afterLoad should only be called once for "d"', 2, calls[2]);
+  }
+
+  /**
+   * Tests that multiple callbacks on the same module don't cause
+   * confusion about the active state after the module is finally loaded.
+   */
+  function testUserInitiatedExecOnLoadEventuallyLeavesManagerIdle() {
+    var mm = getModuleManager({'c': [], 'd': []});
+    mm.setLoader(createSuccessfulNonBatchLoader(mm));
+
+    var calledBack1 = false;
+    var calledBack2 = false;
+
+    mm.execOnLoad(
+        'c',
+        function() {
+          calledBack1 = true;
+        },
+        undefined,
+        undefined,
+        true);
+    mm.execOnLoad(
+        'c',
+        function() {
+          calledBack2 = true;
+        },
+        undefined,
+        undefined,
+        true);
+    mm.load('c');
+
+    assertTrue(
+        'Manager should be active while waiting for load', mm.isUserActive());
+
+    clock.tick(5);
+
+    assertTrue('First callback should be called', calledBack1);
+    assertTrue('Second callback should be called', calledBack2);
+    assertFalse(
+        'Manager should be inactive after loading is complete',
+        mm.isUserActive());
   }
 
   /**
@@ -722,13 +763,15 @@ See the COPYING file for details.
     assertFalse(
         'module "r" should not be loaded (1)', mm.isModuleLoaded('r'));
 
-    // Failed loads are automatically retried.
-    clock.tick(5);
+    // Failed loads are automatically retried after a backOff.
+    clock.tick(5 + mm.getBackOff_());
     assertTrue('module "q" should be loaded', mm.isModuleLoaded('q'));
     assertFalse(
         'module "p" should not be loaded (2)', mm.isModuleLoaded('p'));
     assertFalse(
         'module "r" should not be loaded (2)', mm.isModuleLoaded('r'));
+
+    // A successful load decrements the backOff.
     clock.tick(5);
     assertTrue('module "p" should be loaded', mm.isModuleLoaded('p'));
     assertFalse(
@@ -761,7 +804,7 @@ See the COPYING file for details.
 
     // Fail twice.
     for (var i = 0; i < 2; i++) {
-      clock.tick(5);
+      clock.tick(5 + mm.getBackOff_());
       assertFalse(
           'module "s" should not be loaded (1)', mm.isModuleLoaded('s'));
       assertFalse(
@@ -769,7 +812,7 @@ See the COPYING file for details.
     }
 
     // Fail a third time and check that the callback is fired.
-    clock.tick(5);
+    clock.tick(5 + mm.getBackOff_());
     assertFalse(
         'module "s" should not be loaded (2)', mm.isModuleLoaded('s'));
     assertTrue(
@@ -786,7 +829,7 @@ See the COPYING file for details.
     // Also reset the failed callback flag and make sure it isn't called
     // again.
     firedLoadFailed = false;
-    clock.tick(10);
+    clock.tick(10 + mm.getBackOff_());
     assertFalse(
         'module "s" should not be loaded (3)', mm.isModuleLoaded('s'));
     assertFalse('No more loads should have been tried', triedLoad);
@@ -1103,13 +1146,12 @@ See the COPYING file for details.
     mm.setLoader(createSuccessfulNonBatchLoaderWithConstructor(
         mm, createModulesFor('a', 'b')));
     mm.preloadModule('a');
-    try {
+    var e = assertThrows(function() {
       clock.tick(10);
-    } catch (e) {
-      assertContains('Module errback failure', e.message);
-      if (!goog.userAgent.IE) {
-        assertContains('error2', e.message);
-      }
+    });
+    assertContains('Module errback failure', e.message);
+    if (!goog.userAgent.IE) {
+      assertContains('error2', e.message);
     }
 
     assertTrue(mm.getModuleInfo('a').isLoaded());
@@ -1163,7 +1205,7 @@ See the COPYING file for details.
     assertTrue('Base initialization not called after setModuleContext', called);
     assertEquals('Did not receive module context', appContext, context);
   }
-  
+
   function testSetAllModuleInfoString() {
     var info = 'base/one:0/two:0/three:0,1,2/four:0,3/five:';
     var mm = new goog.module.ModuleManager();
@@ -1184,6 +1226,28 @@ See the COPYING file for details.
         mm.getModuleInfo('five').getDependencies());
   }
 
+  function testSetAllModuleInfoStringWithEmptyString() {
+    var mm = new goog.module.ModuleManager();
+    var called = false;
+    var context;
+    mm.registerInitializationCallback(function(mcontext) {
+      called = true;
+      context = mcontext;
+    });
+    mm.setAllModuleInfoString('');
+    assertTrue('Initialization not called', called);
+  }
+
+  function testBackOffAmounts() {
+    var mm = new goog.module.ModuleManager();
+    assertEquals(0, mm.getBackOff_());
+
+    mm.consecutiveFailures_++;
+    assertEquals(5000, mm.getBackOff_());
+
+    mm.consecutiveFailures_++;
+    assertEquals(20000, mm.getBackOff_());
+  }
 </script>
 </body>
 </html>

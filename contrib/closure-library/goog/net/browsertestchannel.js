@@ -22,14 +22,18 @@
  *
  */
 
+
 /**
  * Namespace for BrowserChannel
  */
 goog.provide('goog.net.BrowserTestChannel');
 
-goog.require('goog.net.ChannelDebug');
-goog.require('goog.net.ChannelRequest');
+goog.require('goog.json');
+goog.require('goog.net.ChannelRequest.Error');
+goog.require('goog.net.tmpnetwork');
 goog.require('goog.userAgent');
+
+
 
 /**
  * Encapsulates the logic for a single BrowserTestChannel.
@@ -64,12 +68,14 @@ goog.net.BrowserTestChannel = function(channel, channelDebug) {
  */
 goog.net.BrowserTestChannel.prototype.extraHeaders_ = null;
 
+
 /**
  * The test request.
  * @type {goog.net.ChannelRequest}
  * @private
  */
 goog.net.BrowserTestChannel.prototype.request_ = null;
+
 
 /**
  * Whether we have received the first result as an intermediate result. This
@@ -79,6 +85,16 @@ goog.net.BrowserTestChannel.prototype.request_ = null;
  */
 goog.net.BrowserTestChannel.prototype.receivedIntermediateResult_ = false;
 
+
+/**
+ * The time when the test request was started. We use timing in IE as
+ * a heuristic for whether we're behind a buffering proxy.
+ * @type {?number}
+ * @private
+ */
+goog.net.BrowserTestChannel.prototype.startTime_ = null;
+
+
 /**
  * The time for of the first result part. We use timing in IE as a
  * heuristic for whether we're behind a buffering proxy.
@@ -86,6 +102,7 @@ goog.net.BrowserTestChannel.prototype.receivedIntermediateResult_ = false;
  * @private
  */
 goog.net.BrowserTestChannel.prototype.firstTime_ = null;
+
 
 /**
  * The time for of the last result part. We use timing in IE as a
@@ -95,12 +112,14 @@ goog.net.BrowserTestChannel.prototype.firstTime_ = null;
  */
 goog.net.BrowserTestChannel.prototype.lastTime_ = null;
 
+
 /**
  * The relative path for test requests.
  * @type {?string}
  * @private
  */
 goog.net.BrowserTestChannel.prototype.path_ = null;
+
 
 /**
  * The state of the state machine for this object.
@@ -110,12 +129,14 @@ goog.net.BrowserTestChannel.prototype.path_ = null;
  */
 goog.net.BrowserTestChannel.prototype.state_ = null;
 
+
 /**
  * The last status code received.
  * @type {number}
  * @private
  */
 goog.net.BrowserTestChannel.prototype.lastStatusCode_ = -1;
+
 
 /**
  * A subdomain prefix for using a subdomain in IE for the backchannel
@@ -124,6 +145,7 @@ goog.net.BrowserTestChannel.prototype.lastStatusCode_ = -1;
  * @private
  */
 goog.net.BrowserTestChannel.prototype.hostPrefix_ = null;
+
 
 /**
  * A subdomain prefix for testing whether the channel was disabled by
@@ -169,6 +191,7 @@ goog.net.BrowserTestChannel.State_ = {
  */
 goog.net.BrowserTestChannel.BLOCKED_TIMEOUT_ = 5000;
 
+
 /**
  * Number of attempts to try to see if the check to see if we're blocked
  * succeeds. Sometimes the request can fail because of flaky network conditions
@@ -178,12 +201,23 @@ goog.net.BrowserTestChannel.BLOCKED_TIMEOUT_ = 5000;
  */
 goog.net.BrowserTestChannel.BLOCKED_RETRIES_ = 3;
 
+
 /**
  * Time in ms between retries of the blocked request
  * @type {number}
  * @private
  */
 goog.net.BrowserTestChannel.BLOCKED_PAUSE_BETWEEN_RETRIES_ = 2000;
+
+
+/**
+ * Time between chunks in the test connection that indicates that we
+ * are not behind a buffering proxy. This value should be less than or
+ * equals to the time between chunks sent from the server.
+ * @type {number}
+ * @private
+ */
+goog.net.BrowserTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_ = 500;
 
 
 /**
@@ -216,6 +250,7 @@ goog.net.BrowserTestChannel.prototype.connect = function(path) {
   this.request_.xmlHttpGet(sendDataUri, false /* decodeChunks */,
       null /* hostPrefix */, true /* opt_noClose */);
   this.state_ = goog.net.BrowserTestChannel.State_.INIT;
+  this.startTime_ = goog.now();
 };
 
 
@@ -232,7 +267,7 @@ goog.net.BrowserTestChannel.prototype.checkBlocked_ = function() {
   var uri = this.channel_.createDataUri(this.blockedPrefix_,
       '/mail/images/cleardot.gif');
   uri.makeUnique();
-  goog.net.testLoadImageWithRetries(uri.toString(),
+  goog.net.tmpnetwork.testLoadImageWithRetries(uri.toString(),
       goog.net.BrowserTestChannel.BLOCKED_TIMEOUT_,
       goog.bind(this.checkBlockedCallback_, this),
       goog.net.BrowserTestChannel.BLOCKED_RETRIES_,
@@ -257,6 +292,7 @@ goog.net.BrowserTestChannel.prototype.checkBlockedCallback_ = function(
     this.channel_.testConnectionBlocked(this);
   }
 };
+
 
 /**
  * Begins the second stage of the test channel where we test to see if we're
@@ -317,7 +353,7 @@ goog.net.BrowserTestChannel.prototype.abort = function() {
  * @return {boolean} Whether the channel is closed.
  */
 goog.net.BrowserTestChannel.prototype.isClosed = function() {
- return false;
+  return false;
 };
 
 
@@ -348,11 +384,7 @@ goog.net.BrowserTestChannel.prototype.onRequestData =
           goog.net.ChannelRequest.Error.BAD_DATA);
       return;
     }
-    if (this.channel_.getAllowHostPrefix()) {
-      this.hostPrefix_ = respArray[0];
-    } else {
-      this.hostPrefix_ = null;
-    }
+    this.hostPrefix_ = this.channel_.correctHostPrefix(respArray[0]);
     this.blockedPrefix_ = respArray[1];
   } else if (this.state_ ==
              goog.net.BrowserTestChannel.State_.CONNECTION_TESTING) {
@@ -368,6 +400,17 @@ goog.net.BrowserTestChannel.prototype.onRequestData =
             goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_DATA_ONE);
         this.receivedIntermediateResult_ = true;
         this.firstTime_ = goog.now();
+        if (this.checkForEarlyNonBuffered_()) {
+          // If early chunk detection is on, and we passed the tests,
+          // assume HTTP_OK, cancel the test and turn on noproxy mode.
+          this.lastStatusCode_ = 200;
+          this.request_.cancel();
+          this.channelDebug_.debug(
+              'Test connection succeeded; using streaming connection');
+          goog.net.BrowserChannel.notifyStatEvent(
+              goog.net.BrowserChannel.Stat.NOPROXY);
+          this.channel_.testConnectionFinished(this, true);
+        }
       } else {
         goog.net.BrowserChannel.notifyStatEvent(
             goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_DATA_BOTH);
@@ -450,6 +493,7 @@ goog.net.BrowserTestChannel.prototype.onRequestComplete =
   }
 };
 
+
 /**
  * Returns the last status code received for a request.
  * @return {number} The last status code received for a request.
@@ -478,4 +522,22 @@ goog.net.BrowserTestChannel.prototype.shouldUseSecondaryDomains = function() {
 goog.net.BrowserTestChannel.prototype.isActive =
     function(browserChannel) {
   return this.channel_.isActive();
+};
+
+
+/**
+ * @return {boolean} True if test stage 2 detected a non-buffered
+ *     channel early and early no buffering detection is enabled.
+ * @private
+ */
+goog.net.BrowserTestChannel.prototype.checkForEarlyNonBuffered_ =
+    function() {
+  var ms = this.firstTime_ - this.startTime_;
+
+  // we always get Trident responses in separate calls to
+  // onRequestData, so we have to check the time that the first came in
+  // and verify that the data arrived before the second portion could
+  // have been sent. For all other browser's we skip the timing test.
+  return !goog.userAgent.IE ||
+      ms < goog.net.BrowserTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_;
 };

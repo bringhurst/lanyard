@@ -3,7 +3,7 @@
 <!--
 Copyright 2006 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
@@ -458,12 +458,16 @@ function testMakeUnique() {
 function testSetReadOnly() {
   var uri = new goog.Uri('http://www.google.com/setgmail');
   uri.setReadOnly(true);
-  try {
+  assertThrows(function() {
     uri.setParameterValue('cant', 'dothis')
-  } catch(e) {
-    return;
-  }
-  assertTrue(false);
+  });
+}
+
+function testSetReadOnlyChained() {
+  var uri = new goog.Uri('http://www.google.com/setgmail').setReadOnly(true);
+  assertThrows(function() {
+    uri.setParameterValue('cant', 'dothis');
+  });
 }
 
 function testQueryDataCount() {
@@ -696,9 +700,9 @@ function testQueryDataCreateFromMap() {
 
 function testQueryDataCreateFromKeysValues() {
   assertEquals('', String(goog.Uri.QueryData.createFromKeysValues([], [])));
-  assertEquals('a=A&b=B&c=C', String(goog.Uri.QueryData.createFromKeysValues( 
+  assertEquals('a=A&b=B&c=C', String(goog.Uri.QueryData.createFromKeysValues(
       ['a','b','c'],['A','B','C'])));
-  assertEquals('a=A&a=B&a=C', String(goog.Uri.QueryData.createFromKeysValues( 
+  assertEquals('a=A&a=B&a=C', String(goog.Uri.QueryData.createFromKeysValues(
       ['a','a','a'],['A','B','C'])));
 }
 
@@ -818,6 +822,20 @@ function testQueryNotModified() {
   assertEquals('?foo=', new goog.Uri('?foo=').toString());
   assertEquals('?foo=bar', new goog.Uri('?foo=bar').toString());
   assertEquals('?&=&=&', new goog.Uri('?&=&=&').toString());
+}
+
+function testRelativePathNotUnescapedWithColon() {
+  assertEquals('javascript%3aalert(1)',
+               new goog.Uri('javascript%3aalert(1)').toString());
+}
+
+function testAbsolutePathUnescapedWithColon() {
+  assertEquals('/javascript:alert(1)',
+               new goog.Uri('/javascript%3aalert(1)').toString());
+  assertEquals('http://www.foo.bar/path:with:colon/x',
+               new goog.Uri('http://www.foo.bar/path:with:colon/x').toString());
+  assertEquals('//www.foo.bar/path:with:colon/x',
+               new goog.Uri('//www.foo.bar/path:with:colon/x').toString());
 }
 
 function assertDotRemovedEquals(expected, path) {

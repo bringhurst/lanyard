@@ -126,14 +126,6 @@ goog.events.requiresSyntheticEventPropagation_;
 
 
 /**
- * Return value for marking an event in IE.
- * @type {string}
- * @private
- */
-goog.events.RETURN_VALUE_ = 'marked_closure';
-
-
-/**
  * Adds an event listener for a specific event on a DOM Node or an object that
  * has implemented {@link goog.events.EventTarget}. A listener can only be
  * added once to an object and if it is added again the key for the listener
@@ -591,7 +583,11 @@ goog.events.getListener = function(src, type, listener, opt_capt, opt_handler) {
   var listenerArray = goog.events.getListeners_(src, type, capture);
   if (listenerArray) {
     for (var i = 0; i < listenerArray.length; i++) {
-      if (listenerArray[i].listener == listener &&
+      // If goog.events.unlistenByKey is called during an event dispatch
+      // then the listener array won't get cleaned up and there might be
+      // 'removed' listeners in the list. Ignore those.
+      if (!listenerArray[i].removed &&
+          listenerArray[i].listener == listener &&
           listenerArray[i].capture == capture &&
           listenerArray[i].handler == opt_handler) {
         // We already have this listener. Return its key.
@@ -792,26 +788,25 @@ goog.events.getTotalListenerCount = function() {
  *     true.
  */
 goog.events.dispatchEvent = function(src, e) {
+  var type = e.type || e;
+  var map = goog.events.listenerTree_;
+  if (!(type in map)) {
+    return true;
+  }
+
   // If accepting a string or object, create a custom event object so that
   // preventDefault and stopPropagation work with the event.
   if (goog.isString(e)) {
     e = new goog.events.Event(e, src);
   } else if (!(e instanceof goog.events.Event)) {
     var oldEvent = e;
-    e = new goog.events.Event(e.type, src);
+    e = new goog.events.Event(type, src);
     goog.object.extend(e, oldEvent);
   } else {
     e.target = e.target || src;
   }
 
   var rv = 1, ancestors;
-
-  var type = e.type;
-  var map = goog.events.listenerTree_;
-
-  if (!(type in map)) {
-    return true;
-  }
 
   map = map[type];
   var hasCapture = true in map;
@@ -1036,8 +1031,9 @@ goog.events.markIeEvent_ = function(e) {
     }
   }
 
-  if (useReturnValue || e.returnValue != goog.events.RETURN_VALUE_) {
-    e.returnValue = goog.events.RETURN_VALUE_;
+  if (useReturnValue ||
+      /** @type {boolean|undefined} */ (e.returnValue) == undefined) {
+    e.returnValue = true;
   }
 };
 
@@ -1048,10 +1044,9 @@ goog.events.markIeEvent_ = function(e) {
  * @param {Event} e  The IE browser event.
  * @return {boolean} True if the event object has been marked.
  * @private
- * @notypecheck TODO(nicksantos): Fix this.
  */
 goog.events.isMarkedIeEvent_ = function(e) {
-  return e.keyCode < 0 || e.returnValue == goog.events.RETURN_VALUE_;
+  return e.keyCode < 0 || e.returnValue != undefined;
 };
 
 

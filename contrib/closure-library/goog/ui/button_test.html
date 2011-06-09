@@ -3,7 +3,7 @@
 <!--
 Copyright 2008 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
@@ -180,7 +180,7 @@ Author: attila@google.com (Attila Bodis)
 
       dispatchedActionCount = 0;
       button.handleKeyEvent({keyCode: goog.events.KeyCodes.ENTER});
-      assertEquals('Disabled button must have dispatched ACTION on Enter key',
+      assertEquals('Disabled button must not dispatch ACTION on Enter key',
           0, dispatchedActionCount);
 
       dispatchedActionCount = 0;

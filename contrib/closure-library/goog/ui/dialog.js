@@ -24,6 +24,8 @@
 
 goog.provide('goog.ui.Dialog');
 goog.provide('goog.ui.Dialog.ButtonSet');
+goog.provide('goog.ui.Dialog.ButtonSet.DefaultButtons');
+goog.provide('goog.ui.Dialog.DefaultButtonCaptions');
 goog.provide('goog.ui.Dialog.DefaultButtonKeys');
 goog.provide('goog.ui.Dialog.Event');
 goog.provide('goog.ui.Dialog.EventType');
@@ -46,6 +48,7 @@ goog.require('goog.structs.Map');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -71,11 +74,11 @@ goog.require('goog.userAgent');
  * </pre>
  * @constructor
  * @param {string=} opt_class CSS class name for the dialog element, also used
- *    as a class name prefix for related elements; defaults to modal-dialog.
+ *     as a class name prefix for related elements; defaults to modal-dialog.
  * @param {boolean=} opt_useIframeMask Work around windowed controls z-index
  *     issue by using an iframe instead of a div for bg element.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link
- *    goog.ui.Component} for semantics.
+ *     goog.ui.Component} for semantics.
  * @extends {goog.ui.Component}
  */
 goog.ui.Dialog = function(opt_class, opt_useIframeMask, opt_domHelper) {
@@ -92,7 +95,7 @@ goog.ui.Dialog = function(opt_class, opt_useIframeMask, opt_domHelper) {
   this.useIframeMask_ = !!opt_useIframeMask;
 
   // Set the default button set to show ok and cancel
-  this.buttons_ = goog.ui.Dialog.ButtonSet.OK_CANCEL;
+  this.buttons_ = goog.ui.Dialog.ButtonSet.createOkCancel();
 };
 goog.inherits(goog.ui.Dialog, goog.ui.Component);
 
@@ -103,6 +106,7 @@ goog.inherits(goog.ui.Dialog, goog.ui.Component);
  * @private
  */
 goog.ui.Dialog.prototype.focusHandler_ = null;
+
 
 /**
  * Whether the escape key closes this dialog.
@@ -118,6 +122,7 @@ goog.ui.Dialog.prototype.escapeToCancel_ = true;
  * @private
  */
 goog.ui.Dialog.prototype.hasTitleCloseButton_ = true;
+
 
 /**
  * Whether the dialog should use an iframe as the background element to work
@@ -231,7 +236,6 @@ goog.ui.Dialog.prototype.titleEl_ = null;
  * @private
  */
 goog.ui.Dialog.prototype.titleTextEl_ = null;
-
 
 
 /**
@@ -476,7 +480,7 @@ goog.ui.Dialog.prototype.setDraggable = function(draggable) {
   // this will add the dragger if we've already rendered, and gone through
   // the enterDocument routine, but now want to dynamically add draggability
   if (this.draggable_ && !this.dragger_ && this.getElement()) {
-    this.dragger_ = this.createDraggableTitleDom_();
+    this.dragger_ = this.createDragger();
 
   } else if (!this.draggable_ && this.dragger_) {
     // removes draggable classname post-render
@@ -491,16 +495,16 @@ goog.ui.Dialog.prototype.setDraggable = function(draggable) {
 
 
 /**
- * Creates a dragger on the title element and adds a classname for
- * cursor:move targeting.
- * @return {goog.fx.Dragger} The created dragger instance.
- * @private
+ * Returns a dragger for moving the dialog and adds a class for the move cursor.
+ * Defaults to allow dragging of the title only, but can be overridden if
+ * different drag targets or dragging behavior is desired.
+ * @return {!goog.fx.Dragger} The created dragger instance.
+ * @protected
  */
-goog.ui.Dialog.prototype.createDraggableTitleDom_ = function() {
-  var dragger = new goog.fx.Dragger(this.getElement(), this.titleEl_);
+goog.ui.Dialog.prototype.createDragger = function() {
   goog.dom.classes.add(this.titleEl_,
       goog.getCssName(this.class_, 'title-draggable'));
-  return dragger;
+  return new goog.fx.Dragger(this.getElement(), this.titleEl_);
 };
 
 
@@ -771,7 +775,7 @@ goog.ui.Dialog.prototype.enterDocument = function() {
 
   // Add drag support.
   if (this.draggable_ && !this.dragger_) {
-    this.dragger_ = this.createDraggableTitleDom_();
+    this.dragger_ = this.createDragger();
   }
 
   // Add event listeners to the close box and the button container.
@@ -876,6 +880,8 @@ goog.ui.Dialog.prototype.setVisible = function(visible) {
       this.dispose();
     }
   } else {
+    this.dispatchEvent(goog.ui.Dialog.EventType.AFTER_SHOW);
+
     // NOTE: see bug 1163154 for an example of an edge case where making the
     // dialog visible in response to a KEYDOWN will result in a CLICK event
     // firing on the default button (immediately closing the dialog) if the key
@@ -1162,6 +1168,7 @@ goog.ui.Dialog.prototype.onButtonClick_ = function(e) {
   }
 };
 
+
 /**
  * Finds the parent button of an element (or null if there was no button
  * parent).
@@ -1299,6 +1306,7 @@ goog.ui.Dialog.prototype.focusElement_ = function() {
 };
 
 
+
 /**
  * Dialog event class.
  * @param {string} key Key identifier for the button.
@@ -1338,8 +1346,14 @@ goog.ui.Dialog.EventType = {
   /**
    * Dispatched after the dialog is closed. Not cancelable.
    */
-  AFTER_HIDE: 'afterhide'
+  AFTER_HIDE: 'afterhide',
+
+  /**
+   * Dispatched after the dialog is shown. Not cancelable.
+   */
+  AFTER_SHOW: 'aftershow'
 };
+
 
 
 /**
@@ -1402,7 +1416,7 @@ goog.ui.Dialog.ButtonSet.prototype.cancelButton_ = null;
  *     Dialog will dispatch for this button if enter is pressed.
  * @param {boolean=} opt_isCancel Whether this button has the same behaviour as
  *    cancel.  If escape is pressed this button will fire.
- * @return {goog.ui.Dialog.ButtonSet} The button set, to make it easy to chain
+ * @return {!goog.ui.Dialog.ButtonSet} The button set, to make it easy to chain
  *    "set" calls and build new ButtonSets.
  */
 goog.ui.Dialog.ButtonSet.prototype.set = function(key, caption,
@@ -1417,6 +1431,24 @@ goog.ui.Dialog.ButtonSet.prototype.set = function(key, caption,
   }
 
   return this;
+};
+
+
+/**
+ * Adds a button (an object with a key and caption) to this button set. Buttons
+ * will be displayed in the order they are added.
+ * @see goog.ui.Dialog.DefaultButtons
+ * @param {!{key: string, caption: string}} button The button key and caption.
+ * @param {boolean=} opt_isDefault Whether this button is the default button.
+ *     Dialog will dispatch for this button if enter is pressed.
+ * @param {boolean=} opt_isCancel Whether this button has the same behavior as
+ *     cancel. If escape is pressed this button will fire.
+ * @return {!goog.ui.Dialog.ButtonSet} The button set, to make it easy to chain
+ *     "addButton" calls and build new ButtonSets.
+ */
+goog.ui.Dialog.ButtonSet.prototype.addButton = function(button, opt_isDefault,
+      opt_isCancel) {
+  return this.set(button.key, button.caption, opt_isDefault, opt_isCancel);
 };
 
 
@@ -1483,6 +1515,26 @@ goog.ui.Dialog.ButtonSet.prototype.decorate = function(element) {
 
 
 /**
+ * Gets the component's element.
+ * @return {Element} The element for the component.
+ * TODO(user): Remove after refactoring to goog.ui.Component.
+ */
+goog.ui.Dialog.ButtonSet.prototype.getElement = function() {
+  return this.element_;
+};
+
+
+/**
+ * Returns the dom helper that is being used on this component.
+ * @return {!goog.dom.DomHelper} The dom helper used on this component.
+ * TODO(user): Remove after refactoring to goog.ui.Component.
+ */
+goog.ui.Dialog.ButtonSet.prototype.getDomHelper = function() {
+  return this.dom_;
+};
+
+
+/**
  * Sets the default button.
  * @param {?string} key The default button.
  */
@@ -1544,6 +1596,32 @@ goog.ui.Dialog.ButtonSet.prototype.getAllButtons = function() {
 
 
 /**
+ * Enables or disables a button in this set by key. If the button is not found,
+ * does nothing.
+ * @param {string} key The button to enable or disable.
+ * @param {boolean} enabled True to enable; false to disable.
+ */
+goog.ui.Dialog.ButtonSet.prototype.setButtonEnabled = function(key, enabled) {
+  var button = this.getButton(key);
+  if (button) {
+    button.disabled = !enabled;
+  }
+};
+
+
+/**
+ * Enables or disables all of the buttons in this set.
+ * @param {boolean} enabled True to enable; false to disable.
+ */
+goog.ui.Dialog.ButtonSet.prototype.setAllButtonsEnabled = function(enabled) {
+  var allButtons = this.getAllButtons();
+  for (var i = 0, button; button = allButtons[i]; i++) {
+    button.disabled = !enabled;
+  }
+};
+
+
+/**
  * The keys used to identify standard buttons in events.
  * @enum {string}
  */
@@ -1557,53 +1635,171 @@ goog.ui.Dialog.DefaultButtonKeys = {
 };
 
 
-// Construct some default sets
+/**
+ * @desc Standard caption for the dialog 'OK' button.
+ * @private
+ */
+goog.ui.Dialog.MSG_DIALOG_OK_ = goog.getMsg('OK');
+
+
+/**
+ * @desc Standard caption for the dialog 'Cancel' button.
+ * @private
+ */
+goog.ui.Dialog.MSG_DIALOG_CANCEL_ = goog.getMsg('Cancel');
+
+
+/**
+ * @desc Standard caption for the dialog 'Yes' button.
+ * @private
+ */
+goog.ui.Dialog.MSG_DIALOG_YES_ = goog.getMsg('Yes');
+
+
+/**
+ * @desc Standard caption for the dialog 'No' button.
+ * @private
+ */
+goog.ui.Dialog.MSG_DIALOG_NO_ = goog.getMsg('No');
+
+
+/**
+ * @desc Standard caption for the dialog 'Save' button.
+ * @private
+ */
+goog.ui.Dialog.MSG_DIALOG_SAVE_ = goog.getMsg('Save');
+
+
+/**
+ * @desc Standard caption for the dialog 'Continue' button.
+ * @private
+ */
+goog.ui.Dialog.MSG_DIALOG_CONTINUE_ = goog.getMsg('Continue');
+
+
+/**
+ * The default captions for the default buttons.
+ * @enum {string}
+ */
+goog.ui.Dialog.DefaultButtonCaptions = {
+  OK: goog.ui.Dialog.MSG_DIALOG_OK_,
+  CANCEL: goog.ui.Dialog.MSG_DIALOG_CANCEL_,
+  YES: goog.ui.Dialog.MSG_DIALOG_YES_,
+  NO: goog.ui.Dialog.MSG_DIALOG_NO_,
+  SAVE: goog.ui.Dialog.MSG_DIALOG_SAVE_,
+  CONTINUE: goog.ui.Dialog.MSG_DIALOG_CONTINUE_
+};
+
+
+/**
+ * The standard buttons (keys associated with captions).
+ * @enum {!{key: string, caption: string}}
+ */
+goog.ui.Dialog.ButtonSet.DefaultButtons = {
+  OK: {
+    key: goog.ui.Dialog.DefaultButtonKeys.OK,
+    caption: goog.ui.Dialog.DefaultButtonCaptions.OK
+  },
+  CANCEL: {
+    key: goog.ui.Dialog.DefaultButtonKeys.CANCEL,
+    caption: goog.ui.Dialog.DefaultButtonCaptions.CANCEL
+  },
+  YES: {
+    key: goog.ui.Dialog.DefaultButtonKeys.YES,
+    caption: goog.ui.Dialog.DefaultButtonCaptions.YES
+  },
+  NO: {
+    key: goog.ui.Dialog.DefaultButtonKeys.NO,
+    caption: goog.ui.Dialog.DefaultButtonCaptions.NO
+  },
+  SAVE: {
+    key: goog.ui.Dialog.DefaultButtonKeys.SAVE,
+    caption: goog.ui.Dialog.DefaultButtonCaptions.SAVE
+  },
+  CONTINUE: {
+    key: goog.ui.Dialog.DefaultButtonKeys.CONTINUE,
+    caption: goog.ui.Dialog.DefaultButtonCaptions.CONTINUE
+  }
+};
+
+
+/**
+ * Creates a new ButtonSet with a single 'OK' button, which is also set with
+ * cancel button semantics so that pressing escape will close the dialog.
+ * @return {!goog.ui.Dialog.ButtonSet} The created ButtonSet.
+ */
+goog.ui.Dialog.ButtonSet.createOk = function() {
+  return new goog.ui.Dialog.ButtonSet().
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.OK, true, true);
+};
+
+
+/**
+ * Creates a new ButtonSet with 'OK' (default) and 'Cancel' buttons.
+ * @return {!goog.ui.Dialog.ButtonSet} The created ButtonSet.
+ */
+goog.ui.Dialog.ButtonSet.createOkCancel = function() {
+  return new goog.ui.Dialog.ButtonSet().
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.OK, true).
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
+};
+
+
+/**
+ * Creates a new ButtonSet with 'Yes' (default) and 'No' buttons.
+ * @return {!goog.ui.Dialog.ButtonSet} The created ButtonSet.
+ */
+goog.ui.Dialog.ButtonSet.createYesNo = function() {
+  return new goog.ui.Dialog.ButtonSet().
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.YES, true).
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.NO, false, true);
+};
+
+
+/**
+ * Creates a new ButtonSet with 'Yes', 'No' (default), and 'Cancel' buttons.
+ * @return {!goog.ui.Dialog.ButtonSet} The created ButtonSet.
+ */
+goog.ui.Dialog.ButtonSet.createYesNoCancel = function() {
+  return new goog.ui.Dialog.ButtonSet().
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.YES).
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.NO, true).
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
+};
+
+
+/**
+ * Creates a new ButtonSet with 'Continue', 'Save', and 'Cancel' (default)
+ * buttons.
+ * @return {!goog.ui.Dialog.ButtonSet} The created ButtonSet.
+ */
+goog.ui.Dialog.ButtonSet.createContinueSaveCancel = function() {
+  return new goog.ui.Dialog.ButtonSet().
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CONTINUE).
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.SAVE).
+      addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, true, true);
+};
+
+
+// TODO(user): These shared instances should be phased out.
 (function() {
+  if (typeof document != 'undefined') {
+    /** @deprecated Use goog.ui.Dialog.ButtonSet#createOk. */
+    goog.ui.Dialog.ButtonSet.OK = goog.ui.Dialog.ButtonSet.createOk();
 
-  // TODO(user): Sharing the button set between instances does not work. We
-  // should create factory methods for these instead.
+    /** @deprecated Use goog.ui.Dialog.ButtonSet#createOkCancel. */
+    goog.ui.Dialog.ButtonSet.OK_CANCEL =
+        goog.ui.Dialog.ButtonSet.createOkCancel();
 
-  /** @desc label for a dialog button. */
-  var MSG_DIALOG_OK = goog.getMsg('OK');
+    /** @deprecated Use goog.ui.Dialog.ButtonSet#createYesNo. */
+    goog.ui.Dialog.ButtonSet.YES_NO = goog.ui.Dialog.ButtonSet.createYesNo();
 
-  /** @desc label for a dialog button. */
-  var MSG_DIALOG_CANCEL = goog.getMsg('Cancel');
+    /** @deprecated Use goog.ui.Dialog.ButtonSet#createYesNoCancel. */
+    goog.ui.Dialog.ButtonSet.YES_NO_CANCEL =
+        goog.ui.Dialog.ButtonSet.createYesNoCancel();
 
-  /** @desc label for a dialog button. */
-  var MSG_DIALOG_YES = goog.getMsg('Yes');
-
-  /** @desc label for a dialog button. */
-  var MSG_DIALOG_NO = goog.getMsg('No');
-
-  /** @desc label for a dialog button. */
-  var MSG_DIALOG_SAVE = goog.getMsg('Save');
-
-  /** @desc label for a dialog button. */
-  var MSG_DIALOG_CONTINUE = goog.getMsg('Continue');
-
-  goog.ui.Dialog.ButtonSet.OK = new goog.ui.Dialog.ButtonSet()
-      .set(goog.ui.Dialog.DefaultButtonKeys.OK, MSG_DIALOG_OK, true, true);
-
-  goog.ui.Dialog.ButtonSet.OK_CANCEL = new goog.ui.Dialog.ButtonSet()
-      .set(goog.ui.Dialog.DefaultButtonKeys.OK, MSG_DIALOG_OK, true)
-      .set(goog.ui.Dialog.DefaultButtonKeys.CANCEL,
-          MSG_DIALOG_CANCEL, false, true);
-
-  goog.ui.Dialog.ButtonSet.YES_NO = new goog.ui.Dialog.ButtonSet()
-      .set(goog.ui.Dialog.DefaultButtonKeys.YES, MSG_DIALOG_YES, true)
-      .set(goog.ui.Dialog.DefaultButtonKeys.NO, MSG_DIALOG_NO, false, true);
-
-  goog.ui.Dialog.ButtonSet.YES_NO_CANCEL = new goog.ui.Dialog.ButtonSet()
-      .set(goog.ui.Dialog.DefaultButtonKeys.YES, MSG_DIALOG_YES)
-      .set(goog.ui.Dialog.DefaultButtonKeys.NO, MSG_DIALOG_NO, true)
-      .set(goog.ui.Dialog.DefaultButtonKeys.CANCEL, MSG_DIALOG_CANCEL,
-          false, true);
-
-  goog.ui.Dialog.ButtonSet.CONTINUE_SAVE_CANCEL =
-      new goog.ui.Dialog.ButtonSet()
-      .set(goog.ui.Dialog.DefaultButtonKeys.CONTINUE, MSG_DIALOG_CONTINUE)
-      .set(goog.ui.Dialog.DefaultButtonKeys.SAVE, MSG_DIALOG_SAVE)
-      .set(goog.ui.Dialog.DefaultButtonKeys.CANCEL, MSG_DIALOG_CANCEL,
-          true, true);
-
+    /** @deprecated Use goog.ui.Dialog.ButtonSet#createContinueSaveCancel. */
+    goog.ui.Dialog.ButtonSet.CONTINUE_SAVE_CANCEL =
+        goog.ui.Dialog.ButtonSet.createContinueSaveCancel();
+  }
 })();

@@ -31,6 +31,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.style');
 
 
+
 /**
  * Controller for an iframe mask. The mask is only valid in the current
  * document, or else the document of the given DOM helper.
@@ -44,6 +45,7 @@ goog.require('goog.style');
  * @extends {goog.Disposable}
  */
 goog.ui.IframeMask = function(opt_domHelper, opt_iframePool) {
+  goog.Disposable.call(this);
 
   /**
    * The DOM helper for this document.
@@ -120,6 +122,7 @@ goog.ui.IframeMask.prototype.disposeInternal = function() {
 
   goog.ui.IframeMask.superClass_.disposeInternal.call(this);
 };
+
 
 /**
  * CSS for a hidden iframe.

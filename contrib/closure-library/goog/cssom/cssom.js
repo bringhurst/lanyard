@@ -204,7 +204,7 @@ goog.cssom.getCssTextFromCssRule = function(cssRule) {
 goog.cssom.getCssRuleIndexInParentStyleSheet = function(cssRule,
     opt_parentStyleSheet) {
   // Look for our special style.ruleIndex property from getAllCss.
-  if (cssRule.style['-closure-rule-index']) {
+  if (cssRule.style && cssRule.style['-closure-rule-index']) {
     return cssRule.style['-closure-rule-index'];
   }
 
@@ -264,7 +264,7 @@ goog.cssom.replaceCssRule = function(cssRule, cssText, opt_parentStyleSheet,
   if (parentStyleSheet) {
     var index = opt_index >= 0 ? opt_index :
         goog.cssom.getCssRuleIndexInParentStyleSheet(cssRule, parentStyleSheet);
-    if (index) {
+    if (index >= 0) {
       goog.cssom.removeCssRule(parentStyleSheet, index);
       goog.cssom.addCssRule(parentStyleSheet, cssText, index);
     } else {
@@ -353,8 +353,8 @@ goog.cssom.addCssText = function(cssText, opt_domHelper) {
     cssNode.styleSheet.cssText = cssText;
   } else {
     // W3C.
-    cssText = document.createTextNode(cssText);
-    cssNode.appendChild(cssText);
+    var cssTextNode = document.createTextNode(cssText);
+    cssNode.appendChild(cssTextNode);
   }
   return cssNode;
 };

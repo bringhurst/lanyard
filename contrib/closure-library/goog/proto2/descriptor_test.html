@@ -3,7 +3,7 @@
 <!--
 Copyright 2008 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
@@ -41,7 +41,9 @@ function testParentDescriptor() {
     fullName: 'this.is.a.parent'
   }, []);
 
-  parentType.descriptor_ = parentDescriptor;
+  parentType.getDescriptor = function() {
+    return parentDescriptor;
+  };
 
   var descriptor = new goog.proto2.Descriptor(messageType, {
     name: 'test',

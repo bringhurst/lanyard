@@ -29,6 +29,7 @@ goog.provide('goog.graphics.CanvasTextElement');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.graphics.EllipseElement');
 goog.require('goog.graphics.GroupElement');
 goog.require('goog.graphics.ImageElement');
@@ -101,6 +102,7 @@ goog.graphics.CanvasGroupElement.prototype.draw = function(ctx) {
     this.getGraphics().drawElement(this.children_[i]);
   }
 };
+
 
 
 /**
@@ -223,6 +225,7 @@ goog.graphics.CanvasEllipseElement.prototype.draw = function(ctx) {
 };
 
 
+
 /**
  * Thin wrapper for canvas rectangle elements.
  * This is an implementation of the goog.graphics.RectElement interface.
@@ -329,6 +332,7 @@ goog.graphics.CanvasRectElement.prototype.draw = function(ctx) {
 };
 
 
+
 /**
  * Thin wrapper for canvas path elements.
  * This is an implementation of the goog.graphics.PathElement interface.
@@ -415,6 +419,7 @@ goog.graphics.CanvasPathElement.prototype.draw = function(ctx) {
 };
 
 
+
 /**
  * Thin wrapper for canvas text elements.
  * This is an implementation of the goog.graphics.TextElement interface.
@@ -436,7 +441,10 @@ goog.graphics.CanvasPathElement.prototype.draw = function(ctx) {
  */
 goog.graphics.CanvasTextElement = function(graphics, text, x1, y1, x2, y2,
     align, font, stroke, fill) {
-  goog.graphics.TextElement.call(this, null, graphics, stroke, fill);
+  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
+    'style': 'display:table;position:absolute;padding:0;margin:0;border:0'
+  });
+  goog.graphics.TextElement.call(this, element, graphics, stroke, fill);
 
   /**
    * The text to draw.
@@ -488,15 +496,6 @@ goog.graphics.CanvasTextElement = function(graphics, text, x1, y1, x2, y2,
   this.font_ = font;
 
   /**
-   * The root element.
-   * @type {Element}
-   * @private
-   */
-  this.element_ = goog.dom.createDom('DIV', {
-    'style': 'display:table;position:absolute;padding:0;margin:0;border:0'
-  });
-
-  /**
    * The inner element that contains the text.
    * @type {Element}
    * @private
@@ -509,8 +508,8 @@ goog.graphics.CanvasTextElement = function(graphics, text, x1, y1, x2, y2,
   this.updateText_();
 
   // Append to the DOM.
-  graphics.getElement().appendChild(this.element_);
-  this.element_.appendChild(this.innerElement_);
+  graphics.getElement().appendChild(element);
+  element.appendChild(this.innerElement_);
 };
 goog.inherits(goog.graphics.CanvasTextElement, goog.graphics.TextElement);
 
@@ -531,8 +530,9 @@ goog.graphics.CanvasTextElement.prototype.setText = function(text) {
  */
 goog.graphics.CanvasTextElement.prototype.setFill = function(fill) {
   this.fill = fill;
-  if (this.element_) {
-    this.element_.style.color = fill.getColor() || fill.getColor1();
+  var element = this.getElement();
+  if (element) {
+    element.style.color = fill.getColor() || fill.getColor1();
   }
 };
 
@@ -566,7 +566,7 @@ goog.graphics.CanvasTextElement.prototype.updateStyle_ = function() {
   var y2 = this.y2_;
   var align = this.align_;
   var font = this.font_;
-  var style = this.element_.style;
+  var style = this.getElement().style;
   var scaleX = this.getGraphics().getPixelScaleX();
   var scaleY = this.getGraphics().getPixelScaleY();
 
@@ -622,6 +622,7 @@ goog.graphics.CanvasTextElement.prototype.updateText_ = function() {
     this.innerElement_.innerHTML = goog.string.htmlEscape(this.text_);
   }
 };
+
 
 
 /**

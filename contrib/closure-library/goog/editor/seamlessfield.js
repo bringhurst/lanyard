@@ -42,6 +42,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.style');
 
 
+
 /**
  * This class encapsulates an editable field that blends in with the
  * surrounding page.
@@ -67,6 +68,14 @@ goog.editor.SeamlessField.prototype.logger =
     goog.debug.Logger.getLogger('goog.editor.SeamlessField');
 
 // Functions dealing with field sizing.
+
+
+/**
+ * The key used for listening for the "dragover" event.
+ * @type {number?}
+ */
+goog.editor.SeamlessField.prototype.listenForDragOverEventKey_;
+
 
 /**
  * Sets the min height of this editable field's iframe. Only used in growing
@@ -211,7 +220,7 @@ goog.editor.SeamlessField.prototype.getIframeBodyHeightGecko_ = function() {
     // If there is a horizontal scroll, add in the thickness of the
     // scrollbar.
     if (htmlElement.clientHeight != htmlElement.offsetHeight) {
-      fieldHeight += goog.editor.SeamlessField.getScrollbarThickness_();
+      fieldHeight += goog.editor.SeamlessField.getScrollbarWidth_();
     }
   }
 
@@ -220,25 +229,15 @@ goog.editor.SeamlessField.prototype.getIframeBodyHeightGecko_ = function() {
 
 
 /**
- * Grabs the width of a scrollbar from the browser and caches
- * the result. This needs to be dynamic because the width is OS/browser
- * specific.
- * @private
- *
+ * Grabs the width of a scrollbar from the browser and caches the result.
  * @return {number} The scrollbar width in pixels.
+ * @private
  */
-goog.editor.SeamlessField.getScrollbarThickness_ = function() {
-  if (!goog.editor.SeamlessField.scrollbarThickness_) {
-    var div = goog.dom.createDom('div',
-        {'style': 'overflow:scroll;position:absolute;visibility:hidden;'});
-    goog.dom.appendChild(goog.dom.getDocument().body, div);
-    goog.editor.SeamlessField.scrollbarThickness_ =
-        div.offsetWidth - div.clientWidth;
-    goog.dom.removeNode(div);
-  }
-  return goog.editor.SeamlessField.scrollbarThickness_;
+goog.editor.SeamlessField.getScrollbarWidth_ = function() {
+  return goog.editor.SeamlessField.scrollbarWidth_ ||
+      (goog.editor.SeamlessField.scrollbarWidth_ =
+          goog.style.getScrollbarWidth());
 };
-
 
 
 /**
@@ -325,6 +324,7 @@ goog.editor.SeamlessField.prototype.releaseSizeIframeLockGecko_ = function() {
 
 // Functions dealing with blending in with the surrounding page.
 
+
 /**
  * String containing the css rules that, if applied to a document's body,
  * would style that body as if it were the original element we made editable.
@@ -410,6 +410,7 @@ goog.editor.SeamlessField.prototype.inheritBlendedCSS = function() {
 
 // Overridden methods.
 
+
 /** @inheritDoc */
 goog.editor.SeamlessField.prototype.usesIframe = function() {
   // TODO(user): Switch Firefox to using contentEditable
@@ -481,7 +482,9 @@ goog.editor.SeamlessField.prototype.dispatchBlur = function() {
       !goog.editor.BrowserFeature.CLEARS_SELECTION_WHEN_FOCUS_LEAVES) {
     var win = this.getEditableDomHelper().getWindow();
     var dragging = false;
-    goog.events.listenOnce(win.document.body, 'dragover',
+    goog.events.unlistenByKey(this.listenForDragOverEventKey_);
+    this.listenForDragOverEventKey_ = goog.events.listenOnce(
+        win.document.body, 'dragover',
         function() {
           dragging = true;
         });
@@ -697,4 +700,12 @@ goog.editor.SeamlessField.prototype.restoreDom = function() {
   if (this.usesIframe()) {
     goog.dom.removeNode(this.getEditableIframe());
   }
+};
+
+
+/** @inheritDoc */
+goog.editor.SeamlessField.prototype.disposeInternal = function() {
+  goog.events.unlistenByKey(this.listenForDragOverEventKey_);
+
+  goog.base(this, 'disposeInternal');
 };

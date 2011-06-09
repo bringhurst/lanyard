@@ -53,6 +53,7 @@ goog.require('goog.cssom');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.classes');
+goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 
@@ -96,6 +97,7 @@ goog.cssom.iframe.style.DECLARATION_START_DELIMITER_ = '{';
  * @private
  */
 goog.cssom.iframe.style.DECLARATION_END_DELIMITER_ = '}\n';
+
 
 
 /**
@@ -284,6 +286,7 @@ goog.cssom.iframe.style.makeColorRuleImportant_ = function(cssText) {
 };
 
 
+
 /**
  * Represents a single CSS selector, as described in
  * http://www.w3.org/TR/REC-CSS2/selector.html
@@ -404,6 +407,7 @@ goog.cssom.iframe.style.CssSelector_.prototype.matchElementAncestry =
 };
 
 
+
 /**
  * Represents one part of a CSS Selector. For example in the selector
  * 'body #foo .bar', body, #foo, and .bar would be considered selector parts.
@@ -490,15 +494,17 @@ goog.cssom.iframe.style.CssSelectorPart_.prototype.testElement =
 };
 
 
+
 /**
  * Represents an element and all its parent/ancestor nodes.
  * This class exists as an optimization so we run tests on an element
  * hierarchy multiple times without walking the dom each time.
- * @param {Element} node The DOM element whose ancestry should be stored.
+ * @param {Element} el The DOM element whose ancestry should be stored.
  * @constructor
  * @private
  */
-goog.cssom.iframe.style.NodeAncestry_ = function(node) {
+goog.cssom.iframe.style.NodeAncestry_ = function(el) {
+  var node = el;
   var nodeUid = goog.getUid(node);
 
   // Return an existing object from the cache if one exits for this node.
@@ -786,7 +792,7 @@ goog.cssom.iframe.style.getElementContext = function(
   for (var i = 0, prop;
        prop = goog.cssom.iframe.style.inheritedProperties_[i];
        i++) {
-    defaultProperties[prop] = computedStyle[goog.style.toCamelCase(prop)];
+    defaultProperties[prop] = computedStyle[goog.string.toCamelCase(prop)];
   }
   defaultPropertiesRuleSet.setDeclarationTextFromObject(defaultProperties);
   ruleSets.push(defaultPropertiesRuleSet);
@@ -807,7 +813,7 @@ goog.cssom.iframe.style.getElementContext = function(
   // Text formatting property values, to keep text nodes directly under BODY
   // looking right.
   for (i = 0, prop; prop = goog.cssom.iframe.style.textProperties_[i]; i++) {
-    bodyProperties[prop] = computedStyle[goog.style.toCamelCase(prop)];
+    bodyProperties[prop] = computedStyle[goog.string.toCamelCase(prop)];
   }
   if (opt_copyBackgroundContext &&
       goog.cssom.iframe.style.isTransparentValue_(

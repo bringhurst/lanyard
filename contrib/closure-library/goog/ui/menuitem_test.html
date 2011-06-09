@@ -3,7 +3,7 @@
 <!--
 Copyright 2008 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
@@ -13,9 +13,11 @@ See the COPYING file for details.
   <title>Closure Unit Tests - goog.ui.MenuItem</title>
   <script src="../base.js"></script>
   <script>
-    goog.require('goog.dom.classes');
+    goog.require('goog.array');
     goog.require('goog.dom');
     goog.require('goog.dom.NodeType');
+    goog.require('goog.dom.classes');
+    goog.require('goog.testing.events');
     goog.require('goog.testing.jsunit');
     goog.require('goog.ui.Component.State');
     goog.require('goog.ui.MenuItem');
@@ -24,6 +26,7 @@ See the COPYING file for details.
 </head>
 <body>
   <div id="sandbox"></div>
+  <div id="parentComponent"></div>
   <script>
     var sandbox = goog.dom.getElement('sandbox');
     var item;
@@ -135,6 +138,12 @@ See the COPYING file for details.
       assertTrue('Caption must be a string', goog.isString(item.getCaption()));
       assertEquals('Caption must have expected value', 'Foo',
           item.getCaption());
+
+      var arrayContent = goog.array.clone(goog.dom.htmlToDocumentFragment(
+          ' <b> \xa0foo</b><i>  bar</i> ').childNodes);
+      item.setContent(arrayContent);
+      assertEquals('whitespaces must be normalized in the caption',
+          '\xa0foo bar', item.getCaption());
     }
 
     function testSetSelectable() {
@@ -245,8 +254,8 @@ See the COPYING file for details.
           item.getRenderer().hasCheckBoxStructure(item.getElement()));
 
       item.setContent(goog.dom.createDom('span', 'foo', 'Foo'));
-      assertEquals('getContent() must return element', goog.dom.NodeType.ELEMENT,
-          item.getContent().nodeType);
+      assertEquals('getContent() must return element',
+          goog.dom.NodeType.ELEMENT, item.getContent().nodeType);
       assertTrue('Item must still have checkbox structure',
           item.getRenderer().hasCheckBoxStructure(item.getElement()));
 
@@ -277,8 +286,9 @@ See the COPYING file for details.
       assertTrue('Item must still have checkbox structure',
           item.getRenderer().hasCheckBoxStructure(item.getElement()));
 
-      item.setCaption(null);
-      assertNull('getCaption() must return null', item.getCaption());
+      item.setCaption('');
+      assertEquals('getCaption() must return empty string', '',
+          item.getCaption());
       assertTrue('Item must still have checkbox structure',
           item.getRenderer().hasCheckBoxStructure(item.getElement()));
     }
@@ -292,8 +302,9 @@ See the COPYING file for details.
       assertEquals('getCaption() must not return the accelerator', 'Hello',
           item.getCaption());
 
-      item.setCaption(null);
-      assertNull('getCaption() must return null', item.getCaption());
+      item.setCaption('');
+      assertEquals('getCaption() must return empty string', '',
+          item.getCaption());
     }
 
     function testRender() {
@@ -457,6 +468,48 @@ See the COPYING file for details.
               item.getElement()).length);
       assertTrue('Item must be checked', item.isChecked());
     }
+
+    /** @bug 1463524 */
+    function testHandleMouseUp() {
+      var COORDS_1 = new goog.math.Coordinate(1, 1);
+      var COORDS_2 = new goog.math.Coordinate(2, 2);
+      item.setActive(true);
+      // Override performActionInternal() for testing purposes.
+      var actionPerformed;
+      item.performActionInternal = function() {
+        actionPerformed = true;
+        return true;
+      };
+      item.render(sandbox);
+
+      // Scenario 1: item has no parent.
+      actionPerformed = false;
+      item.setActive(true);
+      goog.testing.events.fireMouseUpEvent(item.getElement());
+      assertTrue('Action should be performed on mouseup', actionPerformed);
+
+      // Scenario 2: item has a parent.
+      actionPerformed = false;
+      item.setActive(true);
+      var parent = new goog.ui.Component();
+      var parentElem = goog.dom.getElement('parentComponent');
+      parent.render(parentElem);
+      parent.addChild(item);
+      parent.openingCoords = COORDS_1;
+      goog.testing.events.fireMouseUpEvent(
+          item.getElement(), undefined, COORDS_2);
+      assertTrue('Action should be performed on mouseup', actionPerformed);
+
+      // Scenario 3: item has a parent which was opened during mousedown, and
+      // item, and now the mouseup fires at the same coords.
+      actionPerformed = false;
+      item.setActive(true);
+      parent.openingCoords = COORDS_2;
+      goog.testing.events.fireMouseUpEvent(
+          item.getElement(), undefined, COORDS_2);
+      assertFalse('Action should not be performed on mouseup', actionPerformed);
+    }
+
   </script>
 </body>
 </html>

@@ -16,6 +16,8 @@
  * @fileoverview Trogedit unit tests for goog.editor.SeamlessField.
  *
  * @author nicksantos@google.com (Nick Santos)
+ * @suppress {missingProperties} There are many mocks in this unit test,
+ *     and the mocks don't fit well in the type system.
  */
 
 goog.provide('goog.editor.seamlessfield_test');
@@ -29,6 +31,7 @@ goog.require('goog.testing.MockClock');
 goog.require('goog.testing.MockRange');
 goog.require('goog.testing.jsunit');
 
+goog.setTestOnly('seamlessfield_test');
 
 var fieldElem;
 var fieldElemClone;
@@ -230,6 +233,7 @@ function testSetMinHeight() {
   }
 }
 
+
 /**
  * @bug 1649967 This code used to throw a Javascript error.
  */
@@ -353,6 +357,7 @@ function createSeamlessIframe() {
       { 'frameBorder': '0', 'style': 'padding:0;' });
 }
 
+
 /**
  * Initialize a new editable field for the field id 'field', with the given
  * innerHTML and styles.
@@ -367,6 +372,7 @@ function initSeamlessField(innerHTML, styles) {
   goog.style.setStyle(fieldElem, styles);
   return field;
 }
+
 
 /**
  * Make sure that the original field element for the given goog.editor.Field has

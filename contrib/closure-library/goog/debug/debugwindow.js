@@ -132,6 +132,15 @@ goog.debug.DebugWindow.COOKIE_TIME = 30 * 24 * 60 * 60 * 1000; // 30-days
  */
 goog.debug.DebugWindow.prototype.welcomeMessage = 'LOGGING';
 
+
+/**
+ * Whether to force enable the window on a severe log.
+ * @type {boolean}
+ * @private
+ */
+goog.debug.DebugWindow.prototype.enableOnSevere_ = false;
+
+
 /**
  * Reference to debug window
  * @type {Window}
@@ -140,12 +149,14 @@ goog.debug.DebugWindow.prototype.welcomeMessage = 'LOGGING';
  */
 goog.debug.DebugWindow.prototype.win_ = null;
 
+
 /**
  * In the process of opening the window
  * @type {boolean}
  * @private
  */
 goog.debug.DebugWindow.prototype.winOpening_ = false;
+
 
 /**
  * Whether we are currently capturing logger output.
@@ -237,6 +248,17 @@ goog.debug.DebugWindow.prototype.setEnabled = function(enable) {
 
 
 /**
+ * Sets whether the debug window should be force enabled when a severe log is
+ * encountered.
+ * @param {boolean} enableOnSevere Whether to enable on severe logs..
+ */
+goog.debug.DebugWindow.prototype.setForceEnableOnSevere =
+    function(enableOnSevere) {
+  this.enableOnSevere_ = enableOnSevere;
+};
+
+
+/**
  * Whether we are currently capturing logger output.
  * @return {boolean} whether we are currently capturing logger output.
  */
@@ -323,6 +345,10 @@ goog.debug.DebugWindow.prototype.addLogRecord = function(logRecord) {
   }
   var html = this.formatter_.formatRecord(logRecord);
   this.write_(html);
+  if (this.enableOnSevere_ &&
+      logRecord.getLevel().value >= goog.debug.Logger.Level.SEVERE.value) {
+    this.setEnabled(true);
+  }
 };
 
 
@@ -343,6 +369,7 @@ goog.debug.DebugWindow.prototype.write_ = function(html) {
     this.savedMessages_.add(html);
   }
 };
+
 
 /**
  * Write to the buffer.  If a message hasn't been sent for more than 750ms just
@@ -493,7 +520,8 @@ goog.debug.DebugWindow.prototype.writeInitialDocument_ = function() {
  */
 goog.debug.DebugWindow.prototype.setCookie_ = function(key, value) {
   key += this.identifier_;
-  document.cookie = key + '=' + encodeURIComponent(value) + ';expires=' +
+  document.cookie = key + '=' + encodeURIComponent(value) +
+      ';path=/;expires=' +
       (new Date(goog.now() + goog.debug.DebugWindow.COOKIE_TIME)).toUTCString();
 };
 

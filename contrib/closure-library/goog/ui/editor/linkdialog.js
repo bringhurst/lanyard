@@ -71,7 +71,6 @@ goog.ui.editor.LinkDialog = function(domHelper, link) {
 goog.inherits(goog.ui.editor.LinkDialog, goog.ui.editor.AbstractDialog);
 
 
-
 /**
  * Events specific to the link dialog.
  * @enum {string}
@@ -105,6 +104,7 @@ goog.ui.editor.LinkDialog.OkEvent = function(linkText, linkUrl) {
   this.linkUrl = linkUrl;
 };
 goog.inherits(goog.ui.editor.LinkDialog.OkEvent, goog.events.Event);
+
 
 
 /**
@@ -189,7 +189,19 @@ goog.ui.editor.LinkDialog.prototype.setStopReferrerLeaks = function(stop) {
 };
 
 
+/**
+ * Tells the dialog whether the autogeneration of text to display is to be
+ * enabled.
+ * @param {boolean} enable Whether to enable the feature.
+ */
+goog.ui.editor.LinkDialog.prototype.setAutogenFeatureEnabled = function(
+    enable) {
+  this.autogenFeatureEnabled_ = enable;
+};
+
+
 // *** Protected interface ************************************************** //
+
 
 /** @inheritDoc */
 goog.ui.editor.LinkDialog.prototype.createDialogControl = function() {
@@ -256,6 +268,7 @@ goog.ui.editor.LinkDialog.prototype.disposeInternal = function() {
 
 // *** Private implementation *********************************************** //
 
+
 /**
  * The link being modified by this dialog.
  * @type {goog.editor.Link}
@@ -310,6 +323,15 @@ goog.ui.editor.LinkDialog.prototype.textToDisplayDiv_;
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.textToDisplayInput_;
+
+
+/**
+ * Whether or not the feature of automatically generating the display text is
+ * enabled.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.autogenFeatureEnabled_ = true;
 
 
 /**
@@ -713,7 +735,7 @@ goog.ui.editor.LinkDialog.prototype.onChangeTab_ = function(e) {
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.setTextToDisplayFromAuto_ = function() {
-  if (this.autogenerateTextToDisplay_) {
+  if (this.autogenFeatureEnabled_ && this.autogenerateTextToDisplay_) {
     var inputId = this.tabPane_.getCurrentTabId() +
         goog.ui.editor.LinkDialog.Id_.TAB_INPUT_SUFFIX;
     this.textToDisplayInput_.value =

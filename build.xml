@@ -31,10 +31,6 @@
         <!-- List of demo files begins here. -->
         <arg line='-i "${basedir}/src/demo/BasicDemo.js"' />
 
-        <!-- List of closure externs begins here. -->
-        <arg line='-f "--externs=${externs.dir}/TypedArray.js"' />
-        <arg line='-f "--externs=${externs.dir}/WebGL.js"' />
-
         <arg line='-p "${src.dir}"' />
         <arg line='-p "${closure-library.dir}"' />
         <arg line="-o @{outputmode}" />

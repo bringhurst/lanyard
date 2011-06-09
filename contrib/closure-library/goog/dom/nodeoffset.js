@@ -25,6 +25,7 @@ goog.require('goog.Disposable');
 goog.require('goog.dom.TagName');
 
 
+
 /**
  * Object to store the offset from one node to another in a way that works on
  * any similar DOM structure regardless of whether it is the same actual nodes.
@@ -34,6 +35,8 @@ goog.require('goog.dom.TagName');
  * @constructor
  */
 goog.dom.NodeOffset = function(node, baseNode) {
+  goog.Disposable.call(this);
+
   /**
    * A stack of childNode offsets.
    * @type {Array.<number>}

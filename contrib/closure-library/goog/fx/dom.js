@@ -42,6 +42,7 @@ goog.require('goog.fx.Animation.EventType');
 goog.require('goog.style');
 
 
+
 /**
  * Abstract class that provides reusable functionality for predefined animations
  * that manipulate a single DOM element
@@ -434,6 +435,7 @@ goog.fx.dom.FadeIn = function(element, time, opt_acc) {
 goog.inherits(goog.fx.dom.FadeIn, goog.fx.dom.Fade);
 
 
+
 /**
  * Fades an element out from full opacity to completely transparent and then
  * sets the display to 'none'
@@ -510,6 +512,7 @@ goog.fx.dom.BgColorTransform = function(element, start, end, time, opt_acc) {
 };
 goog.inherits(goog.fx.dom.BgColorTransform, goog.fx.dom.PredefinedEffect);
 
+
 /**
  * Animation event handler that will set the background-color of an element
  */
@@ -538,13 +541,15 @@ goog.fx.dom.BgColorTransform.prototype.updateStyle = function() {
  * @param {Element} element Dom Node to be used in the animation.
  * @param {Array.<number>} start 3D Array for RGB of start color.
  * @param {number} time Length of animation in milliseconds.
+ * @param {goog.events.EventHandler=} opt_eventHandler Optional event handler
+ *     to use when listening for events.
  */
-goog.fx.dom.bgColorFadeIn = function(element, start, time) {
+goog.fx.dom.bgColorFadeIn = function(element, start, time, opt_eventHandler) {
   var initialBgColor = element.style.backgroundColor || '';
   var computedBgColor = goog.style.getBackgroundColor(element);
   var end;
 
-  if (computedBgColor != 'transparent' &&
+  if (computedBgColor && computedBgColor != 'transparent' &&
       computedBgColor != 'rgba(0, 0, 0, 0)') {
     end = goog.color.hexToRgb(goog.color.parse(computedBgColor).hex);
   } else {
@@ -552,11 +557,22 @@ goog.fx.dom.bgColorFadeIn = function(element, start, time) {
   }
 
   var anim = new goog.fx.dom.BgColorTransform(element, start, end, time);
-  goog.events.listen(anim, goog.fx.Animation.EventType.END, function() {
+
+  function setBgColor() {
     element.style.backgroundColor = initialBgColor;
-  });
+  }
+
+  if (opt_eventHandler) {
+    opt_eventHandler.listen(
+        anim, goog.fx.Animation.EventType.END, setBgColor);
+  } else {
+    goog.events.listen(
+        anim, goog.fx.Animation.EventType.END, setBgColor);
+  }
+
   anim.play();
 };
+
 
 
 /**

@@ -19,12 +19,14 @@
  * TODO(user) - allow client to specify a custom redaction policy
  */
 
+
 /**
  * Namespace for BrowserChannel
  */
 goog.provide('goog.net.ChannelDebug');
 goog.require('goog.debug.Logger');
 goog.require('goog.json');
+
 
 
 /**
@@ -245,7 +247,7 @@ goog.net.ChannelDebug.prototype.maybeRedactArray_ = function(array) {
   }
 
   var type = dataPart[0];
-  if (type != 'c' && type != 'noop' && type != 'stop') {
+  if (type != 'noop' && type != 'stop') {
     // redact all fields in the array
     for (var i = 1; i < dataPart.length; i++) {
       dataPart[i] = '';

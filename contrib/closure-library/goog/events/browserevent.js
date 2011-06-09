@@ -48,6 +48,7 @@ goog.provide('goog.events.BrowserEvent.MouseButton');
 goog.require('goog.events.BrowserFeature');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.reflect');
 goog.require('goog.userAgent');
 
 
@@ -84,9 +85,8 @@ goog.events.BrowserEvent.MouseButton = {
 /**
  * Static data for mapping mouse buttons.
  * @type {Array.<number>}
- * @private
  */
-goog.events.BrowserEvent.IEButtonMap_ = [
+goog.events.BrowserEvent.IEButtonMap = [
   1, // LEFT
   4, // MIDDLE
   2  // RIGHT
@@ -239,7 +239,11 @@ goog.events.BrowserEvent.prototype.event_ = null;
  */
 goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   var type = this.type = e.type;
-  this.target = e.target || e.srcElement;
+  goog.events.Event.call(this, type);
+
+  // TODO(nicksantos): Change this.target to type EventTarget.
+  this.target = /** @type {Node} */ (e.target) || e.srcElement;
+
   this.currentTarget = opt_currentTarget;
 
   var relatedTarget = /** @type {Node} */ (e.relatedTarget);
@@ -249,10 +253,7 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
     // denied exception. See:
     // https://bugzilla.mozilla.org/show_bug.cgi?id=497780
     if (goog.userAgent.GECKO) {
-      /** @preserveTry */
-      try {
-        relatedTarget = relatedTarget.nodeName && relatedTarget;
-      } catch (err) {
+      if (!goog.reflect.canAccessProperty(relatedTarget, 'nodeName')) {
         relatedTarget = null;
       }
     }
@@ -282,17 +283,12 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   this.shiftKey = e.shiftKey;
   this.metaKey = e.metaKey;
   this.platformModifierKey = goog.userAgent.MAC ? e.metaKey : e.ctrlKey;
-
-  if(e.state) {
-    this.state = e.state;
-  } else {
-    this.state = null;
-  }
-
+  this.state = e.state;
   this.event_ = e;
   delete this.returnValue_;
   delete this.propagationStopped_;
 };
+
 
 /**
  * Tests to see which button was pressed during the event. This is really only
@@ -316,11 +312,27 @@ goog.events.BrowserEvent.prototype.isButton = function(button) {
       return button == goog.events.BrowserEvent.MouseButton.LEFT;
     } else {
       return !!(this.event_.button &
-          goog.events.BrowserEvent.IEButtonMap_[button]);
+          goog.events.BrowserEvent.IEButtonMap[button]);
     }
   } else {
     return this.event_.button == button;
   }
+};
+
+
+/**
+ * Whether this has an "action"-producing mouse button.
+ *
+ * By definition, this includes left-click on windows/linux, and left-click
+ * without the ctrl key on Macs.
+ *
+ * @return {boolean} The result.
+ */
+goog.events.BrowserEvent.prototype.isMouseActionButton = function() {
+  // Webkit does not ctrl+click to be a right-click, so we
+  // normalize it to behave like Gecko and Opera.
+  return this.isButton(goog.events.BrowserEvent.MouseButton.LEFT) &&
+      !(goog.userAgent.WEBKIT && goog.userAgent.MAC && this.ctrlKey);
 };
 
 

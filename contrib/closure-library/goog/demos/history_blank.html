@@ -2,10 +2,8 @@
 <script type="text/javascript">
 // Display the current iframe location for debugging purposes.
 function displayLocation() {
-  var s = location.hash.replace('&', '&amp;')
-                       .replace('<', '&lt;')
-                       .replace('>', '&gt;') || 'null';
-  document.body.innerHTML = s;
+  document.body.innerHTML = '';
+  document.body.appendChild(document.createTextNode(location.hash || 'null'));
 }
 
 if (window != window.top) {
@@ -20,6 +18,6 @@ This is a blank helper page for the goog.History demos. See
 <!--
 Copyright 2010 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->

@@ -32,6 +32,7 @@ goog.require('goog.ui.ControlContent');
 goog.require('goog.userAgent');
 
 
+
 /**
  * Default renderer for {@link goog.ui.Control}s.  Can be used as-is, but
  * subclasses of Control will probably want to use renderers specifically
@@ -256,6 +257,7 @@ goog.ui.ControlRenderer.prototype.canDecorate = function(element) {
  * @param {goog.ui.Control} control Control instance to decorate the element.
  * @param {Element} element Element to decorate.
  * @return {Element} Decorated element.
+ * @suppress {visibility} setContentInternal and setStateInternal
  */
 goog.ui.ControlRenderer.prototype.decorate = function(control, element) {
   // Set the control's ID to the decorated element's DOM ID, if any.
@@ -363,12 +365,9 @@ goog.ui.ControlRenderer.prototype.initializeDom = function(control) {
  * @param {Element} element Element to update.
  */
 goog.ui.ControlRenderer.prototype.setAriaRole = function(element) {
-  // setAriaRole is a no-op everywhere except Gecko.
-  if (goog.userAgent.GECKO) {
-    var ariaRole = this.getAriaRole();
-    if (ariaRole) {
-      goog.dom.a11y.setRole(element, ariaRole);
-    }
+  var ariaRole = this.getAriaRole();
+  if (ariaRole) {
+    goog.dom.a11y.setRole(element, ariaRole);
   }
 };
 
@@ -487,7 +486,7 @@ goog.ui.ControlRenderer.prototype.setState = function(control, state, enable) {
 
 
 /**
- * Updates the element's ARIA (accessibility) state on Gecko.
+ * Updates the element's ARIA (accessibility) state.
  * @param {Element} element Element whose ARIA state is to be updated.
  * @param {goog.ui.Component.State} state Component state being enabled or
  *     disabled.
@@ -496,21 +495,18 @@ goog.ui.ControlRenderer.prototype.setState = function(control, state, enable) {
  */
 goog.ui.ControlRenderer.prototype.updateAriaState = function(element, state,
     enable) {
-  // updateAriaState is a no-op everywhere except Gecko.
-  if (goog.userAgent.GECKO) {
-    // Ensure the ARIA state map exists.
-    if (!goog.ui.ControlRenderer.ARIA_STATE_MAP_) {
-      goog.ui.ControlRenderer.ARIA_STATE_MAP_ = goog.object.create(
-          goog.ui.Component.State.DISABLED, goog.dom.a11y.State.DISABLED,
-          goog.ui.Component.State.ACTIVE, goog.dom.a11y.State.PRESSED,
-          goog.ui.Component.State.SELECTED, goog.dom.a11y.State.SELECTED,
-          goog.ui.Component.State.CHECKED, goog.dom.a11y.State.CHECKED,
-          goog.ui.Component.State.OPENED, goog.dom.a11y.State.EXPANDED);
-    }
-    var ariaState = goog.ui.ControlRenderer.ARIA_STATE_MAP_[state];
-    if (ariaState) {
-      goog.dom.a11y.setState(element, ariaState, enable);
-    }
+  // Ensure the ARIA state map exists.
+  if (!goog.ui.ControlRenderer.ARIA_STATE_MAP_) {
+    goog.ui.ControlRenderer.ARIA_STATE_MAP_ = goog.object.create(
+        goog.ui.Component.State.DISABLED, goog.dom.a11y.State.DISABLED,
+        goog.ui.Component.State.ACTIVE, goog.dom.a11y.State.PRESSED,
+        goog.ui.Component.State.SELECTED, goog.dom.a11y.State.SELECTED,
+        goog.ui.Component.State.CHECKED, goog.dom.a11y.State.CHECKED,
+        goog.ui.Component.State.OPENED, goog.dom.a11y.State.EXPANDED);
+  }
+  var ariaState = goog.ui.ControlRenderer.ARIA_STATE_MAP_[state];
+  if (ariaState) {
+    goog.dom.a11y.setState(element, ariaState, enable);
   }
 };
 
@@ -740,12 +736,12 @@ goog.ui.ControlRenderer.prototype.getClassNamesForState = function(state) {
  *     if none).
  * @protected
  */
-  goog.ui.ControlRenderer.prototype.getClassForState = function(state) {
-    if (!this.classByState_) {
-      this.createClassByStateMap_();
-    }
-    return this.classByState_[state];
-  };
+goog.ui.ControlRenderer.prototype.getClassForState = function(state) {
+  if (!this.classByState_) {
+    this.createClassByStateMap_();
+  }
+  return this.classByState_[state];
+};
 
 
 /**

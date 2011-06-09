@@ -27,6 +27,7 @@ goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.registry');
 
 
+
 /**
  * Flat renderer for {@link goog.ui.Button}s.  Flat buttons can contain
  * almost arbitrary HTML content, will flow like inline elements, but can be
@@ -65,6 +66,16 @@ goog.ui.FlatButtonRenderer.prototype.createDom = function(button) {
   };
   return button.getDomHelper().createDom(
       'div', attributes, button.getContent());
+};
+
+
+/**
+ * Returns the ARIA role to be applied to flat buttons.
+ * @return {goog.dom.a11y.Role|undefined} ARIA role.
+ * @override
+ */
+goog.ui.FlatButtonRenderer.prototype.getAriaRole = function() {
+  return goog.dom.a11y.Role.BUTTON;
 };
 
 

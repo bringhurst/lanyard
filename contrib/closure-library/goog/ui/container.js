@@ -41,6 +41,8 @@ goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.ContainerRenderer');
 
+
+
 /**
  * Base class for containers.  Extends {@link goog.ui.Component} by adding
  * the following:
@@ -362,7 +364,6 @@ goog.ui.Container.prototype.enterDocument = function() {
     }
   }, this);
 
-  // Detect right-to-left direction.
   var elem = this.getElement();
 
   // Call the renderer's initializeDom method to initialize the container's DOM.
@@ -387,7 +388,7 @@ goog.ui.Container.prototype.enterDocument = function() {
       listen(goog.dom.getOwnerDocument(elem), goog.events.EventType.MOUSEUP,
           this.handleDocumentMouseUp).
 
-      // Handle mouse events on behalf of cpresently2ontrols in the container.
+      // Handle mouse events on behalf of controls in the container.
       listen(elem, [
         goog.events.EventType.MOUSEDOWN,
         goog.events.EventType.MOUSEUP,

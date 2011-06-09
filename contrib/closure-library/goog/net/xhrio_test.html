@@ -3,7 +3,7 @@
 <!--
 Copyright 2007 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
@@ -17,14 +17,13 @@ See the COPYING file for details.
   goog.require('goog.functions');
   goog.require('goog.net.WrapperXmlHttpFactory');
   goog.require('goog.net.XhrIo');
+  goog.require('goog.object');
   goog.require('goog.string');
   goog.require('goog.testing.MockClock');
   goog.require('goog.testing.jsunit');
   goog.require('goog.testing.net.XhrIo');
   goog.require('goog.testing.recordFunction');
   goog.require('goog.Uri');
-
-
 </script>
 <script>
 
@@ -358,6 +357,28 @@ function testSendFileUriZeroStatusSuccess() {
 }
 
 
+function testSendDummyUriZeroStatusSuccess() {
+  MockXmlHttp.syncSend = true;
+  var count = 0;
+
+  var x = new goog.net.XhrIo;
+  goog.events.listen(x, goog.net.EventType.COMPLETE, function(e) {
+    assertFalse('Should not fire complete from inside send', inSend);
+    assertTrue('Should not be succesful', e.target.isSuccess());
+    count++;
+  });
+
+  var inSend = true;
+  x.send(goog.Uri.parse('dummy:///foo'));
+  lastMockXmlHttp.status = 0;
+  inSend = false;
+
+  clock.tick(1); // callOnce(f, 0, ...)
+
+  assertEquals('Complete should have been called once', 1, count);
+}
+
+
 function testSendFileUpperUriZeroStatusSuccess() {
   MockXmlHttp.syncSend = true;
   var count = 0;
@@ -387,16 +408,12 @@ function testSendFromListener() {
   var x = new goog.net.XhrIo;
   goog.events.listen(x, goog.net.EventType.COMPLETE, function(e) {
     count++;
-    
-    var thrown = false;
-    try {
+
+    var e = assertThrows(function() {
       x.send('url2');
-    } catch(e) {
-      thrown = true;
-      assertEquals(e.message,
-          '[goog.net.XhrIo] Object is active with another request');
-    }
-    assertTrue(thrown);
+    });
+    assertEquals('[goog.net.XhrIo] Object is active with another request',
+        e.message);
   });
 
   x.send('url');
@@ -453,14 +470,10 @@ function testProtectEntryPointCalledOnAsyncSend() {
   });
 
   x.send('url');
-  var readyStateChangeHandlerError = null;
-  try {
+  assertThrows(function() {
     lastMockXmlHttp.complete();
-  } catch (e) {
-    readyStateChangeHandlerError = e;
-  }
+  });
 
-  assertNotNull(readyStateChangeHandlerError);
   assertTrue('Error handler callback should be called on async send.',
       errorHandlerCallbackCalled);
 }
@@ -551,6 +564,34 @@ function testEntryPointRegistry() {
   assertEquals(
       replacement,
       goog.net.XhrIo.prototype.onReadyStateChangeEntryPoint_);
+}
+
+function testSetWithCredentials() {
+  // Test on XHR objects that don't have the withCredentials property (older
+  // browsers).
+  var x = new goog.net.XhrIo;
+  x.setWithCredentials(true);
+  x.send('url');
+  assertFalse(
+      'withCredentials should not be set on an XHR object if the property ' +
+      'does not exist.',
+      goog.object.containsKey(lastMockXmlHttp, 'withCredentials'));
+
+  // Test on XHR objects that have the withCredentials property.
+  MockXmlHttp.prototype.withCredentials = false;
+  x = new goog.net.XhrIo;
+  x.setWithCredentials(true);
+  x.send('url');
+  assertTrue(
+      'withCredentials should be set on an XHR object if the property exists',
+      goog.object.containsKey(lastMockXmlHttp, 'withCredentials'));
+
+  assertTrue(
+      'withCredentials value not set on XHR object',
+      lastMockXmlHttp.withCredentials);
+
+  // Reset the prototype so it does not effect other tests.
+  delete MockXmlHttp.prototype.withCredentials;
 }
 
 </script>

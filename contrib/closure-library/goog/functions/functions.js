@@ -94,6 +94,18 @@ goog.functions.lock = function(f) {
 
 
 /**
+ * Given a function, create a new function that swallows its return value
+ * and replaces it with a new one.
+ * @param {Function} f A function.
+ * @param {*} retValue A new return value.
+ * @return {!Function} A new function.
+ */
+goog.functions.withReturnValue = function(f, retValue) {
+  return goog.functions.sequence(f, goog.functions.constant(retValue));
+};
+
+
+/**
  * Creates the composition of the functions passed in.
  * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
  * @param {...Function} var_args A list of functions.
@@ -176,6 +188,19 @@ goog.functions.or = function(var_args) {
       }
     }
     return false;
+  };
+};
+
+
+/**
+ * Creates a function that returns the Boolean opposite of a provided function.
+ * For example, (goog.functions.not(f))(x) is equivalent to !f(x).
+ * @param {!Function} f The original function.
+ * @return {!Function} A function that delegates to f and returns opposite.
+ */
+goog.functions.not = function(f) {
+  return function() {
+    return !f.apply(this, arguments);
   };
 };
 

@@ -30,6 +30,7 @@ goog.require('goog.i18n.bidi');
 goog.require('goog.ui.Component');
 
 
+
 /**
  * Default implementation of BidiInput.
  *
@@ -104,7 +105,8 @@ goog.ui.BidiInput.prototype.setDirection_ = function() {
   var element = this.getElement();
   var text = element.value;
   var dir = ''; // Default for no direction, inherit from document
-  if (goog.i18n.bidi.isRtlText(text) || goog.i18n.bidi.isLtrText(text)) {
+  if (goog.i18n.bidi.startsWithRtl(text) ||
+      goog.i18n.bidi.startsWithLtr(text)) {
     if (goog.i18n.bidi.detectRtlDirectionality(text)) {
       dir = 'rtl';
     } else {

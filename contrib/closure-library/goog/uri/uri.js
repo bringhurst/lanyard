@@ -40,6 +40,7 @@ goog.require('goog.uri.utils');
 goog.require('goog.uri.utils.ComponentIndex');
 
 
+
 /**
  * This class contains setters and getters for the parts of the URI.
  * The <code>getXyz</code>/<code>setXyz</code> methods return the decoded part
@@ -210,7 +211,10 @@ goog.Uri.prototype.toString = function() {
       out.push('/');
     }
     out.push(goog.Uri.encodeSpecialChars_(
-        this.path_, goog.Uri.reDisallowedInPath_));
+        this.path_,
+        this.path_.charAt(0) == '/' ?
+            goog.Uri.reDisallowedInAbsolutePath_ :
+            goog.Uri.reDisallowedInRelativePath_));
   }
 
   var query = String(this.queryData_);
@@ -315,7 +319,7 @@ goog.Uri.prototype.resolve = function(relativeUri) {
 
 /**
  * Clones the URI instance.
- * @return {goog.Uri} New instance of the URI objcet.
+ * @return {!goog.Uri} New instance of the URI objcet.
  */
 goog.Uri.prototype.clone = function() {
   return goog.Uri.create(this.scheme_, this.userInfo_, this.domain_,
@@ -441,7 +445,7 @@ goog.Uri.prototype.setPort = function(newPort) {
   if (newPort) {
     newPort = Number(newPort);
     if (isNaN(newPort) || newPort < 0) {
-     throw Error('Bad port number ' + newPort);
+      throw Error('Bad port number ' + newPort);
     }
     this.port_ = newPort;
   } else {
@@ -628,7 +632,7 @@ goog.Uri.prototype.setParameterValues = function(key, values) {
  *     decoded query parameter values.
  */
 goog.Uri.prototype.getParameterValues = function(name) {
-    return this.queryData_.getValues(name);
+  return this.queryData_.getValues(name);
 };
 
 
@@ -719,9 +723,11 @@ goog.Uri.prototype.removeParameter = function(key) {
  * enforceReadOnly_ will be called at the start of any function that may modify
  * this Uri.
  * @param {boolean} isReadOnly whether this goog.Uri should be read only.
+ * @return {goog.Uri} Reference to this Uri object.
  */
 goog.Uri.prototype.setReadOnly = function(isReadOnly) {
   this.isReadOnly_ = isReadOnly;
+  return this;
 };
 
 
@@ -749,12 +755,14 @@ goog.Uri.prototype.enforceReadOnly = function() {
  * NOTE: If there are already key/value pairs in the QueryData, and
  * ignoreCase_ is set to false, the keys will all be lower-cased.
  * @param {boolean} ignoreCase whether this goog.Uri should ignore case.
+ * @return {goog.Uri} Reference to this Uri object.
  */
 goog.Uri.prototype.setIgnoreCase = function(ignoreCase) {
   this.ignoreCase_ = ignoreCase;
   if (this.queryData_) {
     this.queryData_.setIgnoreCase(ignoreCase);
   }
+  return this;
 };
 
 
@@ -800,7 +808,7 @@ goog.Uri.parse = function(uri, opt_ignoreCase) {
  * @param {boolean=} opt_ignoreCase Whether to ignore parameter name case in
  *     #getParameterValue.
  *
- * @return {goog.Uri} The new URI object.
+ * @return {!goog.Uri} The new URI object.
  */
 goog.Uri.create = function(opt_scheme, opt_userInfo, opt_domain, opt_port,
                            opt_path, opt_query, opt_fragment, opt_ignoreCase) {
@@ -973,11 +981,19 @@ goog.Uri.reDisallowedInSchemeOrUserInfo_ = /[#\/\?@]/g;
 
 
 /**
- * Regular expression for characters that are disallowed in the path.
+ * Regular expression for characters that are disallowed in a relative path.
  * @type {RegExp}
  * @private
  */
-goog.Uri.reDisallowedInPath_ = /[\#\?]/g;
+goog.Uri.reDisallowedInRelativePath_ = /[\#\?:]/g;
+
+
+/**
+ * Regular expression for characters that are disallowed in an absolute path.
+ * @type {RegExp}
+ * @private
+ */
+goog.Uri.reDisallowedInAbsolutePath_ = /[\#\?]/g;
 
 
 /**
@@ -1012,7 +1028,6 @@ goog.Uri.haveSameDomain = function(uri1String, uri2String) {
          pieces1[goog.uri.utils.ComponentIndex.PORT] ==
              pieces2[goog.uri.utils.ComponentIndex.PORT];
 };
-
 
 
 
@@ -1502,12 +1517,12 @@ goog.Uri.QueryData.prototype.invalidateCache_ = function() {
 goog.Uri.QueryData.prototype.filterKeys = function(keys) {
   this.ensureKeyMapInitialized_();
   goog.structs.forEach(this.keyMap_,
-    /** @this {goog.Uri.QueryData} */
-    function(value, key, map) {
-      if (!goog.array.contains(keys, key)) {
-        this.remove(key);
-      }
-    }, this);
+      /** @this {goog.Uri.QueryData} */
+      function(value, key, map) {
+        if (!goog.array.contains(keys, key)) {
+          this.remove(key);
+        }
+      }, this);
   return this;
 };
 
@@ -1559,14 +1574,14 @@ goog.Uri.QueryData.prototype.setIgnoreCase = function(ignoreCase) {
     this.ensureKeyMapInitialized_();
     this.invalidateCache_();
     goog.structs.forEach(this.keyMap_,
-      /** @this {goog.Uri.QueryData} */
-      function(value, key, map) {
-        var lowerCase = key.toLowerCase();
-        if (key != lowerCase) {
-          this.remove(key);
-          this.add(lowerCase, value);
-        }
-      }, this);
+        /** @this {goog.Uri.QueryData} */
+        function(value, key, map) {
+          var lowerCase = key.toLowerCase();
+          if (key != lowerCase) {
+            this.remove(key);
+            this.add(lowerCase, value);
+          }
+        }, this);
   }
   this.ignoreCase_ = ignoreCase;
 };
@@ -1583,9 +1598,9 @@ goog.Uri.QueryData.prototype.extend = function(var_args) {
   for (var i = 0; i < arguments.length; i++) {
     var data = arguments[i];
     goog.structs.forEach(data,
-      /** @this {goog.Uri.QueryData} */
-      function(value, key) {
-        this.add(key, value);
-      }, this);
+        /** @this {goog.Uri.QueryData} */
+        function(value, key) {
+          this.add(key, value);
+        }, this);
   }
 };

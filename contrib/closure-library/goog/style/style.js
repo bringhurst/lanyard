@@ -30,6 +30,7 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('goog.userAgent');
 
 
@@ -63,11 +64,11 @@ goog.style.setStyle = function(element, style, opt_value) {
  * {@code goog.object.forEach()}.
  * @param {Element} element The element to change.
  * @param {string|number|boolean|undefined} value Style value.
- * @param {string|number|boolean} style Style name.
+ * @param {string} style Style name.
  * @private
  */
 goog.style.setStyle_ = function(element, value, style) {
-  element.style[goog.style.toCamelCase(style)] = value;
+  element.style[goog.string.toCamelCase(style)] = value;
 };
 
 
@@ -86,7 +87,7 @@ goog.style.getStyle = function(element, property) {
   // For for browser specific styles as 'filter' is undefined
   // so we need to return '' explicitly to make it consistent across
   // browsers.
-  return element.style[goog.style.toCamelCase(property)] || '';
+  return element.style[goog.string.toCamelCase(property)] || '';
 };
 
 
@@ -289,7 +290,8 @@ goog.style.getClientViewportElement = function(opt_node) {
   }
 
   // In old IE versions the document.body represented the viewport
-  if (goog.userAgent.IE && !goog.dom.getDomHelper(doc).isCss1CompatMode()) {
+  if (goog.userAgent.IE && !goog.userAgent.isVersion(9) &&
+      !goog.dom.getDomHelper(doc).isCss1CompatMode()) {
     return doc.body;
   }
   return doc.documentElement;
@@ -366,7 +368,8 @@ goog.style.getOffsetParent = function(element) {
     if (!skipStatic && (parent.scrollWidth > parent.clientWidth ||
                         parent.scrollHeight > parent.clientHeight ||
                         positionStyle == 'fixed' ||
-                        positionStyle == 'absolute')) {
+                        positionStyle == 'absolute' ||
+                        positionStyle == 'relative')) {
       return /** @type {!Element} */ (parent);
     }
   }
@@ -411,6 +414,9 @@ goog.style.getVisibleRectForElement = function(element) {
       visibleRect.bottom = Math.min(visibleRect.bottom,
                                     pos.y + el.clientHeight);
       visibleRect.left = Math.max(visibleRect.left, pos.x);
+      // TODO(user): We may want to check whether the current element is
+      // the document element or the body element, in case somebody sets
+      // overflow on the body element in CSS.
       inContainer = inContainer || el != scrollEl;
     }
   }
@@ -720,8 +726,9 @@ goog.style.getRelativePosition = function(a, b) {
 
 
 /**
- * Returns the position relative to the client viewport.
- * @param {Element|Event|goog.events.Event} el Element or a mouse event object.
+ * Returns the position of the event or the element's border box relative to
+ * the client viewport.
+ * @param {Element|Event|goog.events.Event} el Element or a mouse / touch event.
  * @return {!goog.math.Coordinate} The position.
  */
 goog.style.getClientPosition = function(el) {
@@ -739,8 +746,17 @@ goog.style.getClientPosition = function(el) {
       pos.y = pageCoord.y - scrollCoord.y;
     }
   } else {
-    pos.x = el.clientX;
-    pos.y = el.clientY;
+    var isAbstractedEvent = goog.isFunction(el.getBrowserEvent);
+    var targetEvent = el;
+
+    if (el.targetTouches) {
+      targetEvent = el.targetTouches[0];
+    } else if (isAbstractedEvent && el.getBrowserEvent().targetTouches) {
+      targetEvent = el.getBrowserEvent().targetTouches[0];
+    }
+
+    pos.x = targetEvent.clientX;
+    pos.y = targetEvent.clientY;
   }
 
   return pos;
@@ -748,11 +764,12 @@ goog.style.getClientPosition = function(el) {
 
 
 /**
- * Sets the top and left of an element such that it will have a
- *
- * @param {Element} el The element to set page offset for.
- * @param {number|goog.math.Coordinate} x Left position or coordinate obj.
- * @param {number=} opt_y Top position.
+ * Moves an element to the given coordinates relative to the client viewport.
+ * @param {Element} el Absolutely positioned element to set page offset for.
+ *     It must be in the document.
+ * @param {number|goog.math.Coordinate} x Left position of the element's margin
+ *     box or a coordinate object.
+ * @param {number=} opt_y Top position of the element's margin box.
  */
 goog.style.setPageOffset = function(el, x, opt_y) {
   // Get current pageoffset
@@ -847,7 +864,6 @@ goog.style.setWidth = function(element, width) {
 };
 
 
-
 /**
  * Gets the height and width of an element, even if its display is none.
  * Specifically, this returns the height and width of the border box,
@@ -856,14 +872,8 @@ goog.style.setWidth = function(element, width) {
  * @return {!goog.math.Size} Object with width/height properties.
  */
 goog.style.getSize = function(element) {
-  var hasOperaBug = goog.userAgent.OPERA && !goog.userAgent.isVersion('10');
   if (goog.style.getStyle_(element, 'display') != 'none') {
-    if (hasOperaBug) {
-      return new goog.math.Size(element.offsetWidth || element.clientWidth,
-                                element.offsetHeight || element.clientHeight);
-    } else {
-      return new goog.math.Size(element.offsetWidth, element.offsetHeight);
-    }
+    return new goog.math.Size(element.offsetWidth, element.offsetHeight);
   }
 
   var style = element.style;
@@ -875,14 +885,8 @@ goog.style.getSize = function(element) {
   style.position = 'absolute';
   style.display = 'inline';
 
-  var originalWidth, originalHeight;
-  if (hasOperaBug) {
-    originalWidth = element.offsetWidth || element.clientWidth;
-    originalHeight = element.offsetHeight || element.clientHeight;
-  } else {
-    originalWidth = element.offsetWidth;
-    originalHeight = element.offsetHeight;
-  }
+  var originalWidth = element.offsetWidth;
+  var originalHeight = element.offsetHeight;
 
   style.display = originalDisplay;
   style.position = originalPosition;
@@ -905,44 +909,24 @@ goog.style.getBounds = function(element) {
 
 
 /**
- * A memoized cache for goog.style.toCamelCase.
- * @type {Object}
- * @private
- */
-goog.style.toCamelCaseCache_ = {};
-
-
-/**
- * Converts a CSS selector in the form style-property to styleProperty
+ * Converts a CSS selector in the form style-property to styleProperty.
  * @param {*} selector CSS Selector.
  * @return {string} Camel case selector.
+ * @deprecated Use goog.string.toCamelCase instead.
  */
 goog.style.toCamelCase = function(selector) {
-  return goog.style.toCamelCaseCache_[selector] ||
-    (goog.style.toCamelCaseCache_[selector] =
-        String(selector).replace(/\-([a-z])/g, function(all, match) {
-          return match.toUpperCase();
-        }));
+  return goog.string.toCamelCase(String(selector));
 };
-
-
-/**
- * A memoized cache for goog.style.toSelectorCase.
- * @type {Object.<string>}
- * @private
- */
-goog.style.toSelectorCaseCache_ = {};
 
 
 /**
  * Converts a CSS selector in the form styleProperty to style-property.
  * @param {string} selector Camel case selector.
  * @return {string} Selector cased.
+ * @deprecated Use goog.string.toSelectorCase instead.
  */
 goog.style.toSelectorCase = function(selector) {
-  return goog.style.toSelectorCaseCache_[selector] ||
-      (goog.style.toSelectorCaseCache_[selector] =
-          selector.replace(/([A-Z])/g, '-$1').toLowerCase());
+  return goog.string.toSelectorCase(selector);
 };
 
 
@@ -1173,8 +1157,6 @@ goog.style.setPreWrap = function(el) {
     style.wordWrap = 'break-word';
   } else if (goog.userAgent.GECKO) {
     style.whiteSpace = '-moz-pre-wrap';
-  } else if (goog.userAgent.OPERA) {
-    style.whiteSpace = '-o-pre-wrap';
   } else {
     style.whiteSpace = 'pre-wrap';
   }
@@ -1406,16 +1388,8 @@ goog.style.setBoxSizingSize_ = function(element, size, boxSizing) {
     style.MozBoxSizing = boxSizing;
   } else if (goog.userAgent.WEBKIT) {
     style.WebkitBoxSizing = boxSizing;
-  } else if (goog.userAgent.OPERA && !goog.userAgent.isVersion('9.50')) {
-    // Opera pre-9.5 does not have CSSStyleDeclaration::boxSizing, but
-    // box-sizing can still be set via CSSStyleDeclaration::setProperty.
-    if (boxSizing) {
-      style.setProperty('box-sizing', boxSizing);
-    } else {
-      style.removeProperty('box-sizing');
-    }
   } else {
-    // Includes IE8
+    // Includes IE8 and Opera 9.50+
     style.boxSizing = boxSizing;
   }
   style.width = size.width + 'px';
@@ -1617,10 +1591,6 @@ goog.style.getFontFamily = function(el) {
     // Note if for some reason IE can't derive FontName with a TextRange, we
     // fallback to using currentStyle
     font = goog.style.getStyle_(el, 'fontFamily');
-    // Opera on Linux provides the font vendor's name in square-brackets.
-    if (goog.userAgent.OPERA && goog.userAgent.LINUX) {
-      font = font.replace(/ \[[^\]]*\]/, '');
-    }
   }
 
   // Firefox returns the applied font-family string (author's list of
@@ -1734,7 +1704,7 @@ goog.style.getFontSize = function(el) {
   var sizeElement = goog.dom.createDom(
       'span',
       {'style': 'visibility:hidden;position:absolute;' +
-                'line-height:0;padding:0;margin:0;border:0;height:1em;'});
+            'line-height:0;padding:0;margin:0;border:0;height:1em;'});
   goog.dom.appendChild(el, sizeElement);
   fontSize = sizeElement.offsetHeight;
   goog.dom.removeNode(sizeElement);
@@ -1753,7 +1723,7 @@ goog.style.parseStyleAttribute = function(value) {
   goog.array.forEach(value.split(/\s*;\s*/), function(pair) {
     var keyValue = pair.split(/\s*:\s*/);
     if (keyValue.length == 2) {
-      result[goog.style.toCamelCase(keyValue[0].toLowerCase())] = keyValue[1];
+      result[goog.string.toCamelCase(keyValue[0].toLowerCase())] = keyValue[1];
     }
   });
   return result;
@@ -1770,7 +1740,7 @@ goog.style.parseStyleAttribute = function(value) {
 goog.style.toStyleAttribute = function(obj) {
   var buffer = [];
   goog.object.forEach(obj, function(value, key) {
-    buffer.push(goog.style.toSelectorCase(key), ':', value, ';');
+    buffer.push(goog.string.toSelectorCase(key), ':', value, ';');
   });
   return buffer.join('');
 };

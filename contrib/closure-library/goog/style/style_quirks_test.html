@@ -9,7 +9,7 @@
 <!--
 Copyright 2006 The Closure Library Authors. All Rights Reserved.
 
-Use of this source code is governed by an Apache 2.0 License.
+Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <head>
@@ -449,6 +449,10 @@ Test-visible
   A div</div>
 <div id="filter" style="filter:alpha(opacity=0)">
   Another div</div>
+
+<div id="offset-parent" style="position:relative">
+  <div id="offset-child">child</div>
+</div>
 <script>
 
 var expectedFailures = new goog.testing.ExpectedFailures();
@@ -597,22 +601,6 @@ function testGetBackgroundColor() {
       assertFalse('Should be able to parse color "' + bgColor + '"', i < 5);
     }
   }
-}
-
-function testToCamelCase() {
-  assertEquals('OneTwoThree', goog.style.toCamelCase('-one-two-three'));
-  assertEquals('oneTwoThree', goog.style.toCamelCase('one-two-three'));
-  assertEquals('oneTwo', goog.style.toCamelCase('one-two'));
-  assertEquals('one', goog.style.toCamelCase('one'));
-  assertEquals('oneTwo', goog.style.toCamelCase('oneTwo'));
-}
-
-function testTotoSelectorCase() {
-  assertEquals('-one-two-three', goog.style.toSelectorCase('OneTwoThree'));
-  assertEquals('one-two-three',goog.style.toSelectorCase('oneTwoThree'));
-  assertEquals('one-two', goog.style.toSelectorCase('oneTwo'));
-  assertEquals('one', goog.style.toSelectorCase('one'));
-  assertEquals('one-two', goog.style.toSelectorCase('one-two'));
 }
 
 function testSetPosition() {
@@ -1226,9 +1214,9 @@ function testSetBorderBoxSize() {
     assertEquals('border-box', el.style.MozBoxSizing);
   } else if (goog.userAgent.WEBKIT) {
     assertEquals('border-box', el.style.WebkitBoxSizing);
-  } else if (goog.userAgent.OPERA) {
-    // opera doesnt expose this as a DOM property.
-    assertEquals('border-box', el.style.getPropertyValue('box-sizing'));
+  } else if (goog.userAgent.OPERA ||
+             goog.userAgent.IE && goog.userAgent.isVersion('8')) {
+    assertEquals('border-box', el.style.boxSizing);
   }
 }
 
@@ -1272,9 +1260,9 @@ function testSetContentBoxSize() {
     assertEquals('content-box', el.style.MozBoxSizing);
   } else if (goog.userAgent.WEBKIT) {
     assertEquals('content-box', el.style.WebkitBoxSizing);
-  } else if (goog.userAgent.OPERA) {
-    // opera doesnt expose this as a DOM property.
-    assertEquals('content-box', el.style.getPropertyValue('box-sizing'));
+  } else if (goog.userAgent.OPERA ||
+             goog.userAgent.IE && goog.userAgent.isVersion('8')) {
+    assertEquals('content-box', el.style.boxSizing);
   }
 }
 
@@ -1924,6 +1912,13 @@ function testScrollBarWidth() {
       (innerAbsoluteWidth + width - 1) + 'px');
   assertTrue('should have a scroll bar', hasVerticalScroll(outer));
   assertTrue('should have a scroll bar', hasHorizontalScroll(outer));
+}
+
+function testOffsetParent() {
+  var $ = goog.dom.getElement;
+  var parent = $('offset-parent');
+  var child = $('offset-child');
+  assertEquals(parent, goog.style.getOffsetParent(child));
 }
 
 function hasVerticalScroll(el) {

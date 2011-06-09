@@ -104,6 +104,28 @@ goog.structs.TreeNode.prototype.isLeaf = function() {
 
 
 /**
+ * Tells if the node is the last child of its parent. This method helps how to
+ * connect the tree nodes with lines: L shapes should be used before the last
+ * children and |- shapes before the rest. Schematic tree visualization:
+ *
+ * <pre>
+ * Node1
+ * |-Node2
+ * | L-Node3
+ * |   |-Node4
+ * |   L-Node5
+ * L-Node6
+ * </pre>
+ *
+ * @return {boolean} Whether the node has parent and is the last child of it.
+ */
+goog.structs.TreeNode.prototype.isLastChild = function() {
+  var parent = this.getParent();
+  return Boolean(parent && this == goog.array.peek(parent.getChildren()));
+};
+
+
+/**
  * @return {!Array.<!goog.structs.TreeNode>} Immutable child nodes.
  */
 goog.structs.TreeNode.prototype.getChildren = function() {
@@ -178,10 +200,44 @@ goog.structs.TreeNode.prototype.getRoot = function() {
  * @return {boolean} Whether this node is the ancestor of {@code node}.
  */
 goog.structs.TreeNode.prototype.contains = function(node) {
+  var current = node;
   do {
-    node = node.getParent();
-  } while (node && node != this);
-  return Boolean(node);
+    current = current.getParent();
+  } while (current && current != this);
+  return Boolean(current);
+};
+
+
+/**
+ * Finds the deepest common ancestor of the given nodes. The concept of
+ * ancestor is not strict in this case, it includes the node itself.
+ * @param {...!goog.structs.TreeNode} var_args The nodes.
+ * @return {goog.structs.TreeNode} The common ancestor of the nodes or null if
+ *     they are from different trees.
+ */
+goog.structs.TreeNode.findCommonAncestor = function(var_args) {
+  var ret = arguments[0];
+  if (!ret) {
+    return null;
+  }
+
+  var retDepth = ret.getDepth();
+  for (var i = 1; i < arguments.length; i++) {
+    var node = arguments[i];
+    var depth = node.getDepth();
+    while (node != ret) {
+      if (depth <= retDepth) {
+        ret = ret.getParent();
+        retDepth--;
+      }
+      if (depth > retDepth) {
+        node = node.getParent();
+        depth--;
+      }
+    }
+  }
+
+  return ret;
 };
 
 

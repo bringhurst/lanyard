@@ -26,6 +26,7 @@ goog.require('goog.ui.Tooltip');
 goog.require('goog.userAgent');
 
 
+
 /**
  * Advanced tooltip widget with cursor tracking abilities. Works like a regular
  * tooltip but can track the cursor position and direction to determine if the
@@ -252,8 +253,7 @@ goog.ui.AdvancedTooltip.prototype.isCoordinateInTooltip = function(coord) {
  *     tooltip whose anchor is a child of this tooltip.
  * @private
  */
-goog.ui.AdvancedTooltip.prototype.isCoordinateActive_ = function(
-    coord) {
+goog.ui.AdvancedTooltip.prototype.isCoordinateActive_ = function(coord) {
   if ((this.anchorBox_ && this.anchorBox_.contains(coord)) ||
       this.isCoordinateInTooltip(coord)) {
     return true;
@@ -355,7 +355,8 @@ goog.ui.AdvancedTooltip.prototype.handleTooltipMouseOver = function(event) {
  * @return {number} Hide delay to use.
  */
 goog.ui.AdvancedTooltip.prototype.getHideDelayMs = function() {
-  return this.tracking_ ? this.cursorTrackingHideDelayMs_ : this.hideDelayMs_;
+  return this.tracking_ ? this.cursorTrackingHideDelayMs_ :
+      goog.base(this, 'getHideDelayMs');
 };
 
 
