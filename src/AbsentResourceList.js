@@ -39,7 +39,7 @@ goog.provide('lanyard.AbsentResourceList');
  * @constructor
  */
 lanyard.AbsentResourceList = function(maxTries, minCheckInterval) {
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.AbsentResourceList');
+    this._logger = goog.debug.Logger.getLogger('lanyard.AbsentResourceList');
 
     /** @type {number} */
     this.DEFAULT_MAX_ABSENT_RESOURCE_TRIES = 2;
@@ -74,26 +74,26 @@ lanyard.AbsentResourceList = function(maxTries, minCheckInterval) {
  *
  * @param {number} resourceID the id of the resource to mark absent.
  */
-lanyard.AbsentResourceList.prototype.markResourceAbsent = function(resourceId) {
-    if (this.definitelyAbsent.resourceID) {
+lanyard.AbsentResourceList.prototype.markResourceAbsent = function(resourceID) {
+    if (this.definitelyAbsent[resourceID]) {
         return;
     }
 
-    if (!this.possiblyAbsent.resourceId) {
-        this.possiblyAbsent.resourceId = {
+    if (!this.possiblyAbsent[resourceID]) {
+        this.possiblyAbsent[resourceID] = {
             numTries: 0
         };
     }
 
     /** @type {Object} */
-    var entry = this.possiblyAbsent.resourceId;
+    var entry = this.possiblyAbsent[resourceID];
 
     entry.numTries = entry.numTries + 1;
     entry.timeOfLastMark = Date.getMilliseconds();
 
     if (entry.numTries >= this.maxTries) {
-        this.definitelyAbsent.resourceID = entry;
-        this.possiblyAbsent.resourceID = null;
+        this.definitelyAbsent[resourceID] = entry;
+        this.possiblyAbsent[resourceID] = null;
     }
 };
 
