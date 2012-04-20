@@ -35,6 +35,8 @@ goog.require('lanyard.View');
 goog.require('lanyard.geom.Sector');
 goog.require('lanyard.util.Color');
 
+
+
 /**
  * An interface for a draw context.
  *
@@ -43,12 +45,14 @@ goog.require('lanyard.util.Color');
  */
 lanyard.DrawContext = function(canvas) {};
 
+
 /**
  * Retrieves the current GL.
  *
  * @return {WebGLRenderingContext} the current GL if available, null otherwise.
  */
 lanyard.DrawContext.prototype.getGL = function() {};
+
 
 /**
  * Retrieves the drawable width of this DrawContext.
@@ -57,6 +61,7 @@ lanyard.DrawContext.prototype.getGL = function() {};
  */
 lanyard.DrawContext.prototype.getDrawableWidth = function() {};
 
+
 /**
  * Retrieves the drawable height of this DrawContext.
  *
@@ -64,11 +69,13 @@ lanyard.DrawContext.prototype.getDrawableWidth = function() {};
  */
 lanyard.DrawContext.prototype.getDrawableHeight = function() {};
 
+
 /**
  * Initializes this DrawContext. This method should be called at the beginning of each frame to prepare
  * the DrawContext for the coming render pass.
  */
 lanyard.DrawContext.prototype.initialize = function() {};
+
 
 /**
  * Assigns a new View. Some layers cannot function properly with a null View. It is
@@ -78,12 +85,14 @@ lanyard.DrawContext.prototype.initialize = function() {};
  */
 lanyard.DrawContext.prototype.setView = function(view) {};
 
+
 /**
  * Retrieves the current View, which may be null.
  *
  * @return {lanyard.View} the current View, which may be null.
  */
 lanyard.DrawContext.prototype.getView = function() {};
+
 
 /**
  * Assign a new Model. Some layers cannot function properly with a null Model. It is
@@ -93,6 +102,7 @@ lanyard.DrawContext.prototype.getView = function() {};
  */
 lanyard.DrawContext.prototype.setModel = function(model) {};
 
+
 /**
  * Retrieves the current Model, which may be null.
  *
@@ -100,12 +110,14 @@ lanyard.DrawContext.prototype.setModel = function(model) {};
  */
 lanyard.DrawContext.prototype.getModel = function() {};
 
+
 /**
  * Retrieves the current Globe, which may be null.
  *
  * @return {lanyard.Globe} the current Globe, which may be null.
  */
 lanyard.DrawContext.prototype.getGlobe = function() {};
+
 
 /**
  * Retrieves a list containing all the current layers.
@@ -115,6 +127,7 @@ lanyard.DrawContext.prototype.getGlobe = function() {};
  */
 lanyard.DrawContext.prototype.getLayers = function() {};
 
+
 /**
  * Retrieves a Sector which is at least as large as the current visible sector. The value returned is
  * the value passed to SetVisibleSector. This method may return null.
@@ -123,6 +136,7 @@ lanyard.DrawContext.prototype.getLayers = function() {};
  */
 lanyard.DrawContext.prototype.getVisibleSector = function() {};
 
+
 /**
  * Sets the visible Sector. The new visible sector must completely encompass the Sector which is
  * visible on the display.
@@ -130,6 +144,7 @@ lanyard.DrawContext.prototype.getVisibleSector = function() {};
  * @param {lanyard.geom.Sector} s the new visible Sector.
  */
 lanyard.DrawContext.prototype.setVisibleSector = function(s) {};
+
 
 /**
  * Sets the vertical exaggeration. Vertical exaggeration affects the appearance of areas with varied elevation. A
@@ -141,6 +156,7 @@ lanyard.DrawContext.prototype.setVisibleSector = function(s) {};
  */
 lanyard.DrawContext.prototype.setVerticalExaggeration = function(verticalExaggeration) {};
 
+
 /**
  * Retrieves the current vertical exaggeration. Vertical exaggeration affects the appearance of areas with varied
  * elevation. A vertical exaggeration of zero creates a surface which exactly fits the shape of the underlying
@@ -151,12 +167,14 @@ lanyard.DrawContext.prototype.setVerticalExaggeration = function(verticalExagger
  */
 lanyard.DrawContext.prototype.getVerticalExaggeration = function() {};
 
+
 /**
  * Retrieves a list of all the sectors rendered so far this frame.
  *
  * @return {lanyard.SectorGeometryList} a list containing every SectorGeometry rendered so far this pass.
  */
 lanyard.DrawContext.prototype.getSurfaceGeometry = function() {};
+
 
 /**
  * Returns a unique color to serve as a pick identifier during picking.
@@ -165,12 +183,14 @@ lanyard.DrawContext.prototype.getSurfaceGeometry = function() {};
  */
 lanyard.DrawContext.prototype.getUniquePickColor = function() {};
 
+
 /**
  * Mutator for the lanyard canvas.
  *
  * @param {lanyard.LanyardCanvas} lanyardCanvas the lanyard canvas to use.
  */
 lanyard.DrawContext.prototype.setCanvas = function(lanyardCanvas) {};
+
 
 /**
  * Accessor for the lanyard canvas.

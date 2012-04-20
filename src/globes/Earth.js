@@ -29,54 +29,57 @@ goog.provide('lanyard.globes.Earth');
 
 goog.require('lanyard.globes.EllipsoidalGlobe');
 
+
+
 /**
  * A representation of the earth.
  *
- * @extends lanyard.globes.EllipsoidalGlobe
+ * @extends {lanyard.globes.EllipsoidalGlobe}
  * @constructor
  * @this {lanyard.globes.Earth}
  */
 lanyard.globes.Earth = function() {
 
-    /**
+  /**
      * The WGS84 ellipsoid equatorial radius of the earth, in meters.
      *
      * @type {number}
      * @private
      */
-    this.equatorialRadius = 6378137.0;
+  this.equatorialRadius = 6378137.0;
 
-    /**
+  /**
      * The WGS84 ellipsoid polar radius, in meters.
      *
      * @type {number}
      * @private
      */
-    this.polarRadius = 6378137.0;
+  this.polarRadius = 6378137.0;
 
-    /**
+  /**
      * The WGS84 eccentricity squared, semi-major axis.
      *
      * @type {number}
      * @private
      */
-    this.es = 0; //0.00669437999013
+  this.es = 0; //0.00669437999013
 
-    /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
+  /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
 
-    // FIXME: create an earth elevation model.
-    // /** @private */ this.elevationModel = new lanyard.globes.EarthElevationModel();
+  // FIXME: create an earth elevation model.
+  // /** @private */ this.elevationModel = new lanyard.globes.EarthElevationModel();
 
-    /** @private */ this.elevationModel = null;
+  /** @private */ this.elevationModel = null;
 
-    // call super
-    lanyard.globes.EllipsoidalGlobe.call(
-        this, this.equatorialRadius, this.polarRadius, this.es, this.elevationModel);
+  // call super
+  lanyard.globes.EllipsoidalGlobe.call(
+      this, this.equatorialRadius, this.polarRadius, this.es, this.elevationModel);
 
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Earth');
+  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Earth');
 };
 goog.exportSymbol('lanyard.globes.Earth', lanyard.globes.Earth);
 goog.inherits(lanyard.globes.Earth, lanyard.globes.EllipsoidalGlobe);
+
 
 /**
  * Get the radius of the earth.
@@ -84,7 +87,7 @@ goog.inherits(lanyard.globes.Earth, lanyard.globes.EllipsoidalGlobe);
  * @return {number} the radius of the earth.
  */
 lanyard.globes.Earth.prototype.getRadius = function() {
-    return this.equatorialRadius;
+  return this.equatorialRadius;
 };
 
 /* EOF */

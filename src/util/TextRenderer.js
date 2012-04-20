@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.util.TextRenderer');
 
+
+
 /**
  * Renders text into a WebGL canvas.
  *
@@ -35,18 +37,20 @@ goog.provide('lanyard.util.TextRenderer');
  * @param {lanyard.DrawContext} dc the draw context to use.
  */
 lanyard.util.TextRenderer = function(fontStyle, dc) {
-    /** @type {lanyard.DrawContext} */
-    this.dc = dc;
+  /** @type {lanyard.DrawContext} */
+  this.dc = dc;
 
-    /** @type {string} */
-    this.fontStyle = fontStyle;
+  /** @type {string} */
+  this.fontStyle = fontStyle;
 };
+
 
 /**
  * Sets up the state matrices.
  */
 lanyard.util.TextRenderer.prototype.beginRendering = function() {
 };
+
 
 /**
  * Draws the text to the current draw context at the specified position.
@@ -58,23 +62,26 @@ lanyard.util.TextRenderer.prototype.beginRendering = function() {
  * @param {number} yPosition the y position of the text to be rendered.
  */
 lanyard.util.TextRenderer.prototype.draw =
-        function(value, xPosition, yPosition) {
+    function(value, xPosition, yPosition) {
 };
+
 
 /**
  * Set the color of text to be rendered.
  *
  * @param {lanyard.util.Color} color the color of the text.
  */
-lanyard.util.TextRenderer.prototype.setColor = function (color) {
+lanyard.util.TextRenderer.prototype.setColor = function(color) {
 
 };
+
 
 /**
  * Restore the state matrices.
  */
 lanyard.util.TextRenderer.prototype.endRendering = function() {
 };
+
 
 /**
  * Destroy all hidden canvas elements that are cached in this renderer.

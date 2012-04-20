@@ -29,23 +29,25 @@ goog.provide('lanyard.dom.ViewProperties');
 
 goog.require('goog.debug.Logger');
 
+
+
 /**
  * Storage of view properties for user input.
  *
  * @constructor
  */
 lanyard.dom.ViewProperties = function() {
-    /** @type {lanyard.geom.LatLon} */
-    this.latLon = null;
+  /** @type {lanyard.geom.LatLon} */
+  this.latLon = null;
 
-    /** @type {lanyard.geom.Angle} */
-    this.heading = null;
+  /** @type {lanyard.geom.Angle} */
+  this.heading = null;
 
-    /** @type {lanyard.geom.Angle} */
-    this.pitch = null;
+  /** @type {lanyard.geom.Angle} */
+  this.pitch = null;
 
-    /** @type {?number} */
-    this.zoom = null;
+  /** @type {?number} */
+  this.zoom = null;
 };
 
 /* EOF */

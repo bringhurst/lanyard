@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.Elevations');
 
+
+
 /**
  * The Elevations interface provides elevations at specified latitude and longitude
  * positions. Objects implementing this interface are created by {lanyard.ElevationModel}.
@@ -34,6 +36,7 @@ goog.provide('lanyard.Elevations');
  * @interface
  */
 lanyard.Elevations = function() {};
+
 
 /**
  * Indicates whether the object contains useful elevations. An Elevations instance may exist
@@ -46,6 +49,7 @@ lanyard.Elevations = function() {};
  */
 lanyard.Elevations.prototype.hasElevations = function() {};
 
+
 /**
  * Returns the elevation at a specific latitude and longitude, each specified in radians.
  *
@@ -55,6 +59,7 @@ lanyard.Elevations.prototype.hasElevations = function() {};
  */
 lanyard.Elevations.prototype.getElevation = function(latRadians, lonRadians) {};
 
+
 /**
  * Returns the resolution value of the elevations. The meaning and use of this value is defined
  * by subclasses of ElevationModel.
@@ -62,6 +67,7 @@ lanyard.Elevations.prototype.getElevation = function(latRadians, lonRadians) {};
  * @return {number} the resolution associated with this.
  */
 lanyard.Elevations.prototype.getResolution = function() {};
+
 
 /**
  * Returns the {lanyard.geom.Sector} the elevations pertain to.

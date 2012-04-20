@@ -27,6 +27,7 @@
 
 goog.provide('lanyard.layers.tiled.LevelComparer');
 
+
 /**
  * Compare two texture tiles.
  *
@@ -35,25 +36,25 @@ goog.provide('lanyard.layers.tiled.LevelComparer');
  * @return {number} 0 if equal, 1 if greater, -1 if less than.
  */
 lanyard.layers.tiled.LevelComparer.prototype.compare = function(ta, tb) {
-    /** @type {number} */
-    var la;
+  /** @type {number} */
+  var la;
 
-    /** @type {number} */
-    var lb;
+  /** @type {number} */
+  var lb;
 
-    if (ta.holdsTexture()) {
-        la = ta.getLevelNumber();
-    } else {
-        la = ta.getFallbackTile().getLevelNumber();
-    }
+  if (ta.holdsTexture()) {
+    la = ta.getLevelNumber();
+  } else {
+    la = ta.getFallbackTile().getLevelNumber();
+  }
 
-    if (tb.holdsTexture()) {
-        lb = tb.getLevelNumber();
-    } else {
-        lb = tb.getFallbackTile().getLevelNumber();
-    }
+  if (tb.holdsTexture()) {
+    lb = tb.getLevelNumber();
+  } else {
+    lb = tb.getFallbackTile().getLevelNumber();
+  }
 
-    return la < lb ? -1 : la === lb ? 0 : 1;
+  return la < lb ? -1 : la === lb ? 0 : 1;
 };
 
 /* EOF */

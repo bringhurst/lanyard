@@ -33,12 +33,15 @@ goog.require('lanyard.geom.Line');
 goog.require('lanyard.geom.Plane');
 goog.require('lanyard.geom.Point');
 
+
+
 /**
  * An extent interface.
  *
  * @interface
  */
 lanyard.geom.Extent = function() {};
+
 
 /**
  * Render this extent.
@@ -47,12 +50,14 @@ lanyard.geom.Extent = function() {};
  */
 lanyard.geom.Extent.prototype.render = function(dc) {};
 
+
 /**
  * Accessor for the center point.
  *
  * @return {lanyard.geom.Point}
  */
 lanyard.geom.Extent.prototype.getCenter = function() {};
+
 
 /**
  * Accessor for the diameter.
@@ -61,12 +66,14 @@ lanyard.geom.Extent.prototype.getCenter = function() {};
  */
 lanyard.geom.Extent.prototype.getDiameter = function() {};
 
+
 /**
  * Accessor for the radius.
  *
  * @return {number}
  */
 lanyard.geom.Extent.prototype.getRadius = function() {};
+
 
 /**
  * Tests whether or not this Extent intersects frustum. Returns true if any part of these
@@ -77,6 +84,7 @@ lanyard.geom.Extent.prototype.getRadius = function() {};
  * @return {boolean} true if there is an intersection, false otherwise.
  */
 lanyard.geom.Extent.prototype.intersectsFrustum = function(frustum) {};
+
 
 /**
  * Obtain the intersections of this extent with line. The returned array may be either
@@ -90,6 +98,7 @@ lanyard.geom.Extent.prototype.intersectsFrustum = function(frustum) {};
  */
 lanyard.geom.Extent.prototype.intersect = function(line) {};
 
+
 /**
  * Calculate whether or not line intersects this Extent. This method may be faster than
  * checking the size of the arary returned by intersect(Line). Implementing methods must ensure that
@@ -100,6 +109,7 @@ lanyard.geom.Extent.prototype.intersect = function(line) {};
  * @return {boolean} true if an intersection is found, false otherwise.
  */
 lanyard.geom.Extent.prototype.intersectsLine = function(line) {};
+
 
 /**
  * Calculate whether or not this Extent is intersected by plane.

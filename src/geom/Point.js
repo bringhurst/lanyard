@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.geom.Point');
 
+
+
 /**
  * A basic point geometry.
  *
@@ -38,17 +40,18 @@ goog.provide('lanyard.geom.Point');
  * @param {number} w the w value of thie point.
  */
 lanyard.geom.Point = function(x, y, z, w) {
-    /** @private */ this._x = x;
-    /** @private */ this._y = y;
-    /** @private */ this._z = z;
+  /** @private */ this._x = x;
+  /** @private */ this._y = y;
+  /** @private */ this._z = z;
 
-    if (w) {
-        /** @private */ this._w = w;
-    } else {
-        /** @private */ this._w = 1;
-    }
+  if (w) {
+    /** @private */ this._w = w;
+  } else {
+    /** @private */ this._w = 1;
+  }
 };
 goog.exportSymbol('lanyard.geom.Point', lanyard.geom.Point);
+
 
 /**
  * A point at 0.
@@ -58,6 +61,7 @@ goog.exportSymbol('lanyard.geom.Point', lanyard.geom.Point);
 lanyard.geom.Point.prototype.ZERO = new lanyard.geom.Point(0, 0, 0, 1);
 goog.exportSymbol('lanyard.geom.Point.prototype.ZERO', lanyard.geom.Point.prototype.ZERO);
 
+
 /**
  * A unit x point.
  * @const
@@ -65,6 +69,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.ZERO', lanyard.geom.Point.protot
  */
 lanyard.geom.Point.prototype.UNIT_X = new lanyard.geom.Point(1, 0, 0, 1);
 goog.exportSymbol('lanyard.geom.Point.prototype.UNIT_X', lanyard.geom.Point.prototype.UNIT_X);
+
 
 /**
  * A unit y point.
@@ -74,6 +79,7 @@ goog.exportSymbol('lanyard.geom.Point.prototype.UNIT_X', lanyard.geom.Point.prot
 lanyard.geom.Point.prototype.UNIT_Y = new lanyard.geom.Point(0, 1, 0, 1);
 goog.exportSymbol('lanyard.geom.Point.prototype.UNIT_Y', lanyard.geom.Point.prototype.UNIT_Y);
 
+
 /**
  * A unit z point.
  * @const
@@ -82,15 +88,17 @@ goog.exportSymbol('lanyard.geom.Point.prototype.UNIT_Y', lanyard.geom.Point.prot
 lanyard.geom.Point.prototype.UNIT_Z = new lanyard.geom.Point(0, 0, 1, 1);
 goog.exportSymbol('lanyard.geom.Point.prototype.UNIT_Z', lanyard.geom.Point.prototype.UNIT_Z);
 
+
 /**
  * Find the w value of this point.
  * @this {lanyard.geom.Point}
  * @return {number} the w value.
  */
 lanyard.geom.Point.prototype.getW = function() {
-    return this._w;
+  return this._w;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.getW', lanyard.geom.Point.prototype.getW);
+
 
 /**
  * Find the x value of this point.
@@ -98,9 +106,10 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getW', lanyard.geom.Point.protot
  * @return {number} the x value.
  */
 lanyard.geom.Point.prototype.getX = function() {
-    return this._x;
+  return this._x;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.getX', lanyard.geom.Point.prototype.getX);
+
 
 /**
  * Find the y value of this point.
@@ -108,9 +117,10 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getX', lanyard.geom.Point.protot
  * @return {number} the y value.
  */
 lanyard.geom.Point.prototype.getY = function() {
-    return this._y;
+  return this._y;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.getY', lanyard.geom.Point.prototype.getY);
+
 
 /**
  * Find the z value of this point.
@@ -118,9 +128,10 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getY', lanyard.geom.Point.protot
  * @return {number} the z value.
  */
 lanyard.geom.Point.prototype.getZ = function() {
-    return this._z;
+  return this._z;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.getZ', lanyard.geom.Point.prototype.getZ);
+
 
 /**
  * Transform this point by a matrix.
@@ -129,18 +140,19 @@ goog.exportSymbol('lanyard.geom.Point.prototype.getZ', lanyard.geom.Point.protot
  * @return {lanyard.geom.Point} the result of the transform.
  */
 lanyard.geom.Point.prototype.translate = function(m) {
-    /** @type {lanyard.geom.Point} */
-    var p = new lanyard.geom.Point(
-        m.get11() * this._x + m.get21() * this._y + m.get31() * this._z + m.get41(),
-        m.get12() * this._x + m.get22() * this._y + m.get32() * this._z + m.get42(),
-        m.get13() * this._x + m.get23() * this._y + m.get33() * this._z + m.get43(),
-        1
-    );
+  /** @type {lanyard.geom.Point} */
+  var p = new lanyard.geom.Point(
+      m.get11() * this._x + m.get21() * this._y + m.get31() * this._z + m.get41(),
+      m.get12() * this._x + m.get22() * this._y + m.get32() * this._z + m.get42(),
+      m.get13() * this._x + m.get23() * this._y + m.get33() * this._z + m.get43(),
+      1
+      );
 
-    return p;
+  return p;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.translate',
     lanyard.geom.Point.prototype.translate);
+
 
 /**
  * Add this point to another point.
@@ -149,14 +161,15 @@ goog.exportSymbol('lanyard.geom.Point.prototype.translate',
  * @return {lanyard.geom.Point} the points added together.
  */
 lanyard.geom.Point.prototype.add = function(p) {
-    return new lanyard.geom.Point(
-        this._x + p.getX(),
-        this._y + p.getY(),
-        this._z + p.getZ(),
-        1
-    );
+  return new lanyard.geom.Point(
+      this._x + p.getX(),
+      this._y + p.getY(),
+      this._z + p.getZ(),
+      1
+  );
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.add', lanyard.geom.Point.prototype.add);
+
 
 /**
  * Subtract another point from this point.
@@ -165,14 +178,15 @@ goog.exportSymbol('lanyard.geom.Point.prototype.add', lanyard.geom.Point.prototy
  * @return {lanyard.geom.Point} the point resulting from the subtraction.
  */
 lanyard.geom.Point.prototype.subtract = function(p) {
-    return new lanyard.geom.Point(
-        this._x - p.getX(),
-        this._y - p.getY(),
-        this._z - p.getZ(),
-        1
-    );
+  return new lanyard.geom.Point(
+      this._x - p.getX(),
+      this._y - p.getY(),
+      this._z - p.getZ(),
+      1
+  );
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.subtract', lanyard.geom.Point.prototype.subtract);
+
 
 /**
  * Multiply this point by a scalar.
@@ -181,14 +195,15 @@ goog.exportSymbol('lanyard.geom.Point.prototype.subtract', lanyard.geom.Point.pr
  * @return {lanyard.geom.Point} the result of the multiplication.
  */
 lanyard.geom.Point.prototype.multiply = function(s) {
-    return new lanyard.geom.Point(
-        this._x * s,
-        this._y * s,
-        this._z * s,
-        1
-    );
+  return new lanyard.geom.Point(
+      this._x * s,
+      this._y * s,
+      this._z * s,
+      1
+  );
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.multiply', lanyard.geom.Point.prototype.multiply);
+
 
 /**
  * Scale based on the this point.
@@ -199,23 +214,24 @@ goog.exportSymbol('lanyard.geom.Point.prototype.multiply', lanyard.geom.Point.pr
  * @return {lanyard.geom.Point} the scaled point.
  */
 lanyard.geom.Point.prototype.scale = function(sx, sy, sz) {
-    if (!this._w) {
-        return new lanyard.geom.Point(
-            this._x * sx,
-            this._y * sy,
-            this._z * sz,
-            1
-        );
-    } else {
-        return new lanyard.geom.Point(
-            this._x * sx,
-            this._y * sy,
-            this._z * sz,
-            this._w
-        );
-    }
+  if (!this._w) {
+    return new lanyard.geom.Point(
+        this._x * sx,
+        this._y * sy,
+        this._z * sz,
+        1
+    );
+  } else {
+    return new lanyard.geom.Point(
+        this._x * sx,
+        this._y * sy,
+        this._z * sz,
+        this._w
+    );
+  }
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.scale', lanyard.geom.Point.prototype.scale);
+
 
 /**
  * Calculate the length of this point.
@@ -223,9 +239,10 @@ goog.exportSymbol('lanyard.geom.Point.prototype.scale', lanyard.geom.Point.proto
  * @return {number} the length.
  */
 lanyard.geom.Point.prototype.length = function() {
-    return Math.sqrt(this.selfDot());
+  return Math.sqrt(this.selfDot());
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.length', lanyard.geom.Point.prototype.length);
+
 
 /**
  * Find a normalized point based on this one.
@@ -233,10 +250,11 @@ goog.exportSymbol('lanyard.geom.Point.prototype.length', lanyard.geom.Point.prot
  * @return {lanyard.geom.Point} the normalized point.
  */
 lanyard.geom.Point.prototype.normalize = function() {
-    var s = 1.0 / this.length();
-    return this.scale(s, s, s);
+  var s = 1.0 / this.length();
+  return this.scale(s, s, s);
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.normalize', lanyard.geom.Point.prototype.normalize);
+
 
 /**
  * Find the dot product with another point.
@@ -245,9 +263,10 @@ goog.exportSymbol('lanyard.geom.Point.prototype.normalize', lanyard.geom.Point.p
  * @return {number} the result of the dot product.
  */
 lanyard.geom.Point.prototype.dot = function(p) {
-    return this._x * p.getX() + this._y * p.getY() + this._z * p.getZ();
+  return this._x * p.getX() + this._y * p.getY() + this._z * p.getZ();
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.dot', lanyard.geom.Point.prototype.dot);
+
 
 /**
  * Find the dot of the current point with the current point.
@@ -255,9 +274,10 @@ goog.exportSymbol('lanyard.geom.Point.prototype.dot', lanyard.geom.Point.prototy
  * @return {number} the result of the dot product.
  */
 lanyard.geom.Point.prototype.selfDot = function() {
-    return this._x * this._x + this._y * this._y + this._z * this._z;
+  return this._x * this._x + this._y * this._y + this._z * this._z;
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.selfDot', lanyard.geom.Point.prototype.selfDot);
+
 
 /**
  * Find the dot product with another point (include w).
@@ -266,9 +286,10 @@ goog.exportSymbol('lanyard.geom.Point.prototype.selfDot', lanyard.geom.Point.pro
  * @return {number} the result of the dot product.
  */
 lanyard.geom.Point.prototype.dot4 = function(p) {
-    return this._x * p.getX() + this._y * p.getY() + this._z * p.getZ() + this._w * this.getW();
+  return this._x * p.getX() + this._y * p.getY() + this._z * p.getZ() + this._w * this.getW();
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.dot4', lanyard.geom.Point.prototype.dot4);
+
 
 /**
  * Find the distance to another point.
@@ -277,13 +298,14 @@ goog.exportSymbol('lanyard.geom.Point.prototype.dot4', lanyard.geom.Point.protot
  * @return {number} the distance between the points.
  */
 lanyard.geom.Point.prototype.distanceTo = function(p) {
-    var dx = this._x - p.getX();
-    var dy = this._y - p.getY();
-    var dz = this._z - p.getZ();
+  var dx = this._x - p.getX();
+  var dy = this._y - p.getY();
+  var dz = this._z - p.getZ();
 
-    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.distanceTo', lanyard.geom.Point.prototype.distanceTo);
+
 
 /**
  * Find the squared distance between points.
@@ -292,14 +314,15 @@ goog.exportSymbol('lanyard.geom.Point.prototype.distanceTo', lanyard.geom.Point.
  * @return {number} the squared distance.
  */
 lanyard.geom.Point.prototype.distanceToSquared = function(p) {
-    var dx = this._x - p.getX();
-    var dy = this._y - p.getY();
-    var dz = this._z - p.getZ();
+  var dx = this._x - p.getX();
+  var dy = this._y - p.getY();
+  var dz = this._z - p.getZ();
 
-    return (dx * dx + dy * dy + dz * dz);
+  return (dx * dx + dy * dy + dz * dz);
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.distanceToSquared',
     lanyard.geom.Point.prototype.distanceToSquared);
+
 
 /**
  * Find the mid point between two points.
@@ -308,14 +331,15 @@ goog.exportSymbol('lanyard.geom.Point.prototype.distanceToSquared',
  * @return {lanyard.geom.Point} a point midway between the two points.
  */
 lanyard.geom.Point.prototype.midPoint = function(p1, p2) {
-    return new lanyard.geom.Point(
-        0.5 * (p1.getX() + p2.getX()),
-        0.5 * (p1.getY() + p2.getY()),
-        0.5 * (p1.getZ() + p2.getZ()),
-        1
-    );
+  return new lanyard.geom.Point(
+      0.5 * (p1.getX() + p2.getX()),
+      0.5 * (p1.getY() + p2.getY()),
+      0.5 * (p1.getZ() + p2.getZ()),
+      1
+  );
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.midPoint', lanyard.geom.Point.prototype.midPoint);
+
 
 /**
  * Find a point in the direction and location relative to two other points.
@@ -325,15 +349,16 @@ goog.exportSymbol('lanyard.geom.Point.prototype.midPoint', lanyard.geom.Point.pr
  * @return {lanyard.geom.Point} the new point in the specified location.
  */
 lanyard.geom.Point.prototype.fromOriginAndDirection = function(scale, direction, origin) {
-    return new lanyard.geom.Point(
-        scale * direction.getX() + origin.getX(),
-        scale * direction.getY() + origin.getY(),
-        scale * direction.getZ() + origin.getZ(),
-        1
-    );
+  return new lanyard.geom.Point(
+      scale * direction.getX() + origin.getX(),
+      scale * direction.getY() + origin.getY(),
+      scale * direction.getZ() + origin.getZ(),
+      1
+  );
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.fromOriginAndDirection',
     lanyard.geom.Point.prototype.fromOriginAndDirection);
+
 
 /**
  * Find the extrema of an array of points.
@@ -341,62 +366,63 @@ goog.exportSymbol('lanyard.geom.Point.prototype.fromOriginAndDirection',
  * @return {Array.<lanyard.geom.Point>} a bounding box of the points extrema.
  */
 lanyard.geom.Point.prototype.composeExtrema = function(points) {
-    if (points.length === 0) {
-        return [
+  if (points.length === 0) {
+    return [
             lanyard.geom.Point.prototype.ZERO,
             lanyard.geom.Point.prototype.ZERO
-        ];
-    }
-
-    var xmin = points[0].getX();
-    var ymin = points[0].getY();
-    var zmin = points[0].getZ();
-    var xmax = xmin;
-    var ymax = ymin;
-    var zmax = zmin;
-
-    for (var i = 0; i < points.length; i = i + 1) {
-        var x = points[i].getX();
-
-        if (x > xmax) {
-            xmax = x;
-        } else if (x < xmin) {
-            xmin = x;
-        }
-
-        var y = points[i].getY();
-
-        if (y > ymax) {
-            ymax = y;
-        } else if (y < ymin) {
-            ymin = y;
-        }
-
-        var z = points[i].getZ();
-
-        if (z > zmax) {
-            zmax = z;
-        } else if (z < zmin) {
-            zmin = z;
-        }
-    }
-
-    return [
-        new lanyard.geom.Point(
-            xmin,
-            ymin,
-            zmin,
-            1
-        ),
-        new lanyard.geom.Point(
-            xmax,
-            ymax,
-            zmax,
-            1
-        )
     ];
+  }
+
+  var xmin = points[0].getX();
+  var ymin = points[0].getY();
+  var zmin = points[0].getZ();
+  var xmax = xmin;
+  var ymax = ymin;
+  var zmax = zmin;
+
+  for (var i = 0; i < points.length; i = i + 1) {
+    var x = points[i].getX();
+
+    if (x > xmax) {
+      xmax = x;
+    } else if (x < xmin) {
+      xmin = x;
+    }
+
+    var y = points[i].getY();
+
+    if (y > ymax) {
+      ymax = y;
+    } else if (y < ymin) {
+      ymin = y;
+    }
+
+    var z = points[i].getZ();
+
+    if (z > zmax) {
+      zmax = z;
+    } else if (z < zmin) {
+      zmin = z;
+    }
+  }
+
+  return [
+    new lanyard.geom.Point(
+        xmin,
+        ymin,
+        zmin,
+        1
+    ),
+    new lanyard.geom.Point(
+        xmax,
+        ymax,
+        zmax,
+        1
+    )
+  ];
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.composeExtrema', lanyard.geom.Point.prototype.composeExtrema);
+
 
 /**
  * Find the cross product with another point.
@@ -405,14 +431,15 @@ goog.exportSymbol('lanyard.geom.Point.prototype.composeExtrema', lanyard.geom.Po
  * @return {lanyard.geom.Point} the result of the cross product.
  */
 lanyard.geom.Point.prototype.cross = function(that) {
-    return new lanyard.geom.Point(
-        this._y * that.getZ() - this._z * that.getY(),
-        this._z * that.getX() - this._x * that.getZ(),
-        this._x * that.getY() - this._y * that.getX(),
-        1
-    );
+  return new lanyard.geom.Point(
+      this._y * that.getZ() - this._z * that.getY(),
+      this._z * that.getX() - this._x * that.getZ(),
+      this._x * that.getY() - this._y * that.getX(),
+      1
+  );
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.cross', lanyard.geom.Point.prototype.cross);
+
 
 /**
  * Find a string representation of this point.
@@ -420,10 +447,10 @@ goog.exportSymbol('lanyard.geom.Point.prototype.cross', lanyard.geom.Point.proto
  * @return {string} the point represented as a string.
  */
 lanyard.geom.Point.prototype.toString = function() {
-    return 'A point with values of x=' + this._x +
-        '; y=' + this._y +
-        '; z=' + this._z +
-        '; w=' + this._w + '.';
+  return 'A point with values of x=' + this._x +
+      '; y=' + this._y +
+      '; z=' + this._z +
+      '; w=' + this._w + '.';
 };
 goog.exportSymbol('lanyard.geom.Point.prototype.toString', lanyard.geom.Point.prototype.toString);
 

@@ -30,6 +30,8 @@ goog.provide('lanyard.ElevationModel');
 goog.require('lanyard.Elevations');
 goog.require('lanyard.geom.Angle');
 
+
+
 /**
  * Provides the elevations of all points on a Globe . Every Globe has an elevation model
  * implementing this interface.
@@ -54,12 +56,14 @@ goog.require('lanyard.geom.Angle');
  */
 lanyard.ElevationModel = function() {};
 
+
 /**
  * Determine if this elevation model is enabled or not.
  *
  * @return {boolean} if this elevation model is enabled or not.
  */
 lanyard.ElevationModel.prototype.isEnabled = function() {};
+
 
 /**
  * Set the enabled state of this elevation model.
@@ -68,6 +72,7 @@ lanyard.ElevationModel.prototype.isEnabled = function() {};
  */
 lanyard.ElevationModel.prototype.setEnabled = function(enable) {};
 
+
 /**
  * Returns the maximum elevation contained in the elevation model.
  * This value is the height of the highest point on the globe.
@@ -75,6 +80,7 @@ lanyard.ElevationModel.prototype.setEnabled = function(enable) {};
  * @return {number} the maximum elevation of the model.
  */
 lanyard.ElevationModel.prototype.getMaximumElevation = function() {};
+
 
 /**
  * Returns the minimum elevation contained in the elevation model.
@@ -85,6 +91,7 @@ lanyard.ElevationModel.prototype.getMaximumElevation = function() {};
  * @return {number} the minimum elevation of the model.
  */
 lanyard.ElevationModel.prototype.getMinimumElevation = function() {};
+
 
 /**
  * Computes and returns an Elevations object for the specified Sector
@@ -105,6 +112,7 @@ lanyard.ElevationModel.prototype.getMinimumElevation = function() {};
  */
 lanyard.ElevationModel.prototype.getElevations = function(sector, resolution) {};
 
+
 /**
  * Returns the resolution appropriate to the given Sector and view parameters.
  * The view parameters are read from the specified DrawContext. Implementing
@@ -119,6 +127,7 @@ lanyard.ElevationModel.prototype.getElevations = function(sector, resolution) {}
  * @return {number} he appropriate resolution for the sector and draw context values.
  */
 lanyard.ElevationModel.prototype.getTargetResolution = function(dc, sector, density) {};
+
 
 /**
  * Find the elevation of the specified coordinate.

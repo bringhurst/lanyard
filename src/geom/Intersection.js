@@ -29,6 +29,8 @@ goog.provide('lanyard.geom.Intersection');
 
 goog.require('lanyard.geom.Point');
 
+
+
 /**
  * A way to represent an intersection.
  *
@@ -38,10 +40,11 @@ goog.require('lanyard.geom.Point');
  * @param {boolean} isTangent if the intersection is a tangent.
  */
 lanyard.geom.Intersection = function(intersectionPoint, isTangent) {
-    /** @private */ this._intersectionPoint = intersectionPoint;
-    /** @private */ this._isTangent = isTangent;
+  /** @private */ this._intersectionPoint = intersectionPoint;
+  /** @private */ this._isTangent = isTangent;
 };
 goog.exportSymbol('lanyard.geom.Intersection', lanyard.geom.Intersection);
+
 
 /**
  * Get the point of intersection.
@@ -49,8 +52,9 @@ goog.exportSymbol('lanyard.geom.Intersection', lanyard.geom.Intersection);
  * @return {lanyard.geom.Point} the point of intersection.
  */
 lanyard.geom.Intersection.prototype.getIntersectionPoint = function() {
-    return this._intersectionPoint;
+  return this._intersectionPoint;
 };
+
 
 /**
  * Return if this intersection is a tangent.
@@ -58,8 +62,9 @@ lanyard.geom.Intersection.prototype.getIntersectionPoint = function() {
  * @return {boolean} if this intersection is a tangent.
  */
 lanyard.geom.Intersection.prototype.isTangent = function() {
-    return this._isTangent;
+  return this._isTangent;
 };
+
 
 /**
  * Returns a string representation of this Intersection.
@@ -67,10 +72,10 @@ lanyard.geom.Intersection.prototype.isTangent = function() {
  * @return {string} a string representation of this Intersection.
  */
 lanyard.geom.Intersection.prototype.toString = function() {
-    var pt = 'Intersection Point: ' + this._intersectionPoint.toString();
-    var tang = this._isTangent ? ' is a tangent.' : ' not a tangent';
+  var pt = 'Intersection Point: ' + this._intersectionPoint.toString();
+  var tang = this._isTangent ? ' is a tangent.' : ' not a tangent';
 
-    return pt + tang;
+  return pt + tang;
 };
 
 /* EOF */

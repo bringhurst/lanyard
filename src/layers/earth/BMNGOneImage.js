@@ -30,6 +30,8 @@ goog.provide('lanyard.layers.earth.BMNGOneImage');
 goog.require('lanyard.layers.RenderableLayer');
 goog.require('lanyard.render.SurfaceImage');
 
+
+
 /**
  * An layer to provide a non-tiled blue marble image to display on the globe.
  *
@@ -38,28 +40,29 @@ goog.require('lanyard.render.SurfaceImage');
  * @this {lanyard.layers.earth.BMNGOneImage}
  */
 lanyard.layers.earth.BMNGOneImage = function() {
-    lanyard.layers.RenderableLayer.call(this, null);
+  lanyard.layers.RenderableLayer.call(this, null);
 
-    /** @private */
-    this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
+  /** @private */
+  this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
 
-    //this._logger.fine("Called BMNGOneImage constructor");
+  //this._logger.fine("Called BMNGOneImage constructor");
 
-    // This name will appear to the user in the layer list.
-    this.setName('The Blue Marble, single image');
+  // This name will appear to the user in the layer list.
+  this.setName('The Blue Marble, single image');
 
-    //this._logger.fine("Adding the surface image renderable.");
-    this.addRenderable(
-        new lanyard.render.SurfaceImage(
-            'images/bmng.world.topo.512.256.gif',
-            lanyard.geom.Sector.prototype.FULL_SPHERE,
-            this)
-    );
+  //this._logger.fine("Adding the surface image renderable.");
+  this.addRenderable(
+      new lanyard.render.SurfaceImage(
+      'images/bmng.world.topo.512.256.gif',
+      lanyard.geom.Sector.prototype.FULL_SPHERE,
+      this)
+  );
 
-    // Disable picking for the layer because it covers the full sphere and will override a terrain pick.
-    //this.setPickEnabled(false);
+  // Disable picking for the layer because it covers the full sphere and will override a terrain pick.
+  //this.setPickEnabled(false);
 };
 goog.inherits(lanyard.layers.earth.BMNGOneImage, lanyard.layers.RenderableLayer);
+
 
 /**
  * A description of this object.
@@ -67,7 +70,7 @@ goog.inherits(lanyard.layers.earth.BMNGOneImage, lanyard.layers.RenderableLayer)
  * @return {string} a description of this object.
  */
 lanyard.layers.earth.BMNGOneImage.prototype.toString = function() {
-    return 'A BMNGOneImage object.';
+  return 'A BMNGOneImage object.';
 };
 
 /* EOF */

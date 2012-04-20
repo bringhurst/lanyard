@@ -29,6 +29,8 @@ goog.provide('lanyard.layers.earth.PoliticalBoundariesLayer');
 
 goog.require('lanyard.layers.tiled.TiledImageLayer');
 
+
+
 /**
  * An layer to provide country outlines.
  *
@@ -37,13 +39,14 @@ goog.require('lanyard.layers.tiled.TiledImageLayer');
  * @this {lanyard.layers.earth.PoliticalBoundariesLayer}
  */
 lanyard.layers.earth.PoliticalBoundariesLayer = function() {
-    lanyard.layers.tiled.TiledImageLayer.call(this, null);
+  lanyard.layers.tiled.TiledImageLayer.call(this, null);
 
-    this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
+  this._logger = goog.debug.Logger.getLogger('lanyard.layers.earth.BMNGOneImage');
 
-    this.makeLevels();
-    this.setUseTransparentTextures(true);
+  this.makeLevels();
+  this.setUseTransparentTextures(true);
 };
+
 
 /**
  * Make the levels for this layer.
@@ -51,60 +54,61 @@ lanyard.layers.earth.PoliticalBoundariesLayer = function() {
  * @return {lanyard.LevelSet} the created level set.
  */
 lanyard.layers.earth.PoliticalBoundariesLayer.prototype.makeLevels = function() {
-    /** @type {Object} */
-    var params = {};
+  /** @type {Object} */
+  var params = {};
 
-    params.tileWidth = 512;
-    params.tileHeight = 512;
-    params.cacheName = 'Earth/PoliticalBoundaries';
-    params.service = 'http://worldwind21.arc.nasa.gov/geoserver/wms';
-    params.datasetName = 'topp:cia';
-    params.formatSuffix = '.png';
-    params.numLevels = 13;
-    params.numEmptyLevels = 0;
-    params.levelZeroTileDelta = new lanyard.geom.LatLon(
-        lanyard.geom.Angle.prototype.fromDegrees(36.0),
-        lanyard.geom.Angle.prototype.fromDegrees(36.0)
-    );
-    params.sector = lanyard.geom.Sector.prototype.FULL_SPHERE;
-    params.tileUrlBuilder = function(tile) {
-        var urlString = tile.getLevel().getService();
+  params.tileWidth = 512;
+  params.tileHeight = 512;
+  params.cacheName = 'Earth/PoliticalBoundaries';
+  params.service = 'http://worldwind21.arc.nasa.gov/geoserver/wms';
+  params.datasetName = 'topp:cia';
+  params.formatSuffix = '.png';
+  params.numLevels = 13;
+  params.numEmptyLevels = 0;
+  params.levelZeroTileDelta = new lanyard.geom.LatLon(
+      lanyard.geom.Angle.prototype.fromDegrees(36.0),
+      lanyard.geom.Angle.prototype.fromDegrees(36.0)
+      );
+  params.sector = lanyard.geom.Sector.prototype.FULL_SPHERE;
+  params.tileUrlBuilder = function(tile) {
+    var urlString = tile.getLevel().getService();
 
-        if (urlString[urlString.length - 1] !== '?') {
-            urlString.concat('?');
-        }
+    if (urlString[urlString.length - 1] !== '?') {
+      urlString.concat('?');
+    }
 
-        urlString.concat('request=GetMap');
-        urlString.concat('&layers=');
-        urlString.concat(tile.getLevel().getDataset());
-        urlString.concat('&srs=EPSG:4326');
-        urlString.concat('&width=');
-        urlString.concat(tile.getLevel().getTileWidth());
-        urlString.concat('&height=');
-        urlString.concat(tile.getLevel().getTileHeight());
+    urlString.concat('request=GetMap');
+    urlString.concat('&layers=');
+    urlString.concat(tile.getLevel().getDataset());
+    urlString.concat('&srs=EPSG:4326');
+    urlString.concat('&width=');
+    urlString.concat(tile.getLevel().getTileWidth());
+    urlString.concat('&height=');
+    urlString.concat(tile.getLevel().getTileHeight());
 
-        /** @type {lanyard.geom.Sector} */
-        var s = tile.getSector();
+    /** @type {lanyard.geom.Sector} */
+    var s = tile.getSector();
 
-        urlString.concat('&bbox=');
-        urlString.concat(s.getMinLongitude().getDegrees());
-        urlString.concat(',');
-        urlString.concat(s.getMinLatitude().getDegrees());
-        urlString.concat(',');
-        urlString.concat(s.getMaxLongitude().getDegrees());
-        urlString.concat(',');
-        urlString.concat(s.getMaxLatitude().getDegrees());
+    urlString.concat('&bbox=');
+    urlString.concat(s.getMinLongitude().getDegrees());
+    urlString.concat(',');
+    urlString.concat(s.getMinLatitude().getDegrees());
+    urlString.concat(',');
+    urlString.concat(s.getMaxLongitude().getDegrees());
+    urlString.concat(',');
+    urlString.concat(s.getMaxLatitude().getDegrees());
 
-        urlString.concat('&format=image/png');
-        urlString.concat('&styles=countryboundaries');
-        // urlString.concat("&bgcolor=0x000000");
-        urlString.concat('&transparent=true');
+    urlString.concat('&format=image/png');
+    urlString.concat('&styles=countryboundaries');
+    // urlString.concat("&bgcolor=0x000000");
+    urlString.concat('&transparent=true');
 
-        return urlString;
-    };
+    return urlString;
+  };
 
-    return new lanyard.LevelSet(params);
+  return new lanyard.LevelSet(params);
 };
+
 
 /**
  * Create a string representation of this layer.
@@ -112,7 +116,7 @@ lanyard.layers.earth.PoliticalBoundariesLayer.prototype.makeLevels = function() 
  * @return {string} a string representation of this layer.
  */
 lanyard.layers.earth.PoliticalBoundariesLayer.prototype.toString = function() {
-    return 'A political boundaries layer for earth.';
+  return 'A political boundaries layer for earth.';
 };
 
 /* EOF */

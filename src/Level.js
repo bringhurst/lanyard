@@ -29,6 +29,8 @@ goog.provide('lanyard.Level');
 
 goog.require('lanyard.AbsentResourceList');
 
+
+
 /**
  * A representation of a level.
  *
@@ -36,66 +38,66 @@ goog.require('lanyard.AbsentResourceList');
  * @param {Array.<*>} params the array of params for this level.
  */
 lanyard.Level = function(params) {
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.Level');
+  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.Level');
 
-    if (!params) {
-        this._logger.severe('Attempted to create a level with invalid params.');
-    }
+  if (!params) {
+    this._logger.severe('Attempted to create a level with invalid params.');
+  }
 
-    /** @type {Array.<*>} */
-    this.params = params;
+  /** @type {Array.<*>} */
+  this.params = params;
 
-    /**
+  /**
      * Null or empty leve name signifies no data resources associated with this level.
      *
      * @private
      * @type {string}
      */
-    this.levelName = this.params.levelName ? this.params.levelName : '';
+  this.levelName = this.params.levelName ? this.params.levelName : '';
 
-    /** @type {number} */
-    this.levelNumber = this.params.levelNumber;
+  /** @type {number} */
+  this.levelNumber = this.params.levelNumber;
 
-    /** @type {lanyard.geom.LatLon} */
-    this.tileDelta = this.params.tileDelta;
+  /** @type {lanyard.geom.LatLon} */
+  this.tileDelta = this.params.tileDelta;
 
-    /** @type {number} */
-    this.tileWidth = this.params.tileWidth;
+  /** @type {number} */
+  this.tileWidth = this.params.tileWidth;
 
-    /** @type {number} */
-    this.tileHeight = this.params.tileHeight;
+  /** @type {number} */
+  this.tileHeight = this.params.tileHeight;
 
-    /** @type {string} */
-    this.service = this.params.service;
+  /** @type {string} */
+  this.service = this.params.service;
 
-    /** @type {string} */
-    this.dataset = this.params.datasetName;
+  /** @type {string} */
+  this.dataset = this.params.datasetName;
 
-    /** @type {string} */
-    this.formatSuffix = this.params.formatSuffix;
+  /** @type {string} */
+  this.formatSuffix = this.params.formatSuffix;
 
-    /** @type {Function} */
-    this.urlbuilder = this.params.tileUrlBuilder;
+  /** @type {Function} */
+  this.urlbuilder = this.params.tileUrlBuilder;
 
-    /** @type {number} */
-    var averageTileSize = 0.5 * (this.tileWidth + this.tileHeight);
+  /** @type {number} */
+  var averageTileSize = 0.5 * (this.tileWidth + this.tileHeight);
 
-    /** @type {number} */
-    var averageTileDelta =
-        0.5 * (this.tileDelta.getLatitude().getRadians() + this.tileDelta.getLongitude().getRadians());
+  /** @type {number} */
+  var averageTileDelta =
+      0.5 * (this.tileDelta.getLatitude().getRadians() + this.tileDelta.getLongitude().getRadians());
 
-    /** @type {number} */
-    this.averageTexelSize = averageTileDelta / averageTileSize;
+  /** @type {number} */
+  this.averageTexelSize = averageTileDelta / averageTileSize;
 
-    /** @type {number} */
-    var maxAbsentTileAttempts =
-        this.params.maxAbsentTileAttempts ? this.params.maxAbsentTileAttempts : null;
+  /** @type {number} */
+  var maxAbsentTileAttempts =
+      this.params.maxAbsentTileAttempts ? this.params.maxAbsentTileAttempts : null;
 
-    /** @type {number} */
-    var minAbsentTileCheckInterval =
-        this.params.minAbsentTileCheckInterval ? this.params.minAbsentTileCheckInterval : null;
+  /** @type {number} */
+  var minAbsentTileCheckInterval =
+      this.params.minAbsentTileCheckInterval ? this.params.minAbsentTileCheckInterval : null;
 
-    /**
+  /**
      * A tile is deemed absent if a specified maximum number of attempts have been made to retreive it.
      * Retreival attempts are  igoverned by a minimum time interval between successive attempts.
      * If an attempt is made within this interval, the tile is still deemed to be absent until the interval
@@ -103,8 +105,9 @@ lanyard.Level = function(params) {
      *
      * @type {lanyard.AbsentResourceList}
      */
-    this.absentTiles = new lanyard.AbsentResourceList(maxAbsentTileAttempts, minAbsentTileCheckInterval);
+  this.absentTiles = new lanyard.AbsentResourceList(maxAbsentTileAttempts, minAbsentTileCheckInterval);
 };
+
 
 /**
  * @const
@@ -112,11 +115,13 @@ lanyard.Level = function(params) {
  */
 lanyard.Level.prototype.DEFAULT_MAX_ABSENT_TILE_ATTEMPTS = 2;
 
+
 /**
  * @const
  * @type {number}
  */
 lanyard.Level.prototype.DEFAULT_MIN_ABSENT_TILE_CHECK_INTERVAL = 10000; // milliseconds
+
 
 /**
  * Accessor for the tile params.
@@ -124,8 +129,9 @@ lanyard.Level.prototype.DEFAULT_MIN_ABSENT_TILE_CHECK_INTERVAL = 10000; // milli
  * @return {Object} the tile params.
  */
 lanyard.Level.prototype.getParams = function() {
-    return this.params;
+  return this.params;
 };
+
 
 /**
  * Accessor for the tile path.
@@ -133,8 +139,9 @@ lanyard.Level.prototype.getParams = function() {
  * @return {string} the tile path.
  */
 lanyard.Level.prototype.getPath = function() {
-    return this.path;
+  return this.path;
 };
+
 
 /**
  * Get the level number for this tile.
@@ -142,8 +149,9 @@ lanyard.Level.prototype.getPath = function() {
  * @return {number} the current level number for this tile.
  */
 lanyard.Level.prototype.getLevelNumber = function() {
-    return this.levelNumber;
+  return this.levelNumber;
 };
+
 
 /**
  * Get the level name for this tile.
@@ -151,8 +159,9 @@ lanyard.Level.prototype.getLevelNumber = function() {
  * @return {string} this tile's level name.
  */
 lanyard.Level.prototype.getLevelName = function() {
-    return this.levelName;
+  return this.levelName;
 };
+
 
 /**
  * Get the tile delta.
@@ -160,8 +169,9 @@ lanyard.Level.prototype.getLevelName = function() {
  * @return {lanyard.geom.LatLon} the tile delta.
  */
 lanyard.Level.prototype.getTileDelta = function() {
-    return this.tileDelta;
+  return this.tileDelta;
 };
+
 
 /**
  * Get the tile width.
@@ -169,8 +179,9 @@ lanyard.Level.prototype.getTileDelta = function() {
  * @return {number} the tile width.
  */
 lanyard.Level.prototype.getTileWidth = function() {
-    return this.tileWidth;
+  return this.tileWidth;
 };
+
 
 /**
  * Get the tile's height.
@@ -178,8 +189,9 @@ lanyard.Level.prototype.getTileWidth = function() {
  * @return {number} the tile's height.
  */
 lanyard.Level.prototype.getTileHeight = function() {
-    return this.tileHeight;
+  return this.tileHeight;
 };
+
 
 /**
  * Get the format suffix for this tile.
@@ -187,8 +199,9 @@ lanyard.Level.prototype.getTileHeight = function() {
  * @return {string} the format suffix for this tile.
  */
 lanyard.Level.prototype.getFormatSuffix = function() {
-    return this.formatSuffix;
+  return this.formatSuffix;
 };
+
 
 /**
  * Get the service name.
@@ -196,8 +209,9 @@ lanyard.Level.prototype.getFormatSuffix = function() {
  * @return {String} the service name.
  */
 lanyard.Level.prototype.getService = function() {
-    return this.service;
+  return this.service;
 };
+
 
 /**
  * Get the dataset for this tile.
@@ -205,8 +219,9 @@ lanyard.Level.prototype.getService = function() {
  * @return {string} the dataset for this tile.
  */
 lanyard.Level.prototype.getDataset = function() {
-    return this.dataset;
+  return this.dataset;
 };
+
 
 /**
  * Get the textel size of this tile.
@@ -215,8 +230,9 @@ lanyard.Level.prototype.getDataset = function() {
  * @return {number} the textel size for this tile.
  */
 lanyard.Level.prototype.getTexelSize = function(radius) {
-    return radius * this.averageTexelSize;
+  return radius * this.averageTexelSize;
 };
+
 
 /**
  * Determine if this tile is empty.
@@ -224,8 +240,9 @@ lanyard.Level.prototype.getTexelSize = function(radius) {
  * @return {boolean} true if the tile is empty, false otherwise.
  */
 lanyard.Level.prototype.isEmpty = function() {
-    return !this.levelName;
+  return !this.levelName;
 };
+
 
 /**
  * Mark this tile resource as absent.
@@ -233,8 +250,9 @@ lanyard.Level.prototype.isEmpty = function() {
  * @param {number} the tile's resource id.
  */
 lanyard.Level.prototype.markResourceAbsent = function(tileNumber) {
-    this.absentTiles.markResourceAbsent(tileNumber);
+  this.absentTiles.markResourceAbsent(tileNumber);
 };
+
 
 /**
  * Check to see if this tile resource is absent.
@@ -243,8 +261,9 @@ lanyard.Level.prototype.markResourceAbsent = function(tileNumber) {
  * @return {boolean} true if this tile is absent, false otherwise.
  */
 lanyard.Level.prototype.isResourceAbsent = function(tileNumber) {
-    return this.absentTiles.isResourceAbsent(tileNumber);
+  return this.absentTiles.isResourceAbsent(tileNumber);
 };
+
 
 /**
  * Unmark this tile resource as absent.
@@ -252,8 +271,9 @@ lanyard.Level.prototype.isResourceAbsent = function(tileNumber) {
  * @param {number} the tile's resource id.
  */
 lanyard.Level.prototype.unmarkResourceAbsent = function(tileNumber) {
-    this.absentTiles.unmarkResourceAbsent(tileNumber);
+  this.absentTiles.unmarkResourceAbsent(tileNumber);
 };
+
 
 /**
  * Returns the URL necessary to retrieve the specified tile.
@@ -262,16 +282,17 @@ lanyard.Level.prototype.unmarkResourceAbsent = function(tileNumber) {
  * @return {string} the url of the tile's resource.
  */
 lanyard.Level.prototype.getTileResourceURL = function(tile) {
-    if (!tile) {
-        this._logger.severe('Attempted to get a resource URL for an invalid tile.');
-    }
+  if (!tile) {
+    this._logger.severe('Attempted to get a resource URL for an invalid tile.');
+  }
 
-    if (!this.urlBuilder) {
-        this._logger.severe('Attempted to create a resource URL without a valid URL builder.');
-    }
+  if (!this.urlBuilder) {
+    this._logger.severe('Attempted to create a resource URL without a valid URL builder.');
+  }
 
-    return this.urlBuilder(tile);
+  return this.urlBuilder(tile);
 };
+
 
 /**
  * Compare this level to another.
@@ -280,12 +301,13 @@ lanyard.Level.prototype.getTileResourceURL = function(tile) {
  * @return {number} 0 if equal, 1 if greater than, -1 if less than.
  */
 lanyard.Level.prototype.compareTo = function(that) {
-    if (!that) {
-        this._logger.severe('Attempted to compare a tile to an invalid object.');
-    }
+  if (!that) {
+    this._logger.severe('Attempted to compare a tile to an invalid object.');
+  }
 
-    return this.levelNumber < that.levelNumber ? -1 : this.levelNumber === that.levelNumber ? 0 : 1;
+  return this.levelNumber < that.levelNumber ? -1 : this.levelNumber === that.levelNumber ? 0 : 1;
 };
+
 
 /**
  * Get a string representation of this tile.
@@ -293,7 +315,7 @@ lanyard.Level.prototype.compareTo = function(that) {
  * @return {string} a string representation of this tile.
  */
 lanyard.Level.prototype.toString = function() {
-    return this.path;
+  return this.path;
 };
 
 /* EOF */

@@ -29,51 +29,54 @@ goog.provide('lanyard.globes.Mars');
 
 goog.require('lanyard.globes.EllipsoidalGlobe');
 
+
+
 /**
  * A representation of mars.
  *
- * @extends lanyard.globes.EllipsoidalGlobe
+ * @extends {lanyard.globes.EllipsoidalGlobe}
  * @constructor
  * @this {lanyard.globes.Mars}
  */
 lanyard.globes.Mars = function() {
 
-    /**
+  /**
      * The ellipsoid equatorial radius of Mars, in meters.
      *
      * @type {number}
      * @private
      */
-    this.equatorialRadius = 3396200.0;
+  this.equatorialRadius = 3396200.0;
 
-    /**
+  /**
      * The ellipsoid polar radius, in meters.
      *
      * @type {number}
      * @private
      */
-    this.polarRadius = 3376200.0;
+  this.polarRadius = 3376200.0;
 
-    /**
+  /**
      * The eccentricity squared, semi-major axis.
      *
      * @type {number}
      * @private
      */
-    this.es = 0.00589;
+  this.es = 0.00589;
 
-    /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
+  /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
 
-    /** @private */ this.elevationModel = null;
+  /** @private */ this.elevationModel = null;
 
-    // call super
-    lanyard.globes.EllipsoidalGlobe.call(
-        this, this.equatorialRadius, this.polarRadius, this.es, this.elevationModel);
+  // call super
+  lanyard.globes.EllipsoidalGlobe.call(
+      this, this.equatorialRadius, this.polarRadius, this.es, this.elevationModel);
 
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Mars');
+  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Mars');
 };
 goog.exportSymbol('lanyard.globes.Mars', lanyard.globes.Mars);
 goog.inherits(lanyard.globes.Mars, lanyard.globes.EllipsoidalGlobe);
+
 
 /**
  * Get the radius of Mars
@@ -81,7 +84,7 @@ goog.inherits(lanyard.globes.Mars, lanyard.globes.EllipsoidalGlobe);
  * @return {number} the radius of Mars.
  */
 lanyard.globes.Mars.prototype.getRadius = function() {
-    return this.equatorialRadius;
+  return this.equatorialRadius;
 };
 
 /* EOF */

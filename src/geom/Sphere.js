@@ -34,6 +34,8 @@ goog.require('lanyard.geom.Line');
 goog.require('lanyard.geom.Plane');
 goog.require('lanyard.geom.Point');
 
+
+
 /**
  * Creates a new Sphere from a given center and radius.
  * Radius must be positive (that is, greater than zero),
@@ -47,10 +49,11 @@ goog.require('lanyard.geom.Point');
  * @param {number} radius the radius of the new sphere.
  */
 lanyard.geom.Sphere = function(center, radius) {
-    /** @private */ this._center = center;
-    /** @private */ this._radius = radius;
+  /** @private */ this._center = center;
+  /** @private */ this._radius = radius;
 };
 goog.exportSymbol('lanyard.geom.Sphere', lanyard.geom.Sphere);
+
 
 /**
  * Define a unit sphere.
@@ -62,6 +65,7 @@ lanyard.geom.Sphere.prototype.UNIT_SPHERE = new lanyard.geom.Sphere(lanyard.geom
 goog.exportSymbol('lanyard.geom.Sphere.prototype.UNIT_SPHERE',
     lanyard.geom.Sphere.prototype.UNIT_SPHERE);
 
+
 /**
  * Creates a sphere that completely contains a set of points.
  *
@@ -69,13 +73,14 @@ goog.exportSymbol('lanyard.geom.Sphere.prototype.UNIT_SPHERE',
  * @return {lanyard.geom.Sphere} a Sphere encompassing the given array of Points.
  */
 lanyard.geom.Sphere.prototype.createBoundingSphere = function(points) {
-    // Creates the sphere around the axis aligned bounding box of the input points.
-    var extrema = lanyard.geom.Point.prototype.composeExtrema(points);
-    var center = lanyard.geom.Point.prototype.midPoint(extrema[0], extrema[1]);
-    var radius = 0.5 * extrema[0].distanceTo(extrema[1]);
+  // Creates the sphere around the axis aligned bounding box of the input points.
+  var extrema = lanyard.geom.Point.prototype.composeExtrema(points);
+  var center = lanyard.geom.Point.prototype.midPoint(extrema[0], extrema[1]);
+  var radius = 0.5 * extrema[0].distanceTo(extrema[1]);
 
-    return new lanyard.geom.Sphere(center, radius);
+  return new lanyard.geom.Sphere(center, radius);
 };
+
 
 /**
  * Obtains the radius of this Sphere. The radus is the distance from the center to the surface. If an
@@ -85,8 +90,9 @@ lanyard.geom.Sphere.prototype.createBoundingSphere = function(points) {
  * @return {number} the radius of this sphere.
  */
 lanyard.geom.Sphere.prototype.getRadius = function() {
-    return this._radius;
+  return this._radius;
 };
+
 
 /**
  * Obtains the diameter of this Sphere. The diameter is twice the radius.
@@ -94,8 +100,9 @@ lanyard.geom.Sphere.prototype.getRadius = function() {
  * @return {number} the diameter of this Sphere.
  */
 lanyard.geom.Sphere.prototype.getDiameter = function() {
-    return 2 * this._radius;
+  return 2 * this._radius;
 };
+
 
 /**
  * Obtains the center of this Sphere.
@@ -103,8 +110,9 @@ lanyard.geom.Sphere.prototype.getDiameter = function() {
  * @return {lanyard.geom.Point} the Point situated at the center of this Sphere.
  */
 lanyard.geom.Sphere.prototype.getCenter = function() {
-    return this._center;
+  return this._center;
 };
+
 
 /**
  * Calculates a discriminant. A discriminant is useful to determine the number of
@@ -118,8 +126,9 @@ lanyard.geom.Sphere.prototype.getCenter = function() {
  * @return {number} the discriminant "b squared minus 4ac".
  */
 lanyard.geom.Sphere.prototype.discriminant = function(a, b, c) {
-    return b * b - 4 * a * c;
+  return b * b - 4 * a * c;
 };
+
 
 /**
  * Obtains the intersections of this sphere with a line. The returned array may be
@@ -131,25 +140,26 @@ lanyard.geom.Sphere.prototype.discriminant = function(a, b, c) {
  * @return {Array.<lanyard.geom.Intersection>} an array containing all the intersections of this Sphere and line.
  */
 lanyard.geom.Sphere.prototype.intersect = function(line) {
-    var a = line.getDirection().selfDot();
-    var b = 2 * line.selfDot();
-    var c = line.getOrigin().selfDot() - this._radius * this._radius;
+  var a = line.getDirection().selfDot();
+  var b = 2 * line.selfDot();
+  var c = line.getOrigin().selfDot() - this._radius * this._radius;
 
-    var discriminant = lanyard.geom.Sphere.prototype.discriminant(a, b, c);
-    if (discriminant < 0) {
-        return null;
-    }
+  var discriminant = lanyard.geom.Sphere.prototype.discriminant(a, b, c);
+  if (discriminant < 0) {
+    return null;
+  }
 
-    var discriminantRoot = Math.sqrt(discriminant);
-    if (discriminant === 0) {
-        var p = line.getPointAt((-b - discriminantRoot) / (2 * a));
-        return [new lanyard.geom.Intersection(p, true)];
-    } else { // (discriminant > 0)
-        var near = line.getPointAt((-b - discriminantRoot) / (2 * a));
-        var far = line.getPointAt((-b + discriminantRoot) / (2 * a));
-        return [new lanyard.geom.Intersection(near, false), new lanyard.geom.Intersection(far, false)];
-    }
+  var discriminantRoot = Math.sqrt(discriminant);
+  if (discriminant === 0) {
+    var p = line.getPointAt((-b - discriminantRoot) / (2 * a));
+    return [new lanyard.geom.Intersection(p, true)];
+  } else { // (discriminant > 0)
+    var near = line.getPointAt((-b - discriminantRoot) / (2 * a));
+    var far = line.getPointAt((-b + discriminantRoot) / (2 * a));
+    return [new lanyard.geom.Intersection(near, false), new lanyard.geom.Intersection(far, false)];
+  }
 };
+
 
 /**
  * Tests for intersection with a Frustum. This operation is commutative, so
@@ -159,8 +169,9 @@ lanyard.geom.Sphere.prototype.intersect = function(line) {
  * @return {boolean} true if either frustum or this Sphere wholly or partially contain the other.
  */
 lanyard.geom.Sphere.prototype.intersectsFrustum = function(frustum) {
-    return frustum.intersects(this);
+  return frustum.intersects(this);
 };
+
 
 /**
  * Tests for intersection with a Line.
@@ -169,8 +180,9 @@ lanyard.geom.Sphere.prototype.intersectsFrustum = function(frustum) {
  * @return {boolean} true if line intersects or makes a tangent with the surface of this Sphere.
  */
 lanyard.geom.Sphere.prototype.intersectsLine = function(line) {
-    return line.distanceTo(this._center) <= this._radius;
+  return line.distanceTo(this._center) <= this._radius;
 };
+
 
 /**
  * Tests for intersection with a Plane.
@@ -179,9 +191,10 @@ lanyard.geom.Sphere.prototype.intersectsLine = function(line) {
  * @return {boolean} true if plane intersects or makes a tangent with the surface of this Sphere.
  */
 lanyard.geom.Sphere.prototype.intersectsPlane = function(plane) {
-    var dq1 = plane.dot(this._center);
-    return dq1 <= this._radius;
+  var dq1 = plane.dot(this._center);
+  return dq1 <= this._radius;
 };
+
 
 /**
  * Causes this Sphere to render itself using the DrawContext provided.
@@ -189,8 +202,8 @@ lanyard.geom.Sphere.prototype.intersectsPlane = function(plane) {
  * @param {lanyard.DrawContext} dc the DrawContext to be used.
  */
 lanyard.geom.Sphere.prototype.render = function(dc) {
-    var gl = dc.getGL();
-/***
+  var gl = dc.getGL();
+  /***
     gl.glPushAttrib(gl.GL_TEXTURE_BIT && gl.GL_ENABLE_BIT && gl.GL_CURRENT_BIT);
     gl.glDisable(gl.GL_TEXTURE_2D);
     gl.glColor3d(1, 1, 0);
@@ -211,6 +224,7 @@ lanyard.geom.Sphere.prototype.render = function(dc) {
 ****/
 };
 
+
 /**
  * Obtain a string representation of this sphere.
  *
@@ -218,8 +232,8 @@ lanyard.geom.Sphere.prototype.render = function(dc) {
  * @return {string} a string representation of this sphere.
  */
 lanyard.geom.Sphere.prototype.toString = function() {
-    var stringValue = 'Sphere: center = ' + this._center.toString() + ' radius = ' + this._radius;
-    return stringValue;
+  var stringValue = 'Sphere: center = ' + this._center.toString() + ' radius = ' + this._radius;
+  return stringValue;
 };
 
 /* EOF */

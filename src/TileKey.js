@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.TileKey');
 
+
+
 /**
  * A unique identifier for tiles.
  *
@@ -37,39 +39,40 @@ goog.provide('lanyard.TileKey');
  * @implements {lanyard.TileKey}
  */
 lanyard.TileKey = function(level, row, col, cacheName) {
-    /**
+  /**
      * @private
      */
-    this._logger = goog.debug.Logger.getLogger('lanyard.TileKey');
+  this._logger = goog.debug.Logger.getLogger('lanyard.TileKey');
 
-    if (level < 0) {
-        this._logger.severe('Tile key level is less than 0.');
-    }
+  if (level < 0) {
+    this._logger.severe('Tile key level is less than 0.');
+  }
 
-    if (row < 0) {
-        this._logger.severe('The row index is out of range.');
-    }
+  if (row < 0) {
+    this._logger.severe('The row index is out of range.');
+  }
 
-    if (col < 0) {
-        this._logger.severe('The column index is out of range.');
-    }
+  if (col < 0) {
+    this._logger.severe('The column index is out of range.');
+  }
 
-    if (!cacheName || cacheName.length < 1) {
-        this._logger.severe('Attempted to use an invalid cache name.');
-    }
+  if (!cacheName || cacheName.length < 1) {
+    this._logger.severe('Attempted to use an invalid cache name.');
+  }
 
-    /** @type {number} */
-    this.level = level;
+  /** @type {number} */
+  this.level = level;
 
-    /** @type {number} */
-    this.row = row;
+  /** @type {number} */
+  this.row = row;
 
-    /** @type {number} */
-    this.col = col;
+  /** @type {number} */
+  this.col = col;
 
-    /** @type {string} */
-    this.cacheName = cacheName;
+  /** @type {string} */
+  this.cacheName = cacheName;
 };
+
 
 /**
  * Create a tile key from angles.
@@ -80,16 +83,17 @@ lanyard.TileKey = function(level, row, col, cacheName) {
  * @return {lanyard.TileKey} the generated tile key.
  */
 lanyard.TileKey.prototype.fromAngles = function(latitude, longitude, level) {
-    /** @type {lanyard.TileKey} */
-    var tk = new lanyard.TileKey(
-        level.getLevelNumber(),
-        lanyard.Tile.prototype.computeRow(level.getTileDelta().getLatitude(), latitude),
-        lanyard.Tile.prototype.computeColumn(level.getTileDelta().getLongitude(), longitude),
-        level.getCacheName()
-    );
+  /** @type {lanyard.TileKey} */
+  var tk = new lanyard.TileKey(
+      level.getLevelNumber(),
+      lanyard.Tile.prototype.computeRow(level.getTileDelta().getLatitude(), latitude),
+      lanyard.Tile.prototype.computeColumn(level.getTileDelta().getLongitude(), longitude),
+      level.getCacheName()
+      );
 
-    return tk;
+  return tk;
 };
+
 
 /**
  * Create a tile key from a tile.
@@ -98,16 +102,17 @@ lanyard.TileKey.prototype.fromAngles = function(latitude, longitude, level) {
  * @return {lanyard.TileKey} the generated tile key.
  */
 lanyard.TileKey.prototype.fromTile = function(tile) {
-    /** @type {lanyard.TileKey} */
-    var tk = new lanyard.TileKey(
-        tile.getLevelNumber(),
-        tile.getRow(),
-        tile.getColumn(),
-        tile.getCacheName()
-    );
+  /** @type {lanyard.TileKey} */
+  var tk = new lanyard.TileKey(
+      tile.getLevelNumber(),
+      tile.getRow(),
+      tile.getColumn(),
+      tile.getCacheName()
+      );
 
-    return tk;
+  return tk;
 };
+
 
 /**
  * Get the level number of this tile key.
@@ -115,8 +120,9 @@ lanyard.TileKey.prototype.fromTile = function(tile) {
  * @return {number} the level number of this tile key.
  */
 lanyard.TileKey.prototype.getLevelNumber = function() {
-    return this.level;
+  return this.level;
 };
+
 
 /**
  * Get the row of this tile key.
@@ -124,8 +130,9 @@ lanyard.TileKey.prototype.getLevelNumber = function() {
  * @return {number} get the row of this tile key.
  */
 lanyard.TileKey.prototype.getRow = function() {
-    return this.row;
+  return this.row;
 };
+
 
 /**
  * Get the column of this tile key.
@@ -133,8 +140,9 @@ lanyard.TileKey.prototype.getRow = function() {
  * @return {number} the column of this tile key.
  */
 lanyard.TileKey.prototype.getColumn = function() {
-    return this.col;
+  return this.col;
 };
+
 
 /**
  * Get the cache name.
@@ -142,8 +150,9 @@ lanyard.TileKey.prototype.getColumn = function() {
  * @return {string} the cache name.
  */
 lanyard.TileKey.prototype.getCacheName = function() {
-    return this.cacheName;
+  return this.cacheName;
 };
+
 
 /**
  * Compare this tile key to another.
@@ -152,39 +161,40 @@ lanyard.TileKey.prototype.getCacheName = function() {
  * @return {number} 0 if equal, -1 if less, 1 if more.
  */
 lanyard.TileKey.prototype.compareTo = function(key) {
-    if (!key) {
-        this._logger.severe('Attempted to compare to an invalid tile key.');
-    }
+  if (!key) {
+    this._logger.severe('Attempted to compare to an invalid tile key.');
+  }
 
-    // No need to compare Sectors because they are redundant with row and column
-    if (key.level === this.level && key.row === this.row && key.col === this.col) {
-        return 0;
-    }
+  // No need to compare Sectors because they are redundant with row and column
+  if (key.level === this.level && key.row === this.row && key.col === this.col) {
+    return 0;
+  }
 
-    // Lower-res levels compare lower than higher-res
-    if (this.level < key.level) {
-        return -1;
-    }
+  // Lower-res levels compare lower than higher-res
+  if (this.level < key.level) {
+    return -1;
+  }
 
-    if (this.level > key.level) {
-        return 1;
-    }
-
-    if (this.row < key.row) {
-        return -1;
-    }
-
-    if (this.row > key.row) {
-        return 1;
-    }
-
-    if (this.col < key.col) {
-        return -1;
-    }
-
-    // tile.col must be > this.col because equality was tested above
+  if (this.level > key.level) {
     return 1;
+  }
+
+  if (this.row < key.row) {
+    return -1;
+  }
+
+  if (this.row > key.row) {
+    return 1;
+  }
+
+  if (this.col < key.col) {
+    return -1;
+  }
+
+  // tile.col must be > this.col because equality was tested above
+  return 1;
 };
+
 
 /**
  * Get a string representation of this tile key.
@@ -192,7 +202,7 @@ lanyard.TileKey.prototype.compareTo = function(key) {
  * @return {string} a string representation of this tile key.
  */
 lanyard.TileKey.prototype.toString = function() {
-    return this.cacheName + '/' + this.level + '/' + this.row + '/' + this.col;
+  return this.cacheName + '/' + this.level + '/' + this.row + '/' + this.col;
 };
 
 /* EOF */

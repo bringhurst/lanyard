@@ -29,32 +29,34 @@ goog.provide('lanyard.globes.Moon');
 
 goog.require('lanyard.globes.EllipsoidalGlobe');
 
+
+
 /**
  * A representation of the moon.
  *
- * @extends lanyard.globes.EllipsoidalGlobe
+ * @extends {lanyard.globes.EllipsoidalGlobe}
  * @constructor
  * @this {lanyard.globes.moon}
  */
 lanyard.globes.Moon = function() {
 
-    /**
+  /**
      * The ellipsoid equatorial radius of the moon, in meters.
      *
      * @type {number}
      * @private
      */
-    this.equatorialRadius = 1738140.0;
+  this.equatorialRadius = 1738140.0;
 
-    /**
+  /**
      * The WGS84 ellipsoid polar radius, in meters.
      *
      * @type {number}
      * @private
      */
-    this.polarRadius = 1735970.0;
+  this.polarRadius = 1735970.0;
 
-    /**
+  /**
      * The WGS84 eccentricity squared, semi-major axis.
      *
      * Approximated from 0.00669437999013.
@@ -62,20 +64,21 @@ lanyard.globes.Moon = function() {
      * @type {number}
      * @private
      */
-    this.es = 0.00125;
+  this.es = 0.00125;
 
-    /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
+  /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
 
-    /** @private */ this.elevationModel = null;
+  /** @private */ this.elevationModel = null;
 
-    // call super
-    lanyard.globes.EllipsoidalGlobe.call(
-        this, this.equatorialRadius, this.polarRadius, this.es, this.elevationModel);
+  // call super
+  lanyard.globes.EllipsoidalGlobe.call(
+      this, this.equatorialRadius, this.polarRadius, this.es, this.elevationModel);
 
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Moon');
+  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Moon');
 };
 goog.exportSymbol('lanyard.globes.Moon', lanyard.globes.Moon);
 goog.inherits(lanyard.globes.Moon, lanyard.globes.EllipsoidalGlobe);
+
 
 /**
  * Get the radius of the moon.
@@ -83,7 +86,7 @@ goog.inherits(lanyard.globes.Moon, lanyard.globes.EllipsoidalGlobe);
  * @return {number} the radius of the moon.
  */
 lanyard.globes.Moon.prototype.getRadius = function() {
-    return this.equatorialRadius;
+  return this.equatorialRadius;
 };
 
 /* EOF */

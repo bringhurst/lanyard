@@ -31,12 +31,15 @@ goog.require('lanyard.FrameController');
 goog.require('lanyard.Model');
 goog.require('lanyard.View');
 
+
+
 /**
  * An interface for scene controllers.
  *
  * @interface
  */
 lanyard.SceneController = function() {};
+
 
 /**
  * Accessor for the model.
@@ -45,12 +48,14 @@ lanyard.SceneController = function() {};
  */
 lanyard.SceneController.prototype.getModel = function() {};
 
+
 /**
  * Mutator for the model.
  *
  * @param {lanyard.Model} model the model.
  */
 lanyard.SceneController.prototype.setModel = function(model) {};
+
 
 /**
  * Accessor for the view.
@@ -59,12 +64,14 @@ lanyard.SceneController.prototype.setModel = function(model) {};
  */
 lanyard.SceneController.prototype.getView = function() {};
 
+
 /**
  * Mutator for the view.
  *
  * @param {lanyard.View} view the view.
  */
 lanyard.SceneController.prototype.setView = function(view) {};
+
 
 /**
  * Accessor for the frame controller.
@@ -73,6 +80,7 @@ lanyard.SceneController.prototype.setView = function(view) {};
  */
 lanyard.SceneController.prototype.getFrameController = function() {};
 
+
 /**
  * Mutator for the frame controller.
  *
@@ -80,10 +88,12 @@ lanyard.SceneController.prototype.getFrameController = function() {};
  */
 lanyard.SceneController.prototype.setFrameController = function(frameController) {};
 
+
 /**
  * Repaint the scene.
  */
 lanyard.SceneController.prototype.repaint = function() {};
+
 
 /**
  * Set the vertical exaggeration.
@@ -92,12 +102,14 @@ lanyard.SceneController.prototype.repaint = function() {};
  */
 lanyard.SceneController.prototype.setVerticalExaggeration = function(verticalExaggeration) {};
 
+
 /**
  * Accessor to the vertical exaggeration.
  *
  * @return {Number} the vertical exaggeration.
  */
 lanyard.SceneController.prototype.getVerticalExaggeration = function() {};
+
 
 /**
  * Get the current frames per second.

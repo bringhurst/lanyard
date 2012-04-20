@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.globes.RenderInfo');
 
+
+
 /**
  * Render info for tessellation.
  *
@@ -40,12 +42,12 @@ goog.provide('lanyard.globes.RenderInfo');
  * @param {lanyard.globes.RectTile} tile the tile this info is for.
  */
 lanyard.globes.RenderInfo = function(density, vertices, texCoords, refCenter, resolution, tile) {
-    /** @public */ this.density = density;
-    /** @public */ this.vertices = vertices;
-    /** @public */ this.texCoords = texCoords;
-    /** @public */ this.referenceCenter = refCenter;
-    /** @public */ this.indices = tile.getIndices(this.density);
-    /** @public */ this.resolution = resolution;
+  /** @public */ this.density = density;
+  /** @public */ this.vertices = vertices;
+  /** @public */ this.texCoords = texCoords;
+  /** @public */ this.referenceCenter = refCenter;
+  /** @public */ this.indices = tile.getIndices(this.density);
+  /** @public */ this.resolution = resolution;
 };
 goog.exportSymbol('lanyard.globes.RenderInfo', lanyard.globes.RenderInfo);
 

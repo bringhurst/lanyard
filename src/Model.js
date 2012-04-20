@@ -29,12 +29,15 @@ goog.provide('lanyard.Model');
 
 goog.require('lanyard.Tessellator');
 
+
+
 /**
  * An interface for a model.
  *
  * @interface
  */
 lanyard.Model = function() {};
+
 
 /**
  * Extent accessor.
@@ -43,12 +46,14 @@ lanyard.Model = function() {};
  */
 lanyard.Model.prototype.getExtent = function() {};
 
+
 /**
  * Globe accessor.
  *
  * @return {lanyard.Globe} the globe.
  */
 lanyard.Model.prototype.getGlobe = function() {};
+
 
 /**
  * Get the layers.
@@ -57,12 +62,14 @@ lanyard.Model.prototype.getGlobe = function() {};
  */
 lanyard.Model.prototype.getLayers = function() {};
 
+
 /**
  * The globe mutator.
  *
  * @param {lanyard.Globe} globe the new globe.
  */
 lanyard.Model.prototype.setGlobe = function(globe) {};
+
 
 /**
  * Layers mutator.
@@ -71,12 +78,14 @@ lanyard.Model.prototype.setGlobe = function(globe) {};
  */
 lanyard.Model.prototype.setLayers = function(layers) {};
 
+
 /**
  * Tessellator accessor.
  *
  * @return {lanyard.Tessellator} the tessellator.
  */
 lanyard.Model.prototype.getTessellator = function() {};
+
 
 /**
  * The tessellator mutator.
@@ -85,12 +94,14 @@ lanyard.Model.prototype.getTessellator = function() {};
  */
 lanyard.Model.prototype.setTessellator = function(tessellator) {};
 
+
 /**
  * Set the show wireframe interior flag.
  *
  * @param {boolean} show if we should show the wireframe interior or not.
  */
 lanyard.Model.prototype.setShowWireframeInterior = function(show) {};
+
 
 /**
  * Set the show wireframe exterior flag.
@@ -99,12 +110,14 @@ lanyard.Model.prototype.setShowWireframeInterior = function(show) {};
  */
 lanyard.Model.prototype.setShowWireframeExterior = function(show) {};
 
+
 /**
  * Accessor for the wireframe interior flag.
  *
  * @return {boolean} true if the wireframe interior flag is set, false otherwise.
  */
 lanyard.Model.prototype.isShowWireframeInterior = function() {};
+
 
 /**
  * Accessor for the show wireframe exterior flag.
@@ -113,12 +126,14 @@ lanyard.Model.prototype.isShowWireframeInterior = function() {};
  */
 lanyard.Model.prototype.isShowWireframeExterior = function() {};
 
+
 /**
  * Accessor for the flag to show the tessellation bounding volumes.
  *
  * @return {boolean} true if the tessellation bounding volumes are showing, false otherwise.
  */
 lanyard.Model.prototype.isShowTessellationBoundingVolumes = function() {};
+
 
 /**
  * Mutator for the flag to show the tessellation bounding volumes.

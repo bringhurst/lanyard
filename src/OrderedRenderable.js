@@ -27,12 +27,15 @@
 
 goog.provide('lanyard.OrderedRenderable');
 
+
+
 /**
  * An interface for an ordered renderable.
  *
  * @interface
  */
 lanyard.OrderedRenderable = function() {};
+
 
 /**
  * Causes this OrderedRenderable to render itself using the DrawContext provided. The
@@ -42,6 +45,7 @@ lanyard.OrderedRenderable = function() {};
  * @param {lanyard.DrawContext} dc the DrawContext to be used.
  */
 lanyard.OrderedRenderable.prototype.render = function(dc) {};
+
 
 /**
  * Get this distance from this renderable to the eye.

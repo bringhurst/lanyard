@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.demo.StatusBar');
 
+
+
 /**
  * A basic status bar.
  *
@@ -36,16 +38,17 @@ goog.provide('lanyard.demo.StatusBar');
  * @param {Element} eleElement the div where the elevation value is set to.
  */
 lanyard.demo.StatusBar = function(latElement, lonElement, eleElement) {
-    this._logger = goog.debug.Logger.getLogger('lanyard.demo.StatusBar');
+  this._logger = goog.debug.Logger.getLogger('lanyard.demo.StatusBar');
 
-    /** @type {lanyard.LanyardCanvas} */
-    this.eventSource = null;
+  /** @type {lanyard.LanyardCanvas} */
+  this.eventSource = null;
 
-    this.latDisplay = latElement;
-    this.lonDisplay = lonElement;
-    this.eleDisplay = eleElement;
+  this.latDisplay = latElement;
+  this.lonDisplay = lonElement;
+  this.eleDisplay = eleElement;
 };
 goog.exportSymbol('lanyard.demo.StatusBar', lanyard.demo.StatusBar);
+
 
 /**
  * Set the event source of the status bar.
@@ -54,19 +57,20 @@ goog.exportSymbol('lanyard.demo.StatusBar', lanyard.demo.StatusBar);
  */
 lanyard.demo.StatusBar.prototype.setEventSource = function(newEventSource) {
 
-    if (!newEventSource) {
-        this._logger.severe('Attempted to use an invalid event source.');
-    }
+  if (!newEventSource) {
+    this._logger.severe('Attempted to use an invalid event source.');
+  }
 
-    /** FIXME: remove from existing event source.
+  /** FIXME: remove from existing event source.
     if (this.eventSource) {
         this.eventSource.removePositionListener(this);
     }
     */
 
-    newEventSource.getInputHandler().addPositionListener(this);
-    this.eventSource = newEventSource;
+  newEventSource.getInputHandler().addPositionListener(this);
+  this.eventSource = newEventSource;
 };
+
 
 /**
  * Get a reference to the current event source.
@@ -74,8 +78,9 @@ lanyard.demo.StatusBar.prototype.setEventSource = function(newEventSource) {
  * @return {lanyard.LanyardCanvas} the current event source.
  */
 lanyard.demo.StatusBar.prototype.getEventSource = function() {
-    return this.eventSource;
+  return this.eventSource;
 };
+
 
 /**
  * The callback for the input handler.
@@ -83,8 +88,9 @@ lanyard.demo.StatusBar.prototype.getEventSource = function() {
  * @param {lanyard.dom.PositionEvent} positionEvent the position event.
  */
 lanyard.demo.StatusBar.prototype.moved = function(positionEvent) {
-    this.handleCursorPositionChange(positionEvent);
+  this.handleCursorPositionChange(positionEvent);
 };
+
 
 /**
  * Display the information from the position event.
@@ -92,18 +98,18 @@ lanyard.demo.StatusBar.prototype.moved = function(positionEvent) {
  * @param {lanyard.dom.PositionEvent} positionEvent the position event.
  */
 lanyard.demo.StatusBar.prototype.handleCursorPositionChange = function(positionEvent) {
-    /** @type {lanyard.geom.Position} */
-    var newPos = positionEvent.getPosition();
+  /** @type {lanyard.geom.Position} */
+  var newPos = positionEvent.getPosition();
 
-    if (newPos) {
-        this.latDisplay.innerHTML = newPos.getLatitude().getDegrees().toFixed(5);
-        this.lonDisplay.innerHTML = newPos.getLongitude().getDegrees().toFixed(5);
-        this.eleDisplay.innerHTML = Math.round(newPos.getElevation());
-    } else {
-        this.latDisplay.innerHTML = 'Off globe';
-        this.lonDisplay.innerHTML = 'Off globe';
-        this.eleDisplay.innerHTML = 'Off globe';
-    }
+  if (newPos) {
+    this.latDisplay.innerHTML = newPos.getLatitude().getDegrees().toFixed(5);
+    this.lonDisplay.innerHTML = newPos.getLongitude().getDegrees().toFixed(5);
+    this.eleDisplay.innerHTML = Math.round(newPos.getElevation());
+  } else {
+    this.latDisplay.innerHTML = 'Off globe';
+    this.lonDisplay.innerHTML = 'Off globe';
+    this.eleDisplay.innerHTML = 'Off globe';
+  }
 };
 
 /* EOF */

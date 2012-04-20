@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.dom.PositionEvent');
 
+
+
 /**
  * A position event.
  *
@@ -37,20 +39,21 @@ goog.provide('lanyard.dom.PositionEvent');
  * @param {lanyard.geom.Position} position the current position.
  */
 lanyard.dom.PositionEvent = function(source, mouseEvent, previousPosition, position) {
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.dom.PositionEvent'); 
+  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.dom.PositionEvent');
 
-    /** @type {lanyard.LanyardCanvas} */
-    this.source = source;
+  /** @type {lanyard.LanyardCanvas} */
+  this.source = source;
 
-    /** @type {Event} */
-    this.mouseEvent = mouseEvent;
+  /** @type {Event} */
+  this.mouseEvent = mouseEvent;
 
-    /** @type {lanyard.geom.Position} */
-    this.previousPosition = previousPosition;
+  /** @type {lanyard.geom.Position} */
+  this.previousPosition = previousPosition;
 
-    /** @type {lanyard.geom.Position} */
-    this.position = position;
+  /** @type {lanyard.geom.Position} */
+  this.position = position;
 };
+
 
 /**
  * Accessor for the position.
@@ -58,8 +61,9 @@ lanyard.dom.PositionEvent = function(source, mouseEvent, previousPosition, posit
  * @return {lanyard.geom.Position} the position.
  */
 lanyard.dom.PositionEvent.prototype.getPosition = function() {
-    return this.position;
+  return this.position;
 };
+
 
 /**
  * Accessor for the previous position.
@@ -67,8 +71,9 @@ lanyard.dom.PositionEvent.prototype.getPosition = function() {
  * @return {lanyard.geom.Position} the previous position.
  */
 lanyard.dom.PositionEvent.prototype.getPreviousPosition = function() {
-    return this.previousPosition;
+  return this.previousPosition;
 };
+
 
 /**
  * Accessor for the mouse event.
@@ -76,8 +81,9 @@ lanyard.dom.PositionEvent.prototype.getPreviousPosition = function() {
  * @return {Event} the mouse event.
  */
 lanyard.dom.PositionEvent.prototype.getMouseEvent = function() {
-    return this.mouseEvent;
+  return this.mouseEvent;
 };
+
 
 /**
  * Create a string representation of this position event.
@@ -85,13 +91,13 @@ lanyard.dom.PositionEvent.prototype.getMouseEvent = function() {
  * @return {string} a string representation of this position event.
  */
 lanyard.dom.PositionEvent.prototype.toString = function() {
-    /** @type {string} */
-    var val = 'A position event: ' +
-        this.previousPosition ? this.previousPosition.toString() : 'null' +
-        ' --> ' +
-        this.position ? this.position.toString() : 'null';
+  /** @type {string} */
+  var val = 'A position event: ' +
+      this.previousPosition ? this.previousPosition.toString() : 'null' +
+      ' --> ' +
+      this.position ? this.position.toString() : 'null';
 
-    return val;
+  return val;
 };
 
 /* EOF */

@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.util.TextureCoords');
 
+
+
 /**
  * Constructs a new TextureCoords to handle flipped texture coordinates.
  *
@@ -37,30 +39,31 @@ goog.provide('lanyard.util.TextureCoords');
  * @param {number} t
  */
 lanyard.util.TextureCoords = function(left, bottom, right, t) {
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this._left = left;
+  this._left = left;
 
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this._bottom = bottom;
+  this._bottom = bottom;
 
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this._right = right;
+  this._right = right;
 
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this._t = t;
+  this._t = t;
 };
+
 
 /**
  * Returns the left coordinate.
@@ -68,8 +71,9 @@ lanyard.util.TextureCoords = function(left, bottom, right, t) {
  * @return {number} the left coordinate.
  */
 lanyard.util.TextureCoords.prototype.left = function() {
-    return this._left;
+  return this._left;
 };
+
 
 /**
  * Returns the bottom coordinate.
@@ -77,8 +81,9 @@ lanyard.util.TextureCoords.prototype.left = function() {
  * @return {number} the bottom coordinate.
  */
 lanyard.util.TextureCoords.prototype.bottom = function() {
-    return this._bottom;
+  return this._bottom;
 };
+
 
 /**
  * Returns the right coordinate.
@@ -86,8 +91,9 @@ lanyard.util.TextureCoords.prototype.bottom = function() {
  * @return {number} the right coordinate.
  */
 lanyard.util.TextureCoords.prototype.right = function() {
-    return this._right;
+  return this._right;
 };
+
 
 /**
  * Returns the top coordinate.
@@ -95,7 +101,7 @@ lanyard.util.TextureCoords.prototype.right = function() {
  * @return {number} the top coordinate.
  */
 lanyard.util.TextureCoords.prototype.t = function() {
-    return this._t;
+  return this._t;
 };
 
 /* EOF */

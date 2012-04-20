@@ -27,12 +27,15 @@
 
 goog.provide('lanyard.FrameController');
 
+
+
 /**
  * An interface for a frame controller
  *
  * @interface
  */
 lanyard.FrameController = function() {};
+
 
 /**
  * Initialize the frame.
@@ -41,12 +44,14 @@ lanyard.FrameController = function() {};
  */
 lanyard.FrameController.prototype.initializeFrame = function(dc) {};
 
+
 /**
  * Draw the frame.
  *
  * @param {lanyard.DrawContext} dc the context where the frame is located.
  */
 lanyard.FrameController.prototype.drawFrame = function(dc) {};
+
 
 /**
  * Finalize the frame.

@@ -29,6 +29,8 @@ goog.provide('lanyard.geom.Plane');
 
 goog.require('lanyard.geom.Point');
 
+
+
 /**
  * A basic plane geometry to represent a mathematical plane in an arbitrary
  * cartesian coordinate system. A Plane is defined by a normal vector and a
@@ -39,15 +41,16 @@ goog.require('lanyard.geom.Point');
  * @constructor
  */
 lanyard.geom.Plane = function(a, b, c, d) {
-    /** Represents all the information about this Plane.
+  /** Represents all the information about this Plane.
      * The first three values (x, y, z) represent a normal Vector to the
      * Plane, while the fourth (w) represents the signed distance this
      * Plane has been shifting along that normal.
      * @private
      * @type {lanyard.geom.Point}
      */
-     this._n = new lanyard.geom.Point(a, b, c, d);
+  this._n = new lanyard.geom.Point(a, b, c, d);
 };
+
 
 /**
  * Creates a Plane from the specified Point.
@@ -55,12 +58,13 @@ lanyard.geom.Plane = function(a, b, c, d) {
  * @return {lanyard.geom.Plane} the plane created from the point.
  */
 lanyard.geom.Plane.prototype.fromPoint = function(vec) {
-    if (vec.selfDot() === 0) {
-        throw ('geom.Plane.VectorIsZero');
-    }
+  if (vec.selfDot() === 0) {
+    throw ('geom.Plane.VectorIsZero');
+  }
 
-    return new lanyard.geom.Plane(vec.getX(), vec.getY(), vec.getZ(), vec.getW());
+  return new lanyard.geom.Plane(vec.getX(), vec.getY(), vec.getZ(), vec.getW());
 };
+
 
 /**
  * Retrieves a Point representing the normal to this Plane.
@@ -68,8 +72,9 @@ lanyard.geom.Plane.prototype.fromPoint = function(vec) {
  * @return {lanyard.geom.Point} a Point representing the normal to this Plane.
  */
 lanyard.geom.Plane.prototype.getNormal = function() {
-    return new lanyard.geom.Point(this._n.getX(), this._n.getY(), this._n.getZ(), 1);
+  return new lanyard.geom.Point(this._n.getX(), this._n.getY(), this._n.getZ(), 1);
 };
+
 
 /**
  * Retrieves the distance from the origin to this Plane. Two options exist for defining distance - the
@@ -81,8 +86,9 @@ lanyard.geom.Plane.prototype.getNormal = function() {
  * @return {number} the distance between this Plane and the origin.
  */
 lanyard.geom.Plane.prototype.getDistance = function() {
-    return this._n.getW();
+  return this._n.getW();
 };
+
 
 /**
  * Retrieves a vector representing the normal and distance to this <code>Plane</code>. The
@@ -93,8 +99,9 @@ lanyard.geom.Plane.prototype.getDistance = function() {
  * @return {lanyard.geom.Point} a Vector representation of this Plane.
  */
 lanyard.geom.Plane.prototype.getVector = function() {
-    return this._n;
+  return this._n;
 };
+
 
 /**
  * Calculates the dot product of this Plane with Point p.
@@ -104,9 +111,10 @@ lanyard.geom.Plane.prototype.getVector = function() {
  * @return {number} the dot product of p and this Plane.
  */
 lanyard.geom.Plane.prototype.dot = function(p) {
-    return this._n.getX() * p.getX() + this._n.getY() * p.getY() +
-        this._n.getZ() * p.getZ() + this._n.getW() * p.getW();
+  return this._n.getX() * p.getX() + this._n.getY() * p.getY() +
+      this._n.getZ() * p.getZ() + this._n.getW() * p.getW();
 };
+
 
 /**
  * Find a string representation of this Plane.
@@ -114,7 +122,7 @@ lanyard.geom.Plane.prototype.dot = function(p) {
  * @return {string} a string representation of this Plane.
  */
 lanyard.geom.Plane.prototype.toString = function() {
-    return this._n.toString();
+  return this._n.toString();
 };
 
 /* EOF */

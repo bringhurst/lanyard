@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.render.SurfaceImage');
 
+
+
 /**
  * Renders a single image tile from a local or remote source.
  *
@@ -38,75 +40,76 @@ goog.provide('lanyard.render.SurfaceImage');
  * @param {?lanyard.Layer} layer a reference to the layer handling this image.
  */
 lanyard.render.SurfaceImage = function(imageSource, sector, layer) {
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.SurfaceImage');
+  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.render.SurfaceImage');
 
-    /**
+  /**
      * @private
      * @type {lanyard.geom.Extent}
      */
-    this.extent = null;
+  this.extent = null;
 
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this.extentVerticalExaggertion = Number.MIN_VALUE; // VE used to calculate the extent
+  this.extentVerticalExaggertion = Number.MIN_VALUE; // VE used to calculate the extent
 
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this.opacity = 1.0;
+  this.opacity = 1.0;
 
-    /**
+  /**
      * @private
      * @type {?lanyard.util.Texture}
      */
-    this.textureData = null;
+  this.textureData = null;
 
-    /**
+  /**
      * @private
      * @type {boolean}
      */
-    this.isLoaded = false; // True when image is loading or downloading
+  this.isLoaded = false; // True when image is loading or downloading
 
-    /**
+  /**
      * @type {boolean}
      */
-    this.hasProblem = false; // True when download failed
+  this.hasProblem = false; // True when download failed
 
-    /**
+  /**
      * @private
      * @type {string}
      */
-    this.imageSource = imageSource;
+  this.imageSource = imageSource;
 
-    /**
+  /**
      * @private
      * @type {lanyard.geom.Sector}
      */
-    this.sector = sector;
+  this.sector = sector;
 
-    /**
+  /**
      * @private
      * @type {lanyard.geom.Position}
      */
-    this.referencePosition = lanyard.geom.Position.prototype.fromLatLon(sector.getCentroid(), 0);
+  this.referencePosition = lanyard.geom.Position.prototype.fromLatLon(sector.getCentroid(), 0);
 
-    /**
+  /**
      * @private
      * @type {lanyard.Layer}
      */
-    this.layer = layer;
+  this.layer = layer;
 
-    if (!this.imageSource) {
-        this._logger.severe('The image source is null.');
-    }
+  if (!this.imageSource) {
+    this._logger.severe('The image source is null.');
+  }
 
-    if (!this.sector) {
-        this._logger.severe('The sector is null.');
-    }
+  if (!this.sector) {
+    this._logger.severe('The sector is null.');
+  }
 };
+
 
 /**
  * Sets the sector for the image allowing to change its size or position.
@@ -114,13 +117,14 @@ lanyard.render.SurfaceImage = function(imageSource, sector, layer) {
  * @param {lanyard.geom.Sector} sector the new sector.
  */
 lanyard.render.SurfaceImage.prototype.setSector = function(sector) {
-    if (!sector) {
-        this._logger.severe('The sector was null.');
-    }
+  if (!sector) {
+    this._logger.severe('The sector was null.');
+  }
 
-    this.sector = sector;
-    this.extent = null;
+  this.sector = sector;
+  this.extent = null;
 };
+
 
 /**
  * Accessor for the sector.
@@ -128,8 +132,9 @@ lanyard.render.SurfaceImage.prototype.setSector = function(sector) {
  * @return {lanyard.geom.Sector} the sector for the surface image.
  */
 lanyard.render.SurfaceImage.prototype.getSector = function() {
-    return this.sector;
+  return this.sector;
 };
+
 
 /**
  * Get the extent of the image.
@@ -138,19 +143,20 @@ lanyard.render.SurfaceImage.prototype.getSector = function() {
  * @return {lanyard.geom.Extent} the extent of the image.
  */
 lanyard.render.SurfaceImage.prototype.getExtent = function(dc) {
-    if (!dc) {
-        this._logger.severe('The draw context is null.');
-    }
+  if (!dc) {
+    this._logger.severe('The draw context is null.');
+  }
 
-    if (!this.extent || this.extentVerticalExaggertion !== dc.getVerticalExaggeration()) {
-        this.extent = lanyard.geom.Sector.prototype.computeBoundingCylinder(
-            dc.getGlobe(), dc.getVerticalExaggeration(), this.sector
+  if (!this.extent || this.extentVerticalExaggertion !== dc.getVerticalExaggeration()) {
+    this.extent = lanyard.geom.Sector.prototype.computeBoundingCylinder(
+        dc.getGlobe(), dc.getVerticalExaggeration(), this.sector
         );
-        this.extentVerticalExaggertion = dc.getVerticalExaggeration();
-    }
+    this.extentVerticalExaggertion = dc.getVerticalExaggeration();
+  }
 
-    return this.extent;
+  return this.extent;
 };
+
 
 /**
  * Initialize the texture for the image.
@@ -159,59 +165,60 @@ lanyard.render.SurfaceImage.prototype.getExtent = function(dc) {
  * @return {lanyard.util.Texture} the texture.
  */
 lanyard.render.SurfaceImage.prototype.initializeTexture = function(dc) {
-    //this._logger.fine("Initializing a texture.");
+  //this._logger.fine("Initializing a texture.");
 
-    if (!dc) {
-        this._logger.severe('The draw context was null.');
-    }
+  if (!dc) {
+    this._logger.severe('The draw context was null.');
+  }
 
-    /** @type {WebGLRenderingContext} */
-    var gl = dc.getGL();
+  /** @type {WebGLRenderingContext} */
+  var gl = dc.getGL();
 
-    /** @type {lanyard.render.SurfaceImage} */
-    var self = this;
+  /** @type {lanyard.render.SurfaceImage} */
+  var self = this;
 
-    /** @type {lanyard.util.Texture} */
-    var surfaceTexture = new lanyard.util.Texture(dc);
+  /** @type {lanyard.util.Texture} */
+  var surfaceTexture = new lanyard.util.Texture(dc);
 
-    /** @type {Image} */
-    var surfaceImage = new Image();
+  /** @type {Image} */
+  var surfaceImage = new Image();
 
-    surfaceImage.onload = function() {
-        //self._logger.fine("Loaded image at: " + self.imageSource + "<img src=" + self.imageSource + ">");
+  surfaceImage.onload = function() {
+    //self._logger.fine("Loaded image at: " + self.imageSource + "<img src=" + self.imageSource + ">");
 
-        surfaceTexture.bind();
-        surfaceTexture.setImage(surfaceImage);
+    surfaceTexture.bind();
+    surfaceTexture.setImage(surfaceImage);
 
-        surfaceTexture.setTexParameteri(gl.TEXTURE_MIN_FILTER, gl.LINEAR); //_MIPMAP_LINEAR);
-        surfaceTexture.setTexParameteri(gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        surfaceTexture.setTexParameteri(gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        surfaceTexture.setTexParameteri(gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    surfaceTexture.setTexParameteri(gl.TEXTURE_MIN_FILTER, gl.LINEAR); //_MIPMAP_LINEAR);
+    surfaceTexture.setTexParameteri(gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    surfaceTexture.setTexParameteri(gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    surfaceTexture.setTexParameteri(gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-        surfaceTexture.createMipmap();
+    surfaceTexture.createMipmap();
 
-        self.isLoaded = true;
-        self.textureData = surfaceTexture;
+    self.isLoaded = true;
+    self.textureData = surfaceTexture;
 
-        // Fire off a repaint
-        //dc.getCanvas().display();
-    };
+    // Fire off a repaint
+    //dc.getCanvas().display();
+  };
 
-    surfaceImage.onerror = function() {
-        self._logger.warning('An image failed to load from: ' + self.imageSource);
-        self.hasProblem = true;
-    };
+  surfaceImage.onerror = function() {
+    self._logger.warning('An image failed to load from: ' + self.imageSource);
+    self.hasProblem = true;
+  };
 
-    surfaceImage.onabort = function() {
-        self._logger.warning('An image load was aborted: ' + self.imageSource);
-        self.hasProblem = true;
-    };
+  surfaceImage.onabort = function() {
+    self._logger.warning('An image load was aborted: ' + self.imageSource);
+    self.hasProblem = true;
+  };
 
-    // Fire it off
-    surfaceImage.src = this.imageSource;
+  // Fire it off
+  surfaceImage.src = this.imageSource;
 
-    return surfaceTexture;
+  return surfaceTexture;
 };
+
 
 /**
  * Bind the surface image to the current context.
@@ -220,32 +227,33 @@ lanyard.render.SurfaceImage.prototype.initializeTexture = function(dc) {
  * @return {boolean} if the bind was a success.
  */
 lanyard.render.SurfaceImage.prototype.bind = function(dc) {
-    //this._logger.fine("Surface image bind was called.");
+  //this._logger.fine("Surface image bind was called.");
 
-    if (!dc) {
-        this._logger.severe('The draw context is null.');
-    }
+  if (!dc) {
+    this._logger.severe('The draw context is null.');
+  }
 
-    /** @type {lanyard.util.Texture} */
-    var t = this.textureData;
+  /** @type {lanyard.util.Texture} */
+  var t = this.textureData;
 
-    if (!t) {
-        t = this.initializeTexture(dc);
-
-        if (t) {
-            return true; // texture was bound during initialization.
-        }
-    }
+  if (!t) {
+    t = this.initializeTexture(dc);
 
     if (t) {
-        //this._logger.fine("Binding a surface image texture.");
-        t.bind();
-        return true;
+      return true; // texture was bound during initialization.
     }
+  }
 
-    // t was null or not bound
-    return false;
+  if (t) {
+    //this._logger.fine("Binding a surface image texture.");
+    t.bind();
+    return true;
+  }
+
+  // t was null or not bound
+  return false;
 };
+
 
 /**
  * Apply an internal transform.
@@ -253,17 +261,18 @@ lanyard.render.SurfaceImage.prototype.bind = function(dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.render.SurfaceImage.prototype.applyInternalTransform = function(dc) {
-    if (!dc) {
-        this._logger.severe('The draw context was null.');
-    }
+  if (!dc) {
+    this._logger.severe('The draw context was null.');
+  }
 
-    /** @type {lanyard.util.Texture} */
-    var t = this.textureData;
+  /** @type {lanyard.util.Texture} */
+  var t = this.textureData;
 
-    if (!t) {
-        t = this.initializeTexture(dc);
-    }
+  if (!t) {
+    t = this.initializeTexture(dc);
+  }
 };
+
 
 /**
  * Render the surface image tile.
@@ -271,46 +280,47 @@ lanyard.render.SurfaceImage.prototype.applyInternalTransform = function(dc) {
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.render.SurfaceImage.prototype.render = function(dc) {
-    //this._logger.fine("The surface image render was called.");
+  //this._logger.fine("The surface image render was called.");
 
-    if (!dc) {
-        this._logger.severe('The draw context is null.');
-    }
+  if (!dc) {
+    this._logger.severe('The draw context is null.');
+  }
 
-    if (!this.sector.intersects(dc.getVisibleSector())) {
-        this._logger.fine('The surface image does not intersect with a visible sector.');
-        return 0;
-    }
+  if (!this.sector.intersects(dc.getVisibleSector())) {
+    this._logger.fine('The surface image does not intersect with a visible sector.');
+    return 0;
+  }
 
-    /** @type {WebGLRenderingContext} */
-    var gl = dc.getGL();
+  /** @type {WebGLRenderingContext} */
+  var gl = dc.getGL();
 
-    // FIXME: for picking
-    //if (!dc.isPickingMode()) {
-        /** @type {number} */
-     //   var opacity = this.layer ? this.opacity * this.layer.opacity : this.opacity;
+  // FIXME: for picking
+  //if (!dc.isPickingMode()) {
+  /** @type {number} */
+  //   var opacity = this.layer ? this.opacity * this.layer.opacity : this.opacity;
 
-     //   if (opacity < 1) {
-            //gl.pushAttrib(gl.COLOR_BUFFER_BIT | gl.GL_POLYGON_BIT | gl.GL_CURRENT_BIT);
-            //gl.color4d(1.0, 1.0, 1.0, opacity);
-     //   } else {
-            //gl.pushAttrib(gl.COLOR_BUFFER_BIT | gl.GL_POLYGON_BIT);
-    //    }
+  //   if (opacity < 1) {
+  //gl.pushAttrib(gl.COLOR_BUFFER_BIT | gl.GL_POLYGON_BIT | gl.GL_CURRENT_BIT);
+  //gl.color4d(1.0, 1.0, 1.0, opacity);
+  //   } else {
+  //gl.pushAttrib(gl.COLOR_BUFFER_BIT | gl.GL_POLYGON_BIT);
+  //    }
 
-        //gl.enable(gl.BLEND);
-        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    //} else {
-        //gl.pushAttrib(gl.POLYGON_BIT);
-    //}
+  //gl.enable(gl.BLEND);
+  //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  //} else {
+  //gl.pushAttrib(gl.POLYGON_BIT);
+  //}
 
-    //gl.polygonMode(gl.FRONT, gl.FILL);
-    gl.enable(gl.CULL_FACE);
+  //gl.polygonMode(gl.FRONT, gl.FILL);
+  gl.enable(gl.CULL_FACE);
 
-    //this._logger.fine("Passing things along to the surface tile renderer.");
-    dc.getSurfaceTileRenderer().renderTile(dc, this);
+  //this._logger.fine("Passing things along to the surface tile renderer.");
+  dc.getSurfaceTileRenderer().renderTile(dc, this);
 
-    //gl.popAttrib();
+  //gl.popAttrib();
 };
+
 
 /**
  * Move the image to a new location.
@@ -318,44 +328,45 @@ lanyard.render.SurfaceImage.prototype.render = function(dc) {
  * @param {lanyard.geom.Position} position the new position to move to.
  */
 lanyard.render.SurfaceImage.prototype.move = function(position) {
-    if (!position) {
-        this._logger.severe('The position was null.');
-    }
+  if (!position) {
+    this._logger.severe('The position was null.');
+  }
 
-    // Increase the current sector position.
+  // Increase the current sector position.
 
-    /** @type {number} */
-    var minlat = this.sector.getMinLatitude().getDegrees();
+  /** @type {number} */
+  var minlat = this.sector.getMinLatitude().getDegrees();
 
-    /** @type {number} */
-    var minlon = this.sector.getMinLongitude().getDegrees();
+  /** @type {number} */
+  var minlon = this.sector.getMinLongitude().getDegrees();
 
-    /** @type {number} */
-    var maxlat = this.sector.getMaxLatitude().getDegrees();
+  /** @type {number} */
+  var maxlat = this.sector.getMaxLatitude().getDegrees();
 
-    /** @type {number} */
-    var maxlon = this.sector.getMaxLongitude().getDegrees();
+  /** @type {number} */
+  var maxlon = this.sector.getMaxLongitude().getDegrees();
 
-    /** @type {number} */
-    var poslat = position.getLatitude().getDegrees();
+  /** @type {number} */
+  var poslat = position.getLatitude().getDegrees();
 
-    /** @type {number} */
-    var poslon = position.getLongitude().getDegrees();
+  /** @type {number} */
+  var poslon = position.getLongitude().getDegrees();
 
-    minlat += poslat;
-    maxlat += poslat;
-    minlon += poslon;
-    maxlon += poslon;
+  minlat += poslat;
+  maxlat += poslat;
+  minlon += poslon;
+  maxlon += poslon;
 
-    // Check new values don't exceed the limits.
-    if (maxlat > 90 || maxlat < -90 || minlat > 90 || minlat < -90 ||
-            maxlon > 180 || maxlon < -180 || minlon > 180 || minlon < -180) {
-        return;
-    }
+  // Check new values don't exceed the limits.
+  if (maxlat > 90 || maxlat < -90 || minlat > 90 || minlat < -90 ||
+      maxlon > 180 || maxlon < -180 || minlon > 180 || minlon < -180) {
+    return;
+  }
 
-    this.referencePosition.add(position);
-    this.setSector(lanyard.geom.Sector.prototype.fromDegrees(minlat, maxlat, minlon, maxlon));
+  this.referencePosition.add(position);
+  this.setSector(lanyard.geom.Sector.prototype.fromDegrees(minlat, maxlat, minlon, maxlon));
 };
+
 
 /**
  * Move the image to a new position.
@@ -363,45 +374,46 @@ lanyard.render.SurfaceImage.prototype.move = function(position) {
  * @param {lanyard.geom.Position} position the new position to move to.
  */
 lanyard.render.SurfaceImage.prototype.moveTo = function(position) {
-    if (!position) {
-        this._logger.severe('The new position was null.');
-    }
+  if (!position) {
+    this._logger.severe('The new position was null.');
+  }
 
-    // Calculate new position
+  // Calculate new position
 
-    /** @type {number} */
-    var poslat = position.getLatitude().getDegrees();
+  /** @type {number} */
+  var poslat = position.getLatitude().getDegrees();
 
-    /** @type {number} */
-    var poslon = position.getLongitude().getDegrees();
+  /** @type {number} */
+  var poslon = position.getLongitude().getDegrees();
 
-    /** @type {number} */
-    var halfDeltaLat = this.sector.getDeltaLatDegrees() / 2;
+  /** @type {number} */
+  var halfDeltaLat = this.sector.getDeltaLatDegrees() / 2;
 
-    /** @type {number} */
-    var halfDeltaLon = this.sector.getDeltaLonDegrees() / 2;
+  /** @type {number} */
+  var halfDeltaLon = this.sector.getDeltaLonDegrees() / 2;
 
-    /** @type {number} */
-    var minlat = poslat - halfDeltaLat;
+  /** @type {number} */
+  var minlat = poslat - halfDeltaLat;
 
-    /** @type {number} */
-    var maxlat = poslat + halfDeltaLat;
+  /** @type {number} */
+  var maxlat = poslat + halfDeltaLat;
 
-    /** @type {number} */
-    var minlon = poslon - halfDeltaLon;
+  /** @type {number} */
+  var minlon = poslon - halfDeltaLon;
 
-    /** @type {number} */
-    var maxlon = poslon + halfDeltaLon;
+  /** @type {number} */
+  var maxlon = poslon + halfDeltaLon;
 
-    // Check new values don't exceed the limits.
-    if (maxlat > 90 || maxlat < -90 || minlat > 90 || minlat < -90 ||
-            maxlon > 180 || maxlon < -180 || minlon > 180 || minlon < -180) {
-        return;
-    }
+  // Check new values don't exceed the limits.
+  if (maxlat > 90 || maxlat < -90 || minlat > 90 || minlat < -90 ||
+      maxlon > 180 || maxlon < -180 || minlon > 180 || minlon < -180) {
+    return;
+  }
 
-    this.referencePosition = position;
-    this.setSector(lanyard.geom.Sector.prototype.fromDegrees(minlat, maxlat, minlon, maxlon));
+  this.referencePosition = position;
+  this.setSector(lanyard.geom.Sector.prototype.fromDegrees(minlat, maxlat, minlon, maxlon));
 };
+
 
 /**
  * Get the reference position of this surface image.
@@ -409,8 +421,9 @@ lanyard.render.SurfaceImage.prototype.moveTo = function(position) {
  * @return {lanyard.geom.Position} the reference position of this surface image.
  */
 lanyard.render.SurfaceImage.prototype.getReferencePosition = function() {
-    return this.referencePosition;
+  return this.referencePosition;
 };
+
 
 /**
  * Return the type and path of this surface image.
@@ -418,7 +431,7 @@ lanyard.render.SurfaceImage.prototype.getReferencePosition = function() {
  * @return {string} the string representation of this object.
  */
 lanyard.render.SurfaceImage.prototype.toString = function() {
-    return 'A SurfaceImage with a path of: ' + this.imageSource;
+  return 'A SurfaceImage with a path of: ' + this.imageSource;
 };
 
 /* EOF */

@@ -29,6 +29,8 @@ goog.provide('lanyard.geom.Frustum');
 
 goog.require('lanyard.geom.Matrix');
 
+
+
 /**
  * Create a frustum from six Planes, which define its boundaries.
  *
@@ -42,14 +44,15 @@ goog.require('lanyard.geom.Matrix');
  * @param {lanyard.geom.Plane} bottom the bottom of the view frustum.
  */
 lanyard.geom.Frustum = function(near, far, left, right, bottom, topp) {
-    /** @private */ this._near = near;
-    /** @private */ this._far = far;
-    /** @private */ this._left = left;
-    /** @private */ this._right = right;
-    /** @private */ this._bottom = bottom;
-    /** @private */ this._topp = topp;
+  /** @private */ this._near = near;
+  /** @private */ this._far = far;
+  /** @private */ this._left = left;
+  /** @private */ this._right = right;
+  /** @private */ this._bottom = bottom;
+  /** @private */ this._topp = topp;
 };
 goog.exportSymbol('lanyard.geom.Frustum', lanyard.geom.Frustum);
+
 
 /**
  * Create a default frustum with six Planes. This defines a box of
@@ -58,15 +61,16 @@ goog.exportSymbol('lanyard.geom.Frustum', lanyard.geom.Frustum);
  * @return {lanyard.geom.Frustum} the new default Frustum.
  */
 lanyard.geom.Frustum.prototype.createDefault = function() {
-    var near = new lanyard.geom.Plane(0, 0, 1, 1);
-    var far = new lanyard.geom.Plane(0, 0, 0 - 1, 1);
-    var left = new lanyard.geom.Plane(1, 0, 0, 1);
-    var right = new lanyard.geom.Plane(0 - 1, 0, 0, 1);
-    var bottom = new lanyard.geom.Plane(0, 1, 0, 1);
-    var topp = new lanyard.geom.Plane(0, 0 - 1, 0, 1);
+  var near = new lanyard.geom.Plane(0, 0, 1, 1);
+  var far = new lanyard.geom.Plane(0, 0, 0 - 1, 1);
+  var left = new lanyard.geom.Plane(1, 0, 0, 1);
+  var right = new lanyard.geom.Plane(0 - 1, 0, 0, 1);
+  var bottom = new lanyard.geom.Plane(0, 1, 0, 1);
+  var topp = new lanyard.geom.Plane(0, 0 - 1, 0, 1);
 
-    return new lanyard.geom.Frustum(near, far, left, right, bottom, topp);
+  return new lanyard.geom.Frustum(near, far, left, right, bottom, topp);
 };
+
 
 /**
  * Obtain the near Plane.
@@ -74,8 +78,9 @@ lanyard.geom.Frustum.prototype.createDefault = function() {
  * @return {lanyard.geom.Plane} the near Plane.
  */
 lanyard.geom.Frustum.prototype.getNear = function() {
-    return this._near;
+  return this._near;
 };
+
 
 /**
  * Obtain the far Plane.
@@ -83,8 +88,9 @@ lanyard.geom.Frustum.prototype.getNear = function() {
  * @return {lanyard.geom.Plane} the far Plane.
  */
 lanyard.geom.Frustum.prototype.getFar = function() {
-    return this._far;
+  return this._far;
 };
+
 
 /**
  * Obtain the left Plane.
@@ -92,8 +98,9 @@ lanyard.geom.Frustum.prototype.getFar = function() {
  * @return {lanyard.geom.Plane} the left Plane.
  */
 lanyard.geom.Frustum.prototype.getLeft = function() {
-    return this._left;
+  return this._left;
 };
+
 
 /**
  * Obtain the right Plane.
@@ -101,8 +108,9 @@ lanyard.geom.Frustum.prototype.getLeft = function() {
  * @return {lanyard.geom.Plane} the right Plane.
  */
 lanyard.geom.Frustum.prototype.getRight = function() {
-    return this._right;
+  return this._right;
 };
+
 
 /**
  * Obtain the bottom Plane.
@@ -110,8 +118,9 @@ lanyard.geom.Frustum.prototype.getRight = function() {
  * @return {lanyard.geom.Plane} the bottom Plane.
  */
 lanyard.geom.Frustum.prototype.getBottom = function() {
-    return this._bottom;
+  return this._bottom;
 };
+
 
 /**
  * Obtain the top Plane.
@@ -119,8 +128,9 @@ lanyard.geom.Frustum.prototype.getBottom = function() {
  * @return {lanyard.geom.Plane} the top Plane.
  */
 lanyard.geom.Frustum.prototype.getTop = function() {
-    return this._topp;
+  return this._topp;
 };
+
 
 /**
  *
@@ -129,18 +139,19 @@ lanyard.geom.Frustum.prototype.getTop = function() {
  * @return {lanyard.geom.Frustum}
  */
 lanyard.geom.Frustum.prototype.getInverseTransformed = function(m) {
-    // Assumes orthogonal matrices with translation.
-    var it = m.getTranspose();
+  // Assumes orthogonal matrices with translation.
+  var it = m.getTranspose();
 
-    var n = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._near.getVector()));
-    var f = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._far.getVector()));
-    var l = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._left.getVector()));
-    var r = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._right.getVector()));
-    var b = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._bottom.getVector()));
-    var t = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._topp.getVector()));
+  var n = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._near.getVector()));
+  var f = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._far.getVector()));
+  var l = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._left.getVector()));
+  var r = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._right.getVector()));
+  var b = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._bottom.getVector()));
+  var t = lanyard.geom.Plane.prototype.fromPoint(it.transform(this._topp.getVector()));
 
-    return new lanyard.geom.Frustum(n, f, l, r, b, t);
+  return new lanyard.geom.Frustum(n, f, l, r, b, t);
 };
+
 
 /**
  *
@@ -149,36 +160,37 @@ lanyard.geom.Frustum.prototype.getInverseTransformed = function(m) {
  * @return {boolean} if this frustum intersects.
  */
 lanyard.geom.Frustum.prototype.intersects = function(extent) {
-    // See if the extent's bounding sphere is within or intersects the frustum.
-    var c = extent.getCenter();
-    var nr = -extent.getRadius();
+  // See if the extent's bounding sphere is within or intersects the frustum.
+  var c = extent.getCenter();
+  var nr = -extent.getRadius();
 
-    if (this._far.dot(c) <= nr) {
-        return false;
-    }
+  if (this._far.dot(c) <= nr) {
+    return false;
+  }
 
-    if (this._left.dot(c) <= nr) {
-        return false;
-    }
+  if (this._left.dot(c) <= nr) {
+    return false;
+  }
 
-    if (this._right.dot(c) <= nr) {
-        return false;
-    }
+  if (this._right.dot(c) <= nr) {
+    return false;
+  }
 
-    if (this._topp.dot(c) <= nr) {
-        return false;
-    }
+  if (this._topp.dot(c) <= nr) {
+    return false;
+  }
 
-    if (this._bottom.dot(c) <= nr) {
-        return false;
-    }
+  if (this._bottom.dot(c) <= nr) {
+    return false;
+  }
 
-    if (this._near.dot(c) <= nr) {
-        return false;
-    }
+  if (this._near.dot(c) <= nr) {
+    return false;
+  }
 
-    return true;
+  return true;
 };
+
 
 /**
  *
@@ -187,32 +199,33 @@ lanyard.geom.Frustum.prototype.intersects = function(extent) {
  * @return {boolean}
  */
 lanyard.geom.Frustum.prototype.contains = function(point) {
-    if (this._far.dot(point) < 0) {
-        return false;
-    }
+  if (this._far.dot(point) < 0) {
+    return false;
+  }
 
-    if (this._left.dot(point) < 0) {
-        return false;
-    }
+  if (this._left.dot(point) < 0) {
+    return false;
+  }
 
-    if (this._right.dot(point) < 0) {
-        return false;
-    }
+  if (this._right.dot(point) < 0) {
+    return false;
+  }
 
-    if (this._topp.dot(point) < 0) {
-        return false;
-    }
+  if (this._topp.dot(point) < 0) {
+    return false;
+  }
 
-    if (this._bottom.dot(point) < 0) {
-        return false;
-    }
+  if (this._bottom.dot(point) < 0) {
+    return false;
+  }
 
-    if (this._near.dot(point) < 0) {
-        return false;
-    }
+  if (this._near.dot(point) < 0) {
+    return false;
+  }
 
-    return true;
+  return true;
 };
+
 
 /**
  * Obtain a string representation of this Frustum.
@@ -220,9 +233,9 @@ lanyard.geom.Frustum.prototype.contains = function(point) {
  * @return {string} a string representation of this frustum.
  */
 lanyard.geom.Frustum.prototype.toString = function() {
-    return 'near: ' + this._near.toString() + '... far: ' + this._far.toString() +
-        '... left: ' + this._left.toString() + '... right: ' + this._right.toString() +
-        '... bottom: ' + this._bottom.toString() + '... top: ' + this._topp.toString();
+  return 'near: ' + this._near.toString() + '... far: ' + this._far.toString() +
+      '... left: ' + this._left.toString() + '... right: ' + this._right.toString() +
+      '... bottom: ' + this._bottom.toString() + '... top: ' + this._topp.toString();
 };
 
 /* EOF */

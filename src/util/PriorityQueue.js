@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.util.PriorityQueue');
 
+
+
 /**
  * A generic priority queue with variable comparison.
  *
@@ -34,22 +36,23 @@ goog.provide('lanyard.util.PriorityQueue');
  * @param {Function} compare the function used to compare elements.
  */
 lanyard.util.PriorityQueue = function(compare) {
-    /**
+  /**
      * The function used for comparing elements.
      *
      * @private
      * @type {Function}
      */
-    this._compare = compare;
+  this._compare = compare;
 
-    /**
+  /**
      * Actual elements in the queue.
      *
      * @private
      * @type {Array.<Object>}
      */
-    this._elements = [];
+  this._elements = [];
 };
+
 
 /**
  * Find the number of elements in this queue.
@@ -57,8 +60,9 @@ lanyard.util.PriorityQueue = function(compare) {
  * @return {number} the number of elements in this queue.
  */
 lanyard.util.PriorityQueue.prototype.size = function() {
-    return this._elements.length;
+  return this._elements.length;
 };
+
 
 /**
  * Place a new element into this queue.
@@ -66,15 +70,16 @@ lanyard.util.PriorityQueue.prototype.size = function() {
  * @param {Object} element a new element to insert (must be compatible with the compare function).
  */
 lanyard.util.PriorityQueue.prototype.offer = function(element) {
-    this._elements.push(element);
+  this._elements.push(element);
 
-    if (this._elements.length <= 1) {
-        // no need to sort
-        return;
-    }
+  if (this._elements.length <= 1) {
+    // no need to sort
+    return;
+  }
 
-    this._elements.sort(this._compare);
+  this._elements.sort(this._compare);
 };
+
 
 /**
  * Remove and return the first element in the queue.
@@ -82,8 +87,9 @@ lanyard.util.PriorityQueue.prototype.offer = function(element) {
  * @return {Object} the first element in the queue.
  */
 lanyard.util.PriorityQueue.prototype.poll = function() {
-    return this._elements.splice(0, 1);
+  return this._elements.splice(0, 1);
 };
+
 
 /**
  * Return a reference to the first element in the queue without removing it.
@@ -91,8 +97,9 @@ lanyard.util.PriorityQueue.prototype.poll = function() {
  * @return {Object} the first element in the queue.
  */
 lanyard.util.PriorityQueue.prototype.peek = function() {
-    return this._elements[0];
+  return this._elements[0];
 };
+
 
 /**
  * Return a COPY of this queue as an array. References may point to the original objects.
@@ -100,14 +107,15 @@ lanyard.util.PriorityQueue.prototype.peek = function() {
  * @return {Array.<Object>} the queue as an array.
  */
 lanyard.util.PriorityQueue.prototype.toArray = function() {
-    return this._elements.slice();
+  return this._elements.slice();
 };
+
 
 /**
  * Clear out the current elements in the queue.
  */
 lanyard.util.PriorityQueue.prototype.clear = function() {
-    this._elements = [];
+  this._elements = [];
 };
 
 /* EOF */

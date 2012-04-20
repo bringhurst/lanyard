@@ -27,12 +27,15 @@
 
 goog.provide('lanyard.render.SurfaceTile');
 
+
+
 /**
  * An interface for a surface tile.
  *
  * @interface
  */
 lanyard.render.SurfaceTile = function() {};
+
 
 /**
  * Bind the tile to a draw context.
@@ -42,6 +45,7 @@ lanyard.render.SurfaceTile = function() {};
  */
 lanyard.render.SurfaceTile.prototype.bind = function(dc) {};
 
+
 /**
  * Apply the internal transform.
  *
@@ -49,12 +53,14 @@ lanyard.render.SurfaceTile.prototype.bind = function(dc) {};
  */
 lanyard.render.SurfaceTile.prototype.applyInternalTransform = function(dc) {};
 
+
 /**
  * Get the sector of this surface tile.
  *
  * @return {lanyard.geom.Sector} the sector of the surface tile.
  */
 lanyard.render.SurfaceTile.prototype.getSector = function() {};
+
 
 /**
  * Get the extent of this surface tile.

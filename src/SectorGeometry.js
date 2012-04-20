@@ -25,6 +25,8 @@
 
 goog.provide('lanyard.SectorGeometry');
 
+
+
 /**
  * An interface for a sector geometry.
  *
@@ -33,6 +35,7 @@ goog.provide('lanyard.SectorGeometry');
  */
 lanyard.SectorGeometry = function() {};
 
+
 /**
  * Extent accessor.
  *
@@ -40,12 +43,14 @@ lanyard.SectorGeometry = function() {};
  */
 lanyard.SectorGeometry.prototype.getExtent = function() {};
 
+
 /**
  * Sector accessor.
  *
  * @return {lanyard.geom.Sector} the sector geometry.
  */
 lanyard.SectorGeometry.prototype.getSector = function() {};
+
 
 /**
  * Obtain the surface point at the specified location.
@@ -57,6 +62,7 @@ lanyard.SectorGeometry.prototype.getSector = function() {};
  */
 lanyard.SectorGeometry.prototype.getSurfacePoint = function(latitude, longitude, metersOffset) {};
 
+
 /**
  * Render the wireframe.
  *
@@ -66,12 +72,14 @@ lanyard.SectorGeometry.prototype.getSurfacePoint = function(latitude, longitude,
  */
 lanyard.SectorGeometry.prototype.renderWireframe = function(dc, interior, exterior) {};
 
+
 /**
  * Render the bounding volume.
  *
  * @param {lanyard.DrawContext} dc the draw context.
  */
 lanyard.SectorGeometry.prototype.renderBoundingVolume = function(dc) {};
+
 
 /**
  * Render this sector geometry using multiple texture units.

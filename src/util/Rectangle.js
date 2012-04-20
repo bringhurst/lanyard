@@ -27,6 +27,8 @@
 
 goog.provide('lanyard.util.Rectangle');
 
+
+
 /**
  * Constructs a new Rectangle whose top-left corner is specified as (x, y) and whose width and
  * height are specified by the arguments of the same name.
@@ -38,30 +40,31 @@ goog.provide('lanyard.util.Rectangle');
  * @param {number} height the height of the rectangle.
  */
 lanyard.util.Rectangle = function(x, y, width, height) {
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this._x = y;
+  this._x = y;
 
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this._y = y;
+  this._y = y;
 
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this._width = width;
+  this._width = width;
 
-    /**
+  /**
      * @private
      * @type {number}
      */
-    this._height = height;
+  this._height = height;
 };
+
 
 /**
  * Returns the x value of the top-left of this rectangle.
@@ -69,8 +72,9 @@ lanyard.util.Rectangle = function(x, y, width, height) {
  * @return {number} the x value of the top-left point.
  */
 lanyard.util.Rectangle.prototype.getX = function() {
-    return this._x;
+  return this._x;
 };
+
 
 /**
  * Returns the y value of the top-left of this rectangle.
@@ -78,8 +82,9 @@ lanyard.util.Rectangle.prototype.getX = function() {
  * @return {number} the y value of the top-left point.
  */
 lanyard.util.Rectangle.prototype.getY = function() {
-    return this._y;
+  return this._y;
 };
+
 
 /**
  * Returns the width of this rectangle.
@@ -87,8 +92,9 @@ lanyard.util.Rectangle.prototype.getY = function() {
  * @return {number} the width of this rectangle.
  */
 lanyard.util.Rectangle.prototype.getWidth = function() {
-    return this._width;
+  return this._width;
 };
+
 
 /**
  * Returns the height value of this rectangle
@@ -96,7 +102,7 @@ lanyard.util.Rectangle.prototype.getWidth = function() {
  * @return {number} the height of this rectangle.
  */
 lanyard.util.Rectangle.prototype.getHeight = function() {
-    return this._height;
+  return this._height;
 };
 
 /* EOF */

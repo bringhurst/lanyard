@@ -30,6 +30,8 @@ goog.provide('lanyard.View');
 goog.require('lanyard.geom.MatrixFour');
 goog.require('lanyard.util.Rectangle');
 
+
+
 /**
  * The View interface provides basic methods for implementations to communicate state and state changes to
  * the caller. Views provide a coordinate transformation from the object coordinates of the model to eye
@@ -51,6 +53,7 @@ goog.require('lanyard.util.Rectangle');
  */
 lanyard.View = function() {};
 
+
 /**
  * Calculates and applies View's internal state to the graphics context in DrawContext.
  *
@@ -61,6 +64,7 @@ lanyard.View = function() {};
  */
 lanyard.View.prototype.apply = function(dc) {};
 
+
 /**
  * Returns the 'model-view' matrix computed in apply(), which transforms model coordinates to eye coordinates
  * coordinates (where the eye is located at the origin, facing down the negative-z axis). This matrix is
@@ -69,6 +73,7 @@ lanyard.View.prototype.apply = function(dc) {};
  * @return {lanyard.geom.MatrixFour} the current model-view matrix.
  */
 lanyard.View.prototype.getModelViewMatrix = function() {};
+
 
 /**
  * Returns the 'projection' matrix computed in apply(), which transforms eye coordinates to homogeneous
@@ -80,6 +85,7 @@ lanyard.View.prototype.getModelViewMatrix = function() {};
  */
 lanyard.View.prototype.getProjectionMatrix = function() {};
 
+
 /**
  * Returns a Rectangle representing the window bounds (x, y, width, height) of the viewport, computed in
  * apply(). Implementations of View will configure themselves to render in this viewport.
@@ -87,6 +93,7 @@ lanyard.View.prototype.getProjectionMatrix = function() {};
  * @return {lanyard.util.Rectangle} the current window bounds of the viewport, or null if none exists.
  */
 lanyard.View.prototype.getViewport = function() {};
+
 
 /**
  * Returns the viewing Frustum in eye coordinates, computed in apply(). The Frustum is the portion of viewable
@@ -97,6 +104,7 @@ lanyard.View.prototype.getViewport = function() {};
  */
 lanyard.View.prototype.getFrustum = function() {};
 
+
 /**
  * Returns the viewing Frustum transformed to model coordinates. Model coordinate frustums are useful
  * for performing multiple intersection tests in model coordinates.
@@ -104,6 +112,7 @@ lanyard.View.prototype.getFrustum = function() {};
  * @return {lanyard.geom.Frustum} the current viewing frustum in model coordinates.
  */
 lanyard.View.prototype.getFrustumInModelCoordinates = function() {};
+
 
 /**
  * Returns the horizontal field-of-view angle (the angle of visibility) associated with this View, or
@@ -113,6 +122,7 @@ lanyard.View.prototype.getFrustumInModelCoordinates = function() {};
  */
 lanyard.View.prototype.getFieldOfView = function() {};
 
+
 /**
  * Sets the horiziontal field-of-view angle (the angle of visibillity) associated with this View. This
  * call may be ignored by implementations that do not support a field-of-view.
@@ -120,6 +130,7 @@ lanyard.View.prototype.getFieldOfView = function() {};
  * @param {lanyard.geom.Angle} newFov the new horizontal field-of-view angle.
  */
 lanyard.View.prototype.setFieldOfView = function(newFov) {};
+
 
 /**
  * Generates a new coordinate system in which the View does not move, and model coordinates are reverse
@@ -135,6 +146,7 @@ lanyard.View.prototype.setFieldOfView = function(newFov) {};
  */
 lanyard.View.prototype.pushModelViewReferenceCenter = function(dc, referenceCenter) {};
 
+
 /**
  * Removes the model-view matrix on top of the matrix stack, and restores the matrix now on top. This has
  * the effect of immediately replacing the current OpenGL model-view matrix with the matrix below the top.
@@ -144,12 +156,14 @@ lanyard.View.prototype.pushModelViewReferenceCenter = function(dc, referenceCent
  */
 lanyard.View.prototype.popModelViewMatrix = function(dc) {};
 
+
 /**
  * Returns the eye position in model coordinates.
  *
  * @return {lanyard.geom.Point} the eye position in model coordinates.
  */
 lanyard.View.prototype.getEyePoint = function() {};
+
 
 /**
  * Returns the View y-axis orientation in model coordinates.
@@ -158,12 +172,14 @@ lanyard.View.prototype.getEyePoint = function() {};
  */
 lanyard.View.prototype.getUpVector = function() {};
 
+
 /**
  * Returns the View z-axis orientation in model coordinates.
  *
  * @return {lanyard.geom.Point} the z-axis vector in model coordinates.
  */
 lanyard.View.prototype.getForwardVector = function() {};
+
 
 /**
  * Moves the View eye point to the new polar coordinate (latitude, longitude, elevation).
@@ -172,6 +188,7 @@ lanyard.View.prototype.getForwardVector = function() {};
  * @param {number} newAltitude the new eye altitude (in meters) above the surface.
  */
 lanyard.View.prototype.goToCoordinate = function(newLatLon, newAltitude) {};
+
 
 /**
  * Returns the geographic (latitude, longitude, elevation) coordinate of the View's eye point. Latitude
@@ -182,6 +199,7 @@ lanyard.View.prototype.goToCoordinate = function(newLatLon, newAltitude) {};
  */
 lanyard.View.prototype.getPosition = function() {};
 
+
 /**
  * Moves the View eye point to the new geographic (latitude, longitude) coordinate. Altitude is left
  * unchanged.
@@ -189,6 +207,7 @@ lanyard.View.prototype.getPosition = function() {};
  * @param {lanyard.geom.LatLon} newLatLon the new latitude and longitude of the eye point.
  */
 lanyard.View.prototype.goToLatLon = function(newLatLon) {};
+
 
 /**
  * Returns the View eye altitude (in meters) above the last rendered SectorGeometry, or the analytical
@@ -198,6 +217,7 @@ lanyard.View.prototype.goToLatLon = function(newLatLon) {};
  */
 lanyard.View.prototype.getAltitude = function() {};
 
+
 /**
  * Moves the View eye point to the new altitude (in meters) above the last rendered SectorGeometry,
  * or the analytical Globe, depending on the implementation.
@@ -206,12 +226,14 @@ lanyard.View.prototype.getAltitude = function() {};
  */
 lanyard.View.prototype.goToAltitude = function(newAltitude) {};
 
+
 /**
  * Returns the View's angle from true North.
  *
  * @return {lanyard.geom.Angle} the angle from true North.
  */
 lanyard.View.prototype.getHeading = function() {};
+
 
 /**
  * Sets the View's angle to true North.
@@ -220,12 +242,14 @@ lanyard.View.prototype.getHeading = function() {};
  */
 lanyard.View.prototype.setHeading = function(newHeading) {};
 
+
 /**
  * Returns the View's angle from the plane tangent to the surface.
  *
  * @return {lanyard.geom.Angle} the angle from the surface tangent plane.
  */
 lanyard.View.prototype.getPitch = function() {};
+
 
 /**
  * Sets the View's angle to the plane tangent to the surface.
@@ -234,6 +258,7 @@ lanyard.View.prototype.getPitch = function() {};
  */
 lanyard.View.prototype.setPitch = function(newPitch) {};
 
+
 /**
  * Returns a two-dimensional array containing the range of angles (inclusive) the View may limit
  * its pitch to, if pitch constraints are enabled.
@@ -241,6 +266,7 @@ lanyard.View.prototype.setPitch = function(newPitch) {};
  * @return {Array.<lanyard.geom.Angle>} a two-dimensional array, with the minimum and maximum pitch angles.
  */
 lanyard.View.prototype.getPitchConstraints = function() {};
+
 
 /**
  * Sets the range of angles (inclusive) the View may limit its pitch to, if pitch constraints are
@@ -251,12 +277,14 @@ lanyard.View.prototype.getPitchConstraints = function() {};
  */
 lanyard.View.prototype.setPitchConstraints = function(newMinPitch, newMaxPitch) {};
 
+
 /**
  * Returns true when pitch constraints are enabled.
  *
  * @return {boolean} true when pitch constraints are enabled.
  */
 lanyard.View.prototype.isEnablePitchConstraints = function() {};
+
 
 /**
  * Enable or disable pitch constraints.
@@ -265,12 +293,14 @@ lanyard.View.prototype.isEnablePitchConstraints = function() {};
  */
 lanyard.View.prototype.setEnablePitchConstraints = function(enabled) {};
 
+
 /**
  * Returns the View's angle about its local z-axis.
  *
  * @return {lanyard.geom.Angle} the angle about the local z-axis.
  */
 lanyard.View.prototype.getRoll = function() {};
+
 
 /**
  * Sets the View's angle about its local z-axis.
@@ -279,12 +309,14 @@ lanyard.View.prototype.getRoll = function() {};
  */
 lanyard.View.prototype.setRoll = function(newRoll) {};
 
+
 /**
  * Returns the View's translation in its forward direction.
  *
  * @return {number} translation along the forward direction.
  */
 lanyard.View.prototype.getZoom = function() {};
+
 
 /**
  * Sets the View's translation in its forward direction.
@@ -293,6 +325,7 @@ lanyard.View.prototype.getZoom = function() {};
  */
 lanyard.View.prototype.setZoom = function(newZoom) {};
 
+
 /**
  * Returns a two-dimensional array containing the range of values (inclusive) the View may limit
  * its zoom to, if zoom constraints are enabled.
@@ -300,6 +333,7 @@ lanyard.View.prototype.setZoom = function(newZoom) {};
  * @return {Array.<number>} two-dimensional array, with the minimum and maximum zoom values.
  */
 lanyard.View.prototype.getZoomConstraints = function() {};
+
 
 /**
  * Sets the range of values (inclusive) the View may limit its zoom to, if zoom constraints are
@@ -310,6 +344,7 @@ lanyard.View.prototype.getZoomConstraints = function() {};
  */
 lanyard.View.prototype.setZoomConstraints = function(newMinZoom, newMaxZoom) {};
 
+
 /**
  * Returns true when zoom constraints are enabled.
  *
@@ -317,12 +352,14 @@ lanyard.View.prototype.setZoomConstraints = function(newMinZoom, newMaxZoom) {};
  */
 lanyard.View.prototype.isEnableZoomConstraints = function() {};
 
+
 /**
  * Enable or disable zoom constraints.
  *
  * @param {boolean} enabled trhe when zoom constraints should be enabled, false otherwise.
  */
 lanyard.View.prototype.setEnableZoomConstraints = function(enabled) {};
+
 
 /**
  * Computes a line, in model coordinates, originating from the eye point, and passing throught the point
@@ -334,6 +371,7 @@ lanyard.View.prototype.setEnableZoomConstraints = function(enabled) {};
  */
 lanyard.View.prototype.computeRayFromScreenPoint = function(x, y) {};
 
+
 /**
  * Computes the intersection of a line originating from the eye point (passing throught (x, y)) with the last
  * rendered SectorGeometry, or the last analytical Globe if no rendered geometry exists.
@@ -343,6 +381,7 @@ lanyard.View.prototype.computeRayFromScreenPoint = function(x, y) {};
  * @return {lanyard.geom.Position} the point on the surface in polar coordiantes.
  */
 lanyard.View.prototype.computePositionFromScreenPoint = function(x, y) {};
+
 
 /**
  * Computes the screen-aligned dimension (in meters) that a screen pixel would cover at a given distance
@@ -354,12 +393,14 @@ lanyard.View.prototype.computePositionFromScreenPoint = function(x, y) {};
  */
 lanyard.View.prototype.computePixelSizeAtDistance = function(distance) {};
 
+
 /**
  * Returns the distance from the View's eye point to the horizon point on the last rendered Globe.
  *
  * @return {number} the distance from the eye point to the horizon (in meters).
  */
 lanyard.View.prototype.computeHorizonDistance = function() {};
+
 
 /**
  * Maps a Point in model (cartesian) coordinates to a Point in screen coordinates. The returned x and y
@@ -370,6 +411,7 @@ lanyard.View.prototype.computeHorizonDistance = function() {};
  * @return {lanyard.geom.Point} the mapped screen coordinate Point.
  */
 lanyard.View.prototype.project = function(modelPoint) {};
+
 
 /**
  * Maps a Point in screen coordinates to a Point in model coordinates. The input x and y are relative

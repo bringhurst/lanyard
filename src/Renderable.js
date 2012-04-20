@@ -27,12 +27,15 @@
 
 goog.provide('lanyard.Renderable');
 
+
+
 /**
  * An interface for renderables.
  *
  * @interface
  */
 lanyard.Renderable = function() {};
+
 
 /**
  * Causes this Renderable to render itself using the DrawContext provided. The

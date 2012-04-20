@@ -32,6 +32,8 @@ goog.require('goog.debug.Logger');
 goog.require('lanyard.render.SurfaceTile');
 goog.require('lanyard.util.Texture');
 
+
+
 /**
  * A surface tile renderer.
  *
@@ -39,47 +41,49 @@ goog.require('lanyard.util.Texture');
  * @param {WebGLRenderingContext} gl the current gl context.
  */
 lanyard.render.SurfaceTileRenderer = function(gl) {
-    /** @type {lanyard.util.Texture} */
-    this.alphaTexture = null;
+  /** @type {lanyard.util.Texture} */
+  this.alphaTexture = null;
 
-    /** @type {lanyard.util.Texture} */
-    this.outlineTexture = null;
+  /** @type {lanyard.util.Texture} */
+  this.outlineTexture = null;
 
-    /** @type {boolean} */
-    this.showImageTileOutlines = true;
+  /** @type {boolean} */
+  this.showImageTileOutlines = true;
 
-    /** @type {WebGLRenderingContext} */
-    this.gl = gl;
+  /** @type {WebGLRenderingContext} */
+  this.gl = gl;
 
-    /** @type {Object} */
-    this.transform = {
-        HScale: 0.0,
-        VScale: 0.0,
-        HShift: 0.0,
-        VShift: 0.0
-    };
+  /** @type {Object} */
+  this.transform = {
+    HScale: 0.0,
+    VScale: 0.0,
+    HShift: 0.0,
+    VShift: 0.0
+  };
 
-    /** @type {number} */
-    this.sgWidth = 0;
+  /** @type {number} */
+  this.sgWidth = 0;
 
-    /** @type {number} */
-    this.sgHeight = 0;
+  /** @type {number} */
+  this.sgHeight = 0;
 
-    /** @type {number} */
-    this.sgMinWE = 0;
+  /** @type {number} */
+  this.sgMinWE = 0;
 
-    /** @type {number} */
-    this.sgMinSN = 0;
+  /** @type {number} */
+  this.sgMinSN = 0;
 
-    /** @private */
-    this._logger = goog.debug.Logger.getLogger('lanyard.render.SurfaceTileRenderer');
+  /** @private */
+  this._logger = goog.debug.Logger.getLogger('lanyard.render.SurfaceTileRenderer');
 };
+
 
 /**
  * @const
  * @type {number}
  */
 lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE = 2;
+
 
 /**
  * Precompute the transform.
@@ -88,14 +92,15 @@ lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE = 2;
  * @param {lanyard.SectorGeometry} sg the sector geometry to work with.
  */
 lanyard.render.SurfaceTileRenderer.prototype.preComputeTransform = function(dc, sg) {
-    /** @type {lanyard.geom.Sector} */
-    var st = sg.getSector();
+  /** @type {lanyard.geom.Sector} */
+  var st = sg.getSector();
 
-    this.sgWidth = st.getDeltaLonRadians();
-    this.sgHeight = st.getDeltaLatRadians();
-    this.sgMinWE = st.getMinLongitude().getRadians();
-    this.sgMinSN = st.getMinLatitude().getRadians();
+  this.sgWidth = st.getDeltaLonRadians();
+  this.sgHeight = st.getDeltaLatRadians();
+  this.sgMinWE = st.getMinLongitude().getRadians();
+  this.sgMinSN = st.getMinLatitude().getRadians();
 };
+
 
 /**
  * Compute the transform.
@@ -105,26 +110,27 @@ lanyard.render.SurfaceTileRenderer.prototype.preComputeTransform = function(dc, 
  * @param {Object} t the transformation object.
  */
 lanyard.render.SurfaceTileRenderer.prototype.computeTransform = function(dc, tile, t) {
-    /** @type {lanyard.geom.Sector} */
-    var st = tile.getSector();
+  /** @type {lanyard.geom.Sector} */
+  var st = tile.getSector();
 
-    /** @type {number} */
-    var tileWidth = st.getDeltaLonRadians();
+  /** @type {number} */
+  var tileWidth = st.getDeltaLonRadians();
 
-    /** @type {number} */
-    var tileHeight = st.getDeltaLatRadians();
+  /** @type {number} */
+  var tileHeight = st.getDeltaLatRadians();
 
-    /** @type {number} */
-    var minLon = st.getMinLongitude().getRadians(); // + lonShift.radians;
+  /** @type {number} */
+  var minLon = st.getMinLongitude().getRadians(); // + lonShift.radians;
 
-    /** @type {number} */
-    var minLat = st.getMinLatitude().getRadians(); // + latShift.radians;
+  /** @type {number} */
+  var minLat = st.getMinLatitude().getRadians(); // + latShift.radians;
 
-    t.VScale = tileHeight > 0 ? this.sgHeight / tileHeight : 1;
-    t.HScale = tileWidth > 0 ? this.sgWidth / tileWidth : 1;
-    t.VShift = -(minLat - this.sgMinSN) / this.sgHeight;
-    t.HShift = -(minLon - this.sgMinWE) / this.sgWidth;
+  t.VScale = tileHeight > 0 ? this.sgHeight / tileHeight : 1;
+  t.HScale = tileWidth > 0 ? this.sgWidth / tileWidth : 1;
+  t.VShift = -(minLat - this.sgMinSN) / this.sgHeight;
+  t.HShift = -(minLon - this.sgMinWE) / this.sgWidth;
 };
+
 
 /**
  * Determine if the image tile outline should display.
@@ -132,8 +138,9 @@ lanyard.render.SurfaceTileRenderer.prototype.computeTransform = function(dc, til
  * @return {boolean} true if the outlines should display, false otherwise.
  */
 lanyard.render.SurfaceTileRenderer.prototype.isShowImageTileOutlines = function() {
-    return this.showImageTileOutlines;
+  return this.showImageTileOutlines;
 };
+
 
 /**
  * Set if the tile outlines should display or not.
@@ -141,8 +148,9 @@ lanyard.render.SurfaceTileRenderer.prototype.isShowImageTileOutlines = function(
  * @param {boolean} showImageTileOutlines true if they should display, false otherwise.
  */
 lanyard.render.SurfaceTileRenderer.prototype.setShowImageTileOutlines = function(showImageTileOutlines) {
-    this.showImageTileOutlines = showImageTileOutlines;
+  this.showImageTileOutlines = showImageTileOutlines;
 };
+
 
 /**
  * Render a tile to the current draw context.
@@ -151,15 +159,16 @@ lanyard.render.SurfaceTileRenderer.prototype.setShowImageTileOutlines = function
  * @param {lanyard.render.SurfaceTile} tile the tile to render.
  */
 lanyard.render.SurfaceTileRenderer.prototype.renderTile = function(dc, tile) {
-    //this._logger.fine("renderTile was called.");
+  //this._logger.fine("renderTile was called.");
 
-    if (!tile) {
-        this._logger.fine('Attempted to render a null tile.');
-        return;
-    }
+  if (!tile) {
+    this._logger.fine('Attempted to render a null tile.');
+    return;
+  }
 
-    this.renderTiles(dc, [tile]);
+  this.renderTiles(dc, [tile]);
 };
+
 
 /**
  * Do a render of the tiles.
@@ -168,90 +177,91 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTile = function(dc, tile) {
  * @param {Array.<lanyard.render.SurfaceTile>} tiles the tiles to render.
  */
 lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function(dc, tiles) {
-    //this._logger.fine("renderTiles was called.");
+  //this._logger.fine("renderTiles was called.");
 
-    /** @type {WebGLRenderingContext} */
-    var gl = dc.getGL();
+  /** @type {WebGLRenderingContext} */
+  var gl = dc.getGL();
 
-    if (!this.alphaTexture) {
-        this.initAlphaTexture(
-            lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE,
-            dc
-        );
+  if (!this.alphaTexture) {
+    this.initAlphaTexture(
+        lanyard.render.SurfaceTileRenderer.prototype.DEFAULT_ALPHA_TEXTURE_SIZE,
+        dc
+    );
+  }
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LEQUAL);
+
+  gl.activeTexture(gl.TEXTURE0);
+  //gl.enable(gl.TEXTURE_2D);
+
+  /** @type {lanyard.SectorGeometryList} */
+  var sectorGeoms = dc.getSurfaceGeometry();
+
+  /** @type {number} */
+  var i;
+
+  for (i = 0; i < sectorGeoms.geometryList.length; i = i + 1) {
+    /** @type {Array.<lanyard.render.SurfaceTile>} */
+    var tilesToRender = this.getIntersectingTiles(sectorGeoms.geometryList[i], tiles);
+
+    if (!tilesToRender) {
+      continue;
     }
 
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
+    // Pre-load info to compute the texture transform below
+    this.preComputeTransform(dc, sectorGeoms.geometryList[i]);
 
-    gl.activeTexture(gl.TEXTURE0);
-    //gl.enable(gl.TEXTURE_2D);
+    // For each interesecting tile, establish the texture transform necessary to map the image tile
+    // into the geometry tile's texture space. Use an alpha texture as a mask to prevent changing the
+    // frame buffer where the image tile does not overlap the geometry tile. Render both the image and
+    // alpha textures via multi-texture rendering.
 
-    /** @type {lanyard.SectorGeometryList} */
-    var sectorGeoms = dc.getSurfaceGeometry();
+    // TODO: Figure out how to apply multi-texture to more than one tile at a time, most likely via a
+    // fragment shader.
 
     /** @type {number} */
-    var i;
+    var j;
 
-    for (i = 0; i < sectorGeoms.geometryList.length; i = i + 1) {
-        /** @type {Array.<lanyard.render.SurfaceTile>} */
-        var tilesToRender = this.getIntersectingTiles(sectorGeoms.geometryList[i], tiles);
+    for (j = 0; j < tilesToRender.length; j = j + 1) {
+      gl.activeTexture(gl.TEXTURE0);
 
-        if (!tilesToRender) {
-            continue;
-        }
+      if (tilesToRender[j].bind(dc)) {
 
-        // Pre-load info to compute the texture transform below
-        this.preComputeTransform(dc, sectorGeoms.geometryList[i]);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.uniform1i(dc.getGLSL().getUniformLocation('uSamplerTileImage'), 0);
 
-        // For each interesecting tile, establish the texture transform necessary to map the image tile
-        // into the geometry tile's texture space. Use an alpha texture as a mask to prevent changing the
-        // frame buffer where the image tile does not overlap the geometry tile. Render both the image and
-        // alpha textures via multi-texture rendering.
+        tilesToRender[j].applyInternalTransform(dc);
 
-        // TODO: Figure out how to apply multi-texture to more than one tile at a time, most likely via a
-        // fragment shader.
+        // Determine and apply texture transform to map image tile into geometry tile's texture space
+        this.computeTransform(dc, tilesToRender[j], this.transform);
 
-        /** @type {number} */
-        var j;
+        // Scale it first
+        var textureMatrix = new lanyard.geom.MatrixFour([
+          this.transform.HScale, 0.0, 0.0, 0.0,
+          0.0, this.transform.VScale, 0.0, 0.0,
+          0.0, 0.0, 1.0, 0.0,
+          0.0, 0.0, 0.0, 1.0]);
 
-        for (j = 0; j < tilesToRender.length; j = j + 1) {
-            gl.activeTexture(gl.TEXTURE0);
+        // Now translate it
+        textureMatrix.translate(this.transform.HShift, this.transform.VShift, 0.0);
 
-            if (tilesToRender[j].bind(dc)) {
+        dc.loadMatrix('uTextureMatrix', textureMatrix);
 
-                gl.activeTexture(gl.TEXTURE0);
-                gl.uniform1i(dc.getGLSL().getUniformLocation('uSamplerTileImage'), 0);
+        // We will apply the transform to alpha mask in the vertex shader using texture 0 matrix
+        gl.activeTexture(gl.TEXTURE1);
+        this.alphaTexture.bind();
+        gl.uniform1i(dc.getGLSL().getUniformLocation('uSamplerAlphaMask'), 1);
 
-                tilesToRender[j].applyInternalTransform(dc);
-
-                // Determine and apply texture transform to map image tile into geometry tile's texture space
-                this.computeTransform(dc, tilesToRender[j], this.transform);
-
-                // Scale it first
-                var textureMatrix = new lanyard.geom.MatrixFour([
-                    this.transform.HScale, 0.0, 0.0, 0.0,
-                    0.0, this.transform.VScale, 0.0, 0.0,
-                    0.0, 0.0, 1.0, 0.0,
-                    0.0, 0.0, 0.0, 1.0]);
-
-                // Now translate it
-                textureMatrix.translate(this.transform.HShift, this.transform.VShift, 0.0);
-
-                dc.loadMatrix('uTextureMatrix', textureMatrix);
-
-                // We will apply the transform to alpha mask in the vertex shader using texture 0 matrix
-                gl.activeTexture(gl.TEXTURE1);
-                this.alphaTexture.bind();
-                gl.uniform1i(dc.getGLSL().getUniformLocation('uSamplerAlphaMask'), 1);
-
-                // Render the geometry tile
-                sectorGeoms.geometryList[i].render(dc, 1);
-            }
-        }
+        // Render the geometry tile
+        sectorGeoms.geometryList[i].render(dc, 1);
+      }
     }
+  }
 
-    gl.activeTexture(gl.TEXTURE0);
+  gl.activeTexture(gl.TEXTURE0);
 };
+
 
 /**
  * Find intersecting tiles.
@@ -261,21 +271,22 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function(dc, tiles) {
  * @return {Array.<lanyard.render.SurfaceTile>} the intersecting tiles.
  */
 lanyard.render.SurfaceTileRenderer.prototype.getIntersectingTiles = function(sg, tiles) {
-    /** @type {Array.<lanyard.render.SurfaceTile>} */
-    var intersectingTiles = [];
+  /** @type {Array.<lanyard.render.SurfaceTile>} */
+  var intersectingTiles = [];
 
-    /** @type {number} */
-    var i;
-    for (i = 0; i < tiles.length; i = i + 1) {
-        //this._logger.fine("Check intersect: " + tiles[i].toString());
+  /** @type {number} */
+  var i;
+  for (i = 0; i < tiles.length; i = i + 1) {
+    //this._logger.fine("Check intersect: " + tiles[i].toString());
 
-        if (tiles[i].getSector().intersects(sg.getSector())) {
-            intersectingTiles.push(tiles[i]);
-        }
+    if (tiles[i].getSector().intersects(sg.getSector())) {
+      intersectingTiles.push(tiles[i]);
     }
+  }
 
-    return intersectingTiles;
+  return intersectingTiles;
 };
+
 
 /**
  * Generate an alpha texture of the specified size.
@@ -284,35 +295,36 @@ lanyard.render.SurfaceTileRenderer.prototype.getIntersectingTiles = function(sg,
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function(size, dc) {
-    /** @type {Element} */
-    var textureCanvas = goog.dom.createElement('canvas');
-    textureCanvas.width = textureCanvas.height = size;
+  /** @type {Element} */
+  var textureCanvas = goog.dom.createElement('canvas');
+  textureCanvas.width = textureCanvas.height = size;
 
-    var textureContext = textureCanvas.getContext('2d');
-    var textureImage = textureContext.createImageData(size, size);
+  var textureContext = textureCanvas.getContext('2d');
+  var textureImage = textureContext.createImageData(size, size);
 
-    for (var i = 0; i < size; i += 1) {
-        for (var j = 0; j < size; j += 1) {
-            var index = (j * size + i) * 4;
-            textureImage.data[index + 0] = 255;
-            textureImage.data[index + 1] = 255;
-            textureImage.data[index + 2] = 255;
-            textureImage.data[index + 3] = 255;
-        }
+  for (var i = 0; i < size; i += 1) {
+    for (var j = 0; j < size; j += 1) {
+      var index = (j * size + i) * 4;
+      textureImage.data[index + 0] = 255;
+      textureImage.data[index + 1] = 255;
+      textureImage.data[index + 2] = 255;
+      textureImage.data[index + 3] = 255;
     }
+  }
 
-    textureContext.putImageData(textureImage, 0, 0);
+  textureContext.putImageData(textureImage, 0, 0);
 
-    this.alphaTexture = new lanyard.util.Texture(dc);
-    this.alphaTexture.updateCanvas(textureCanvas);
+  this.alphaTexture = new lanyard.util.Texture(dc);
+  this.alphaTexture.updateCanvas(textureCanvas);
 
-    this.alphaTexture.bind();
+  this.alphaTexture.bind();
 
-    this.alphaTexture.setTexParameteri(this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-    this.alphaTexture.setTexParameteri(this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-    this.alphaTexture.setTexParameteri(this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    this.alphaTexture.setTexParameteri(this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+  this.alphaTexture.setTexParameteri(this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+  this.alphaTexture.setTexParameteri(this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+  this.alphaTexture.setTexParameteri(this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+  this.alphaTexture.setTexParameteri(this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 };
+
 
 /**
  * Generate an outline texture of the specified size.
@@ -321,41 +333,41 @@ lanyard.render.SurfaceTileRenderer.prototype.initAlphaTexture = function(size, d
  * @param {lanyard.DrawContext} dc the current draw context.
  */
 lanyard.render.SurfaceTileRenderer.prototype.initOutlineTexture = function(size, dc) {
-    /** @type {Element} */
-    var textureCanvas = goog.dom.createElement('canvas');
-    textureCanvas.width = textureCanvas.height = size;
+  /** @type {Element} */
+  var textureCanvas = goog.dom.createElement('canvas');
+  textureCanvas.width = textureCanvas.height = size;
 
-    var textureContext = textureCanvas.getContext('2d');
-    var textureImage = textureContext.createImageData(size, size);
+  var textureContext = textureCanvas.getContext('2d');
+  var textureImage = textureContext.createImageData(size, size);
 
-    for (var i = 0; i < size; i += 1) {
-        for (var j = 0; j < size; j += 1) {
-            var index = (j * size + i) * 4;
-            if (i === 0 || j === 0 || i === size - 1 || j === size - 1) {
-                textureImage.data[index + 0] = 255;
-                textureImage.data[index + 1] = 255;
-                textureImage.data[index + 2] = 255;
-                textureImage.data[index + 3] = 255;
-            } else {
-                textureImage.data[index + 0] = 0;
-                textureImage.data[index + 1] = 0;
-                textureImage.data[index + 2] = 0;
-                textureImage.data[index + 3] = 0;
-            }
-        }
+  for (var i = 0; i < size; i += 1) {
+    for (var j = 0; j < size; j += 1) {
+      var index = (j * size + i) * 4;
+      if (i === 0 || j === 0 || i === size - 1 || j === size - 1) {
+        textureImage.data[index + 0] = 255;
+        textureImage.data[index + 1] = 255;
+        textureImage.data[index + 2] = 255;
+        textureImage.data[index + 3] = 255;
+      } else {
+        textureImage.data[index + 0] = 0;
+        textureImage.data[index + 1] = 0;
+        textureImage.data[index + 2] = 0;
+        textureImage.data[index + 3] = 0;
+      }
     }
+  }
 
-    textureContext.putImageData(textureImage, 0, 0);
+  textureContext.putImageData(textureImage, 0, 0);
 
-    this.outlineTexture = new lanyard.util.Texture(dc);
-    this.outlineTexture.updateCanvas(textureCanvas);
+  this.outlineTexture = new lanyard.util.Texture(dc);
+  this.outlineTexture.updateCanvas(textureCanvas);
 
-    this.outlineTexture.bind();
+  this.outlineTexture.bind();
 
-    this.outlineTexture.setTexParameteri(this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-    this.outlineTexture.setTexParameteri(this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-    this.outlineTexture.setTexParameteri(this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    this.outlineTexture.setTexParameteri(this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+  this.outlineTexture.setTexParameteri(this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+  this.outlineTexture.setTexParameteri(this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+  this.outlineTexture.setTexParameteri(this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+  this.outlineTexture.setTexParameteri(this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 };
 
 /* EOF */

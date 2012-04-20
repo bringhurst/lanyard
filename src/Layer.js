@@ -30,12 +30,15 @@ goog.provide('lanyard.Layer');
 goog.require('lanyard.DrawContext');
 goog.require('lanyard.geom.Extent');
 
+
+
 /**
  * An interface for layers.
  *
  * @interface
  */
 lanyard.Layer = function() {};
+
 
 /**
  * Accessor to check if this layer is enabled.
@@ -44,12 +47,14 @@ lanyard.Layer = function() {};
  */
 lanyard.Layer.prototype.isEnabled = function() {};
 
+
 /**
  * Mutator to set if this layer is enabled or not.
  *
  * @param {boolean} enabled if this layer should be enabled or not.
  */
 lanyard.Layer.prototype.setEnabled = function(enabled) {};
+
 
 /**
  * Accessor for this layer's name.
@@ -58,12 +63,14 @@ lanyard.Layer.prototype.setEnabled = function(enabled) {};
  */
 lanyard.Layer.prototype.getName = function() {};
 
+
 /**
  * Mutator for this layer's name.
  *
  * @param {string} name this layer's name.
  */
 lanyard.Layer.prototype.setName = function(name) {};
+
 
 /**
  * Accessor for this layer's opacity.
@@ -72,12 +79,14 @@ lanyard.Layer.prototype.setName = function(name) {};
  */
 lanyard.Layer.prototype.getOpacity = function() {};
 
+
 /**
  * Mutator for this layer's opacity.
  *
  * @param {number} opacity the opacity to set this layer's opacity to.
  */
 lanyard.Layer.prototype.setOpacity = function(opacity) {};
+
 
 /**
  * A way to render this layer to the draw context.

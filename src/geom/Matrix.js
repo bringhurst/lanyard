@@ -30,6 +30,8 @@ goog.provide('lanyard.geom.Matrix');
 goog.require('lanyard.geom.Angle');
 goog.require('lanyard.geom.Point');
 
+
+
 /**
  * The interface Lanyard uses to interact with matrices. This interface can be implemented by an application's
  * own matrix classes. Lanyard will then use instances of those classes for matrix manipulation.
@@ -38,12 +40,14 @@ goog.require('lanyard.geom.Point');
  */
 lanyard.geom.Matrix = function() {};
 
+
 /**
  * Set the matrix to the identity matrix.
  *
  * @return {lanyard.geom.Matrix}
  */
 lanyard.geom.Matrix.prototype.setToIdentity = function() {};
+
 
 /**
  * Rotate this matrix.
@@ -56,6 +60,7 @@ lanyard.geom.Matrix.prototype.setToIdentity = function() {};
  */
 lanyard.geom.Matrix.prototype.rotate = function(rotation, axisX, axisY, axisZ) {};
 
+
 /**
  * Rotate the matrix on the x axis.
  *
@@ -63,6 +68,7 @@ lanyard.geom.Matrix.prototype.rotate = function(rotation, axisX, axisY, axisZ) {
  * @return {lanyard.geom.Matrix}
  */
 lanyard.geom.Matrix.prototype.rotateX = function(rotation) {};
+
 
 /**
  * Rotate the matrix on the y axis.
@@ -72,6 +78,7 @@ lanyard.geom.Matrix.prototype.rotateX = function(rotation) {};
  */
 lanyard.geom.Matrix.prototype.rotateY = function(rotation) {};
 
+
 /**
  * Rotate the matrix on the z axis.
  *
@@ -79,6 +86,7 @@ lanyard.geom.Matrix.prototype.rotateY = function(rotation) {};
  * @return {lanyard.geom.Matrix}
  */
 lanyard.geom.Matrix.prototype.rotateZ = function(rotation) {};
+
 
 /**
  *
@@ -89,6 +97,7 @@ lanyard.geom.Matrix.prototype.rotateZ = function(rotation) {};
  */
 lanyard.geom.Matrix.prototype.translate = function(x, y, z) {};
 
+
 /**
  *
  * @param {lanyard.geom.Point} p
@@ -96,12 +105,14 @@ lanyard.geom.Matrix.prototype.translate = function(x, y, z) {};
  */
 lanyard.geom.Matrix.prototype.translatePoint = function(p) {};
 
+
 /**
  *
  * @param {lanyard.geom.Matrix} m
  * @return {lanyard.geom.Matrix}
  */
 lanyard.geom.Matrix.prototype.multiply = function(m) {};
+
 
 /**
  * Add this matrix to another matrix.
@@ -111,12 +122,14 @@ lanyard.geom.Matrix.prototype.multiply = function(m) {};
  */
 lanyard.geom.Matrix.prototype.add = function(m) {};
 
+
 /**
  * Find the inverse of this matrix.
  *
  * @return {lanyard.geom.Matrix} the inverse of this matrix.
  */
 lanyard.geom.Matrix.prototype.getInverse = function() {};
+
 
 /**
  * Find the transpose of this matrix.
@@ -125,12 +138,14 @@ lanyard.geom.Matrix.prototype.getInverse = function() {};
  */
 lanyard.geom.Matrix.prototype.getTranspose = function() {};
 
+
 /**
  * Find the determiniant of this matrix.
  *
  * @return {number} the determinant.
  */
 lanyard.geom.Matrix.prototype.determinant = function() {};
+
 
 /**
  * Obtain the entries of this matrix.
@@ -139,12 +154,14 @@ lanyard.geom.Matrix.prototype.determinant = function() {};
  */
 lanyard.geom.Matrix.prototype.getEntries = function() {};
 
+
 /**
  * Check if this matrix is orthonormal.
  *
  * @return {boolean} true if this matrix is orthonormal, false otherwise.
  */
 lanyard.geom.Matrix.prototype.isOrthonormal = function() {};
+
 
 /**
  * Transform a point based on this matrix.

@@ -35,6 +35,8 @@ goog.provide('lanyard.geom.LatLon');
 goog.require('lanyard.geom.Angle');
 goog.require('lanyard.geom.Quaternion');
 
+
+
 /**
  * Contructs a new LatLon from two angles.
  *
@@ -44,20 +46,21 @@ goog.require('lanyard.geom.Quaternion');
  * @param {lanyard.geom.Angle} longitude the angle of longitude.
  */
 lanyard.geom.LatLon = function(latitude, longitude) {
-    /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.geom.LatLon');
+  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.geom.LatLon');
 
-    if (!latitude) {
-        this._logger.severe('Attempted to create a LatLon with invalid latitude.');
-    }
+  if (!latitude) {
+    this._logger.severe('Attempted to create a LatLon with invalid latitude.');
+  }
 
-    if (!longitude) {
-        this._logger.severe('Attempted to create a LatLon with invalid longitude.');
-    }
+  if (!longitude) {
+    this._logger.severe('Attempted to create a LatLon with invalid longitude.');
+  }
 
-    /** @private */ this._latitude = latitude;
-    /** @private */ this._longitude = longitude;
+  /** @private */ this._latitude = latitude;
+  /** @private */ this._longitude = longitude;
 };
 goog.exportSymbol('lanyard.geom.LatLon', lanyard.geom.LatLon);
+
 
 /**
  * Factor method for obtaining a new LatLon from two angles expressed in radians.
@@ -67,10 +70,11 @@ goog.exportSymbol('lanyard.geom.LatLon', lanyard.geom.LatLon);
  * @return {lanyard.geom.LatLon} a new LatLon from the given angles, which are expressed as radians.
  */
 lanyard.geom.LatLon.prototype.fromRadians = function(latitude, longitude) {
-    return new lanyard.geom.LatLon(
-        lanyard.geom.Angle.prototype.fromRadians(latitude),
-        lanyard.geom.Angle.prototype.fromRadians(longitude));
+  return new lanyard.geom.LatLon(
+      lanyard.geom.Angle.prototype.fromRadians(latitude),
+      lanyard.geom.Angle.prototype.fromRadians(longitude));
 };
+
 
 /**
  * Factory method for obtaining a new LatLon from two angles expressed in degrees.
@@ -80,10 +84,11 @@ lanyard.geom.LatLon.prototype.fromRadians = function(latitude, longitude) {
  * @return {lanyard.geom.LatLon} a new LatLon from the given angles, which are expressed as degrees.
  */
 lanyard.geom.LatLon.prototype.fromDegrees = function(latitude, longitude) {
-    return new lanyard.geom.LatLon(
-        lanyard.geom.Angle.prototype.fromDegrees(latitude),
-        lanyard.geom.Angle.prototype.fromDegrees(longitude));
+  return new lanyard.geom.LatLon(
+      lanyard.geom.Angle.prototype.fromDegrees(latitude),
+      lanyard.geom.Angle.prototype.fromDegrees(longitude));
 };
+
 
 /**
  * Obtains the latitude of this LatLon.
@@ -91,8 +96,9 @@ lanyard.geom.LatLon.prototype.fromDegrees = function(latitude, longitude) {
  * @return {lanyard.geom.Angle} this LatLon's latitude.
  */
 lanyard.geom.LatLon.prototype.getLatitude = function() {
-    return this._latitude;
+  return this._latitude;
 };
+
 
 /**
  * Obtains the longitude of this LatLon.
@@ -100,8 +106,9 @@ lanyard.geom.LatLon.prototype.getLatitude = function() {
  * @return {lanyard.geom.Angle} this LatLon's longitude.
  */
 lanyard.geom.LatLon.prototype.getLongitude = function() {
-    return this._longitude;
+  return this._longitude;
 };
+
 
 /**
  * Interpolate between two LatLons.
@@ -112,30 +119,31 @@ lanyard.geom.LatLon.prototype.getLongitude = function() {
  * @return {lanyard.geom.LatLon}
  */
 lanyard.geom.LatLon.prototype.interpolate = function(t, begin, end) {
-    if (t < 0) {
-        return begin;
-    } else if (t > 1) {
-        return end;
-    }
+  if (t < 0) {
+    return begin;
+  } else if (t > 1) {
+    return end;
+  }
 
-    var beginQuat = lanyard.geom.Quaternion.prototype.fromEuler(
-        begin.getLongitude().getRadians(),
-        begin.getLatitude().getRadians(), 0);
+  var beginQuat = lanyard.geom.Quaternion.prototype.fromEuler(
+      begin.getLongitude().getRadians(),
+      begin.getLatitude().getRadians(), 0);
 
-    var endQuat = lanyard.geom.Quaternion.prototype.fromEuler(
-        end.getLongitude().getRadians(),
-        end.getLatitude().getRadians(), 0);
+  var endQuat = lanyard.geom.Quaternion.prototype.fromEuler(
+      end.getLongitude().getRadians(),
+      end.getLatitude().getRadians(), 0);
 
-    var q = lanyard.geom.Quaternion.prototype.slerp(beginQuat, endQuat, t);
+  var q = lanyard.geom.Quaternion.prototype.slerp(beginQuat, endQuat, t);
 
-    var v = lanyard.geom.Quaternion.prototype.toEuler(q);
+  var v = lanyard.geom.Quaternion.prototype.toEuler(q);
 
-    if (isNaN(v.getX()) || isNaN(v.getY())) {
-        return null;
-    }
+  if (isNaN(v.getX()) || isNaN(v.getY())) {
+    return null;
+  }
 
-    return lanyard.geom.LatLon.prototype.fromRadians(v.getY(), v.getX());
+  return lanyard.geom.LatLon.prototype.fromRadians(v.getY(), v.getX());
 };
+
 
 /**
  * Obtain a string representation of this LatLon.
@@ -143,7 +151,7 @@ lanyard.geom.LatLon.prototype.interpolate = function(t, begin, end) {
  * @return {string} a string representation of this LatLon.
  */
 lanyard.geom.LatLon.prototype.toString = function() {
-    return '(' + this._latitude.toString() + ', ' + this._longitude.toString() + ')';
+  return '(' + this._latitude.toString() + ', ' + this._longitude.toString() + ')';
 };
 
 /* EOF */

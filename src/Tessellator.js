@@ -27,12 +27,15 @@
 
 goog.provide('lanyard.Tessellator');
 
+
+
 /**
  * An interface for tessellators.
  *
  * @interface
  */
 lanyard.Tessellator = function() {};
+
 
 /**
  * Perform tessellation and return the sector geometries.
