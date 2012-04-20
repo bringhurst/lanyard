@@ -43,7 +43,6 @@ lanyard.globes.Earth = function() {
      * The WGS84 ellipsoid equatorial radius of the earth, in meters.
      *
      * @type {number}
-     * @private
      */
   this.equatorialRadius = 6378137.0;
 
@@ -51,7 +50,6 @@ lanyard.globes.Earth = function() {
      * The WGS84 ellipsoid polar radius, in meters.
      *
      * @type {number}
-     * @private
      */
   this.polarRadius = 6378137.0;
 
@@ -59,22 +57,21 @@ lanyard.globes.Earth = function() {
      * The WGS84 eccentricity squared, semi-major axis.
      *
      * @type {number}
-     * @private
      */
   this.es = 0; //0.00669437999013
 
-  /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
+  this.center = lanyard.geom.Point.prototype.ZERO;
 
   // FIXME: create an earth elevation model.
   // /** @private */ this.elevationModel = new lanyard.globes.EarthElevationModel();
 
-  /** @private */ this.elevationModel = null;
+  this.elevationModel = null;
 
   // call super
   lanyard.globes.EllipsoidalGlobe.call(
       this, this.equatorialRadius, this.polarRadius, this.es, this.elevationModel);
 
-  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.Earth');
+  this._logger = goog.debug.Logger.getLogger('lanyard.globes.Earth');
 };
 goog.exportSymbol('lanyard.globes.Earth', lanyard.globes.Earth);
 goog.inherits(lanyard.globes.Earth, lanyard.globes.EllipsoidalGlobe);

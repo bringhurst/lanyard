@@ -315,7 +315,7 @@ lanyard.render.SurfaceImage.prototype.render = function(dc) {
   gl.enable(gl.CULL_FACE);
 
   //this._logger.fine("Passing things along to the surface tile renderer.");
-  dc.getSurfaceTileRenderer().renderTile(dc, this);
+  return dc.getSurfaceTileRenderer().renderTile(dc, this);
 
   //gl.popAttrib();
 };

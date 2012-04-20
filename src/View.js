@@ -397,11 +397,11 @@ lanyard.View.prototype.computePixelSizeAtDistance = function(distance) {};
 /**
  * Returns the distance from the View's eye point to the horizon point on the last rendered Globe.
  *
- * @param {lanyard.Globe} globe the current globe.                                                                      
- * @param {number} verticalExaggeration                                                                                 
- * @param {lanyard.geom.Point} eyePoint the camera eye point.                                                           
- * @return {number} the distance to the horizon.                                                                        
- */                                                                                                                     
+ * @param {lanyard.Globe} globe the current globe.
+ * @param {number} verticalExaggeration
+ * @param {lanyard.geom.Point} eyePoint the camera eye point.
+ * @return {number} the distance to the horizon.
+ */
 lanyard.View.prototype.computeHorizonDistance = function(globe, verticalExaggeration, eyePoint) {};
 
 

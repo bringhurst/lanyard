@@ -222,7 +222,7 @@ lanyard.geom.Sphere.prototype.render = function(dc) {
 
     gl.glPopAttrib();
 ****/
-    return 0;
+  return 0;
 };
 
 

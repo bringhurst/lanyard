@@ -40,29 +40,26 @@ goog.require('lanyard.layers.AbstractLayer');
 lanyard.layers.RenderableLayer = function(delegateOwner) {
   lanyard.layers.AbstractLayer.call(this);
 
-  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
+  this._logger = goog.debug.Logger.getLogger('lanyard.layers.RenderableLayer');
 
   //this._logger.fine("RenderableLayer constructor was called.");
 
   /**
-     * @private
-     * @type {Array.<lanyard.Renderable>}
-     */
+   * @type {Array.<lanyard.Renderable>}
+   */
   this.renderables = [];
 
   /**
-     * @private
-     * @type {Array.<lanyard.Renderable>}
-     */
+   * @type {Array.<lanyard.Renderable>}
+   */
   this.renderablesOverride = null;
 
   // TODO
   // this.pickSupport = new PickSupport();
 
   /**
-     * @private
-     * @type {lanyard.Layer}
-     */
+   * @type {lanyard.Layer}
+   */
   this.delegateOwner = delegateOwner;
 };
 goog.inherits(lanyard.layers.RenderableLayer, lanyard.layers.AbstractLayer);
@@ -139,7 +136,6 @@ lanyard.layers.RenderableLayer.prototype.getRenderables = function() {
 /**
  * Returns the Iterable of currently active Renderables.
  *
- * @private
  * @return {Array.<lanyard.Renderable>} the currently active Renderables.
  */
 lanyard.layers.RenderableLayer.prototype.getActiveRenderables = function() {

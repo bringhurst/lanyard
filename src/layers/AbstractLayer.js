@@ -36,21 +36,18 @@ goog.provide('lanyard.layers.AbstractLayer');
  * @this {lanyard.layers.AbstractLayer}
  */
 lanyard.layers.AbstractLayer = function() {
-  /** @private */
   this._logger = goog.debug.Logger.getLogger('lanyard.layers.AbstractLayer');
 
   //this._logger.fine("AbstractLayer constructor was called.");
 
   /**
-     * @private
-     * @type {boolean}
-     */
+   * @type {boolean}
+   */
   this.enabled = true;
 
   /**
-     * @private
-     * @type {number}
-     */
+   * @type {number}
+   */
   this.opacity = 1.0;
 
   /**

@@ -43,14 +43,14 @@ goog.require('lanyard.Globe');
  * @param {lanyard.ElevationModel} em the elevation model for this globe.
  */
 lanyard.globes.EllipsoidalGlobe = function(equatorialRadius, polarRadius, es, em) {
-  /** @private */ this._logger = goog.debug.Logger.getLogger('lanyard.globes.EllipsoidalGlobe');
+  this._logger = goog.debug.Logger.getLogger('lanyard.globes.EllipsoidalGlobe');
 
-  /** @private */ this.equatorialRadius = equatorialRadius;
-  /** @private */ this.polarRadius = polarRadius;
-  /** @private */ this.es = es; // assume it's consistent with the two radii
-  /** @private */ this.center = lanyard.geom.Point.prototype.ZERO;
+  this.equatorialRadius = equatorialRadius;
+  this.polarRadius = polarRadius;
+  this.es = es; // assume it's consistent with the two radii
+  this.center = lanyard.geom.Point.prototype.ZERO;
 
-  /** @public */ this.elevationModel = em;
+  this.elevationModel = em;
 };
 goog.exportSymbol('lanyard.globes.EllipsoidalGlobe', lanyard.globes.EllipsoidalGlobe);
 

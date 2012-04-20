@@ -179,6 +179,7 @@ lanyard.geom.MatrixFour.prototype.setToIdentity = function() {
   this._m44 = 1;
 
   this._isOrthonormal = true;
+  return this;
 };
 goog.exportSymbol('lanyard.geom.MatrixFour.prototype.setToIdentity', lanyard.geom.MatrixFour.prototype.setToIdentity);
 
