@@ -245,7 +245,7 @@ lanyard.render.SurfaceTileRenderer.prototype.renderTiles = function(dc, tiles) {
                 gl.uniform1i(dc.getGLSL().getUniformLocation('uSamplerAlphaMask'), 1);
 
                 // Render the geometry tile
-                sectorGeoms.geometryList[i].render(dc);
+                sectorGeoms.geometryList[i].render(dc, 1);
             }
         }
     }

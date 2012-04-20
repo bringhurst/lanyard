@@ -40,6 +40,7 @@ lanyard.Renderable = function() {};
  * information required for drawing.
  *
  * @param {lanyard.DrawContext} dc the DrawContext to be used.
+ * @return {number} the number of triangles rendered.
  */
 lanyard.Renderable.prototype.render = function(dc) {};
 

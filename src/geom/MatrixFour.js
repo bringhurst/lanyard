@@ -206,7 +206,7 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.setOrthonormal',
  * @param {number} axisX the x component of the axis of rotation.
  * @param {number} axisY the y component of the axis of rotation.
  * @param {number} axisZ the z component of the axis of rotation.
- * @return {lanyard.geom.MatrixFour} with the rotation applied.
+ * @return {lanyard.geom.Matrix} with the rotation applied.
  */
 lanyard.geom.MatrixFour.prototype.rotate = function(rotation, axisX, axisY, axisZ) {
     var ll = axisX * axisX + axisY * axisY + axisZ * axisZ;
@@ -382,8 +382,8 @@ goog.exportSymbol('lanyard.geom.MatrixFour.prototype.translatePoint',
 /**
  * Adds this another MatrixFour to this one.
  *
- * @param {lanyard.geom.MatrixFour} m the MatrixFour to add to this one.
- * @return {lanyard.geom.MatrixFour} this MatrixFour, with m added to it.
+ * @param {lanyard.geom.Matrix} m the MatrixFour to add to this one.
+ * @return {lanyard.geom.Matrix} this MatrixFour, with m added to it.
  */
 lanyard.geom.MatrixFour.prototype.add = function(m) {
     var o = m;
@@ -413,8 +413,8 @@ lanyard.geom.MatrixFour.prototype.add = function(m) {
 /**
  * Performs a cross multiplication with another MatrixFour.
  *
- * @param {lanyard.geom.MatrixFour} m another MatrixFour.
- * @return {lanyard.geom.MatrixFour} this, postmultiplied by m.
+ * @param {lanyard.geom.Matrix} m another MatrixFour.
+ * @return {lanyard.geom.Matrix} this, postmultiplied by m.
  */
 lanyard.geom.MatrixFour.prototype.multiply = function(m) {
     var o = m;
