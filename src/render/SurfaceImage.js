@@ -91,7 +91,7 @@ lanyard.render.SurfaceImage = function(imageSource, sector, layer) {
      * @private
      * @type {lanyard.geom.Position}
      */
-    this.referencePosition = new lanyard.geom.Position.prototype.fromLatLon(sector.getCentroid(), 0);
+    this.referencePosition = lanyard.geom.Position.prototype.fromLatLon(sector.getCentroid(), 0);
 
     /**
      * @private

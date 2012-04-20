@@ -626,7 +626,7 @@ lanyard.BasicOrbitView.prototype.computeViewFrustum = function(dc, eyePoint) {
 **/
 
     // Compute the frustum from a standard perspective projection.
-    return new lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView(
+    return lanyard.geom.ViewFrustum.prototype.fromHorizontalFieldOfView(
         fov, viewport.getWidth(), viewport.getHeight(), near, far);
 };
 

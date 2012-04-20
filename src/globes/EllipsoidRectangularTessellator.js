@@ -277,7 +277,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.selectVisibleTiles = fu
 lanyard.globes.EllipsoidRectangularTessellator.prototype.needToSplit = function(dc, tile) {
 
     if (!tile || !(tile.getSector())) {
-        this._logger.error('Attempted to perform a split check on an invalid tile.');
+        this._logger.severe('Attempted to perform a split check on an invalid tile.');
     } else {
     //    this._logger.fine("Split check with sector: " + tile.getSector().toString());
     }
