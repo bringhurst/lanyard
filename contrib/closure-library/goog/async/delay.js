@@ -17,6 +17,7 @@
  * invoked after a delay, especially when that delay is frequently restarted.
  * Examples include delaying before displaying a tooltip, menu hysteresis,
  * idle timers, etc.
+ * @author brenneman@google.com (Shawn Brenneman)
  * @see ../demos/timers.html
  */
 
@@ -97,6 +98,8 @@ goog.async.Delay.prototype.id_ = 0;
 /**
  * Disposes of the object, cancelling the timeout if it is still outstanding and
  * removing all object references.
+ * @override
+ * @protected
  */
 goog.async.Delay.prototype.disposeInternal = function() {
   goog.async.Delay.superClass_.disposeInternal.call(this);

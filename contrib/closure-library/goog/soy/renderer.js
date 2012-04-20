@@ -30,6 +30,8 @@
  * parameter. For example, {@code $ij.dataKey} will evaluate to
  * 'value' with the above injected data.
  *
+ * @author henrywong@google.com (Henry Wong)
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.soy.InjectedDataSupplier');
@@ -111,6 +113,18 @@ goog.soy.Renderer.prototype.renderElement = function(element, template,
                                                      opt_templateData) {
   goog.soy.renderElement(
       element, template, opt_templateData, this.getInjectedData_());
+};
+
+
+/**
+ * Renders a Soy template and returns the output string.
+ *
+ * @param {Function} template The Soy template defining the element's content.
+ * @param {Object=} opt_templateData The data for the template.
+ * @return {string} The return value of rendering the template directly.
+ */
+goog.soy.Renderer.prototype.render = function(template, opt_templateData) {
+  return template(opt_templateData || {}, undefined, this.getInjectedData_());
 };
 
 

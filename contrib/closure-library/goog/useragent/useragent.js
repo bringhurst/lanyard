@@ -57,6 +57,13 @@ goog.userAgent.ASSUME_OPERA = false;
 
 
 /**
+ * @define {boolean} Whether the {@code goog.userAgent.isVersion} function will
+ *     return true for any version.
+ */
+goog.userAgent.ASSUME_ANY_VERSION = false;
+
+
+/**
  * Whether we know the browser engine at compile-time.
  * @type {boolean}
  * @private
@@ -450,7 +457,8 @@ goog.userAgent.isVersionCache_ = {};
  * use the engine's version, not the browser's version number.  For example,
  * Firefox 3.0 corresponds to Gecko 1.9 and Safari 3.0 to Webkit 522.11.
  * Opera and Internet Explorer versions match the product release number.<br>
- * @see <a href="http://en.wikipedia.org/wiki/Safari_(web_browser)">Webkit</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Safari_version_history">
+ *     Webkit</a>
  * @see <a href="http://en.wikipedia.org/wiki/Gecko_engine">Gecko</a>
  *
  * @param {string|number} version The version to check.
@@ -458,14 +466,15 @@ goog.userAgent.isVersionCache_ = {};
  *     the given version.
  */
 goog.userAgent.isVersion = function(version) {
-  return goog.userAgent.isVersionCache_[version] ||
+  return goog.userAgent.ASSUME_ANY_VERSION ||
+      goog.userAgent.isVersionCache_[version] ||
       (goog.userAgent.isVersionCache_[version] =
           goog.string.compareVersions(goog.userAgent.VERSION, version) >= 0);
 };
 
 
 /**
- * Cache for {@link goog.userAgent.isDocumentMode}. 
+ * Cache for {@link goog.userAgent.isDocumentMode}.
  * Browsers document mode version number is unlikely to change during a session
  * we cache the results.
  * @type {Object}
@@ -483,8 +492,8 @@ goog.userAgent.isDocumentModeCache_ = {};
  * @return {boolean} Whether the IE effective document mode is higher or the
  *     same as the given version.
  */
-goog.userAgent.isDocumentMode  = function(documentMode) {
+goog.userAgent.isDocumentMode = function(documentMode) {
   return goog.userAgent.isDocumentModeCache_[documentMode] ||
       (goog.userAgent.isDocumentModeCache_[documentMode] = goog.userAgent.IE &&
-      document.documentMode && document.documentMode >= documentMode);
+      !!document.documentMode && document.documentMode >= documentMode);
 };

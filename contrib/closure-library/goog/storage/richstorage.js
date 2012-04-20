@@ -114,7 +114,7 @@ goog.storage.RichStorage.Wrapper.unwrapIfPossible = function(wrapper) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.RichStorage.prototype.set = function(key, value) {
   goog.base(this, 'set', key,
       goog.storage.RichStorage.Wrapper.wrapIfNecessary(value));
@@ -132,7 +132,6 @@ goog.storage.RichStorage.prototype.set = function(key, value) {
  *
  * @param {string} key The key to get.
  * @return {(!Object|undefined)} The wrapper, or undefined if not found.
- * @protected
  */
 goog.storage.RichStorage.prototype.getWrapper = function(key) {
   var wrapper = goog.storage.RichStorage.superClass_.get.call(this, key);
@@ -143,7 +142,7 @@ goog.storage.RichStorage.prototype.getWrapper = function(key) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.RichStorage.prototype.get = function(key) {
   return goog.storage.RichStorage.Wrapper.unwrapIfPossible(
       this.getWrapper(key));

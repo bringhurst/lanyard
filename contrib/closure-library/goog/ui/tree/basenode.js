@@ -15,6 +15,9 @@
 /**
  * @fileoverview Definition of the goog.ui.tree.BaseNode class.
  *
+ * @author arv@google.com (Erik Arvidsson)
+ * @author eae@google.com (Emil A Eklund)
+ * @author jonp@google.com (Jon Perlow)
  *
  * This is a based on the webfx tree control. It since been updated to add
  * typeahead support, as well as accessibility support using ARIA framework.
@@ -138,7 +141,7 @@ goog.ui.tree.BaseNode.prototype.isUserCollapsible_ = true;
 goog.ui.tree.BaseNode.prototype.depth_ = -1;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.BaseNode.prototype.disposeInternal = function() {
   goog.ui.tree.BaseNode.superClass_.disposeInternal.call(this);
   if (this.tree_) {
@@ -196,7 +199,7 @@ goog.ui.tree.BaseNode.prototype.initAccessibility = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.BaseNode.prototype.createDom = function() {
   var sb = new goog.string.StringBuffer();
   this.toHtml(sb);
@@ -205,7 +208,7 @@ goog.ui.tree.BaseNode.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.BaseNode.prototype.enterDocument = function() {
   goog.ui.tree.BaseNode.superClass_.enterDocument.call(this);
   goog.ui.tree.BaseNode.allNodes[this.getId()] = this;
@@ -213,7 +216,7 @@ goog.ui.tree.BaseNode.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.BaseNode.prototype.exitDocument = function() {
   goog.ui.tree.BaseNode.superClass_.exitDocument.call(this);
   delete goog.ui.tree.BaseNode.allNodes[this.getId()];
@@ -885,16 +888,8 @@ goog.ui.tree.BaseNode.prototype.setAfterLabelHtml = function(html) {
  * @protected
  */
 goog.ui.tree.BaseNode.prototype.getIconHtml = function() {
-  // here we are not using textToHtml since the file names rarerly contains
-  // HTML...
-  var iconClass = this.getCalculatedIconClass();
-  if (iconClass) {
-    return goog.string.buildString('<img class="', iconClass,
-           '" src="', this.config_.cleardotPath, '">');
-  } else {
-    return goog.string.buildString('<img style="display:none"',
-           '" src="', this.config_.cleardotPath, '">');
-  }
+  return '<span style="display:inline-block" class="' +
+      this.getCalculatedIconClass() + '"></span>';
 };
 
 
@@ -910,10 +905,8 @@ goog.ui.tree.BaseNode.prototype.getCalculatedIconClass = goog.abstractMethod;
  * @protected
  */
 goog.ui.tree.BaseNode.prototype.getExpandIconHtml = function() {
-  // here we are not using textToHtml since the file names rarerly contains
-  // HTML...
-  return goog.string.buildString('<img type="expand" class="',
-      this.getExpandIconClass(), '" src="', this.config_.cleardotPath + '">');
+  return '<span type="expand" style="display:inline-block" class="' +
+      this.getExpandIconClass() + '"></span>';
 };
 
 
@@ -1001,8 +994,7 @@ goog.ui.tree.BaseNode.prototype.getExpandIconClass = function() {
  * @return {string} The line style.
  */
 goog.ui.tree.BaseNode.prototype.getLineStyle = function() {
-  return goog.string.buildString(
-      'background-position:', this.getLineStyle2(), ';');
+  return 'background-position:' + this.getLineStyle2() + ';';
 };
 
 

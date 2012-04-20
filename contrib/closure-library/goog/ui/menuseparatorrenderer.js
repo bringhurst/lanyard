@@ -15,6 +15,7 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuSeparator}s.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.MenuSeparatorRenderer');
@@ -66,6 +67,11 @@ goog.ui.MenuSeparatorRenderer.prototype.createDom = function(separator) {
  */
 goog.ui.MenuSeparatorRenderer.prototype.decorate = function(separator,
                                                             element) {
+  // Normally handled in the superclass. But we don't call the superclass.
+  if (element.id) {
+    separator.setId(element.id);
+  }
+
   if (element.tagName == 'HR') {
     // Replace HR with separator.
     var hr = element;

@@ -28,6 +28,7 @@ goog.require('goog.async.Deferred');
 goog.require('goog.fs.DirectoryEntry');
 goog.require('goog.fs.DirectoryEntry.Behavior');
 goog.require('goog.fs.Error');
+goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.testing.fs.File');
@@ -128,6 +129,13 @@ goog.testing.fs.Entry.prototype.getLastModified = goog.abstractMethod;
 
 
 /**
+ * @see {goog.fs.Entry#getMetadata}
+ * @return {!goog.async.Deferred}
+ */
+goog.testing.fs.Entry.prototype.getMetadata = goog.abstractMethod;
+
+
+/**
  * @see {goog.fs.Entry#moveTo}
  * @param {!goog.testing.fs.DirectoryEntry} parent
  * @param {string=} opt_newName
@@ -171,6 +179,15 @@ goog.testing.fs.Entry.prototype.copyTo = function(parent, opt_newName) {
  * @return {!goog.testing.fs.Entry} A shallow copy of this entry object.
  */
 goog.testing.fs.Entry.prototype.clone = goog.abstractMethod;
+
+
+/**
+ * @see {goog.fs.Entry#toUrl}
+ * @return {string}
+ */
+goog.testing.fs.Entry.prototype.toUrl = function(opt_mimetype) {
+  return 'fakefilesystem:' + this.getFullPath();
+};
 
 
 /**
@@ -257,19 +274,31 @@ goog.testing.fs.DirectoryEntry = function(fs, parent, name, children) {
 goog.inherits(goog.testing.fs.DirectoryEntry, goog.testing.fs.Entry);
 
 
-/** @inheritDoc */
+/**
+ * Constructs and returns the metadata object for this entry.
+ * @return {{modificationTime: Date}} The metadata object.
+ * @private
+ */
+goog.testing.fs.DirectoryEntry.prototype.getMetadata_ = function() {
+  return {
+    'modificationTime': new Date(this.lastModifiedTimestamp_)
+  };
+};
+
+
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.isFile = function() {
   return false;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.isDirectory = function() {
   return true;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.getLastModified = function() {
   var msg = 'reading last modified date for ' + this.getFullPath();
   return this.checkNotDeleted(msg).
@@ -277,14 +306,22 @@ goog.testing.fs.DirectoryEntry.prototype.getLastModified = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
+goog.testing.fs.DirectoryEntry.prototype.getMetadata = function() {
+  var msg = 'reading metadata for ' + this.getFullPath();
+  return this.checkNotDeleted(msg).
+      addCallback(function() {return this.getMetadata_()});
+};
+
+
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.clone = function() {
   return new goog.testing.fs.DirectoryEntry(
       this.getFileSystem(), this.parent, this.getName(), this.children);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.remove = function() {
   if (!goog.object.isEmpty(this.children)) {
     var d = new goog.async.Deferred();
@@ -423,7 +460,7 @@ goog.testing.fs.DirectoryEntry.prototype.createDirectorySync = function(path) {
 goog.testing.fs.DirectoryEntry.prototype.getEntry_ = function(
     path, behavior, isFile, createFn) {
   // Filter out leading, trailing, and duplicate slashes.
-  var components = goog.array.filter(path.split('/'), goog.identityFunction);
+  var components = goog.array.filter(path.split('/'), goog.functions.identity);
 
   var basename = /** @type {string} */ (goog.array.peek(components)) || '';
   var dir = goog.string.startsWith(path, '/') ?
@@ -520,7 +557,8 @@ goog.testing.fs.DirectoryEntry.prototype.listDirectory = function() {
  * @return {!goog.async.Deferred}
  */
 goog.testing.fs.DirectoryEntry.prototype.createPath =
-    goog.fs.DirectoryEntry.prototype.createPath;
+    // This isn't really type-safe.
+    /** @type {!Function} */ (goog.fs.DirectoryEntry.prototype.createPath);
 
 
 
@@ -544,23 +582,32 @@ goog.testing.fs.FileEntry = function(fs, parent, name, data) {
    * @private
    */
   this.file_ = new goog.testing.fs.File(name, new Date(goog.now()), data);
+
+  /**
+   * The metadata for file.
+   * @type {{modificationTime: Date}}
+   * @private
+   */
+  this.metadata_ = {
+    'modificationTime': this.file_.lastModifiedDate
+  };
 };
 goog.inherits(goog.testing.fs.FileEntry, goog.testing.fs.Entry);
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.FileEntry.prototype.isFile = function() {
   return true;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.FileEntry.prototype.isDirectory = function() {
   return false;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.FileEntry.prototype.clone = function() {
   return new goog.testing.fs.FileEntry(
       this.getFileSystem(), this.parent,
@@ -568,10 +615,19 @@ goog.testing.fs.FileEntry.prototype.clone = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.FileEntry.prototype.getLastModified = function() {
   return this.file().addCallback(function(file) {
     return file.lastModifiedDate;
+  });
+};
+
+
+/** @override */
+goog.testing.fs.FileEntry.prototype.getMetadata = function() {
+  var msg = 'getting metadata for ' + this.getFullPath();
+  return this.checkNotDeleted(msg).addCallback(function() {
+    return this.metadata_;
   });
 };
 

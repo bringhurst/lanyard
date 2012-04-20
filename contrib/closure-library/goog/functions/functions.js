@@ -61,7 +61,8 @@ goog.functions.NULL = goog.functions.constant(null);
  * into it.
  * @param {*=} opt_returnValue The single value that will be returned.
  * @param {...*} var_args Optional trailing arguments. These are ignored.
- * @return {*} The first argument passed in, or undefined if nothing was passed.
+ * @return {?} The first argument passed in, or undefined if nothing was passed.
+ *     We can't know the type -- just pass it along without type.
  */
 goog.functions.identity = function(opt_returnValue, var_args) {
   return opt_returnValue;
@@ -174,7 +175,7 @@ goog.functions.and = function(var_args) {
  * Creates a function that returns true if any of its components evaluates
  * to true. The components are evaluated in order, and the evaluation will be
  * short-circuited as soon as a function returns true.
- * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) || g(x).
+ * For example, (goog.functions.or(f, g))(x) is equivalent to f(x) || g(x).
  * @param {...Function} var_args A list of functions.
  * @return {!Function} A function that ORs its component functions.
  */
@@ -212,7 +213,7 @@ goog.functions.not = function(f) {
  * Callers should cast the result to the appropriate type for proper type
  * checking by the compiler.
  * @param {!Function} constructor The constructor for the Object.
- * @param {...*} var_args The arguments to be passed to the contructor.
+ * @param {...*} var_args The arguments to be passed to the constructor.
  * @return {!Object} A new instance of the class given in {@code constructor}.
  */
 goog.functions.create = function(constructor, var_args) {
@@ -224,7 +225,7 @@ goog.functions.create = function(constructor, var_args) {
   // 'obj instanceof constructor' will be true.
   var obj = new temp();
 
-  // obj is intialized by constructor.
+  // obj is initialized by constructor.
   // arguments is only array-like so lacks shift(), but can be used with
   // the Array prototype function.
   constructor.apply(obj, Array.prototype.slice.call(arguments, 1));

@@ -16,6 +16,7 @@
  * @fileoverview This file implements a wrapper around the Gears WorkerPool
  * with some extra features.
  *
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.gears.WorkerPool');
@@ -195,9 +196,7 @@ goog.gears.WorkerPool.prototype.unregisterWorker = function(worker) {
 };
 
 
-/**
- * Disposes of the object.
- */
+/** @override */
 goog.gears.WorkerPool.prototype.disposeInternal = function() {
   goog.gears.WorkerPool.superClass_.disposeInternal.call(this);
   this.workerPool_ = null;

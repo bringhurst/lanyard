@@ -128,6 +128,15 @@ goog.ui.AutoComplete = function(matcher, renderer, selectionHandler) {
    * @private
    */
   this.dismissTimer_ = null;
+
+  /**
+   * Mapping from text input element to the anchor element. If the
+   * mapping does not exist, the input element will act as the anchor
+   * element.
+   * @type {Object.<Element>}
+   * @private
+   */
+  this.inputToAnchorMap_ = {};
 };
 goog.inherits(goog.ui.AutoComplete, goog.events.EventTarget);
 
@@ -179,7 +188,14 @@ goog.ui.AutoComplete.prototype.triggerSuggestionsOnUpdate_ = false;
  * @enum {string}
  */
 goog.ui.AutoComplete.EventType = {
+
   /** A row has been highlighted by the renderer */
+  ROW_HILITE: 'rowhilite',
+
+  // Note: The events below are used for internal autocomplete events only and
+  // should not be used in non-autocomplete code.
+
+  /** A row has been mouseovered and should be highlighted by the renderer. */
   HILITE: 'hilite',
 
   /** A row has been selected by the renderer */
@@ -203,7 +219,7 @@ goog.ui.AutoComplete.EventType = {
   /**
    * The list of suggestions has been updated, usually because either the list
    * has opened, or because the user has typed another character and the
-   * suggestions have been updated.
+   * suggestions have been updated, or the user has dismissed the autocomplete.
    */
   SUGGESTIONS_UPDATE: 'suggestionsupdate'
 };
@@ -423,6 +439,16 @@ goog.ui.AutoComplete.prototype.hiliteId = function(id) {
 
 
 /**
+ * Hilites the index, if it's valid, otherwise does nothing.
+ * @param {number} index The row's index.
+ * @return {boolean} Whether the index was hilited.
+ */
+goog.ui.AutoComplete.prototype.hiliteIndex = function(index) {
+  return this.hiliteId(this.getIdOfIndex_(index));
+};
+
+
+/**
  * If there are any current matches, this passes the hilited row data to
  * <code>selectionHandler.selectRow()</code>
  * @return {boolean} Whether there are any current matches.
@@ -481,6 +507,7 @@ goog.ui.AutoComplete.prototype.dismiss = function() {
   window.clearTimeout(this.dismissTimer_);
   this.dismissTimer_ = null;
   this.renderer_.dismiss();
+  this.dispatchEvent(goog.ui.AutoComplete.EventType.SUGGESTIONS_UPDATE);
 };
 
 
@@ -495,23 +522,41 @@ goog.ui.AutoComplete.prototype.dismissOnDelay = function() {
 
 
 /**
- * Call a dismiss after a delay, if there's already a dismiss active, ignore.
+ * Cancels any delayed dismiss events immediately.
+ * @return {boolean} Whether a delayed dismiss was cancelled.
+ * @private
  */
-goog.ui.AutoComplete.prototype.cancelDelayedDismiss = function() {
-  window.setTimeout(goog.bind(function() {
-    if (this.dismissTimer_) {
-      window.clearTimeout(this.dismissTimer_);
-      this.dismissTimer_ = null;
-    }
-  }, this), 10);
+goog.ui.AutoComplete.prototype.immediatelyCancelDelayedDismiss_ = function() {
+  if (this.dismissTimer_) {
+    window.clearTimeout(this.dismissTimer_);
+    this.dismissTimer_ = null;
+    return true;
+  }
+  return false;
 };
 
 
 /**
- * Cleans up the autocomplete object.
+ * Cancel the active delayed dismiss if there is one.
  */
+goog.ui.AutoComplete.prototype.cancelDelayedDismiss = function() {
+  // Under certain circumstances a cancel event occurs immediately prior to a
+  // delayedDismiss event that it should be cancelling. To handle this situation
+  // properly, a timer is used to stop that event.
+  // Using only the timer creates undesirable behavior when the cancel occurs
+  // less than 10ms before the delayed dismiss timout ends. If that happens the
+  // clearTimeout() will occur too late and have no effect.
+  if (!this.immediatelyCancelDelayedDismiss_()) {
+    window.setTimeout(goog.bind(this.immediatelyCancelDelayedDismiss_, this),
+        10);
+  }
+};
+
+
+/** @override */
 goog.ui.AutoComplete.prototype.disposeInternal = function() {
   goog.ui.AutoComplete.superClass_.disposeInternal.call(this);
+  delete this.inputToAnchorMap_;
   this.renderer_.dispose();
   this.selectionHandler_.dispose();
   this.matcher_ = null;
@@ -534,13 +579,13 @@ goog.ui.AutoComplete.prototype.disposeInternal = function() {
  *
  * @param {string} matchedToken Token that corresponds with the rows.
  * @param {!Array} rows Set of data that match the given token.
- * @param {boolean=} opt_preserveHilited If true, keeps the currently hilited
- *     (by index) element hilited.
- *
+ * @param {(boolean|goog.ui.AutoComplete.RenderOptions)=} opt_options If true,
+ *     keeps the currently hilited (by index) element hilited. If false not.
+ *     Otherwise a RenderOptions object.
  * @private
  */
-goog.ui.AutoComplete.prototype.matchListener_ = function(matchedToken, rows,
-    opt_preserveHilited) {
+goog.ui.AutoComplete.prototype.matchListener_ =
+    function(matchedToken, rows, opt_options) {
   if (this.token_ != matchedToken) {
     // Matcher's response token doesn't match current token.
     // This is probably an async response that came in after
@@ -548,20 +593,25 @@ goog.ui.AutoComplete.prototype.matchListener_ = function(matchedToken, rows,
     return;
   }
 
-  this.renderRows(rows, opt_preserveHilited);
+  this.renderRows(rows, opt_options);
 };
 
 
 /**
  * Renders the rows and adds highlighting.
  * @param {!Array} rows Set of data that match the given token.
- * @param {boolean=} opt_preserveHilited If true, keeps the currently hilited
- *     (by index) element hilited.
+ * @param {(boolean|goog.ui.AutoComplete.RenderOptions)=} opt_options If true,
+ *     keeps the currently hilited (by index) element hilited. If false not.
+ *     Otherwise a RenderOptions object.
  */
-goog.ui.AutoComplete.prototype.renderRows = function(rows,
-                                                     opt_preserveHilited) {
-  var indexToHilite = opt_preserveHilited ?
-      this.getIndexOfId(this.hiliteId_) : null;
+goog.ui.AutoComplete.prototype.renderRows = function(rows, opt_options) {
+  // The optional argument should be a RenderOptions object.  It can be a
+  // boolean for backwards compatibility, defaulting to false.
+  var optionsObj = goog.typeOf(opt_options) == 'object' && opt_options;
+
+  var preserveHilited =
+      optionsObj ? optionsObj.getPreserveHilited() : opt_options;
+  var indexToHilite = preserveHilited ? this.getIndexOfId(this.hiliteId_) : -1;
 
   // Current token matches the matcher's response token.
   this.firstRowId_ += this.rows_.length;
@@ -573,10 +623,22 @@ goog.ui.AutoComplete.prototype.renderRows = function(rows,
       data: rows[i]
     });
   }
+
+  var anchor = null;
+  if (this.target_) {
+    anchor = this.inputToAnchorMap_[goog.getUid(this.target_)] || this.target_;
+  }
+  this.renderer_.setAnchorElement(anchor);
   this.renderer_.renderRows(rendRows, this.token_, this.target_);
 
-  if (this.autoHilite_ && rendRows.length != 0 && this.token_) {
-    var idToHilite = indexToHilite != null ?
+  var autoHilite = this.autoHilite_;
+  if (optionsObj && optionsObj.getAutoHilite() !== undefined) {
+    autoHilite = optionsObj.getAutoHilite();
+  }
+  if ((autoHilite || indexToHilite >= 0) &&
+      rendRows.length != 0 &&
+      this.token_) {
+    var idToHilite = indexToHilite >= 0 ?
         this.getIdOfIndex_(indexToHilite) : this.firstRowId_;
     this.hiliteId(idToHilite);
   } else {
@@ -637,4 +699,36 @@ goog.ui.AutoComplete.prototype.detachInputs = function(var_args) {
   var inputHandler = /** @type {goog.ui.AutoComplete.InputHandler} */
       (this.selectionHandler_);
   inputHandler.detachInputs.apply(inputHandler, arguments);
+
+  // Remove mapping from input to anchor if one exists.
+  goog.array.forEach(arguments, function(input) {
+    goog.object.remove(this.inputToAnchorMap_, goog.getUid(input));
+  }, this);
+};
+
+
+/**
+ * Attaches the autocompleter to a text area or text input element
+ * with an anchor element. The anchor element is the element the
+ * autocomplete box will be positioned against.
+ * @param {Element} inputElement The input element. May be 'textarea',
+ *     text 'input' element, or any other element that exposes similar
+ *     interface.
+ * @param {Element} anchorElement The anchor element.
+ */
+goog.ui.AutoComplete.prototype.attachInputWithAnchor = function(
+    inputElement, anchorElement) {
+  this.inputToAnchorMap_[goog.getUid(inputElement)] = anchorElement;
+  this.attachInputs(inputElement);
+};
+
+
+/**
+ * Forces an update of the display.
+ * @param {boolean=} opt_force Whether to force an update.
+ */
+goog.ui.AutoComplete.prototype.update = function(opt_force) {
+  var inputHandler = /** @type {goog.ui.AutoComplete.InputHandler} */
+      (this.selectionHandler_);
+  inputHandler.update(opt_force);
 };

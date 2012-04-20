@@ -554,7 +554,7 @@ goog.testing.MultiTestRunner.prototype.resetProgressDom_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.MultiTestRunner.prototype.createDom = function() {
   goog.testing.MultiTestRunner.superClass_.createDom.call(this);
   var el = this.getElement();
@@ -612,7 +612,7 @@ goog.testing.MultiTestRunner.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.MultiTestRunner.prototype.disposeInternal = function() {
   goog.testing.MultiTestRunner.superClass_.disposeInternal.call(this);
   this.tableSorter_.dispose();
@@ -764,7 +764,7 @@ goog.testing.MultiTestRunner.prototype.finish_ = function() {
 
   // Remove all the test frames
   while (this.getChildCount() > 0) {
-    this.removeChildAt(0, true).disposeInternal();
+    this.removeChildAt(0, true).dispose();
   }
 
   // Compute tests that did not finish before the stop button was hit.
@@ -845,8 +845,8 @@ goog.testing.MultiTestRunner.prototype.drawTimeHistogram_ = function() {
  * Draws a stats histogram.
  * @param {string} statsField Field of the stats object to graph.
  * @param {number} bucketSize The size for the histogram's buckets.
- * @param {function(*, ...[*]): *} valueTransformFn Function for transforming
- *     the x-labels value for display.
+ * @param {function(number, ...[*]): *} valueTransformFn Function for
+ *     transforming the x-labels value for display.
  * @param {number} width The width in pixels of the graph.
  * @param {string} title The graph's title.
  * @private
@@ -1280,9 +1280,7 @@ goog.testing.MultiTestRunner.TestFrame.prototype.lastStateTime_ = 0;
 goog.testing.MultiTestRunner.TestFrame.prototype.currentState_ = 0;
 
 
-/**
- * Disposes the test frame.
- */
+/** @override */
 goog.testing.MultiTestRunner.TestFrame.prototype.disposeInternal = function() {
   goog.testing.MultiTestRunner.TestFrame.superClass_.disposeInternal.call(this);
   this.dom_.removeNode(this.iframeEl_);

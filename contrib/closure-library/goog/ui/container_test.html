@@ -7,6 +7,7 @@ Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
+Author:  attila@google.com (Attila Bodis)
 -->
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -228,7 +229,7 @@ See the COPYING file for details.
     }
     goog.inherits(ListContainer, goog.ui.Container);
 
-    /** @inheritDoc */
+    /** @override */
     ListContainer.prototype.createDom = function() {
       ListContainer.superClass_.createDom.call(this);
       var ul = this.getDomHelper().createDom('ul');
@@ -262,7 +263,7 @@ See the COPYING file for details.
     }
     goog.inherits(KeyHandlingContainer, goog.ui.Container);
 
-    /** @inheritDoc */
+    /** @override */
     KeyHandlingContainer.prototype.handleKeyEventInternal = function() {
       this.keyEventsHandled++;
       return false;

@@ -54,6 +54,15 @@ goog.net.ChannelDebug.prototype.getLogger = function() {
 
 
 /**
+ * Logs that the browser went offline during the lifetime of a request.
+ * @param {goog.Uri} url The URL being requested.
+ */
+goog.net.ChannelDebug.prototype.browserOfflineResponse = function(url) {
+  this.info('BROWSER_OFFLINE: ' + url);
+};
+
+
+/**
  * Logs an XmlHttp request..
  * @param {string} verb The request type (GET/POST).
  * @param {goog.Uri} uri The request destination.
@@ -210,8 +219,8 @@ goog.net.ChannelDebug.prototype.redactResponse_ = function(responseText) {
       responseText == goog.net.BrowserChannel.MAGIC_RESPONSE_COOKIE) {
     return responseText;
   }
+  /** @preserveTry */
   try {
-    /** @preserveTry */
     var responseArray = goog.json.unsafeParse(responseText);
 
     for (var i = 0; i < responseArray.length; i++) {
@@ -222,8 +231,7 @@ goog.net.ChannelDebug.prototype.redactResponse_ = function(responseText) {
 
     return goog.json.serialize(responseArray);
   } catch (e) {
-    this.debug('Exception parsing expected JS array - ' +
-                                'probably was not JS');
+    this.debug('Exception parsing expected JS array - probably was not JS');
     return responseText;
   }
 };

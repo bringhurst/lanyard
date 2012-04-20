@@ -444,9 +444,7 @@ goog.fx.DragListGroup.prototype.init = function() {
 };
 
 
-/**
- * Disposes of the DragListGroup.
- */
+/** @override */
 goog.fx.DragListGroup.prototype.disposeInternal = function() {
   this.eventHandler_.dispose();
 
@@ -733,6 +731,11 @@ goog.fx.DragListGroup.prototype.handleDragEnd_ = function(dragEvent) {
   if (!this.updateWhileDragging_) {
     this.insertCurrHoverItem();
   }
+
+  // The DRAGEND handler may need the new order of the list items. Clean up the
+  // garbage.
+  // TODO(user): Regression test.
+  this.cleanupDragDom_();
 
   this.dispatchEvent(
       new goog.fx.DragListGroupEvent(

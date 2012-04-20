@@ -16,6 +16,7 @@
  * @fileoverview A palette control.  A palette is a grid that the user can
  * highlight or select via the keyboard or the mouse.
  *
+ * @author attila@google.com (Attila Bodis)
  * @see ../demos/palette.html
  */
 
@@ -88,7 +89,7 @@ goog.ui.Palette.prototype.selectionModel_ = null;
 // goog.ui.Component / goog.ui.Control implementation.
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Palette.prototype.disposeInternal = function() {
   goog.ui.Palette.superClass_.disposeInternal.call(this);
 

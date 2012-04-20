@@ -639,7 +639,7 @@ goog.ui.SplitPane.prototype.setFirstComponentSize = function(opt_size) {
 
 /**
  * Dummy object to work around compiler warning.
- * TODO(user): Fix compiler or refactor to not depend on resize()
+ * TODO(arv): Fix compiler or refactor to not depend on resize()
  * @private
  * @type {Object}
  */
@@ -843,7 +843,7 @@ goog.ui.SplitPane.prototype.handleDoubleClick_ = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.SplitPane.prototype.disposeInternal = function() {
   goog.ui.SplitPane.superClass_.disposeInternal.call(this);
 

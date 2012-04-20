@@ -30,6 +30,7 @@ goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.Overflow');
 goog.require('goog.ui.Component');
+goog.require('goog.ui.OfflineStatusCard.EventType');
 goog.require('goog.ui.Popup');
 
 
@@ -287,7 +288,7 @@ goog.ui.OfflineStatusComponent.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineStatusComponent.prototype.enterDocument = function() {
   goog.ui.OfflineStatusComponent.superClass_.enterDocument.call(this);
 
@@ -485,14 +486,8 @@ goog.ui.OfflineStatusComponent.prototype.performStatusAction = function(opt_evt,
       var popup = this.getPopupInternal();
       var anchorEl = opt_element || this.getElement();
       var pos = new goog.positioning.AnchoredPosition(
-          anchorEl, goog.positioning.Corner.BOTTOM_START);
-
-      // Override to pass in overflow
-      pos.reposition = function(element, popupCorner, opt_margin) {
-        goog.positioning.positionAtAnchor(this.element, this.corner, element,
-            popupCorner, null, opt_margin, goog.positioning.Overflow.ADJUST_X);
-      };
-
+          anchorEl, goog.positioning.Corner.BOTTOM_START,
+          goog.positioning.Overflow.ADJUST_X);
       popup.setPosition(pos);
       popup.setElement(card.getElement());
     }
@@ -524,7 +519,7 @@ goog.ui.OfflineStatusComponent.prototype.getPopupInternal = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineStatusComponent.prototype.disposeInternal = function() {
   goog.ui.OfflineStatusComponent.superClass_.disposeInternal.call(this);
 

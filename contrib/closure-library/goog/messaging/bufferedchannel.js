@@ -91,7 +91,8 @@ goog.messaging.BufferedChannel = function(messageChannel, opt_interval) {
       opt_interval || goog.messaging.BufferedChannel.DEFAULT_INTERVAL_MILLIS_);
 
   this.timer_.start();
-  goog.events.listen(this.timer_, goog.Timer.TICK, this.onTick_, false, this);
+  goog.events.listen(
+      this.timer_, goog.Timer.TICK, this.sendReadyPing_, false, this);
 
   this.controlChannel_.registerService(
       goog.messaging.BufferedChannel.PEER_READY_SERVICE_NAME_,
@@ -144,7 +145,7 @@ goog.messaging.BufferedChannel.USER_CHANNEL_NAME_ = 'user';
 goog.messaging.BufferedChannel.CONTROL_CHANNEL_NAME_ = 'control';
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.connect = function(opt_connectCb) {
   if (opt_connectCb) {
     opt_connectCb();
@@ -152,7 +153,7 @@ goog.messaging.BufferedChannel.prototype.connect = function(opt_connectCb) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.isConnected = function() {
   return true;
 };
@@ -182,23 +183,16 @@ goog.messaging.BufferedChannel.prototype.logger_ = goog.debug.Logger.getLogger(
  * ready ping to the peer and shutting down the loop if we've received a ping
  * ourselves.
  *
- * @param {goog.events.Event} unusedEvent Event we're handling.
  * @private
  */
-goog.messaging.BufferedChannel.prototype.onTick_ = function(unusedEvent) {
-  // Must always send before stopping the notification loop.  Otherwise, we will
-  // commonly fail to transmit to our peer that we're ready because we received
-  // their ready ping between two of ours.
+goog.messaging.BufferedChannel.prototype.sendReadyPing_ = function() {
   try {
     this.controlChannel_.send(
         goog.messaging.BufferedChannel.PEER_READY_SERVICE_NAME_,
-        /* payload */ '');
+        /* payload */ this.isPeerReady() ? '1' : '');
   } catch (e) {
     this.timer_.stop();  // So we don't keep calling send and re-throwing.
     throw e;
-  }
-  if (this.isPeerReady()) {
-    this.timer_.stop();
   }
 };
 
@@ -212,14 +206,14 @@ goog.messaging.BufferedChannel.prototype.onTick_ = function(unusedEvent) {
 goog.messaging.BufferedChannel.prototype.peerReady_;
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.registerService = function(
     serviceName, callback, opt_objectPayload) {
   this.userChannel_.registerService(serviceName, callback, opt_objectPayload);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.registerDefaultService = function(
     callback) {
   this.userChannel_.registerDefaultService(callback);
@@ -252,13 +246,28 @@ goog.messaging.BufferedChannel.prototype.send = function(serviceName, payload) {
  * Marks the channel's peer as ready, then sends buffered messages and nulls the
  * buffer.  Subsequent calls to setPeerReady_ have no effect.
  *
+ * @param {string} peerKnowsWeKnowItsReady Passed by the peer to indicate
+ *     whether it knows that we've received its ping and that it's ready.
+ *     Non-empty if true, empty if false.
  * @private
  */
-goog.messaging.BufferedChannel.prototype.setPeerReady_ = function() {
+goog.messaging.BufferedChannel.prototype.setPeerReady_ = function(
+    peerKnowsWeKnowItsReady) {
+  if (peerKnowsWeKnowItsReady) {
+    this.timer_.stop();
+  } else {
+    // Our peer doesn't know we're ready, so restart (or continue) pinging.
+    // Restarting may be needed if the peer iframe was reloaded after the
+    // connection was first established.
+    this.timer_.start();
+  }
+
   if (this.peerReady_) {
     return;
   }
   this.peerReady_ = true;
+  // Send one last ping so that the peer knows we know it's ready.
+  this.sendReadyPing_();
   for (var i = 0; i < this.buffer_.length; i++) {
     var message = this.buffer_[i];
     goog.messaging.BufferedChannel.prototype.logger_.fine(
@@ -269,7 +278,7 @@ goog.messaging.BufferedChannel.prototype.setPeerReady_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.disposeInternal = function() {
   goog.dispose(this.multiChannel_);
   goog.dispose(this.timer_);

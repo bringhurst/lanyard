@@ -21,6 +21,7 @@
  * Based on the Custom Buttons 3.1 visual specification, see
  * http://go/custombuttons
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/imagelessbutton.html
  */
 
@@ -87,7 +88,7 @@ goog.ui.ImagelessButtonRenderer.prototype.createDom =
     goog.ui.ImagelessButtonRenderer.superClass_.createDom;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ImagelessButtonRenderer.prototype.getContentElement = function(
     element) {
   return (/** @type {Element} */ element && element.firstChild &&

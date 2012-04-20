@@ -13,7 +13,6 @@ See the COPYING file for details.
   Closure Unit Tests - goog.messaging.PortChannel
 </title>
 <script src="../base.js"></script>
-<script src="../../../third_party/closure/goog/deps.js"></script>
 <script>
 goog.require('goog.dom');
 goog.require('goog.events.EventTarget');
@@ -42,6 +41,9 @@ var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
 asyncTestCase.stepTimeout = 3 * 1000;
 
 function setUpPage() {
+  if (!('Worker' in goog.global)) {
+    return;
+  }
   workerChannel = new goog.messaging.PortChannel(
       new Worker('testdata/portchannel_worker.js'));
 }
@@ -299,6 +301,7 @@ function testWindowWontSendToWrongOrigin() {
     iframeChannel.send('ping', 'fizzbang');
 
     setTimeout(function() {
+      iframeChannel.dispose();
       asyncTestCase.continueTesting();
     }, asyncTestCase.stepTimeout - 500);
     asyncTestCase.waitForAsync('window response');
@@ -320,6 +323,7 @@ function testWindowWontReceiveFromWrongOrigin() {
     iframeChannel.send('ping', 'fizzbang');
 
     setTimeout(function() {
+      iframeChannel.dispose();
       asyncTestCase.continueTesting();
     }, asyncTestCase.stepTimeout - 500);
     asyncTestCase.waitForAsync('window response');

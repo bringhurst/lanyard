@@ -15,6 +15,7 @@
 /**
  * @fileoverview Functions for setting, getting and deleting cookies.
  *
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 
@@ -215,6 +216,9 @@ goog.net.Cookies.prototype.get = function(name, opt_default) {
   for (var i = 0, part; part = parts[i]; i++) {
     if (part.indexOf(nameEq) == 0) {
       return part.substr(nameEq.length);
+    }
+    if (part == name) {
+      return '';
     }
   }
   return opt_default;

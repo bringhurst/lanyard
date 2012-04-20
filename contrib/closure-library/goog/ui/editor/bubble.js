@@ -32,6 +32,7 @@ goog.require('goog.editor.style');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
+goog.require('goog.math.Box');
 goog.require('goog.positioning');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -57,7 +58,7 @@ goog.ui.editor.Bubble = function(parent, zIndex) {
    * @type {!goog.dom.DomHelper}
    * @private
    */
-  this.dom_ = new goog.dom.getDomHelper(parent);
+  this.dom_ = goog.dom.getDomHelper(parent);
 
   /**
    * Event handler for this bubble.
@@ -158,7 +159,7 @@ goog.ui.editor.Bubble.prototype.logger =
     goog.debug.Logger.getLogger('goog.ui.editor.Bubble');
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.editor.Bubble.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
 

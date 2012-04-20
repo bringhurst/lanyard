@@ -172,7 +172,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.getBubbleDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.AbstractBubblePlugin.prototype.getTrogClassId =
     goog.functions.constant('AbstractBubblePlugin');
 
@@ -187,7 +187,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.getTargetElement =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.AbstractBubblePlugin.prototype.handleKeyUp = function(e) {
   // For example, when an image is selected, pressing any key overwrites
   // the image and the panel should be hidden.
@@ -202,7 +202,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.handleKeyUp = function(e) {
 /**
  * Pops up a property bubble for the given selection if appropriate and closes
  * open property bubbles if no longer needed.  This should not be overridden.
- * @inheritDoc
+ * @override
  */
 goog.editor.plugins.AbstractBubblePlugin.prototype.handleSelectionChange =
     function(opt_e, opt_target) {
@@ -234,7 +234,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.handleSelectionChange =
     }
     selectedElement = selectedElement || range && range.getContainerElement();
   }
-  return this.handleSelectionChangeInternal_(selectedElement);
+  return this.handleSelectionChangeInternal(selectedElement);
 };
 
 
@@ -244,10 +244,10 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.handleSelectionChange =
  * @param {Element?} selectedElement The selected element.
  * @return {boolean} Always false, allowing every bubble plugin to handle the
  *     event.
- * @private
+ * @protected
  */
 goog.editor.plugins.AbstractBubblePlugin.prototype.
-    handleSelectionChangeInternal_ = function(selectedElement) {
+    handleSelectionChangeInternal = function(selectedElement) {
   if (selectedElement) {
     var bubbleTarget = this.getBubbleTargetFromSelection(selectedElement);
     if (bubbleTarget) {
@@ -283,7 +283,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.
     getBubbleTargetFromSelection = goog.abstractMethod;
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.AbstractBubblePlugin.prototype.disable = function(field) {
   // When the field is made uneditable, dispose of the bubble.  We do this
   // because the next time the field is made editable again it may be in
@@ -307,7 +307,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.getSharedBubble_ =
     function() {
   var bubbleParent = /** @type {!Element} */ (this.bubbleParent_ ||
       this.fieldObject.getAppWindow().document.body);
-  this.dom_ = new goog.dom.getDomHelper(bubbleParent);
+  this.dom_ = goog.dom.getDomHelper(bubbleParent);
 
   var bubble = goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[
       this.fieldObject.id];

@@ -16,6 +16,8 @@
  * @fileoverview Renderer for {@link goog.ui.style.app.MenuButton}s and
  * subclasses.
  *
+ * @author attila@google.com (Attila Bodis)
+ * @author gveen@google.com (Greg Veen)
  */
 
 goog.provide('goog.ui.style.app.MenuButtonRenderer');
@@ -127,7 +129,7 @@ goog.ui.style.app.MenuButtonRenderer.prototype.getContentElement =
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.decorate = function(button,
     element) {
-  // TODO(user):  Add more robust support for subclasses of goog.ui.Menu.
+  // TODO(attila):  Add more robust support for subclasses of goog.ui.Menu.
   var menuElem = goog.dom.getElementsByTagNameAndClass(
       '*', goog.ui.MenuRenderer.CSS_CLASS, element)[0];
   if (menuElem) {
@@ -176,7 +178,7 @@ goog.ui.style.app.MenuButtonRenderer.prototype.createButton = function(content,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.MenuButtonRenderer.prototype.setContent = function(element,
     content) {
   var dom = goog.dom.getDomHelper(this.getContentElement(element));
@@ -220,7 +222,7 @@ goog.ui.style.app.MenuButtonRenderer.prototype.getCssClass = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.MenuButtonRenderer.prototype.getIe6ClassCombinations =
     function() {
   return goog.ui.style.app.MenuButtonRenderer.IE6_CLASS_COMBINATIONS;

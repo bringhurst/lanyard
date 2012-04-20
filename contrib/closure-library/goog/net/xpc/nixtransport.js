@@ -34,6 +34,7 @@
 goog.provide('goog.net.xpc.NixTransport');
 
 goog.require('goog.net.xpc');
+goog.require('goog.net.xpc.CrossPageChannelRole');
 goog.require('goog.net.xpc.Transport');
 goog.require('goog.reflect');
 
@@ -293,7 +294,7 @@ goog.net.xpc.NixTransport.prototype.nixChannel_ = null;
  * Connect this transport.
  */
 goog.net.xpc.NixTransport.prototype.connect = function() {
-  if (this.channel_.getRole() == goog.net.xpc.CrossPageChannel.Role.OUTER) {
+  if (this.channel_.getRole() == goog.net.xpc.CrossPageChannelRole.OUTER) {
     this.attemptOuterSetup_();
   } else {
     this.attemptInnerSetup_();
@@ -439,11 +440,10 @@ goog.net.xpc.NixTransport.prototype.createChannel_ = function(channel) {
  */
 goog.net.xpc.NixTransport.prototype.handleMessage_ =
     function(serviceName, payload) {
-
-  function deliveryHandler() {
-    this.channel_.deliver_(serviceName, payload);
-  }
-
+  /** @this {goog.net.xpc.NixTransport} */
+  var deliveryHandler = function() {
+    this.channel_.safeDeliver(serviceName, payload);
+  };
   this.getWindow().setTimeout(goog.bind(deliveryHandler, this), 1);
 };
 
@@ -465,9 +465,7 @@ goog.net.xpc.NixTransport.prototype.send = function(service, payload) {
 };
 
 
-/**
- * Disposes of the transport.
- */
+/** @override */
 goog.net.xpc.NixTransport.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
   this.nixChannel_ = null;

@@ -14,11 +14,11 @@
 
 /**
  * @fileoverview Implements a 3D ray that are compatible with WebGL.
- * Each element is a float32 since that is typically the desired size of a
- * 3-vector in the GPU.  The API is structured to avoid unnecessary memory
- * allocations.  The last parameter will typically be the output vector and
- * an object can be both an input and output parameter to all methods except
- * where noted.
+ * Each element is a float64 in case high precision is required.
+ * The API is structured to avoid unnecessary memory allocations.
+ * The last parameter will typically be the output vector and an
+ * object can be both an input and output parameter to all methods
+ * except where noted.
  *
  */
 goog.provide('goog.vec.Ray');
@@ -30,29 +30,33 @@ goog.require('goog.vec.Vec3');
 /**
  * Constructs a new ray with an optional origin and direction. If not specified,
  * the default is [0, 0, 0].
- * @param {goog.vec.ArrayType=} opt_origin The optional origin.
- * @param {goog.vec.ArrayType=} opt_dir The optional direction.
+ * @param {goog.vec.Vec3.AnyType=} opt_origin The optional origin.
+ * @param {goog.vec.Vec3.AnyType=} opt_dir The optional direction.
  * @constructor
  */
 goog.vec.Ray = function(opt_origin, opt_dir) {
   /**
-   * @type {goog.vec.Vec3.Type}
+   * @type {goog.vec.Vec3.Number}
    */
-  this.origin = goog.vec.Vec3.createFromArray(
-      opt_origin || [0, 0, 0]);
+  this.origin = goog.vec.Vec3.createNumber();
+  if (opt_origin) {
+    goog.vec.Vec3.setFromArray(this.origin, opt_origin);
+  }
 
   /**
-   * @type {goog.vec.Vec3.Type}
+   * @type {goog.vec.Vec3.Number}
    */
-  this.dir = goog.vec.Vec3.createFromArray(
-      opt_dir || [0, 0, 0]);
+  this.dir = goog.vec.Vec3.createNumber();
+  if (opt_dir) {
+    goog.vec.Vec3.setFromArray(this.dir, opt_dir);
+  }
 };
 
 
 /**
  * Sets the origin and direction of the ray.
- * @param {goog.vec.ArrayType} origin The new origin.
- * @param {goog.vec.ArrayType} dir The new direction.
+ * @param {goog.vec.AnyType} origin The new origin.
+ * @param {goog.vec.AnyType} dir The new direction.
  */
 goog.vec.Ray.prototype.set = function(origin, dir) {
   goog.vec.Vec3.setFromArray(this.origin, origin);
@@ -62,7 +66,7 @@ goog.vec.Ray.prototype.set = function(origin, dir) {
 
 /**
  * Sets the origin of the ray.
- * @param {goog.vec.ArrayType} origin the new origin.
+ * @param {goog.vec.AnyType} origin the new origin.
  */
 goog.vec.Ray.prototype.setOrigin = function(origin) {
   goog.vec.Vec3.setFromArray(this.origin, origin);
@@ -71,7 +75,7 @@ goog.vec.Ray.prototype.setOrigin = function(origin) {
 
 /**
  * Sets the direction of the ray.
- * @param {goog.vec.ArrayType} dir The new direction.
+ * @param {goog.vec.AnyType} dir The new direction.
  */
 goog.vec.Ray.prototype.setDir = function(dir) {
   goog.vec.Vec3.setFromArray(this.dir, dir);

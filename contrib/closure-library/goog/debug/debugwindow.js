@@ -237,10 +237,6 @@ goog.debug.DebugWindow.prototype.setEnabled = function(enable) {
 
   if (this.enabled_) {
     this.openWindow_();
-
-    if (this.win_) {
-      this.writeInitialDocument_();
-    }
   }
 
   this.setCookie_('enabled', enable ? '1' : '0');
@@ -602,4 +598,17 @@ goog.debug.DebugWindow.prototype.addFilter = function(loggerName) {
  */
 goog.debug.DebugWindow.prototype.removeFilter = function(loggerName) {
   delete this.filteredLoggers_[loggerName];
+};
+
+
+/**
+ * Modify the size of the circular buffer. Allows the log to retain more
+ * information while the window is closed.
+ * @param {number} size New size of the circular buffer.
+ */
+goog.debug.DebugWindow.prototype.resetBufferWithNewSize = function(size) {
+  if (size > 0 && size < 50000) {
+    this.clear_();
+    this.savedMessages_ = new goog.structs.CircularBuffer(size);
+  }
 };

@@ -15,6 +15,7 @@
 /**
  * @fileoverview A menu button control.
  *
+ * @author attila@google.com (Attila Bodis)
  * @see ../demos/menubutton.html
  */
 
@@ -29,13 +30,13 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.math.Box');
 goog.require('goog.math.Rect');
+goog.require('goog.positioning');
 goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.MenuAnchoredPosition');
 goog.require('goog.style');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Component.State');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.ui.registry');
@@ -65,9 +66,18 @@ goog.ui.MenuButton = function(content, opt_menu, opt_renderer, opt_domHelper) {
   // Menu buttons support the OPENED state.
   this.setSupportedState(goog.ui.Component.State.OPENED, true);
 
+  /**
+   * The menu position on this button.
+   * @type {!goog.positioning.AnchoredPosition}
+   * @private
+   */
+  this.menuPosition_ = new goog.positioning.MenuAnchoredPosition(
+      null, goog.positioning.Corner.BOTTOM_START);
+
   if (opt_menu) {
     this.setMenu(opt_menu);
   }
+  this.menuMargin_ = null;
   this.timer_ = new goog.Timer(500);  // 0.5 sec
 
   // Phones running iOS prior to version 4.2.
@@ -101,22 +111,12 @@ goog.ui.MenuButton.prototype.positionElement_;
 
 
 /**
- * Whether the popup menu should be aligned to the start or the end of the
- * button; defaults to true (align to start).
- * @type {boolean}
+ * The margin to apply to the menu's position when it is shown.  If null, no
+ * margin will be applied.
+ * @type {goog.math.Box}
  * @private
  */
-goog.ui.MenuButton.prototype.alignToStart_ = true;
-
-
-/**
- * Whether the popup menu should scroll when it's to big to fit vertically
- * on the screen. Defaults to false, use the adjust logic to reposition the
- * menu on overflow rather then scroll.
- * @type {boolean}
- * @private
- */
-goog.ui.MenuButton.prototype.scrollOnOverflow_ = false;
+goog.ui.MenuButton.prototype.menuMargin_;
 
 
 /**
@@ -166,7 +166,7 @@ goog.ui.MenuButton.prototype.originalSize_;
 /**
  * Do we render the drop down menu as a sibling to the label, or at the end
  * of the current dom?
- * @type {!boolean}
+ * @type {boolean}
  * @private
  */
 goog.ui.MenuButton.prototype.renderMenuAsSibling_ = false;
@@ -206,7 +206,7 @@ goog.ui.MenuButton.prototype.exitDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.MenuButton.prototype.disposeInternal = function() {
   goog.ui.MenuButton.superClass_.disposeInternal.call(this);
   if (this.menu_) {
@@ -273,7 +273,7 @@ goog.ui.MenuButton.prototype.performActionInternal = function(e) {
 /**
  * Handles mousedown events over the document.  If the mousedown happens over
  * an element unrelated to the component, hides the menu.
- * TODO(user): Reconcile this with goog.ui.Popup (and handle frames/windows).
+ * TODO(attila): Reconcile this with goog.ui.Popup (and handle frames/windows).
  * @param {goog.events.BrowserEvent} e Mouse event to handle.
  * @protected
  */
@@ -301,14 +301,15 @@ goog.ui.MenuButton.prototype.containsElement = function(element) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
   // Handle SPACE on keyup and all other keys on keypress.
   if (e.keyCode == goog.events.KeyCodes.SPACE) {
     // Prevent page scrolling in Chrome.
     e.preventDefault();
     if (e.type != goog.events.EventType.KEYUP) {
-      return false;
+      // Ignore events because KeyCodes.SPACE is handled further down.
+      return true;
     }
   } else if (e.type != goog.events.KeyHandler.EventType.KEY) {
     return false;
@@ -427,6 +428,25 @@ goog.ui.MenuButton.prototype.setMenu = function(menu) {
 
 
 /**
+ * Specify which positioning algorithm to use.
+ *
+ * This method is preferred over the fine-grained positioning methods like
+ * setPositionElement, setAlignMenuToStart, and setScrollOnOverflow. Calling
+ * this method will override settings by those methods.
+ *
+ * @param {goog.positioning.AnchoredPosition} position The position of the
+ *     Menu the button. If the position has a null anchor, we will use the
+ *     menubutton element as the anchor.
+ */
+goog.ui.MenuButton.prototype.setMenuPosition = function(position) {
+  if (position) {
+    this.menuPosition_ = position;
+    this.positionElement_ = position.element;
+  }
+};
+
+
+/**
  * Sets an element for anchoring the menu.
  * @param {Element} positionElement New element to use for
  *     positioning the dropdown menu.  Null to use the default behavior
@@ -436,6 +456,16 @@ goog.ui.MenuButton.prototype.setPositionElement = function(
     positionElement) {
   this.positionElement_ = positionElement;
   this.positionMenu();
+};
+
+
+/**
+ * Sets a margin that will be applied to the menu's position when it is shown.
+ * If null, no margin will be applied.
+ * @param {goog.math.Box} margin Margin to apply.
+ */
+goog.ui.MenuButton.prototype.setMenuMargin = function(margin) {
+  this.menuMargin_ = margin;
 };
 
 
@@ -538,13 +568,22 @@ goog.ui.MenuButton.prototype.setEnabled = function(enable) {
 };
 
 
+// TODO(nicksantos): AlignMenuToStart and ScrollOnOverflow and PositionElement
+// should all be deprecated, in favor of people setting their own
+// AnchoredPosition with the parameters they need. Right now, we try
+// to be backwards-compatible as possible, but this is incomplete because
+// the APIs are non-orthogonal.
+
+
 /**
  * @return {boolean} Whether the menu is aligned to the start of the button
  *     (left if the render direction is left-to-right, right if the render
  *     direction is right-to-left).
  */
 goog.ui.MenuButton.prototype.isAlignMenuToStart = function() {
-  return this.alignToStart_;
+  var corner = this.menuPosition_.corner;
+  return corner == goog.positioning.Corner.BOTTOM_START ||
+      corner == goog.positioning.Corner.TOP_START;
 };
 
 
@@ -555,7 +594,9 @@ goog.ui.MenuButton.prototype.isAlignMenuToStart = function() {
  *     the render direction is right-to-left).
  */
 goog.ui.MenuButton.prototype.setAlignMenuToStart = function(alignToStart) {
-  this.alignToStart_ = alignToStart;
+  this.menuPosition_.corner = alignToStart ?
+      goog.positioning.Corner.BOTTOM_START :
+      goog.positioning.Corner.BOTTOM_END;
 };
 
 
@@ -569,7 +610,13 @@ goog.ui.MenuButton.prototype.setAlignMenuToStart = function(alignToStart) {
  *     reposition the menu to fit.
  */
 goog.ui.MenuButton.prototype.setScrollOnOverflow = function(scrollOnOverflow) {
-  this.scrollOnOverflow_ = scrollOnOverflow;
+  if (this.menuPosition_.setLastResortOverflow) {
+    var overflowX = goog.positioning.Overflow.ADJUST_X;
+    var overflowY = scrollOnOverflow ?
+        goog.positioning.Overflow.RESIZE_HEIGHT :
+        goog.positioning.Overflow.ADJUST_Y;
+    this.menuPosition_.setLastResortOverflow(overflowX | overflowY);
+  }
 };
 
 
@@ -578,7 +625,9 @@ goog.ui.MenuButton.prototype.setScrollOnOverflow = function(scrollOnOverflow) {
  *     vertically on the screen.
  */
 goog.ui.MenuButton.prototype.isScrollOnOverflow = function() {
-  return this.scrollOnOverflow_;
+  return this.menuPosition_.getLastResortOverflow &&
+      !!(this.menuPosition_.getLastResortOverflow() &
+         goog.positioning.Overflow.RESIZE_HEIGHT);
 };
 
 
@@ -597,7 +646,7 @@ goog.ui.MenuButton.prototype.isFocusablePopupMenu = function() {
  * @param {boolean} focusable Whether the attached menu is focusable.
  */
 goog.ui.MenuButton.prototype.setFocusablePopupMenu = function(focusable) {
-  // TODO(user):  The menu itself should advertise whether it is focusable.
+  // TODO(attila):  The menu itself should advertise whether it is focusable.
   this.isFocusablePopupMenu_ = focusable;
 };
 
@@ -650,7 +699,7 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
     if (open) {
       if (!this.menu_.isInDocument()) {
         if (this.renderMenuAsSibling_) {
-          this.menu_.render(/** @type {?Element} */ (
+          this.menu_.render(/** @type {Element} */ (
               this.getElement().parentNode));
         } else {
           this.menu_.render();
@@ -681,7 +730,12 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
       }
     }
     this.menu_.setVisible(open, false, opt_e);
-    this.attachPopupListeners_(open);
+    // In Pivot Tables the menu button somehow gets disposed of during the
+    // setVisible call, causing attachPopupListeners_ to fail.
+    // TODO(user): Debug what happens.
+    if (!this.isDisposed()) {
+      this.attachPopupListeners_(open);
+    }
   }
 };
 
@@ -696,12 +750,8 @@ goog.ui.MenuButton.prototype.positionMenu = function() {
   }
 
   var positionElement = this.positionElement_ || this.getElement();
-
-  var anchorCorner = this.isAlignMenuToStart() ?
-      goog.positioning.Corner.BOTTOM_START : goog.positioning.Corner.BOTTOM_END;
-  var position = new goog.positioning.MenuAnchoredPosition(positionElement,
-      anchorCorner, /* opt_adjust */ !this.scrollOnOverflow_,
-      /* opt_resize */ this.scrollOnOverflow_);
+  var position = this.menuPosition_;
+  this.menuPosition_.element = positionElement;
 
   var elem = this.menu_.getElement();
   if (!this.menu_.isVisible()) {
@@ -709,12 +759,11 @@ goog.ui.MenuButton.prototype.positionMenu = function() {
     goog.style.showElement(elem, true);
   }
 
-  if (!this.originalSize_ && this.scrollOnOverflow_) {
+  if (!this.originalSize_ && this.isScrollOnOverflow()) {
     this.originalSize_ = goog.style.getSize(elem);
   }
-  var popupCorner = this.isAlignMenuToStart() ?
-      goog.positioning.Corner.TOP_START : goog.positioning.Corner.TOP_END;
-  position.reposition(elem, popupCorner, null, this.originalSize_);
+  var popupCorner = goog.positioning.flipCornerVertical(position.corner);
+  position.reposition(elem, popupCorner, this.menuMargin_, this.originalSize_);
 
   if (!this.menu_.isVisible()) {
     goog.style.showElement(elem, false);

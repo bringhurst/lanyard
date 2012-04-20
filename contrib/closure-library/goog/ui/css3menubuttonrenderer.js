@@ -23,6 +23,9 @@
  *
  * Tested and verified to work in Gecko 1.9.2+ and WebKit 528+.
  *
+ * @author eae@google.com (Emil A Eklund)
+ * @author slightlyoff@google.com (Alex Russell)
+ * @author dalewis@google.com (Darren Lewis)
  * @see ../demos/css3menubutton.html
  */
 
@@ -69,7 +72,7 @@ goog.addSingletonGetter(goog.ui.Css3MenuButtonRenderer);
 goog.ui.Css3MenuButtonRenderer.CSS_CLASS = goog.getCssName('goog-css3-button');
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Css3MenuButtonRenderer.prototype.getContentElement = function(element) {
   if (element) {
     var captionElem = goog.dom.getElementsByTagNameAndClass(

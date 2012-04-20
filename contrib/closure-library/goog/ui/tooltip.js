@@ -15,6 +15,7 @@
 /**
  * @fileoverview Tooltip widget implementation.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/tooltip.html
  */
 
@@ -180,6 +181,16 @@ goog.ui.Tooltip.State = {
   SHOWING: 2,
   WAITING_TO_HIDE: 3,
   UPDATING: 4 // waiting to show new hovercard while old one still showing.
+};
+
+
+/**
+ * Popup activation types. Used to select a positioning strategy.
+ * @enum {number}
+ */
+goog.ui.Tooltip.Activation = {
+  CURSOR: 0,
+  FOCUS: 1
 };
 
 
@@ -500,7 +511,7 @@ goog.ui.Tooltip.prototype.onHide_ = function() {
   // If this tooltip is inside another tooltip, start hide timer for that
   // tooltip in case this tooltip was the only reason it was still showing.
   if (this.parentTooltip_) {
-    this.parentTooltip_.startHideTimer_();
+    this.parentTooltip_.startHideTimer();
   }
 
   goog.events.unlisten(element, goog.events.EventType.MOUSEOVER,
@@ -595,16 +606,9 @@ goog.ui.Tooltip.prototype.showForElement = function(el, opt_pos) {
  * @private
  */
 goog.ui.Tooltip.prototype.positionAndShow_ = function(el, opt_pos) {
-  var pos;
-  if (opt_pos) {
-    pos = opt_pos;
-  } else {
-    var coord = this.cursorPosition.clone();
-    pos = new goog.ui.Tooltip.CursorTooltipPosition(coord);
-  }
-
   this.anchor = el;
-  this.setPosition(pos);
+  this.setPosition(opt_pos ||
+      this.getPositioningStrategy(goog.ui.Tooltip.Activation.CURSOR));
   this.setVisible(true);
 };
 
@@ -720,12 +724,31 @@ goog.ui.Tooltip.prototype.handleFocus = function(event) {
 
   if (this.anchor != el) {
     this.anchor = el;
-    var pos = new goog.ui.Tooltip.ElementTooltipPosition(this.activeEl_);
+    var pos = this.getPositioningStrategy(goog.ui.Tooltip.Activation.FOCUS);
     this.clearHideTimer();
     this.startShowTimer(/** @type {Element} */ (el), pos);
 
     this.checkForParentTooltip_();
   }
+};
+
+
+/**
+ * Return a Position instance for repositioning the tooltip. Override in
+ * subclasses to customize the way repositioning is done.
+ *
+ * @param {goog.ui.Tooltip.Activation} activationType Information about what
+ *    kind of event caused the popup to be shown.
+ * @return {!goog.positioning.AbstractPosition} The position object used
+ *    to position the tooltip.
+ * @protected
+ */
+goog.ui.Tooltip.prototype.getPositioningStrategy = function(activationType) {
+  if (activationType == goog.ui.Tooltip.Activation.CURSOR) {
+    var coord = this.cursorPosition.clone();
+    return new goog.ui.Tooltip.CursorTooltipPosition(coord);
+  }
+  return new goog.ui.Tooltip.ElementTooltipPosition(this.activeEl_);
 };
 
 
@@ -771,7 +794,7 @@ goog.ui.Tooltip.prototype.handleMouseOutAndBlur = function(event) {
   this.seenInteraction_ = false;
   if (this.isVisible() && (!event.relatedTarget ||
       !goog.dom.contains(this.getElement(), event.relatedTarget))) {
-    this.startHideTimer_();
+    this.startHideTimer();
   } else {
     this.anchor = undefined;
   }
@@ -804,7 +827,7 @@ goog.ui.Tooltip.prototype.handleTooltipMouseOut = function(event) {
   if (this.activeEl_ == element && (!event.relatedTarget ||
       !goog.dom.contains(element, event.relatedTarget))) {
     this.activeEl_ = null;
-    this.startHideTimer_();
+    this.startHideTimer();
   }
 };
 
@@ -841,10 +864,9 @@ goog.ui.Tooltip.prototype.clearShowTimer = function() {
 
 /**
  * Helper method called to start the close timer.
- *
- * @private
+ * @protected
  */
-goog.ui.Tooltip.prototype.startHideTimer_ = function() {
+goog.ui.Tooltip.prototype.startHideTimer = function() {
   if (this.getState() == goog.ui.Tooltip.State.SHOWING) {
     this.hideTimer = goog.Timer.callOnce(
         goog.bind(this.maybeHide, this, this.anchor), this.getHideDelayMs());
@@ -864,9 +886,7 @@ goog.ui.Tooltip.prototype.clearHideTimer = function() {
 };
 
 
-/**
- * Destroys widget and removes all event listeners.
- */
+/** @override */
 goog.ui.Tooltip.prototype.disposeInternal = function() {
   this.setVisible(false);
   this.clearShowTimer();

@@ -51,9 +51,13 @@ goog.testing.jsunit.AUTO_RUN_ONLOAD = true;
 
 
 (function() {
+  // Increases the maximum number of stack frames in Google Chrome from the
+  // default 10 to 50 to get more useful stack traces.
+  Error.stackTraceLimit = 50;
 
   // Store a reference to the window's timeout so that it can't be overridden
   // by tests.
+  /** @type {!Function} */
   var realTimeout = window.setTimeout;
 
   // Check for JsUnit's test runner (need to check for >2.2 and <=2.2)
@@ -61,7 +65,7 @@ goog.testing.jsunit.AUTO_RUN_ONLOAD = true;
     // Running inside JsUnit so add support code.
     var path = goog.basePath + goog.testing.jsunit.CORE_SCRIPT;
     document.write('<script type="text/javascript" src="' +
-                  path + '"></' + 'script>');
+                   path + '"></' + 'script>');
 
   } else {
 

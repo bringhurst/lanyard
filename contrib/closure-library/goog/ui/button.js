@@ -16,6 +16,7 @@
  * @fileoverview A button control. This implementation extends {@link
  * goog.ui.Control}.
  *
+ * @author attila@google.com (Attila Bodis)
  * @see ../demos/button.html
  */
 
@@ -94,7 +95,8 @@ goog.ui.Button.prototype.getValue = function() {
  */
 goog.ui.Button.prototype.setValue = function(value) {
   this.value_ = value;
-  this.getRenderer().setValue(this.getElement(), value);
+  var renderer = /** @type {!goog.ui.ButtonRenderer} */ (this.getRenderer());
+  renderer.setValue(this.getElement(), /** @type {string} */ (value));
 };
 
 
@@ -125,7 +127,7 @@ goog.ui.Button.prototype.getTooltip = function() {
  */
 goog.ui.Button.prototype.setTooltip = function(tooltip) {
   this.tooltip_ = tooltip;
-  this.getRenderer().setTooltip(this. getElement(), tooltip);
+  this.getRenderer().setTooltip(this.getElement(), tooltip);
 };
 
 
@@ -156,7 +158,7 @@ goog.ui.Button.prototype.setCollapsed = function(sides) {
 // goog.ui.Control & goog.ui.Component API implementation.
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Button.prototype.disposeInternal = function() {
   goog.ui.Button.superClass_.disposeInternal.call(this);
   delete this.value_;
@@ -164,7 +166,7 @@ goog.ui.Button.prototype.disposeInternal = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Button.prototype.enterDocument = function() {
   goog.ui.Button.superClass_.enterDocument.call(this);
   if (this.isSupportedState(goog.ui.Component.State.FOCUSED)) {

@@ -14,6 +14,8 @@
 
 /**
  * @fileoverview Low level handling of XMLHttpRequest.
+ * @author arv@google.com (Erik Arvidsson)
+ * @author dbk@google.com (David Barrett-Kahn)
  */
 
 goog.provide('goog.net.DefaultXmlHttpFactory');
@@ -141,7 +143,7 @@ goog.net.DefaultXmlHttpFactory = function() {
 goog.inherits(goog.net.DefaultXmlHttpFactory, goog.net.XmlHttpFactory);
 
 
-/** @inheritDoc */
+/** @override */
 goog.net.DefaultXmlHttpFactory.prototype.createInstance = function() {
   var progId = this.getProgId_();
   if (progId) {
@@ -152,7 +154,7 @@ goog.net.DefaultXmlHttpFactory.prototype.createInstance = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.net.DefaultXmlHttpFactory.prototype.internalGetOptions = function() {
   var progId = this.getProgId_();
   var options = {};

@@ -496,9 +496,7 @@ goog.gears.BaseStore.prototype.hasInSchema_ = function(type, name) {
 };
 
 
-/**
- * Disposes of the object.
- */
+/** @override */
 goog.gears.BaseStore.prototype.disposeInternal = function() {
   goog.gears.BaseStore.superClass_.disposeInternal.call(this);
   this.database_ = null;
@@ -506,7 +504,7 @@ goog.gears.BaseStore.prototype.disposeInternal = function() {
 
 
 /**
- * HACK(user): The JSCompiler check for undefined properties sees that these
+ * HACK(arv): The JSCompiler check for undefined properties sees that these
  * fields are never set and raises warnings.
  * @type {Array.<Object>}
  * @private

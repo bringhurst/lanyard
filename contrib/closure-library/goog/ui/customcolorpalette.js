@@ -51,6 +51,7 @@ goog.inherits(goog.ui.CustomColorPalette, goog.ui.ColorPalette);
  * '+'.
  * @return {Array.<Node>} Array of div elements.
  * @private
+ * @suppress {accessControls} Overriding a private method of the superclass.
  */
 goog.ui.CustomColorPalette.prototype.createColorNodes_ = function() {
   /** @desc Hover caption for the button that allows the user to add a color. */
@@ -66,7 +67,7 @@ goog.ui.CustomColorPalette.prototype.createColorNodes_ = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  * @param {goog.events.Event} e Mouse or key event that triggered the action.
  * @return {boolean} True if the action was allowed to proceed, false otherwise.
  */

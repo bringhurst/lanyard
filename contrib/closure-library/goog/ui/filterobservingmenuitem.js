@@ -18,6 +18,7 @@
  * text changes and allows the menu item to update its content and state based
  * on the filter.
  *
+ * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.ui.FilterObservingMenuItem');
@@ -58,7 +59,7 @@ goog.inherits(goog.ui.FilterObservingMenuItem, goog.ui.MenuItem);
 goog.ui.FilterObservingMenuItem.prototype.observer_ = null;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.FilterObservingMenuItem.prototype.enterDocument = function() {
   goog.ui.FilterObservingMenuItem.superClass_.enterDocument.call(this);
   this.callObserver();

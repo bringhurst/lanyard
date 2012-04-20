@@ -29,6 +29,7 @@
  * var slider = new goog.ui.Slider;
  * slider.decorate(document.getElementById('slider'));
  *
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/slider.html
  */
 
@@ -97,7 +98,7 @@ goog.ui.Slider.prototype.getCssClass = function(orient) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Slider.prototype.createThumbs = function() {
   // find thumb
   var element = this.getElement();

@@ -59,7 +59,7 @@ goog.events.Event = function(type, opt_target) {
 goog.inherits(goog.events.Event, goog.Disposable);
 
 
-/** @inheritDoc */
+/** @override */
 goog.events.Event.prototype.disposeInternal = function() {
   delete this.type;
   delete this.target;
@@ -74,6 +74,16 @@ goog.events.Event.prototype.disposeInternal = function() {
  *     this package is strongly discouraged.
  */
 goog.events.Event.prototype.propagationStopped_ = false;
+
+
+/**
+ * Whether the default action has been prevented.
+ * This is a property to match the W3C specification at {@link
+ * http://www.w3.org/TR/DOM-Level-3-Events/#events-event-type-defaultPrevented}.
+ * Must be treated as read-only outside the class.
+ * @type {boolean}
+ */
+goog.events.Event.prototype.defaultPrevented = false;
 
 
 /**
@@ -97,6 +107,7 @@ goog.events.Event.prototype.stopPropagation = function() {
  * Prevents the default action, for example a link redirecting to a url.
  */
 goog.events.Event.prototype.preventDefault = function() {
+  this.defaultPrevented = true;
   this.returnValue_ = false;
 };
 

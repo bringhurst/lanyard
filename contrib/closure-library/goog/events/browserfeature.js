@@ -29,15 +29,43 @@ goog.require('goog.userAgent');
  */
 goog.events.BrowserFeature = {
   /**
-   * Whether the button attribute of the event is W3C compliant.
-   * False in Internet Explorer prior to version 9.
+   * Whether the button attribute of the event is W3C compliant.  False in
+   * Internet Explorer prior to version 9; document-version dependent.
    */
-  HAS_W3C_BUTTON: !goog.userAgent.IE || goog.userAgent.isVersion('9'),
+  HAS_W3C_BUTTON: !goog.userAgent.IE || goog.userAgent.isDocumentMode(9),
+
+  /**
+   * Whether the browser supports full W3C event model.
+   */
+  HAS_W3C_EVENT_SUPPORT: !goog.userAgent.IE || goog.userAgent.isDocumentMode(9),
 
   /**
    * To prevent default in IE7 for certain keydown events we need set the
    * keyCode to -1.
    */
   SET_KEY_CODE_TO_PREVENT_DEFAULT: goog.userAgent.IE &&
-      !goog.userAgent.isVersion('8')
+      !goog.userAgent.isVersion('8'),
+
+  /**
+   * Whether the {@code navigator.onLine} property is supported.
+   */
+  HAS_NAVIGATOR_ONLINE_PROPERTY: !goog.userAgent.WEBKIT ||
+      goog.userAgent.isVersion('528'),
+
+  /**
+   * Whether HTML5 network online/offline events are supported.
+   */
+  HAS_HTML5_NETWORK_EVENT_SUPPORT:
+      goog.userAgent.GECKO && goog.userAgent.isVersion('1.9b') ||
+      goog.userAgent.IE && goog.userAgent.isVersion('8') ||
+      goog.userAgent.OPERA && goog.userAgent.isVersion('9.5') ||
+      goog.userAgent.WEBKIT && goog.userAgent.isVersion('528'),
+
+  /**
+   * Whether HTML5 network events fire on document.body, or otherwise the
+   * window.
+   */
+  HTML5_NETWORK_EVENTS_FIRE_ON_BODY:
+      goog.userAgent.GECKO && !goog.userAgent.isVersion('8') ||
+      goog.userAgent.IE && !goog.userAgent.isVersion('9')
 };

@@ -105,7 +105,10 @@ goog.inherits(goog.messaging.PortChannel, goog.messaging.AbstractChannel);
 goog.messaging.PortChannel.forEmbeddedWindow = function(
     window, peerOrigin, opt_timer) {
   var timer = opt_timer || new goog.Timer(50);
-  var deferred = new goog.async.Deferred(goog.partial(goog.dispose, timer));
+
+  var disposeTimer = goog.partial(goog.dispose, timer);
+  var deferred = new goog.async.Deferred(disposeTimer);
+  deferred.addBoth(disposeTimer);
 
   timer.start();
   // Every tick, attempt to set up a connection by sending in one end of an
@@ -379,7 +382,7 @@ goog.messaging.PortChannel.prototype.injectPorts_ = function(ports, message) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.PortChannel.prototype.disposeInternal = function() {
   goog.events.unlistenByKey(this.listenerKey_);
   // Can't use instanceof here because MessagePort is undefined in workers and

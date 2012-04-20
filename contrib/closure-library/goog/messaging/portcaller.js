@@ -86,7 +86,7 @@ goog.messaging.PortCaller = function(operatorPort) {
 goog.inherits(goog.messaging.PortCaller, goog.Disposable);
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.PortCaller.prototype.dial = function(name) {
   if (name in this.connections_) {
     return this.connections_[name].channel;
@@ -113,11 +113,12 @@ goog.messaging.PortCaller.prototype.dial = function(name) {
  * case. However, the first channel created will reach both contexts first, so
  * we simply ignore all connections with a given context after the first.
  *
- * @param {{name: string, port: MessagePort}} args The name of the context
+ * @param {!Object|string} message The name of the context
  *     being connected and the port connecting the context.
  * @private
  */
-goog.messaging.PortCaller.prototype.connectionGranted_ = function(args) {
+goog.messaging.PortCaller.prototype.connectionGranted_ = function(message) {
+  var args = /** @type {{name: string, port: MessagePort}} */ (message);
   var port = args['port'];
   var entry = this.connections_[args['name']];
   if (entry && (!entry.deferred || entry.deferred.hasFired())) {
@@ -140,7 +141,7 @@ goog.messaging.PortCaller.prototype.connectionGranted_ = function(args) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.PortCaller.prototype.disposeInternal = function() {
   goog.dispose(this.operatorPort_);
   goog.object.forEach(this.connections_, goog.dispose);

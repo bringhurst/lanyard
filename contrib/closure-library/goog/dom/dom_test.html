@@ -38,12 +38,14 @@ See the COPYING file for details.
 
   <div><div><div id="testEl2"></div></div></div>
 
+  <!-- classbefore and classafter are for making sure that getElementsByClass
+       works when multiple classes are specified. -->
   <div id="span-container">
-    <span id="span1" class="test1"></span>
+    <span id="span1" class="classbefore test1"></span>
     <span id="span2" class="test1"></span>
     <span id="span3" class="test2"></span>
     <span id="span4" class="test3"></span>
-    <span id="span5" class="test1"></span>
+    <span id="span5" class="test1 classafter"></span>
   </div>
 
   <div class="mixedCaseClass"></div>
@@ -98,6 +100,8 @@ See the COPYING file for details.
   <div id="myIframeDiv2" style="height:23px;font-size:1px;line-height:0;">hello world</div>
 
   <iframe id="myIframe" style="width:400px;height:200px;"></iframe>
+
+  <a id='link' href='foo.html'>Foo</a>
 
 <script src="dom_test.js"></script></body>
 </html>

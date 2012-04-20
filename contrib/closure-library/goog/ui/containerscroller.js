@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Scroll behavior that can be added onto a container.
+ * @author gboyer@google.com (Garry Boyer)
  */
 
 goog.provide('goog.ui.ContainerScroller');
@@ -71,7 +72,7 @@ goog.ui.ContainerScroller = function(container) {
   this.eventHandler_.listen(container, goog.ui.Component.EventType.HIDE,
       this.onHide_);
 
-  // TODO(user): Allow a ContainerScroller to be attached with a Container
+  // TODO(gboyer): Allow a ContainerScroller to be attached with a Container
   // before the container is rendered.
 
   this.doScrolling_(true);
@@ -213,7 +214,7 @@ goog.ui.ContainerScroller.prototype.temporarilyDisableHover_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ContainerScroller.prototype.disposeInternal = function() {
   goog.ui.ContainerScroller.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();

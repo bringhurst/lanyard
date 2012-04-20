@@ -15,6 +15,7 @@
 /**
  * @fileoverview Rounded corner tab renderer for {@link goog.ui.Tab}s.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.RoundedTabRenderer');
@@ -180,7 +181,7 @@ goog.ui.RoundedTabRenderer.prototype.createEdge = function(dom, isTopEdge) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.RoundedTabRenderer.prototype.getContentElement = function(element) {
   var baseClass = this.getStructuralCssClass();
   return element && goog.dom.getElementsByTagNameAndClass(

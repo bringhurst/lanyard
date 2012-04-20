@@ -15,6 +15,7 @@
 /**
  * @fileoverview Character counter widget implementation.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/charcounter.html
  */
 
@@ -191,7 +192,7 @@ goog.ui.CharCounter.prototype.checkLength_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharCounter.prototype.disposeInternal = function() {
   goog.ui.CharCounter.superClass_.disposeInternal.call(this);
   delete this.elInput_;

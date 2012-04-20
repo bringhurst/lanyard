@@ -202,7 +202,7 @@ goog.exportPath_ = function(name, opt_object, opt_objectToExportTo) {
  * @param {string} name The fully qualified name.
  * @param {Object=} opt_obj The object within which to look; default is
  *     |goog.global|.
- * @return {Object} The object or, if not found, null.
+ * @return {?} The value (object or primitive) or, if not found, null.
  */
 goog.getObjectByName = function(name, opt_obj) {
   var parts = name.split('.');
@@ -266,7 +266,7 @@ goog.addDependency = function(relPath, provides, requires) {
 
 
 
-// NOTE(user): The debug DOM loader was included in base.js as an orignal
+// NOTE(nnaze): The debug DOM loader was included in base.js as an orignal
 // way to do "debug-mode" development.  The dependency system can sometimes
 // be confusing, as can the debug DOM loader's asyncronous nature.
 //
@@ -309,10 +309,10 @@ goog.ENABLE_DEBUG_LOADER = true;
 goog.require = function(name) {
 
   // if the object already exists we do not need do do anything
-  // TODO(user): If we start to support require based on file name this has
+  // TODO(arv): If we start to support require based on file name this has
   //            to change
-  // TODO(user): If we allow goog.foo.* this has to change
-  // TODO(user): If we implement dynamic load after page load we should probably
+  // TODO(arv): If we allow goog.foo.* this has to change
+  // TODO(arv): If we implement dynamic load after page load we should probably
   //            not remove this code for the compiled output
   if (!COMPILED) {
     if (goog.isProvided_(name)) {
@@ -384,12 +384,14 @@ goog.nullFunction = function() {};
 /**
  * The identity function. Returns its first argument.
  *
- * @param {...*} var_args The arguments of the function.
- * @return {*} The first argument.
+ * @param {*=} opt_returnValue The single value that will be returned.
+ * @param {...*} var_args Optional trailing arguments. These are ignored.
+ * @return {?} The first argument. We can't know the type -- just pass it along
+ *      without type.
  * @deprecated Use goog.functions.identity instead.
  */
-goog.identityFunction = function(var_args) {
-  return arguments[0];
+goog.identityFunction = function(opt_returnValue, var_args) {
+  return opt_returnValue;
 };
 
 
@@ -422,9 +424,26 @@ goog.abstractMethod = function() {
  */
 goog.addSingletonGetter = function(ctor) {
   ctor.getInstance = function() {
-    return ctor.instance_ || (ctor.instance_ = new ctor());
+    if (ctor.instance_) {
+      return ctor.instance_;
+    }
+    if (goog.DEBUG) {
+      // NOTE: JSCompiler can't optimize away Array#push.
+      goog.instantiatedSingletons_[goog.instantiatedSingletons_.length] = ctor;
+    }
+    return ctor.instance_ = new ctor;
   };
 };
+
+
+/**
+ * All singleton classes that have been instantiated, for testing. Don't read
+ * it directly, use the {@code goog.testing.singleton} module. The compiler
+ * removes this variable if unused.
+ * @type {!Array.<!Function>}
+ * @private
+ */
+goog.instantiatedSingletons_ = [];
 
 
 if (!COMPILED && goog.ENABLE_DEBUG_LOADER) {
@@ -724,52 +743,6 @@ goog.typeOf = function(value) {
 
 
 /**
- * Safe way to test whether a property is enumarable.  It allows testing
- * for enumerable on objects where 'propertyIsEnumerable' is overridden or
- * does not exist (like DOM nodes in IE). Does not use browser native
- * Object.propertyIsEnumerable.
- * @param {Object} object The object to test if the property is enumerable.
- * @param {string} propName The property name to check for.
- * @return {boolean} True if the property is enumarable.
- * @private
- */
-goog.propertyIsEnumerableCustom_ = function(object, propName) {
-  // KJS in Safari 2 is not ECMAScript compatible and lacks crucial methods
-  // such as propertyIsEnumerable.  We therefore use a workaround.
-  // Does anyone know a more efficient work around?
-  if (propName in object) {
-    for (var key in object) {
-      if (key == propName &&
-          Object.prototype.hasOwnProperty.call(object, propName)) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
-
-/**
- * Safe way to test whether a property is enumarable.  It allows testing
- * for enumerable on objects where 'propertyIsEnumerable' is overridden or
- * does not exist (like DOM nodes in IE).
- * @param {Object} object The object to test if the property is enumerable.
- * @param {string} propName The property name to check for.
- * @return {boolean} True if the property is enumarable.
- * @private
- */
-goog.propertyIsEnumerable_ = function(object, propName) {
-  // In IE if object is from another window, cannot use propertyIsEnumerable
-  // from this window's Object. Will raise a 'JScript object expected' error.
-  if (object instanceof Object) {
-    return Object.prototype.propertyIsEnumerable.call(object, propName);
-  } else {
-    return goog.propertyIsEnumerableCustom_(object, propName);
-  }
-};
-
-
-/**
  * Returns true if the specified value is not |undefined|.
  * WARNING: Do not use this to test if an object has a property. Use the in
  * operator instead.  Additionally, this function assumes that the global
@@ -884,8 +857,10 @@ goog.isFunction = function(val) {
  * @return {boolean} Whether variable is an object.
  */
 goog.isObject = function(val) {
-  var type = goog.typeOf(val);
-  return type == 'object' || type == 'array' || type == 'function';
+  var type = typeof val;
+  return type == 'object' && val != null || type == 'function';
+  // return Object(val) === val also works, but is slower, especially if val is
+  // not an object.
 };
 
 
@@ -901,7 +876,7 @@ goog.isObject = function(val) {
  * @return {number} The unique ID for the object.
  */
 goog.getUid = function(obj) {
-  // TODO(user): Make the type stricter, do not accept null.
+  // TODO(arv): Make the type stricter, do not accept null.
 
   // In Opera window.hasOwnProperty exists but always returns false so we avoid
   // using it. As a consequence the unique ID generated for BaseClass.prototype
@@ -918,7 +893,7 @@ goog.getUid = function(obj) {
  * @param {Object} obj The object to remove the unique ID field from.
  */
 goog.removeUid = function(obj) {
-  // TODO(user): Make the type stricter, do not accept null.
+  // TODO(arv): Make the type stricter, do not accept null.
 
   // DOM nodes in IE are not instance of Object and throws exception
   // for delete. Instead we try to use removeAttribute
@@ -1006,7 +981,7 @@ goog.cloneObject = function(obj) {
  * compiler can better support duck-typing constructs as used in
  * goog.cloneObject.
  *
- * TODO(user): Remove once the JSCompiler can infer that the check for
+ * TODO(brenneman): Remove once the JSCompiler can infer that the check for
  * proto.clone is safe in goog.cloneObject.
  *
  * @type {Function}
@@ -1018,8 +993,7 @@ Object.prototype.clone;
  * A native implementation of goog.bind.
  * @param {Function} fn A function to partially apply.
  * @param {Object|undefined} selfObj Specifies the object which |this| should
- *     point to when the function is run. If the value is null or undefined, it
- *     will default to the global object.
+ *     point to when the function is run.
  * @param {...*} var_args Additional arguments that are partially
  *     applied to the function.
  * @return {!Function} A partially-applied form of the function bind() was
@@ -1038,8 +1012,7 @@ goog.bindNative_ = function(fn, selfObj, var_args) {
  * A pure-JS implementation of goog.bind.
  * @param {Function} fn A function to partially apply.
  * @param {Object|undefined} selfObj Specifies the object which |this| should
- *     point to when the function is run. If the value is null or undefined, it
- *     will default to the global object.
+ *     point to when the function is run.
  * @param {...*} var_args Additional arguments that are partially
  *     applied to the function.
  * @return {!Function} A partially-applied form of the function bind() was
@@ -1047,7 +1020,9 @@ goog.bindNative_ = function(fn, selfObj, var_args) {
  * @private
  */
 goog.bindJs_ = function(fn, selfObj, var_args) {
-  var context = selfObj || goog.global;
+  if (!fn) {
+    throw new Error();
+  }
 
   if (arguments.length > 2) {
     var boundArgs = Array.prototype.slice.call(arguments, 2);
@@ -1055,12 +1030,12 @@ goog.bindJs_ = function(fn, selfObj, var_args) {
       // Prepend the bound arguments to the current arguments.
       var newArgs = Array.prototype.slice.call(arguments);
       Array.prototype.unshift.apply(newArgs, boundArgs);
-      return fn.apply(context, newArgs);
+      return fn.apply(selfObj, newArgs);
     };
 
   } else {
     return function() {
-      return fn.apply(context, arguments);
+      return fn.apply(selfObj, arguments);
     };
   }
 };
@@ -1082,8 +1057,7 @@ goog.bindJs_ = function(fn, selfObj, var_args) {
  *
  * @param {Function} fn A function to partially apply.
  * @param {Object|undefined} selfObj Specifies the object which |this| should
- *     point to when the function is run. If the value is null or undefined, it
- *     will default to the global object.
+ *     point to when the function is run.
  * @param {...*} var_args Additional arguments that are partially
  *     applied to the function.
  * @return {!Function} A partially-applied form of the function bind() was
@@ -1320,14 +1294,36 @@ goog.getCssName = function(className, opt_modifier) {
  * @param {!Object} mapping A map of strings to strings where keys are possible
  *     arguments to goog.getCssName() and values are the corresponding values
  *     that should be returned.
- * @param {string=} style The style of css name mapping. There are two valid
+ * @param {string=} opt_style The style of css name mapping. There are two valid
  *     options: 'BY_PART', and 'BY_WHOLE'.
  * @see goog.getCssName for a description.
  */
-goog.setCssNameMapping = function(mapping, style) {
+goog.setCssNameMapping = function(mapping, opt_style) {
   goog.cssNameMapping_ = mapping;
-  goog.cssNameMappingStyle_ = style;
+  goog.cssNameMappingStyle_ = opt_style;
 };
+
+
+/**
+ * To use CSS renaming in compiled mode, one of the input files should have a
+ * call to goog.setCssNameMapping() with an object literal that the JSCompiler
+ * can extract and use to replace all calls to goog.getCssName(). In uncompiled
+ * mode, JavaScript code should be loaded before this base.js file that declares
+ * a global variable, CLOSURE_CSS_NAME_MAPPING, which is used below. This is
+ * to ensure that the mapping is loaded before any calls to goog.getCssName()
+ * are made in uncompiled mode.
+ *
+ * A hook for overriding the CSS name mapping.
+ * @type {Object|undefined}
+ */
+goog.global.CLOSURE_CSS_NAME_MAPPING;
+
+
+if (!COMPILED && goog.global.CLOSURE_CSS_NAME_MAPPING) {
+  // This does not call goog.setCssNameMapping() because the JSCompiler
+  // requires that goog.setCssNameMapping() be called with an object literal.
+  goog.cssNameMapping_ = goog.global.CLOSURE_CSS_NAME_MAPPING;
+}
 
 
 /**
@@ -1355,7 +1351,7 @@ goog.getMsg = function(str, opt_values) {
  * <p>Also handy for making public items that are defined in anonymous
  * closures.
  *
- * ex. goog.exportSymbol('Foo', Foo);
+ * ex. goog.exportSymbol('public.path.Foo', Foo);
  *
  * ex. goog.exportSymbol('public.path.Foo.staticFunction',
  *                       Foo.staticFunction);
@@ -1397,9 +1393,8 @@ goog.exportProperty = function(object, publicName, symbol) {
  * ParentClass.prototype.foo = function(a) { }
  *
  * function ChildClass(a, b, c) {
- *   ParentClass.call(this, a, b);
+ *   goog.base(this, a, b);
  * }
- *
  * goog.inherits(ChildClass, ParentClass);
  *
  * var child = new ChildClass('a', 'b', 'see');

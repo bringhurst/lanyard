@@ -16,20 +16,25 @@ See the COPYING file for details.
 <title>Closure Unit Tests - goog.uri.utils</title>
 <script src="../base.js"></script>
 <script>
-  goog.require('goog.uri.utils');
   goog.require('goog.functions');
+  goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.uri.utils');
 </script>
 </head>
 <body>
 <script>
 var utils = goog.uri.utils;
+var stubs = new goog.testing.PropertyReplacer();
 
 
 function setUpPage() {
   goog.string.getRandomString = goog.functions.constant('RANDOM');
 }
 
+function tearDown() {
+  stubs.reset();
+}
 
 function testSplit() {
   var uri = 'http://www.google.com:80/path%20path+path?q=query&hl=en#fragment';
@@ -44,15 +49,32 @@ function testSplit() {
   assertEquals('q=query&hl=en', utils.getQueryData(uri));
   assertEquals('fragment', utils.getFragmentEncoded(uri));
   assertEquals('fragment', utils.getFragment(uri));
+
   assertNull(utils.getDomain('http://!!!'));
   assertNull(utils.getScheme('www.x.com:80'));
-
-  assertEquals('terer258+foo@gmail.com',
-      utils.getPath('mailto:terer258+foo@gmail.com'));
   assertEquals('Query data with no fragment identifier', 'foo=bar&baz=bin',
       utils.getQueryData('http://google.com?foo=bar&baz=bin'));
 }
 
+function testMailtoUri() {
+  var uri = 'mailto:joe+random@hominid.com';
+  assertNull(utils.getDomain(uri));
+  assertEquals('mailto', utils.getScheme(uri));
+  assertEquals('joe+random@hominid.com', utils.getPath(uri));
+}
+
+function testSplitRelativeUri() {
+  var uri = '/path%20path+path?q=query&hl=en#fragment';
+  assertNull(utils.getScheme(uri));
+  assertNull(utils.getDomain(uri));
+  assertNull(utils.getDomainEncoded(uri));
+  assertNull(utils.getPort(uri));
+  assertEquals('/path%20path+path', utils.getPathEncoded(uri));
+  assertEquals('/path path+path', utils.getPath(uri));
+  assertEquals('q=query&hl=en', utils.getQueryData(uri));
+  assertEquals('fragment', utils.getFragmentEncoded(uri));
+  assertEquals('fragment', utils.getFragment(uri));
+}
 
 function testSplitIntoHostAndPath() {
   // Splitting into host and path takes care of one of the major use cases
@@ -515,6 +537,7 @@ function testMakeUnique() {
   assertEquals('http://www.google.com?a=1&b=2&zx=RANDOM#blob',
       goog.uri.utils.makeUnique('http://www.google.com?zx=9&a=1&b=2#blob'));
 }
+
 
 </script>
 </body>

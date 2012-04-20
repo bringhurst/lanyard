@@ -157,6 +157,19 @@ function testSetPropertiesDirectAttributeMap() {
   assertEquals('Should be equal', '#myMap', el.getAttribute('usemap'));
 }
 
+function testSetPropertiesAria() {
+  var attrs = {
+    'aria-hidden': 'true',
+    'aria-label': 'This is a label'
+  };
+  var el = goog.dom.createDom('div');
+
+  goog.dom.setProperties(el, attrs);
+  assertEquals('Should be equal', 'true', el.getAttribute('aria-hidden'));
+  assertEquals('Should be equal',
+      'This is a label', el.getAttribute('aria-label'));
+}
+
 function testSetTableProperties() {
   var attrs = {
     'style': 'padding-left: 10px;',
@@ -195,9 +208,9 @@ function testGetDocumentHeightInIframe() {
   var doc = goog.dom.getDomHelper(myIframeDoc).getDocument();
   var height = goog.dom.getDomHelper(myIframeDoc).getDocumentHeight();
 
-  // Broken in webkit quirks mode and in IE8
+  // Broken in webkit quirks mode and in IE8+
   if ((goog.dom.isCss1CompatMode_(doc) || !goog.userAgent.WEBKIT) &&
-      !isIE8()) {
+      !isIE8OrHigher()) {
     assertEquals('height should be 65', 42 + 23, height);
   }
 }
@@ -546,6 +559,24 @@ function testIsNodeLike() {
 
   assertTrue('custom object should be node like',
              goog.dom.isNodeLike({nodeType: 1}));
+}
+
+function testIsElement() {
+  assertFalse('document is not an element', goog.dom.isElement(document));
+  assertTrue('document.body is an element',
+             goog.dom.isElement(document.body));
+  assertFalse('a text node is not an element', goog.dom.isElement(
+      document.createTextNode('')));
+  assertTrue('an element created with createElement() is an element',
+      goog.dom.isElement(document.createElement('a')));
+
+  assertFalse('null is not an element', goog.dom.isElement(null));
+  assertFalse('a string is not an element', goog.dom.isElement('abcd'));
+
+  assertTrue('custom object is an element',
+             goog.dom.isElement({nodeType: 1}));
+  assertFalse('custom non-element object is a not an element',
+              goog.dom.isElement({someProperty: 'somevalue'}));
 }
 
 function testIsWindow() {
@@ -925,7 +956,8 @@ function testGetTextContent() {
   t(' \n&shy;\n\n&shy;\na   ', 'a ');
   t(' \n<wbr></wbr><b>abcde <wbr></wbr> </b>   \n\n\n<wbr></wbr>', 'abcde ');
   t('a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b',
-      goog.userAgent.IE ? 'a     b' : 'a\xA0\xA0\xA0\xA0\xA0b');
+      goog.dom.BrowserFeature.CAN_USE_INNER_TEXT ?
+      'a     b' : 'a\xA0\xA0\xA0\xA0\xA0b');
 }
 
 function testGetNodeTextLength() {
@@ -1173,6 +1205,9 @@ function testGetAncestorByTagNameAndClass() {
   assertEquals(expected,
       goog.dom.getAncestorByTagNameAndClass(elem, goog.dom.TagName.DIV,
           'testAncestor'));
+  assertNull(
+      'Should return null if no search criteria are given',
+      goog.dom.getAncestorByTagNameAndClass(elem));
 }
 
 function testCreateTable() {
@@ -1204,7 +1239,7 @@ function testHtmlToDocumentFragment() {
   var script = goog.dom.htmlToDocumentFragment('<script></script>');
   assertEquals('SCRIPT', script.tagName);
 
-  if (goog.userAgent.IE && !goog.userAgent.isVersion('9')) {
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentMode(9)) {
     // Removing an Element from a DOM tree in IE sets its parentNode to a new
     // DocumentFragment. Bizarre!
     assertEquals(goog.dom.NodeType.DOCUMENT_FRAGMENT,
@@ -1272,11 +1307,46 @@ function testGetDocumentScrollOfFixedViewport() {
   assertEquals(100, dh.getDocumentScroll().y);
 }
 
+function testActiveElementIE() {
+  if (!goog.userAgent.IE) {
+    return;
+  }
+
+  var link = goog.dom.getElement('link');
+  link.focus();
+
+  assertEquals(link.tagName, goog.dom.getActiveElement(document).tagName);
+  assertEquals(link, goog.dom.getActiveElement(document));
+}
+
+function testParentElement() {
+  var testEl = $('testEl');
+  var bodyEl = goog.dom.getParentElement(testEl);
+  assertNotNull(bodyEl);
+  var htmlEl = goog.dom.getParentElement(bodyEl);
+  assertNotNull(htmlEl);
+  var documentNotAnElement = goog.dom.getParentElement(htmlEl);
+  assertNull(documentNotAnElement);
+
+  var tree = goog.dom.htmlToDocumentFragment(
+      '<div>' +
+      '<p>Some text</p>' +
+      '<blockquote>Some <i>special</i> <b>text</b></blockquote>' +
+      '<address><!-- comment -->Foo</address>' +
+      '</div>');
+  assertNull(goog.dom.getParentElement(tree));
+  pEl = goog.dom.getNextNode(tree);
+  var fragmentRootEl = goog.dom.getParentElement(pEl);
+  assertEquals(tree, fragmentRootEl);
+
+  var detachedEl = goog.dom.createDom('div');
+  var detachedHasNoParent = goog.dom.getParentElement(detachedEl);
+  assertNull(detachedHasNoParent);
+}
 
 /**
- * @return {boolean} Returns true if the userAgent is IE8.
+ * @return {boolean} Returns true if the userAgent is IE8 or higher.
  */
-function isIE8() {
-  return goog.userAgent.IE && goog.userAgent.product.isVersion('8') &&
-      !goog.userAgent.product.isVersion('9');
+function isIE8OrHigher() {
+  return goog.userAgent.IE && goog.userAgent.product.isVersion('8');
 }

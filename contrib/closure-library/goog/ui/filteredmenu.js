@@ -16,6 +16,7 @@
  * @fileoverview Menu where items can be filtered based on user keyboard input.
  * If a filter is specified only the items matching it will be displayed.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/filteredmenu.html
  */
 
@@ -137,7 +138,7 @@ goog.ui.FilteredMenu.prototype.filterStr_;
 goog.ui.FilteredMenu.prototype.persistentChildren_;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.FilteredMenu.prototype.createDom = function() {
   goog.ui.FilteredMenu.superClass_.createDom.call(this);
 
@@ -217,7 +218,7 @@ goog.ui.FilteredMenu.prototype.tearDownFilterListeners_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.FilteredMenu.prototype.setVisible = function(show, opt_force, opt_e) {
   var visibilityChanged = goog.ui.FilteredMenu.superClass_.setVisible.call(this,
       show, opt_force, opt_e);
@@ -232,7 +233,7 @@ goog.ui.FilteredMenu.prototype.setVisible = function(show, opt_force, opt_e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.FilteredMenu.prototype.disposeInternal = function() {
   this.tearDownFilterListeners_();
   this.filterInput_ = undefined;
@@ -501,15 +502,21 @@ goog.ui.FilteredMenu.prototype.setHighlightedIndex = function(index) {
   var el = this.getHighlighted() ? this.getHighlighted().getElement() : null;
 
   if (el && goog.dom.contains(contentEl, el)) {
-    var contTop = goog.userAgent.IE ? 0 : contentEl.offsetTop;
+    var contentTop = goog.userAgent.IE && !goog.userAgent.isVersion(8) ?
+        0 : contentEl.offsetTop;
+
+    // IE (tested on IE8) sometime does not scroll enough by about
+    // 1px. So we add 1px to the scroll amount. This still looks ok in
+    // other browser except for the most degenerate case (menu height <=
+    // item height).
 
     // Scroll down if the highlighted item is below the bottom edge.
-    var diff = (el.offsetTop + el.offsetHeight - contTop) -
-        (contentEl.clientHeight + contentEl.scrollTop);
+    var diff = (el.offsetTop + el.offsetHeight - contentTop) -
+        (contentEl.clientHeight + contentEl.scrollTop) + 1;
     contentEl.scrollTop += Math.max(diff, 0);
 
     // Scroll up if the highlighted item is above the top edge.
-    diff = contentEl.scrollTop - (el.offsetTop - contTop);
+    diff = contentEl.scrollTop - (el.offsetTop - contentTop) + 1;
     contentEl.scrollTop -= Math.max(diff, 0);
   }
 };
@@ -525,7 +532,7 @@ goog.ui.FilteredMenu.prototype.onFilterLabelClick_ = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.FilteredMenu.prototype.getContentElement = function() {
   return this.contentElement_ || this.getElement();
 };
@@ -540,7 +547,7 @@ goog.ui.FilteredMenu.prototype.getFilterInputElement = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.FilteredMenu.prototype.decorateInternal = function(element) {
   this.setElementInternal(element);
 

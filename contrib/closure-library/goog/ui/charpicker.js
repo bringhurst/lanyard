@@ -276,7 +276,7 @@ goog.ui.CharPicker.prototype.getRecentChars = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharPicker.prototype.createDom = function() {
   goog.ui.CharPicker.superClass_.createDom.call(this);
 
@@ -284,7 +284,7 @@ goog.ui.CharPicker.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharPicker.prototype.disposeInternal = function() {
   this.hc_.dispose();
   this.hc_ = null;
@@ -294,7 +294,7 @@ goog.ui.CharPicker.prototype.disposeInternal = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharPicker.prototype.decorateInternal = function(element) {
   goog.ui.CharPicker.superClass_.decorateInternal.call(this, element);
 
@@ -435,7 +435,7 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharPicker.prototype.enterDocument = function() {
   goog.ui.CharPicker.superClass_.enterDocument.call(this);
   var inputkh = new goog.events.InputHandler(this.input_.getElement());
@@ -526,7 +526,7 @@ goog.ui.CharPicker.prototype.handleSelectedItem_ = function(e) {
  * @private
  */
 goog.ui.CharPicker.prototype.handleInput_ = function(e) {
-  var ch = this.getInputChar_();
+  var ch = this.getInputChar();
   if (ch) {
     var unicode = this.getTagFromChar_(ch);
     this.zoomEl_.innerHTML = ch;
@@ -551,7 +551,7 @@ goog.ui.CharPicker.prototype.handleInput_ = function(e) {
  * @private
  */
 goog.ui.CharPicker.prototype.handleOkClick_ = function(opt_event) {
-  var ch = this.getInputChar_();
+  var ch = this.getInputChar();
   if (ch && ch.charCodeAt(0)) {
     this.selectedChar_ = ch;
     this.updateRecents_(ch);
@@ -771,9 +771,8 @@ goog.ui.CharPicker.prototype.updateRecents_ = function(character) {
 /**
  * Gets the user inputed unicode character.
  * @return {string} Unicode character inputed by user.
- * @private
  */
-goog.ui.CharPicker.prototype.getInputChar_ = function() {
+goog.ui.CharPicker.prototype.getInputChar = function() {
   var text = this.input_.getValue();
   var code = parseInt(text, 16);
   return /** @type {string} */ (goog.i18n.uChar.fromCharCode(code));
