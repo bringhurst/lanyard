@@ -977,8 +977,8 @@ lanyard.BasicOrbitView.prototype.computeVisibleLatLonRange = function() {
  * @param {lanyard.geom.Point} windowPoint the window point.
  */
 lanyard.BasicOrbitView.prototype.unProject = function(windowPoint) {
-    if(!windowPoint) {
-        this._logger.severe("Attempted to unproject an invalid window point.");
+    if (!windowPoint) {
+        this._logger.severe('Attempted to unproject an invalid window point.');
     }
 
     if (!this.modelView || !this.projection || !this.viewport) {
@@ -993,12 +993,12 @@ lanyard.BasicOrbitView.prototype.unProject = function(windowPoint) {
 
     /** @type {Array.<number>} */
     var viewport = [this.viewport.getX(), this.viewport.getY(),
-        this.viewport.getWidth(), this.viewport.getHeight()]
+        this.viewport.getWidth(), this.viewport.getHeight()];
 
     /** @type {Array.<number>} */
     var modelPoint = [];
 
-    if(lanyard.util.GLU.prototype.unProject(
+    if (lanyard.util.GLU.prototype.unProject(
             windowPoint.getX(), windowPoint.getY(), windowPoint.getZ(),
             modelViewMatrix, projectionMatrix, viewport, modelPoint)) {
         return new lanyard.geom.Point(modelPoint[0], modelPoint[1], modelPoint[2], 0.0);
@@ -1110,7 +1110,7 @@ lanyard.BasicOrbitView.prototype.computeRayFromScreenPoint = function(x, y) {
     }
 
     /** @type {lanyard.geom.Line} */
-    var ray = new lanyard.geom.Line(a, b.subtract(a).normalize())
+    var ray = new lanyard.geom.Line(a, b.subtract(a).normalize());
     //this._logger.fine("Created ray line: " + ray.toString());
 
     return ray;

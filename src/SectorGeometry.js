@@ -1,4 +1,4 @@
-/*global goog, lanyard */ /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */ 
+/*global goog, lanyard */ /*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 /**
  * Lanyard is Copyright 2010 Jonathan Bringhurst.
  *
@@ -76,8 +76,8 @@ lanyard.SectorGeometry.prototype.renderBoundingVolume = function(dc) {};
 /**
  * Render this sector geometry using multiple texture units.
  *
- * @param {lanyard.DrawContext} dc the draw context.                                                                    
- * @param {number} numTextureUnits the number of texture units available.                                               
+ * @param {lanyard.DrawContext} dc the draw context.
+ * @param {number} numTextureUnits the number of texture units available.
  * @return {number} the number of triangles rendered.
  */
 lanyard.SectorGeometry.prototype.render = function(dc, numTextureUnits) {};

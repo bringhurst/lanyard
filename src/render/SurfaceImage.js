@@ -279,7 +279,7 @@ lanyard.render.SurfaceImage.prototype.render = function(dc) {
 
     if (!this.sector.intersects(dc.getVisibleSector())) {
         this._logger.fine('The surface image does not intersect with a visible sector.');
-        return;
+        return 0;
     }
 
     /** @type {WebGLRenderingContext} */
