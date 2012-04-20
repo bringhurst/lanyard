@@ -1,5 +1,4 @@
 /*global goog, lanyard */
-/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 /**
  * Lanyard is Copyright 2010 Jonathan Bringhurst.
@@ -396,6 +395,7 @@ lanyard.geom.Cylinder.prototype.getHeight = function() {
  * Draw this shape to a draw context.
  *
  * @param {lanyard.DrawContext} dc the draw context.
+ * @return {number} the number of triangles rendered.
  */
 lanyard.geom.Cylinder.prototype.render = function(dc) {
 
@@ -433,6 +433,7 @@ lanyard.geom.Cylinder.prototype.render = function(dc) {
     gl.glPopAttrib();
   */
 
+  return 0;
 };
 
 /* EOF */

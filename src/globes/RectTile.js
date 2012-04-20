@@ -1,5 +1,4 @@
 /*global goog, lanyard, WebGLFloatArray */
-/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: false, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 /**
  * Lanyard is Copyright 2010 Jonathan Bringhurst.
@@ -350,10 +349,9 @@ lanyard.globes.RectTile.prototype.buildVerts = function(dc, density, resolution,
  * Render the tile, specify how many texture units are on the context.
  *
  * @param {lanyard.DrawContext} dc the draw context.
- * @param {number} numTextureUnits the number of texture units available.
  * @return {number} the number of triangles rendered.
  */
-lanyard.globes.RectTile.prototype.render = function(dc, numTextureUnits) {
+lanyard.globes.RectTile.prototype.render = function(dc) {
   //this._logger.fine("Render was called.");
 
   /** @type {Array.<number>} */
