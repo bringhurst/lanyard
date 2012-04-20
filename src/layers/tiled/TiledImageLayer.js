@@ -815,7 +815,7 @@ lanyard.layers.tiled.TiledImageLayer.prototype.requestTexture = function(dc, til
   /** @type {lanyard.layers.tiled.TiledImageLayer} */
   var self = this;
 
-  /** @type {function} */
+  /** @type {Function} */
   var task = function() {
     if (!tile.textureData) {
       tile.textureData = new Image();

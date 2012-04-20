@@ -26,7 +26,7 @@
 
 goog.provide('lanyard.Tile');
 
-
+goog.require('lanyard.TileKey');
 
 /**
  * A way to hold tiles.
