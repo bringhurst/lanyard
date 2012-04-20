@@ -1,5 +1,4 @@
 /*global goog, lanyard */
-/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 /**
  * Lanyard is Copyright 2010 Jonathan Bringhurst.
@@ -40,7 +39,7 @@ goog.require('lanyard.geom.Position');
  * Provides an interface for creating a globe.
  *
  * @interface
- * @implements {lanyard.geom.Extent}
+ * @extends {lanyard.geom.Extent}
  */
 lanyard.Globe = function() {};
 

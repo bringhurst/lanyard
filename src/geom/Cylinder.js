@@ -35,7 +35,6 @@ goog.provide('lanyard.geom.Cylinder');
  * @constructor
  * @implements {lanyard.Renderable}
  * @implements {lanyard.geom.Extent}
- * @this {lanyard.geom.Cylinder}
  * @param {lanyard.geom.Point} bottomCenter represents the centrepoint of the base disc of the Cylinder.
  * @param {lanyard.geom.Point} topCenter represents the centrepoint of the top disc of the Cylinder.
  * @param {number} cylinderRadius the radius of the Cylinder.

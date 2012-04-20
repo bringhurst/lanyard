@@ -200,6 +200,7 @@ lanyard.geom.Sphere.prototype.intersectsPlane = function(plane) {
  * Causes this Sphere to render itself using the DrawContext provided.
  *
  * @param {lanyard.DrawContext} dc the DrawContext to be used.
+ * @return {number} the number of triangles rendered.
  */
 lanyard.geom.Sphere.prototype.render = function(dc) {
   var gl = dc.getGL();
@@ -222,6 +223,7 @@ lanyard.geom.Sphere.prototype.render = function(dc) {
 
     gl.glPopAttrib();
 ****/
+    return 0;
 };
 
 
