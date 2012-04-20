@@ -1,5 +1,4 @@
 /*global goog, lanyard */
-/*jslint white: false, onevar: false, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, sub: true, nomen: false */
 
 /**
  * Lanyard is Copyright 2010 Jonathan Bringhurst.
@@ -22,7 +21,8 @@
  * Portions of Lanyard which do not constitute a "Larger Work" may be licensed
  * under the NASA OPEN SOURCE AGREEMENT VERSION 1.3.
  *
- * See http://worldwind.arc.nasa.gov/ for further information about NASA World Wind.
+ * See http://worldwind.arc.nasa.gov/ for further information about NASA
+ * World Wind.
  */
 
 goog.provide('lanyard.util.TextRenderer');
