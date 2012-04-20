@@ -97,7 +97,7 @@ lanyard.SceneController.prototype.repaint = function() {};
 /**
  * Set the vertical exaggeration.
  *
- * @param {Number} verticalExaggeration the vertical exaggeration.
+ * @param {number} verticalExaggeration the vertical exaggeration.
  */
 lanyard.SceneController.prototype.setVerticalExaggeration = function(verticalExaggeration) {};
 
@@ -105,7 +105,7 @@ lanyard.SceneController.prototype.setVerticalExaggeration = function(verticalExa
 /**
  * Accessor to the vertical exaggeration.
  *
- * @return {Number} the vertical exaggeration.
+ * @return {number} the vertical exaggeration.
  */
 lanyard.SceneController.prototype.getVerticalExaggeration = function() {};
 
@@ -113,7 +113,7 @@ lanyard.SceneController.prototype.getVerticalExaggeration = function() {};
 /**
  * Get the current frames per second.
  *
- * @return {Number} the current frames per second.
+ * @return {number} the current frames per second.
  */
 lanyard.SceneController.prototype.getFramesPerSecond = function() {};
 
