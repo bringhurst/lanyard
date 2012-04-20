@@ -96,6 +96,16 @@
     </copy>
   </target>
 
+  <target name="lint">
+    <exec executable="gjslint"
+        logError="true"
+        failonerror="true">
+      <arg value="--strict" />
+      <arg value="-r" />
+      <arg value="${src.dir}" />
+    </exec>
+  </target>
+
   <target name="doc">
     <exec executable="${contrib.dir}/jsdoc-toolkit/jsrun.sh"
         logError="true"
