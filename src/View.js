@@ -152,6 +152,7 @@ lanyard.View.prototype.pushModelViewReferenceCenter = function(dc, referenceCent
  * When the stack size is one, therefore containing the original model-view matrix computed by apply().
  *
  * @param {lanyard.DrawContext} dc the current World Wind drawing context on which View's state will apply.
+ * @return {lanyard.geom.MatrixFour} the popped model view matrix.
  */
 lanyard.View.prototype.popModelViewMatrix = function(dc) {};
 
@@ -396,9 +397,12 @@ lanyard.View.prototype.computePixelSizeAtDistance = function(distance) {};
 /**
  * Returns the distance from the View's eye point to the horizon point on the last rendered Globe.
  *
- * @return {number} the distance from the eye point to the horizon (in meters).
- */
-lanyard.View.prototype.computeHorizonDistance = function() {};
+ * @param {lanyard.Globe} globe the current globe.                                                                      
+ * @param {number} verticalExaggeration                                                                                 
+ * @param {lanyard.geom.Point} eyePoint the camera eye point.                                                           
+ * @return {number} the distance to the horizon.                                                                        
+ */                                                                                                                     
+lanyard.View.prototype.computeHorizonDistance = function(globe, verticalExaggeration, eyePoint) {};
 
 
 /**
