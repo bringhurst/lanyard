@@ -36,7 +36,8 @@ goog.require('lanyard.demo.StatusBar');
 goog.require('lanyard.dom.InputHandler');
 goog.require('lanyard.layers.earth.BMNGOneImage');
 //goog.require('lanyard.layers.earth.PoliticalBoundariesLayer');
-
+goog.require('goog.ui.Checkbox');
+goog.require('goog.ui.Checkbox.State');
 
 
 /**
@@ -82,9 +83,8 @@ goog.exportSymbol('lanyard.demo.BasicDemo', lanyard.demo.BasicDemo);
  * @this {lanyard.demo.BasicDemo}
  */
 lanyard.demo.BasicDemo.prototype.run = function() {
-  // Setup the logging and layer divs for this demo.
+  // Setup the logging area.
   this.setupEventLog();
-  this.setupLayerList();
 
   if (!this._webGLCanvas) {
     this._logger.severe('A valid canvas element was not found.');
@@ -99,6 +99,9 @@ lanyard.demo.BasicDemo.prototype.run = function() {
   this.lanyardCanvas.setModel(model);
   this.lanyardCanvas.setView(new lanyard.BasicOrbitView());
   this.lanyardCanvas.createDefaultInputHandler();
+
+  // Setup the layers.
+  this.setupLayerList();
 
   /** @type {lanyard.demo.BasicDemo} */
   var self = this;
@@ -179,14 +182,34 @@ lanyard.demo.BasicDemo.prototype.setupLayerList = function() {
   for (i = 0; i < this._layerList.length; i = i + 1) {
     this._logger.fine('Adding layer with name = ' + this._layerList[i].toString());
 
-    var layerLabel = goog.dom.createDom('p', {'style': 'background-color:#EEE'},
-            this._layerList[i].getName());
-    goog.dom.appendChild(this._layerListDiv, layerLabel);
+    // The human readable name of the layer.
+    var layerNameSpan = goog.dom.createDom('span', {}, this._layerList[i].getName());
 
-    //var layerCheckbox = new goog.ui.Checkbox();
-    //layerCheckbox.setLabel(layerLabel);
+    // A checkbox to turn the layer on and off.
+    var layerCheckboxSpan = goog.dom.createDom('span');
+    this._layerList[i].uiCheckbox = new goog.ui.Checkbox();
+    this._layerList[i].uiCheckbox.setLabel(layerNameSpan);
+    this._layerList[i].uiCheckbox.decorate(layerCheckboxSpan);
+    this._layerList[i].uiCheckbox.setChecked(this._layerList[i].isEnabled());
+    goog.events.listen(
+        this._layerList[i].uiCheckbox,
+        goog.ui.Component.EventType.CHANGE,
+        function (e) {
+            var newState = !(this.isEnabled());
+            this.uiCheckbox.setChecked(newState);
+            this.setEnabled(newState);
+        },
+        true,
+        this._layerList[i]
+    );
 
-    // TODO: add layer checkbox and setup listener
+    // Wrap the label and the checkbox.
+    var layerInfoDiv = goog.dom.createDom('div', {'style': 'background-color:#EEE'});
+    goog.dom.appendChild(layerInfoDiv, layerNameSpan);
+    goog.dom.appendChild(layerInfoDiv, layerCheckboxSpan);
+
+    // Append to the list of layers.
+    goog.dom.appendChild(this._layerListDiv, layerInfoDiv);
   }
 };
 goog.exportSymbol('lanyard.demo.BasicDemo.prototype.setupLayerList',
