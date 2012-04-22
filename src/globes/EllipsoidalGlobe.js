@@ -460,10 +460,10 @@ lanyard.globes.EllipsoidalGlobe.prototype.geodeticToCartesian =
   var x = (rpm + metersElevation) * cosLat * sinLng;
 
   /** @type {number} */
-  var y = (rpm * (1.0 - this.es) + metersElevation) * cosLon;
+  var y = (rpm * (1.0 - this.es) + metersElevation) * sinLat;
 
   /** @type {number} */
-  var z = (rpm + metersElevation) * cosLat * longitude.cos();
+  var z = (rpm + metersElevation) * cosLat * cosLon;
 
   return new lanyard.geom.Point(x, y, z, 1);
 };
