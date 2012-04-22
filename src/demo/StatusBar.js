@@ -35,8 +35,9 @@ goog.provide('lanyard.demo.StatusBar');
  * @param {Element} latElement the div where the latitude value is set to.
  * @param {Element} lonElement the div where the longitude value is set to.
  * @param {Element} eleElement the div where the elevation value is set to.
+ * @param {Element} zoomElement the div where the zoom value is set to.
  */
-lanyard.demo.StatusBar = function(latElement, lonElement, eleElement) {
+lanyard.demo.StatusBar = function(latElement, lonElement, eleElement, zoomElement) {
   this._logger = goog.debug.Logger.getLogger('lanyard.demo.StatusBar');
 
   /** @type {lanyard.LanyardCanvas} */
@@ -45,6 +46,7 @@ lanyard.demo.StatusBar = function(latElement, lonElement, eleElement) {
   this.latDisplay = latElement;
   this.lonDisplay = lonElement;
   this.eleDisplay = eleElement;
+  this.zoomDisplay = zoomElement;
 };
 goog.exportSymbol('lanyard.demo.StatusBar', lanyard.demo.StatusBar);
 
@@ -59,12 +61,6 @@ lanyard.demo.StatusBar.prototype.setEventSource = function(newEventSource) {
   if (!newEventSource) {
     this._logger.severe('Attempted to use an invalid event source.');
   }
-
-  /** FIXME: remove from existing event source.
-    if (this.eventSource) {
-        this.eventSource.removePositionListener(this);
-    }
-    */
 
   newEventSource.getInputHandler().addPositionListener(this);
   this.eventSource = newEventSource;

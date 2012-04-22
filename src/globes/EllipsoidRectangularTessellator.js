@@ -91,7 +91,7 @@ lanyard.globes.EllipsoidRectangularTessellator = function(globe) {
      * @private
      * @type {number}
      */
-  this.density = 24;
+  this.density = 20;
 };
 
 
@@ -113,7 +113,7 @@ lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_LOG10_RESOLUTIO
  * @const
  * @type {number}
  */
-lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_MAX_LEVEL = 12;
+lanyard.globes.EllipsoidRectangularTessellator.prototype.DEFAULT_MAX_LEVEL = 17;
 
 
 /**

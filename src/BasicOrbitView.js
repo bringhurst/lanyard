@@ -412,6 +412,7 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function(dc) {
   var focusPoint = globe.computePointFromPosition(focusPosition);
 
   //this._logger.fine("Focus point is: " + focusPoint);
+  //this._logger.fine("Focus point length is: " + focusPoint.length());
 
   /** @type {lanyard.geom.MatrixFour} */
   var modelView = this.lookAt(
@@ -429,7 +430,6 @@ lanyard.BasicOrbitView.prototype.computeModelViewMatrix = function(dc) {
 
   /** @type {lanyard.geom.Point} */
   var surfacePoint = this.computeSurfacePoint(dc, polarEye.getLatitude(), polarEye.getLongitude());
-
   //this._logger.fine("Surface point is: " + surfacePoint);
 
   if (surfacePoint) {
@@ -744,17 +744,17 @@ lanyard.BasicOrbitView.prototype.goToCoordinate = function(newLatLon, newAltitud
 lanyard.BasicOrbitView.prototype.clampCoordinate = function(latLon) {
   /** @type {number} */
   var lat = latLon.getLatitude().getDegrees();
-  //this._logger.fine("Before clamping, lat coord is: lat = " + lat + ".");
+
+  /** @type {number} */
+  var lon = latLon.getLongitude().getDegrees();
+
+  //this._logger.fine("Before clamping, lat/lon coord is: lat = " + lat + "; lon = " + lon + ".");
 
   if (lat < -90) {
     lat = -90;
   } else if (lat > 90) {
     lat = 90;
   }
-
-  /** @type {number} */
-  var lon = latLon.getLongitude().getDegrees();
-  //this._logger.fine("Before clamping, lon coord is: lon = " + lon + ".");
 
   if (lon < -180) {
     lon = lon + 360;

@@ -443,11 +443,11 @@ lanyard.dom.InputHandler.prototype.mouseDragged = function(mouseEvent) {
         var cosHeading = view.getHeading().cos();
 
         /** @type {number} */
-        var latFactor = cosHeading * mouseMove.getY() + sinHeading * mouseMove.getX();
+        var latFactor = (cosHeading * mouseMove.getY() + sinHeading * mouseMove.getX()) / 10.0;
         //this._logger.fine('latitude factor = ' + latFactor.toString());
 
         /** @type {number} */
-        var lonFactor = sinHeading * mouseMove.getY() - cosHeading * mouseMove.getX();
+        var lonFactor = (sinHeading * mouseMove.getY() - cosHeading * mouseMove.getX()) / 10.0;
         //this._logger.fine('longitude factor = ' + lonFactor.toString());
 
         if (latFactor !== 0 || lonFactor !== 0) {
@@ -800,18 +800,22 @@ lanyard.dom.InputHandler.prototype.setViewProperties =
   }
 
   if (newProperties.latLon) {
+    //this._logger.fine('Setting view latlon to: ' + newProperties.latLon.toString());
     view.goToLatLon(newProperties.latLon);
   }
 
   if (newProperties.heading) {
+    //this._logger.fine('Setting view heading to: ' + newProperties.heading.toString());
     view.setHeading(newProperties.heading);
   }
 
   if (newProperties.pitch) {
+    //this._logger.fine('Setting view pitch to: ' + newProperties.pitch.toString());
     view.setPitch(newProperties.pitch);
   }
 
   if (newProperties.zoom) {
+    //this._logger.fine('Setting view zoom to: ' + newProperties.zoom.toString());
     view.setZoom(newProperties.zoom);
   }
 
