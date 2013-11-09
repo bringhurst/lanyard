@@ -20,7 +20,8 @@
 
 goog.provide('goog.async.AnimationDelay');
 
-goog.require('goog.async.Delay');
+goog.require('goog.Disposable');
+goog.require('goog.events');
 goog.require('goog.functions');
 
 
@@ -29,6 +30,8 @@ goog.require('goog.functions');
 // goog.async.Delay? I'm not sure if there's enough code for this to really
 // make sense. Subclassing seems like the wrong approach for a variety of
 // reasons. Maybe there should be a common interface?
+
+
 
 /**
  * A delayed callback that pegs to the next animation frame
@@ -49,6 +52,7 @@ goog.require('goog.functions');
  * @param {Object=} opt_handler The object scope to invoke the function in.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.async.AnimationDelay = function(listener, opt_window, opt_handler) {
   goog.base(this);
@@ -86,10 +90,18 @@ goog.inherits(goog.async.AnimationDelay, goog.Disposable);
 /**
  * Identifier of the active delay timeout, or event listener,
  * or null when inactive.
- * @type {?number}
+ * @type {goog.events.Key|number|null}
  * @private
  */
 goog.async.AnimationDelay.prototype.id_ = null;
+
+
+/**
+ * If we're using dom listeners.
+ * @type {?boolean}
+ * @private
+ */
+goog.async.AnimationDelay.prototype.usingListeners_ = false;
 
 
 /**
@@ -118,6 +130,7 @@ goog.async.AnimationDelay.MOZ_BEFORE_PAINT_EVENT_ = 'MozBeforePaint';
  */
 goog.async.AnimationDelay.prototype.start = function() {
   this.stop();
+  this.usingListeners_ = false;
 
   var raf = this.getRaf_();
   var cancelRaf = this.getCancelRaf_();
@@ -138,6 +151,7 @@ goog.async.AnimationDelay.prototype.start = function() {
         goog.async.AnimationDelay.MOZ_BEFORE_PAINT_EVENT_,
         this.callback_);
     this.win_.mozRequestAnimationFrame(null);
+    this.usingListeners_ = true;
   } else if (raf && cancelRaf) {
     this.id_ = raf.call(this.win_, this.callback_);
   } else {
@@ -163,7 +177,7 @@ goog.async.AnimationDelay.prototype.stop = function() {
     } else if (raf && cancelRaf) {
       cancelRaf.call(this.win_, /** @type {number} */ (this.id_));
     } else {
-      this.win_.clearTimeout(this.id_);
+      this.win_.clearTimeout(/** @type {number} */ (this.id_));
     }
   }
   this.id_ = null;
@@ -201,19 +215,20 @@ goog.async.AnimationDelay.prototype.isActive = function() {
 
 /**
  * Invokes the callback function after the delay successfully completes.
- * @param {Event|number=} opt_timestamp The time when the callback is called,
- *     or the event object that fired the before paint event.
  * @private
  */
-goog.async.AnimationDelay.prototype.doAction_ = function(opt_timestamp) {
+goog.async.AnimationDelay.prototype.doAction_ = function() {
+  if (this.usingListeners_ && this.id_) {
+    goog.events.unlistenByKey(this.id_);
+  }
   this.id_ = null;
-  var timestamp =
-      goog.isNumber(opt_timestamp) ?
-          opt_timestamp :
-          goog.isDef(opt_timestamp) ?
-              (opt_timestamp['timeStamp'] || goog.now()) :
-              goog.now();
-  this.listener_.call(this.handler_, timestamp);
+
+  // We are not using the timestamp returned by requestAnimationFrame
+  // because it may be either a Date.now-style time or a
+  // high-resolution time (depending on browser implementation). Using
+  // goog.now() will ensure that the timestamp used is consistent and
+  // compatible with goog.fx.Animation.
+  this.listener_.call(this.handler_, goog.now());
 };
 
 
@@ -254,4 +269,3 @@ goog.async.AnimationDelay.prototype.getCancelRaf_ = function() {
       win.msCancelRequestAnimationFrame ||
       null;
 };
-

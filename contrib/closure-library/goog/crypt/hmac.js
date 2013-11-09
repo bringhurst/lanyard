@@ -38,6 +38,7 @@ goog.require('goog.crypt.Hash');
  * @param {number=} opt_blockSize Optional. The block size {@code hasher} uses.
  *     If not specified, 16.
  * @extends {goog.crypt.Hash}
+ * @final
  */
 goog.crypt.Hmac = function(hasher, key, opt_blockSize) {
   goog.base(this);
@@ -153,11 +154,10 @@ goog.crypt.Hmac.prototype.digest = function() {
  * Calculates an HMAC for a given message.
  *
  * @param {Array.<number>} message  An array of integers in {0, 255}.
- * @return {Array} the digest of the given message.
+ * @return {!Array.<number>} the digest of the given message.
  */
 goog.crypt.Hmac.prototype.getHmac = function(message) {
   this.reset();
   this.update(message);
   return this.digest();
 };
-

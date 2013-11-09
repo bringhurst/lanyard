@@ -95,6 +95,22 @@ See the COPYING file for details.
   }
 
 
+  function testSetImmediateAndTick() {
+    var clock = new goog.testing.MockClock(true);
+    var tick0 = false;
+    var tick1 = false;
+    setImmediate(function() { tick0 = true; });
+    setImmediate(function() { tick1 = true; });
+    assertEquals(2, clock.getTimeoutsMade());
+
+    clock.tick(0);
+    assertTrue(tick0);
+    assertTrue(tick1);
+
+    clock.uninstall();
+  }
+
+
   function testSetInterval() {
     var clock = new goog.testing.MockClock(true);
     var times = 0
@@ -465,6 +481,21 @@ See the COPYING file for details.
 
     clock.tick(goog.testing.MockClock.REQUEST_ANIMATION_FRAME_TIMEOUT);
     assertEquals(1, mozBeforePaint.getCallCount());
+    clock.dispose();
+  }
+
+  function testClearBeforeSet() {
+    var clock = new goog.testing.MockClock(true);
+    var expectedId = 1;
+    window.clearTimeout(expectedId);
+
+    var fn = goog.testing.recordFunction();
+    var actualId = window.setTimeout(fn, 0);
+    assertEquals(
+        'In order for this test to work, we have to guess the ids in advance',
+        expectedId, actualId);
+    clock.tick(1);
+    assertEquals(1, fn.getCallCount());
     clock.dispose();
   }
 

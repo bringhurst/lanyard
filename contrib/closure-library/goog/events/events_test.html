@@ -9,72 +9,81 @@ See the COPYING file for details.
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Closure Unit Tests - goog.events</title>
-  <script src="../base.js"></script>
+<script src="../base.js"></script>
 <script>
+  goog.require('goog.asserts.AssertionError');
   goog.require('goog.debug.EntryPointMonitor');
   goog.require('goog.debug.ErrorHandler');
   goog.require('goog.debug.ErrorHandler.ProtectedFunctionError');
+  goog.require('goog.dom');
   goog.require('goog.events');
+  goog.require('goog.events.CaptureSimulationMode');
   goog.require('goog.events.EventTarget');
   goog.require('goog.events.EventType');
+  goog.require('goog.events.Listenable');
   goog.require('goog.functions');
+  goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.jsunit');
   goog.require('goog.testing.recordFunction');
-
-
 </script>
 </head>
 <body>
 <script>
   var originalHandleBrowserEvent = goog.events.handleBrowserEvent_;
+  var propertyReplacer;
+  var et1, et2, et3;
+
+  function setUp() {
+    et1 = new goog.events.EventTarget();
+    et2 = new goog.events.EventTarget();
+    et3 = new goog.events.EventTarget();
+    propertyReplacer = new goog.testing.PropertyReplacer();
+  }
 
   function tearDown() {
+    goog.events.CAPTURE_SIMULATION_MODE =
+        goog.events.CaptureSimulationMode.ON;
     goog.events.handleBrowserEvent_ = originalHandleBrowserEvent;
-    goog.events.removeAll();
+    goog.disposeAll(et1, et2, et3);
+    goog.events.removeAll(document.body);
+    propertyReplacer.reset();
   }
 
   function testProtectBrowserEventEntryPoint() {
-    var errorHandlerCallbackCalled = false;
-    var errorHandler = new goog.debug.ErrorHandler(function() {
-      errorHandlerCallbackCalled = true;
-    });
+    var errorHandlerFn = goog.testing.recordFunction();
+    var errorHandler = new goog.debug.ErrorHandler(errorHandlerFn);
 
     goog.events.protectBrowserEventEntryPoint(errorHandler);
 
-    var protectedHandleBrowserEvent_ = goog.events.handleBrowserEvent_;
-    goog.events.handleBrowserEvent_ = function(evt) {
+    var browserEventHandler = goog.testing.recordFunction(goog.events.handleBrowserEvent_);
+    goog.events.handleBrowserEvent_ = function() {
       try {
-        protectedHandleBrowserEvent_(evt);
-      } catch (e) {
-        assertTrue(
-            e instanceof goog.debug.ErrorHandler.ProtectedFunctionError);
+        browserEventHandler.apply(this, arguments);
+      } catch(e) {
+        // Ignored.
       }
     };
 
-    var bodyEl = document.body;
-    goog.events.listen(bodyEl, goog.events.EventType.CLICK, function(e){
-      throw Error;
+    var err = Error('test');
+    var body = document.body;
+    goog.events.listen(body, goog.events.EventType.CLICK, function() {
+      throw err;
     });
 
-    triggerClickEvent(bodyEl);
+    dispatchClick(body);
 
-    assertTrue('Error handler callback should be called.',
-        errorHandlerCallbackCalled);
-  }
+    assertEquals('Error handler callback should be called.',
+        1, errorHandlerFn.getCallCount());
+    assertEquals(err, errorHandlerFn.getLastCall().getArgument(0));
 
-  function triggerClickEvent(element) {
-    if (document.createEvent) {
-      var event = document.createEvent("MouseEvents");
-      event.initMouseEvent("click", true, true, window,
-          0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      element.dispatchEvent(event);
-    } else {
-      element.fireEvent('onclick', element.ownerDocument.createEventObject());
-    }
+    assertEquals(1, browserEventHandler.getCallCount());
+    var err2 = browserEventHandler.getLastCall().getError();
+    assertNotNull(err2);
+    assertTrue(
+        err2 instanceof goog.debug.ErrorHandler.ProtectedFunctionError);
   }
 
   function testSelfRemove() {
-    var et1 = new goog.events.EventTarget();
     var callback = function() {
       // This listener removes itself during event dispatching, so it
       // is marked as 'removed' but not actually removed until after event
@@ -108,27 +117,23 @@ See the COPYING file for details.
   }
 
   function testHasListenerWithEventTarget() {
-    var et = new goog.events.EventTarget();
-    assertFalse(goog.events.hasListener(et));
+    assertFalse(goog.events.hasListener(et1));
 
     function callback() {};
-    goog.events.listen(et, 'test', callback, true);
-    assertTrue(goog.events.hasListener(et));
-    assertTrue(goog.events.hasListener(et, 'test'));
-    assertTrue(goog.events.hasListener(et, 'test', true));
-    assertTrue(goog.events.hasListener(et, undefined, true));
+    goog.events.listen(et1, 'test', callback, true);
+    assertTrue(goog.events.hasListener(et1));
+    assertTrue(goog.events.hasListener(et1, 'test'));
+    assertTrue(goog.events.hasListener(et1, 'test', true));
+    assertTrue(goog.events.hasListener(et1, undefined, true));
 
-    assertFalse(goog.events.hasListener(et, 'click'));
-    assertFalse(goog.events.hasListener(et, 'test', false));
+    assertFalse(goog.events.hasListener(et1, 'click'));
+    assertFalse(goog.events.hasListener(et1, 'test', false));
 
-    goog.events.unlisten(et, 'test', callback, true);
-    assertFalse(goog.events.hasListener(et));
+    goog.events.unlisten(et1, 'test', callback, true);
+    assertFalse(goog.events.hasListener(et1));
   }
 
   function testHasListenerWithMultipleTargets() {
-    var et1 = new goog.events.EventTarget();
-    var et2 = new goog.events.EventTarget();
-
     function callback() {};
 
     goog.events.listen(et1, 'test1', callback, true);
@@ -147,10 +152,6 @@ See the COPYING file for details.
   }
 
   function testBubbleSingle() {
-    var et1 = new goog.events.EventTarget();
-    var et2 = new goog.events.EventTarget();
-    var et3 = new goog.events.EventTarget();
-
     et1.setParentEventTarget(et2);
     et2.setParentEventTarget(et3);
 
@@ -170,36 +171,7 @@ See the COPYING file for details.
     goog.events.removeAll(et3);
   }
 
-  function testBubbleShortCircuit() {
-    var et1 = new goog.events.EventTarget();
-    var et2 = new goog.events.EventTarget();
-
-    et1.setParentEventTarget(et2);
-
-    et2.getParentEventTarget = function() {
-      fail('This should never be called');
-    };
-
-    var count = 0;
-    function callback() {
-      count++;
-    }
-
-    goog.events.listen(et1, 'test', callback, false);
-
-    et1.dispatchEvent('test');
-
-    assertEquals(1, count);
-
-    goog.events.removeAll(et1);
-    goog.events.removeAll(et2);
-  }
-
   function testCaptureSingle() {
-    var et1 = new goog.events.EventTarget();
-    var et2 = new goog.events.EventTarget();
-    var et3 = new goog.events.EventTarget();
-
     et1.setParentEventTarget(et2);
     et2.setParentEventTarget(et3);
 
@@ -220,10 +192,6 @@ See the COPYING file for details.
   }
 
   function testCaptureAndBubble() {
-    var et1 = new goog.events.EventTarget();
-    var et2 = new goog.events.EventTarget();
-    var et3 = new goog.events.EventTarget();
-
     et1.setParentEventTarget(et2);
     et2.setParentEventTarget(et3);
 
@@ -272,8 +240,6 @@ See the COPYING file for details.
   }
 
   function testCapturingRemovesBubblingListener() {
-    var et1 = new goog.events.EventTarget();
-
     var bubbleCount = 0;
     function callbackBubble() {
       bubbleCount++;
@@ -381,6 +347,398 @@ See the COPYING file for details.
     goog.debug.entryPointRegistry.monitorAll(monitor);
     assertTrue(monitor.wrap.getCallCount() >= 1);
     assertEquals(replacement, goog.events.handleBrowserEvent_);
+  }
+
+  // Fixes bug http://b/6434926
+  function testListenOnceHandlerDispatchCausingInfiniteLoop() {
+    var handleFoo = goog.testing.recordFunction(function() {
+      et1.dispatchEvent('foo');
+    });
+
+    goog.events.listenOnce(et1, 'foo', handleFoo);
+
+    et1.dispatchEvent('foo');
+
+    assertEquals('Handler should be called only once.',
+                 1, handleFoo.getCallCount());
+  }
+
+  function testCreationStack() {
+    if (!new Error().stack)
+      return;
+    propertyReplacer.replace(goog.events.Listener, 'ENABLE_MONITORING', true);
+
+    var div = document.createElement('div');
+    var key = goog.events.listen(
+        div, goog.events.EventType.CLICK, goog.nullFunction);
+    var listenerStack = key.creationStack;
+
+    // Check that the name of this test function occurs in the stack trace.
+    assertContains('testCreationStack', listenerStack);
+    goog.events.unlistenByKey(key);
+  }
+
+  function testListenOnceAfterListenDoesNotChangeExistingListener() {
+    var listener = goog.testing.recordFunction();
+    goog.events.listen(document.body, 'click', listener);
+    goog.events.listenOnce(document.body, 'click', listener);
+
+    dispatchClick(document.body);
+    dispatchClick(document.body);
+    dispatchClick(document.body);
+
+    assertEquals(3, listener.getCallCount());
+  }
+
+  function testListenOnceAfterListenOnceDoesNotChangeExistingListener() {
+    var listener = goog.testing.recordFunction();
+    goog.events.listenOnce(document.body, 'click', listener);
+    goog.events.listenOnce(document.body, 'click', listener);
+
+    dispatchClick(document.body);
+    dispatchClick(document.body);
+    dispatchClick(document.body);
+
+    assertEquals(1, listener.getCallCount());
+  }
+
+  function testListenAfterListenOnceRemoveOnceness() {
+    var listener = goog.testing.recordFunction();
+    goog.events.listenOnce(document.body, 'click', listener);
+    goog.events.listen(document.body, 'click', listener);
+
+    dispatchClick(document.body);
+    dispatchClick(document.body);
+    dispatchClick(document.body);
+
+    assertEquals(3, listener.getCallCount());
+  }
+
+  function testUnlistenAfterListenOnce() {
+    var listener = goog.testing.recordFunction();
+
+    goog.events.listenOnce(document.body, 'click', listener);
+    goog.events.unlisten(document.body, 'click', listener);
+    dispatchClick(document.body);
+
+    goog.events.listenOnce(document.body, 'click', listener);
+    goog.events.listen(document.body, 'click', listener);
+    goog.events.unlisten(document.body, 'click', listener);
+    dispatchClick(document.body);
+
+    goog.events.listen(document.body, 'click', listener);
+    goog.events.listenOnce(document.body, 'click', listener);
+    goog.events.unlisten(document.body, 'click', listener);
+    dispatchClick(document.body);
+
+    goog.events.listenOnce(document.body, 'click', listener);
+    goog.events.listenOnce(document.body, 'click', listener);
+    goog.events.unlisten(document.body, 'click', listener);
+    dispatchClick(document.body);
+
+    assertEquals(0, listener.getCallCount());
+  }
+
+  function testEventBubblingWithReentrantDispatch_bubbling() {
+    runEventPropogationWithReentrantDispatch(false);
+  }
+
+  function testEventBubblingWithReentrantDispatch_capture() {
+    runEventPropogationWithReentrantDispatch(true);
+  }
+
+  function runEventPropogationWithReentrantDispatch(useCapture) {
+    var eventType = 'test-event-type';
+
+    var child = et1;
+    var parent = et2;
+    child.setParentEventTarget(parent);
+
+    var firstTarget = useCapture ? parent : child;
+    var secondTarget = useCapture ? child : parent;
+
+    var firstListener = function(evt) {
+      if (evt.isFirstEvent) {
+        // Fires another event of the same type the first time it is invoked.
+        child.dispatchEvent(new goog.events.Event(eventType));
+      }
+    };
+    goog.events.listen(firstTarget, eventType, firstListener, useCapture);
+
+    var secondListener = goog.testing.recordFunction();
+    goog.events.listen(secondTarget, eventType, secondListener, useCapture);
+
+    // Fire the first event.
+    var firstEvent = new goog.events.Event(eventType);
+    firstEvent.isFirstEvent = true;
+    child.dispatchEvent(firstEvent);
+
+    assertEquals(2, secondListener.getCallCount());
+  }
+
+  function testEventPropogationWhenListenerRemoved_bubbling() {
+    runEventPropogationWhenListenerRemoved(false);
+  }
+
+  function testEventPropogationWhenListenerRemoved_capture() {
+    runEventPropogationWhenListenerRemoved(true);
+  }
+
+  function runEventPropogationWhenListenerRemoved(useCapture) {
+    var eventType = 'test-event-type';
+
+    var child = et1;
+    var parent = et2;
+    child.setParentEventTarget(parent);
+
+    var firstTarget = useCapture ? parent : child;
+    var secondTarget = useCapture ? child : parent;
+
+    var firstListener = goog.testing.recordFunction();
+    var secondListener = goog.testing.recordFunction();
+    goog.events.listenOnce(firstTarget, eventType, firstListener, useCapture);
+    goog.events.listen(secondTarget, eventType, secondListener, useCapture);
+
+    child.dispatchEvent(new goog.events.Event(eventType));
+
+    assertEquals(1, secondListener.getCallCount());
+  }
+
+  function testEventPropogationWhenListenerAdded_bubbling() {
+    runEventPropogationWhenListenerAdded(false);
+  }
+
+  function testEventPropogationWhenListenerAdded_capture() {
+    runEventPropogationWhenListenerAdded(true);
+  }
+
+  function runEventPropogationWhenListenerAdded(useCapture) {
+    var eventType = 'test-event-type';
+
+    var child = et1;
+    var parent = et2;
+    child.setParentEventTarget(parent);
+
+    var firstTarget = useCapture ? parent : child;
+    var secondTarget = useCapture ? child : parent;
+
+    var firstListener = function() {
+      goog.events.listen(secondTarget, eventType, secondListener, useCapture);
+    };
+    var secondListener = goog.testing.recordFunction();
+    goog.events.listen(firstTarget, eventType, firstListener, useCapture);
+
+    child.dispatchEvent(new goog.events.Event(eventType));
+
+    assertEquals(1, secondListener.getCallCount());
+  }
+
+  function testEventPropogationWhenListenerAddedAndRemoved_bubbling() {
+    runEventPropogationWhenListenerAddedAndRemoved(false);
+  }
+
+  function testEventPropogationWhenListenerAddedAndRemoved_capture() {
+    runEventPropogationWhenListenerAddedAndRemoved(true);
+  }
+
+  function runEventPropogationWhenListenerAddedAndRemoved(useCapture) {
+    var eventType = 'test-event-type';
+
+    var child = et1;
+    var parent = et2;
+    child.setParentEventTarget(parent);
+
+    var firstTarget = useCapture ? parent : child;
+    var secondTarget = useCapture ? child : parent;
+
+    var firstListener = function() {
+      goog.events.listen(secondTarget, eventType, secondListener, useCapture);
+    };
+    var secondListener = goog.testing.recordFunction();
+    goog.events.listenOnce(firstTarget, eventType, firstListener, useCapture);
+
+    child.dispatchEvent(new goog.events.Event(eventType));
+
+    assertEquals(1, secondListener.getCallCount());
+  }
+
+  function testAssertWhenUsedWithUninitializedCustomEventTarget() {
+    var SubClass = function() { /* does not call superclass ctor */ };
+    goog.inherits(SubClass, goog.events.EventTarget);
+
+    var instance = new SubClass();
+
+    var e;
+    e = assertThrows(function() {
+      goog.events.listen(instance, 'test1', function() {});
+    });
+    assertTrue(e instanceof goog.asserts.AssertionError);
+    e = assertThrows(function() {
+      goog.events.dispatchEvent(instance, 'test1');
+    });
+    assertTrue(e instanceof goog.asserts.AssertionError);
+    e = assertThrows(function() {
+      instance.dispatchEvent('test1');
+    });
+    assertTrue(e instanceof goog.asserts.AssertionError);
+  }
+
+  function testAssertWhenDispatchEventIsUsedWithNonCustomEventTarget() {
+    var obj = {};
+    e = assertThrows(function() {
+      goog.events.dispatchEvent(obj, 'test1');
+    });
+    assertTrue(e instanceof goog.asserts.AssertionError);
+  }
+
+
+  function testPropagationStoppedDuringCapture() {
+    var captureHandler = goog.testing.recordFunction(function(e) {
+      e.stopPropagation();
+    });
+    var bubbleHandler = goog.testing.recordFunction();
+
+    var body = document.body;
+    var div = document.createElement('div');
+    body.appendChild(div);
+    try {
+      goog.events.listen(body, 'click', captureHandler, true);
+      goog.events.listen(div, 'click', bubbleHandler, false);
+      goog.events.listen(body, 'click', bubbleHandler, false);
+
+      dispatchClick(div);
+      assertEquals(1, captureHandler.getCallCount());
+      assertEquals(0, bubbleHandler.getCallCount());
+
+      goog.events.unlisten(body, 'click', captureHandler, true);
+
+      dispatchClick(div);
+      assertEquals(2, bubbleHandler.getCallCount());
+    } finally {
+      goog.dom.removeNode(div);
+      goog.events.removeAll(body);
+      goog.events.removeAll(div);
+    }
+  }
+
+  function testPropagationStoppedDuringBubble() {
+    var captureHandler = goog.testing.recordFunction();
+    var bubbleHandler1 = goog.testing.recordFunction(function(e) {
+      e.stopPropagation();
+    });
+    var bubbleHandler2 = goog.testing.recordFunction();
+
+    var body = document.body;
+    var div = document.createElement('div');
+    body.appendChild(div);
+    try {
+      goog.events.listen(body, 'click', captureHandler, true);
+      goog.events.listen(div, 'click', bubbleHandler1, false);
+      goog.events.listen(body, 'click', bubbleHandler2, false);
+
+      dispatchClick(div);
+      assertEquals(1, captureHandler.getCallCount());
+      assertEquals(1, bubbleHandler1.getCallCount());
+      assertEquals(0, bubbleHandler2.getCallCount());
+    } finally {
+      goog.dom.removeNode(div);
+      goog.events.removeAll(body);
+      goog.events.removeAll(div);
+    }
+  }
+
+  function testAddingCaptureListenerDuringBubbleShouldNotFireTheListener() {
+    var body = document.body;
+    var div = document.createElement('div');
+    body.appendChild(div);
+
+    var captureHandler1 = goog.testing.recordFunction();
+    var captureHandler2 = goog.testing.recordFunction();
+    var bubbleHandler = goog.testing.recordFunction(function(e) {
+      goog.events.listen(body, 'click', captureHandler1, true);
+      goog.events.listen(div, 'click', captureHandler2, true);
+    });
+
+    try {
+      goog.events.listen(div, 'click', bubbleHandler, false);
+
+      dispatchClick(div);
+
+      // These verify that the capture handlers registered in the bubble
+      // handler is not invoked in the same event propagation phase.
+      assertEquals(0, captureHandler1.getCallCount());
+      assertEquals(0, captureHandler2.getCallCount());
+      assertEquals(1, bubbleHandler.getCallCount());
+    } finally {
+      goog.dom.removeNode(div);
+      goog.events.removeAll(body);
+      goog.events.removeAll(div);
+    }
+  }
+
+  function testRemovingCaptureListenerDuringBubbleWouldNotFireListenerTwice() {
+    var body = document.body;
+    var div = document.createElement('div');
+    body.appendChild(div);
+
+    var captureHandler = goog.testing.recordFunction();
+    var bubbleHandler1 = goog.testing.recordFunction(function(e) {
+      goog.events.unlisten(body, 'click', captureHandler, true);
+    });
+    var bubbleHandler2 = goog.testing.recordFunction();
+
+    try {
+      goog.events.listen(body, 'click', captureHandler, true);
+      goog.events.listen(div, 'click', bubbleHandler1, false);
+      goog.events.listen(body, 'click', bubbleHandler2, false);
+
+      dispatchClick(div);
+      assertEquals(1, captureHandler.getCallCount());
+
+      // Verify that neither of these handlers are called more than once.
+      assertEquals(1, bubbleHandler1.getCallCount());
+      assertEquals(1, bubbleHandler2.getCallCount());
+    } finally {
+      goog.dom.removeNode(div);
+      goog.events.removeAll(body);
+      goog.events.removeAll(div);
+    }
+  }
+
+  function testCaptureSimulationModeOffAndFail() {
+    goog.events.CAPTURE_SIMULATION_MODE =
+        goog.events.CaptureSimulationMode.OFF_AND_FAIL;
+    var captureHandler = goog.testing.recordFunction();
+
+    if (!goog.events.BrowserFeature.HAS_W3C_EVENT_SUPPORT) {
+      var err = assertThrows(function() {
+        goog.events.listen(document.body, 'click', captureHandler, true);
+      });
+      assertTrue(err instanceof goog.asserts.AssertionError);
+
+      // Sanity tests.
+      dispatchClick(document.body);
+      assertEquals(0, captureHandler.getCallCount());
+    } else {
+      goog.events.listen(document.body, 'click', captureHandler, true);
+      dispatchClick(document.body);
+      assertEquals(1, captureHandler.getCallCount());
+    }
+  }
+
+  function testCaptureSimulationModeOffAndSilent() {
+    goog.events.CAPTURE_SIMULATION_MODE =
+        goog.events.CaptureSimulationMode.OFF_AND_SILENT;
+    var captureHandler = goog.testing.recordFunction();
+
+    goog.events.listen(document.body, 'click', captureHandler, true);
+    if (!goog.events.BrowserFeature.HAS_W3C_EVENT_SUPPORT) {
+      dispatchClick(document.body);
+      assertEquals(0, captureHandler.getCallCount());
+    } else {
+      dispatchClick(document.body);
+      assertEquals(1, captureHandler.getCallCount());
+    }
   }
 </script>
 </body>

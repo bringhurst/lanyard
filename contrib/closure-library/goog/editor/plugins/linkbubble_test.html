@@ -137,7 +137,10 @@ function testDeleteClicked() {
   FIELDMOCK.$times(1);
   FIELDMOCK.dispatchChange();
   FIELDMOCK.$times(1);
+  FIELDMOCK.focus();
+  FIELDMOCK.$times(1);
   FIELDMOCK.$replay();
+
   linkBubble.enable(FIELDMOCK);
 
   linkBubble.handleSelectionChange(createMouseEvent(link));
@@ -254,9 +257,8 @@ function testDontLinkifyInvalidScheme() {
   linkBubble.handleSelectionChange(createMouseEvent(badLink));
   assertBubble();
 
-  // The link shouldn't exist at all, so this sequence should have no effect.
-  goog.testing.events.fireClickSequence(
-      goog.dom.$(goog.editor.plugins.LinkBubble.TEST_LINK_ID_));
+  // The link shouldn't exist at all
+  assertNull(goog.dom.$(goog.editor.plugins.LinkBubble.TEST_LINK_ID_));
 
   assertBubble();
   mockWindowOpen.$verify();

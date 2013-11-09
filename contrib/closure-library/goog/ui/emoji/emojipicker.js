@@ -26,11 +26,10 @@
 
 goog.provide('goog.ui.emoji.EmojiPicker');
 
-goog.require('goog.debug.Logger');
-goog.require('goog.dom');
+goog.require('goog.log');
+goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.TabPane');
-goog.require('goog.ui.TabPane.TabPage');
 goog.require('goog.ui.emoji.Emoji');
 goog.require('goog.ui.emoji.EmojiPalette');
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
@@ -409,11 +408,11 @@ goog.ui.emoji.EmojiPicker.prototype.setProgressiveRender =
 /**
  * Logger for the emoji picker.
  *
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.ui.emoji.EmojiPicker.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.ui.emoji.EmojiPicker');
+    goog.log.getLogger('goog.ui.emoji.EmojiPicker');
 
 
 /**
@@ -591,6 +590,7 @@ goog.ui.emoji.EmojiPicker.prototype.createPlaceholderEmojiPage_ =
  * structure they build is fairly complicated.
  * @param {Element} element Element to decorate.
  * @return {boolean} Returns always false.
+ * @override
  */
 goog.ui.emoji.EmojiPicker.prototype.canDecorate = function(element) {
   return false;

@@ -31,6 +31,7 @@ goog.require('goog.testing.Mock');
  * class is necessary to manage the return/throw behavior when the mock is
  * being called.
  * @constructor
+ * @final
  */
 goog.testing.LooseExpectationCollection = function() {
   /**
@@ -205,9 +206,9 @@ goog.testing.LooseMock.prototype.$replay = function() {
             var name = expectation.name;
             var argsString = this.$argumentsAsString(expectation.argumentList);
             this.$throwException([
-                'Expected call to ', name, ' with arguments ', argsString,
-                ' has an infinite max number of calls; can\'t expect an',
-                ' identical call later with a positive min number of calls'
+              'Expected call to ', name, ' with arguments ', argsString,
+              ' has an infinite max number of calls; can\'t expect an',
+              ' identical call later with a positive min number of calls'
             ].join(''));
           }
         }

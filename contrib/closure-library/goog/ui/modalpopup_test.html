@@ -13,12 +13,15 @@ See the COPYING file for details.
 <title>Closure Unit Tests - goog.ui.ModalPopup</title>
 <script src="../base.js"></script>
 <script>
+  goog.require('goog.a11y.aria');
+  goog.require('goog.a11y.aria.State');
   goog.require('goog.ui.ModalPopup');
   goog.require('goog.dispose');
   goog.require('goog.dom');
   goog.require('goog.events');
   goog.require('goog.events.EventTarget');
   goog.require('goog.fx.css3');
+  goog.require('goog.string');
   goog.require('goog.style');
   goog.require('goog.ui.PopupBase.EventType');
   goog.require('goog.testing.MockClock');
@@ -26,10 +29,12 @@ See the COPYING file for details.
 </script>
 </head>
 <body>
+<div id="main"></div>
 <script>
 
 
 var popup;
+var main = /** @type {!Element}*/ (goog.dom.getElement('main'));
 var mockClock;
 
 
@@ -41,6 +46,7 @@ function setUp() {
 function tearDown() {
   goog.dispose(popup);
   mockClock.dispose();
+  goog.a11y.aria.removeState(main, goog.a11y.aria.State.HIDDEN);
 }
 
 
@@ -71,6 +77,15 @@ function testRenderWithoutIframeMask() {
 
   assertTrue(goog.dom.compareNodeOrder(bg[0], content) < 0);
   assertTrue(goog.dom.compareNodeOrder(content, tabCatcher[0]) < 0);
+  assertEquals('true', goog.a11y.aria.getState(
+      popup.getElementStrict(), goog.a11y.aria.State.HIDDEN));
+  assertTrue(goog.string.isEmptySafe(goog.a11y.aria.getState(
+      main, goog.a11y.aria.State.HIDDEN)));
+  popup.setVisible(true);
+  assertTrue(goog.string.isEmptySafe(goog.a11y.aria.getState(
+      popup.getElementStrict(), goog.a11y.aria.State.HIDDEN)));
+  assertEquals('true', goog.a11y.aria.getState(
+      main, goog.a11y.aria.State.HIDDEN));
 }
 
 
@@ -91,6 +106,15 @@ function testRenderWithIframeMask() {
   assertTrue(goog.dom.compareNodeOrder(iframe[0], bg[0]) < 0);
   assertTrue(goog.dom.compareNodeOrder(bg[0], content) < 0);
   assertTrue(goog.dom.compareNodeOrder(content, tabCatcher[0]) < 0);
+  assertEquals('true', goog.a11y.aria.getState(
+      popup.getElementStrict(), goog.a11y.aria.State.HIDDEN));
+  assertTrue(goog.string.isEmptySafe(goog.a11y.aria.getState(
+      main, goog.a11y.aria.State.HIDDEN)));
+  popup.setVisible(true);
+  assertTrue(goog.string.isEmptySafe(goog.a11y.aria.getState(
+      popup.getElementStrict(), goog.a11y.aria.State.HIDDEN)));
+  assertEquals('true', goog.a11y.aria.getState(
+      main, goog.a11y.aria.State.HIDDEN));
 }
 
 
@@ -361,6 +385,15 @@ function testBackgroundHeight() {
   }
 }
 
+
+function testSetupBackwardTabWrapResetsFlagAfterTimeout() {
+  popup.setupBackwardTabWrap();
+  assertTrue('Backward tab wrap should be in progress',
+      popup.backwardTabWrapInProgress_);
+  mockClock.tick(1);
+  assertFalse('Backward tab wrap flag should be reset after delay',
+      popup.backwardTabWrapInProgress_);
+}
 
 
 /**

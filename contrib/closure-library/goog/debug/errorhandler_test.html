@@ -14,8 +14,11 @@ See the COPYING file for details.
 <!-- These paths should be relative to the test -->
 <script src="../base.js"></script>
 <script>
+  goog.require('goog.debug.Error');
   goog.require('goog.debug.ErrorHandler');
+  goog.require('goog.testing.MockControl');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.mockmatchers.SaveArgument');
   goog.require('goog.userAgent');
 </script>
 </head>
@@ -29,6 +32,7 @@ See the COPYING file for details.
   var fakeWin = {};
 
   var errorHandler;
+  var mockControl;
 
   function badTimer() {
     arguments.callee.called = true;
@@ -36,6 +40,7 @@ See the COPYING file for details.
   }
 
   function setUp() {
+    mockControl = new goog.testing.MockControl();
     // On IE, globalEval happens async. So make it synchronous.
     goog.globalEval = function(str) {
       eval(str);
@@ -70,6 +75,12 @@ See the COPYING file for details.
       }
     };
 
+    fakeWin.requestAnimationFrame = function(fn) {
+      fakeWin.requestAnimationFrame.called = true;
+      fakeWin.requestAnimationFrame.that = this;
+      fn();
+    };
+
     // just record the exception in the error handler when it happens
     errorHandler = new goog.debug.ErrorHandler(function(ex) {
                                                  this.ex = ex;
@@ -77,6 +88,7 @@ See the COPYING file for details.
   }
 
   function tearDown() {
+    mockControl.$tearDown();
     goog.dispose(errorHandler);
     errorHandler = null;
 
@@ -137,6 +149,18 @@ See the COPYING file for details.
     assertSetIntervalError(caught);
   }
 
+  function testWrapRequestAnimationFrame() {
+    errorHandler.protectWindowRequestAnimationFrame();
+
+    var caught;
+    try {
+      fakeWin.requestAnimationFrame(badTimer);
+    } catch (ex) {
+      caught = ex;
+    }
+    assertRequestAnimationFrameError(caught);
+  }
+
   function testDisposal() {
     fakeWin = goog.getObjectByName('window');
     var originalSetTimeout = fakeWin.setTimeout;
@@ -163,12 +187,94 @@ See the COPYING file for details.
     assertEquals(fn, errorHandler.unwrap(wrappedFn));
   }
 
+  function testStackPreserved() {
+    var e;
+    var hasStacks;
+    function specialFunctionName() {
+      var e = Error();
+      hasStacks = !!e.stack;
+      throw e;
+    };
+    var wrappedFn = errorHandler.wrap(specialFunctionName);
+    try {
+      wrappedFn();
+    } catch (exception) {
+      e = exception
+    }
+    assertTrue(!!e);
+    if (hasStacks) {
+      assertContains('specialFunctionName', e.stack);
+    }
+  }
+
+  function testGetProtectedFunction() {
+    var fn = function() {
+      throw new Error('Foo');
+    };
+    var protectedFn = errorHandler.getProtectedFunction(fn);
+    var e = assertThrows(protectedFn);
+    assertTrue(e instanceof goog.debug.ErrorHandler.ProtectedFunctionError);
+    assertEquals('Foo', e.cause.message);
+  }
+
+  function testGetProtectedFunction_withoutWrappedErrors() {
+    var shouldCallErrorLog = !!Error.captureStackTrace
+    if (shouldCallErrorLog) {
+      mockControl.createMethodMock(goog.global.console,
+          'error');
+    }
+    errorHandler.setWrapErrors(false);
+    var fn = function() {
+      var e = new Error('Foo');
+      e.stack = 'STACK';
+      throw e;
+    };
+    var protectedFn = errorHandler.getProtectedFunction(fn);
+    if (shouldCallErrorLog) {
+      goog.global.console.error('Foo', 'STACK');
+    }
+    mockControl.$replayAll();
+    var e = assertThrows(protectedFn);
+    mockControl.$verifyAll();
+    assertTrue(e instanceof Error);
+    assertEquals('Foo', e.message);
+    assertEquals(e.stack, 'STACK');
+  }
+
+  function testGetProtectedFunction_withoutWrappedErrorsWithMessagePrefix() {
+    errorHandler.setWrapErrors(false);
+    errorHandler.setPrefixErrorMessages(true);
+    var fn = function() {
+      throw new Error('Foo');
+    };
+    var protectedFn = errorHandler.getProtectedFunction(fn);
+    var e = assertThrows(protectedFn);
+    assertTrue(e instanceof Error);
+    assertEquals(
+        goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX +
+            'Foo', e.message);
+
+    var stringError = function() {
+      throw 'String';
+    };
+    protectedFn = errorHandler.getProtectedFunction(stringError);
+    e = assertThrows(protectedFn);
+    assertEquals('string', typeof e);
+    assertEquals(
+        goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX +
+            'String', e);
+  }
+
   function assertSetTimeoutError(caught) {
     assertMethodCalledHelper('setTimeout', caught);
   }
 
   function assertSetIntervalError(caught) {
     assertMethodCalledHelper('setInterval', caught);
+  }
+
+  function assertRequestAnimationFrameError(caught) {
+    assertMethodCalledHelper('requestAnimationFrame', caught);
   }
 
   function assertMethodCalledHelper(method, caught) {

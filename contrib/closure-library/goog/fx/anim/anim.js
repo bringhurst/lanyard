@@ -19,9 +19,8 @@
 goog.provide('goog.fx.anim');
 goog.provide('goog.fx.anim.Animated');
 
-goog.require('goog.Timer');
 goog.require('goog.async.AnimationDelay');
-goog.require('goog.events');
+goog.require('goog.async.Delay');
 goog.require('goog.object');
 
 
@@ -72,7 +71,7 @@ goog.fx.anim.animationWindow_ = null;
 
 /**
  * An interval ID for the global timer or event handler uid.
- * @type {goog.async.AnimationDelay}
+ * @type {goog.async.Delay|goog.async.AnimationDelay}
  * @private
  */
 goog.fx.anim.animationDelay_ = null;
@@ -159,11 +158,22 @@ goog.fx.anim.setAnimationWindow = function(animationWindow) {
  */
 goog.fx.anim.requestAnimationFrame_ = function() {
   if (!goog.fx.anim.animationDelay_) {
-    // requestAnimationFrame will call cycleAnimations_ with the current
-    // time in ms, as returned from goog.now().
-    goog.fx.anim.animationDelay_ = new goog.async.AnimationDelay(function(now) {
-      goog.fx.anim.cycleAnimations_(now);
-    }, goog.fx.anim.animationWindow_);
+    // We cannot guarantee that the global window will be one that fires
+    // requestAnimationFrame events (consider off-screen chrome extension
+    // windows). Default to use goog.async.Delay, unless
+    // the client has explicitly set an animation window.
+    if (goog.fx.anim.animationWindow_) {
+      // requestAnimationFrame will call cycleAnimations_ with the current
+      // time in ms, as returned from goog.now().
+      goog.fx.anim.animationDelay_ = new goog.async.AnimationDelay(
+          function(now) {
+            goog.fx.anim.cycleAnimations_(now);
+          }, goog.fx.anim.animationWindow_);
+    } else {
+      goog.fx.anim.animationDelay_ = new goog.async.Delay(function() {
+        goog.fx.anim.cycleAnimations_(goog.now());
+      }, goog.fx.anim.TIMEOUT);
+    }
   }
 
   var delay = goog.fx.anim.animationDelay_;

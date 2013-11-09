@@ -36,6 +36,7 @@ goog.require('goog.testing.PerformanceTimer');
  * @param {number=} opt_precision Number of digits of precision to include in
  *     results.  Defaults to 0.
  * @constructor
+ * @final
  */
 goog.testing.PerformanceTable = function(root, opt_timer, opt_precision) {
   /**
@@ -133,7 +134,7 @@ goog.testing.PerformanceTable.prototype.round_ = function(num) {
  */
 goog.testing.PerformanceTable.prototype.run = function(fn, opt_desc) {
   this.runTask(
-      new goog.testing.PerformanceTimer.Task((/** @type {function()} */ fn)),
+      new goog.testing.PerformanceTimer.Task(/** @type {function()} */ (fn)),
       opt_desc);
 };
 

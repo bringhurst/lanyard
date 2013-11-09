@@ -295,7 +295,6 @@ lanyard.render.SurfaceImage.prototype.render = function(dc) {
 
   // FIXME: for picking
   //if (!dc.isPickingMode()) {
-  /** @type {number} */
   //   var opacity = this.layer ? this.opacity * this.layer.opacity : this.opacity;
 
   //   if (opacity < 1) {
@@ -312,9 +311,11 @@ lanyard.render.SurfaceImage.prototype.render = function(dc) {
   //}
 
   //gl.polygonMode(gl.FRONT, gl.FILL);
+
   gl.enable(gl.CULL_FACE);
 
   //this._logger.fine("Passing things along to the surface tile renderer.");
+
   return dc.getSurfaceTileRenderer().renderTile(dc, this);
 
   //gl.popAttrib();

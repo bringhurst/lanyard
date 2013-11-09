@@ -774,6 +774,8 @@ function testDateIntervalAdd() {
 function testDateEquals() {
   var d1 = new goog.date.Date(2004, goog.date.month.MAR, 1);
   var d2 = new goog.date.Date(2004, goog.date.month.MAR, 1);
+  assertFalse('d1 != null', d1.equals(null));
+  assertFalse('d2 != undefined', d2.equals(undefined));
   assertTrue('d1 == d2', d1.equals(d2));
   assertTrue('d2 == d1', d2.equals(d1));
 
@@ -894,6 +896,13 @@ function testDateTimeEquals() {
   d1 = new goog.date.DateTime(2004, goog.date.month.MAR, 1, 0, 0, 0);
   d2 = new goog.date.Date(2004, goog.date.month.MAR, 1);
   assertTrue('using goog.date.Date, same time (midnight)', d1.equals(d2));
+}
+
+
+function testIntervalIsZero() {
+  assertTrue('zero interval', new goog.date.Interval().isZero());
+  var i = new goog.date.Interval(0, 0, 1, -24, 0, 0);
+  assertFalse('1 day minus 24 hours is not considered zero', i.isZero());
 }
 
 
@@ -1341,6 +1350,41 @@ function testDateCompareDateLikes() {
 
   nativeDate.setMilliseconds(501);
   assertEquals(1, goog.date.Date.compare(nativeDate, closureDate));
+}
+
+function testIsMidnight() {
+  assertTrue(new goog.date.DateTime(2013, 0, 1).isMidnight());
+  assertFalse(new goog.date.DateTime(2013, 0, 1, 1).isMidnight());
+  assertFalse(new goog.date.DateTime(2013, 0, 1, 0, 1).isMidnight());
+  assertFalse(new goog.date.DateTime(2013, 0, 1, 0, 0, 1).isMidnight());
+  assertFalse(new goog.date.DateTime(2013, 0, 1, 0, 0, 0, 1).isMidnight());
+}
+
+function testMinMax() {
+  // Comparison of two goog.date.DateTimes
+  var dateTime1 = new goog.date.DateTime(2000, 0, 1);
+  var dateTime2 = new goog.date.DateTime(2000, 0, 1, 0, 0, 0, 1);
+  assertEquals(dateTime1, goog.date.min(dateTime1, dateTime2));
+  assertEquals(dateTime1, goog.date.min(dateTime2, dateTime1));
+  assertEquals(dateTime2, goog.date.max(dateTime1, dateTime2));
+  assertEquals(dateTime2, goog.date.max(dateTime2, dateTime1));
+
+  // Comparison of two goog.date.Dates
+  var date1 = new goog.date.Date(2000, 0, 1);
+  var date2 = new goog.date.Date(2000, 0, 2);
+  assertEquals(date1, goog.date.min(date1, date2));
+
+  // Comparison of native Dates.
+  var jsDate1 = new Date(2000, 0, 1);
+  var jsDate2 = new Date(2000, 0, 2);
+  assertEquals(jsDate1, goog.date.min(jsDate1, jsDate2));
+  assertEquals(jsDate2, goog.date.max(jsDate1, jsDate2));
+
+  // Comparison of different types.
+  assertEquals(date1, goog.date.min(date1, dateTime2));
+  assertEquals(dateTime2, goog.date.min(date2, dateTime2));
+  assertEquals(date1, goog.date.min(date1, jsDate2));
+  assertEquals(jsDate2, goog.date.max(dateTime1, jsDate2));
 }
 
 </script>

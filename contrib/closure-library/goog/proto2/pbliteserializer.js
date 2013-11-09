@@ -38,8 +38,10 @@
 
 goog.provide('goog.proto2.PbLiteSerializer');
 
+goog.require('goog.asserts');
+goog.require('goog.proto2.FieldDescriptor');
 goog.require('goog.proto2.LazyDeserializer');
-goog.require('goog.proto2.Util');
+goog.require('goog.proto2.Serializer');
 
 
 
@@ -81,8 +83,8 @@ goog.proto2.PbLiteSerializer.prototype.setZeroIndexed = function(zeroIndexing) {
  * Serializes a message to a PB-Lite object.
  *
  * @param {goog.proto2.Message} message The message to be serialized.
- *
  * @return {!Array} The serialized form of the message.
+ * @override
  */
 goog.proto2.PbLiteSerializer.prototype.serialize = function(message) {
   var descriptor = message.getDescriptor();
@@ -137,7 +139,7 @@ goog.proto2.PbLiteSerializer.prototype.deserializeField =
   if (field.isRepeated()) {
     var data = [];
 
-    goog.proto2.Util.assert(goog.isArray(value));
+    goog.asserts.assert(goog.isArray(value));
 
     for (var i = 0; i < value.length; i++) {
       data[i] = this.getDeserializedValue(field, value[i]);
@@ -168,8 +170,9 @@ goog.proto2.PbLiteSerializer.prototype.getDeserializedValue =
     function(field, value) {
 
   if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.BOOL) {
-    // Booleans are serialized in numeric form.
-    return value === 1;
+    goog.asserts.assert(goog.isNumber(value) || goog.isBoolean(value),
+        'Value is expected to be a number or boolean');
+    return !!value;
   }
 
   return goog.proto2.Serializer.prototype.getDeserializedValue.apply(this,

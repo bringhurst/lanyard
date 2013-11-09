@@ -23,8 +23,8 @@ goog.provide('goog.messaging.BufferedChannel');
 goog.require('goog.Timer');
 goog.require('goog.Uri');
 goog.require('goog.debug.Error');
-goog.require('goog.debug.Logger');
 goog.require('goog.events');
+goog.require('goog.log');
 goog.require('goog.messaging.MessageChannel');
 goog.require('goog.messaging.MultiChannel');
 
@@ -43,6 +43,7 @@ goog.require('goog.messaging.MultiChannel');
  * @constructor
  * @extends {goog.Disposable}
  * @implements {goog.messaging.MessageChannel};
+ * @final
  */
 goog.messaging.BufferedChannel = function(messageChannel, opt_interval) {
   goog.Disposable.call(this);
@@ -170,11 +171,11 @@ goog.messaging.BufferedChannel.prototype.isPeerReady = function() {
 /**
  * Logger.
  *
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @const
  * @private
  */
-goog.messaging.BufferedChannel.prototype.logger_ = goog.debug.Logger.getLogger(
+goog.messaging.BufferedChannel.prototype.logger_ = goog.log.getLogger(
     'goog.messaging.bufferedchannel');
 
 
@@ -230,12 +231,13 @@ goog.messaging.BufferedChannel.prototype.registerDefaultService = function(
  *     Object, it is serialized to JSON before sending.  It's the responsibility
  *     of implementors of this class to perform the serialization.
  * @see goog.net.xpc.BufferedChannel.send
+ * @override
  */
 goog.messaging.BufferedChannel.prototype.send = function(serviceName, payload) {
   if (this.isPeerReady()) {
     this.userChannel_.send(serviceName, payload);
   } else {
-    goog.messaging.BufferedChannel.prototype.logger_.fine(
+    goog.log.fine(goog.messaging.BufferedChannel.prototype.logger_,
         'buffering message ' + serviceName);
     this.buffer_.push({serviceName: serviceName, payload: payload});
   }
@@ -246,9 +248,9 @@ goog.messaging.BufferedChannel.prototype.send = function(serviceName, payload) {
  * Marks the channel's peer as ready, then sends buffered messages and nulls the
  * buffer.  Subsequent calls to setPeerReady_ have no effect.
  *
- * @param {string} peerKnowsWeKnowItsReady Passed by the peer to indicate
- *     whether it knows that we've received its ping and that it's ready.
- *     Non-empty if true, empty if false.
+ * @param {(!Object|string)} peerKnowsWeKnowItsReady Passed by the peer to
+ *     indicate whether it knows that we've received its ping and that it's
+ *     ready.  Non-empty if true, empty if false.
  * @private
  */
 goog.messaging.BufferedChannel.prototype.setPeerReady_ = function(
@@ -270,7 +272,7 @@ goog.messaging.BufferedChannel.prototype.setPeerReady_ = function(
   this.sendReadyPing_();
   for (var i = 0; i < this.buffer_.length; i++) {
     var message = this.buffer_[i];
-    goog.messaging.BufferedChannel.prototype.logger_.fine(
+    goog.log.fine(goog.messaging.BufferedChannel.prototype.logger_,
         'sending buffered message ' + message.serviceName);
     this.userChannel_.send(message.serviceName, message.payload);
   }

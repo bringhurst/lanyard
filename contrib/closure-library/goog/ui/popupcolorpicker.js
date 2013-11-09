@@ -22,12 +22,11 @@
 
 goog.provide('goog.ui.PopupColorPicker');
 
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.ui.ColorPicker');
-goog.require('goog.ui.ColorPicker.EventType');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Popup');
 
@@ -135,7 +134,7 @@ goog.ui.PopupColorPicker.prototype.createDom = function() {
   goog.ui.PopupColorPicker.superClass_.createDom.call(this);
   this.popup_ = new goog.ui.Popup(this.getElement());
   this.popup_.setPinnedCorner(this.pinnedCorner_);
-  goog.dom.classes.set(this.getElement(),
+  goog.dom.classlist.set(this.getElement(),
       goog.getCssName('goog-popupcolorpicker'));
   this.getElement().unselectable = 'on';
 };
@@ -159,6 +158,7 @@ goog.ui.PopupColorPicker.prototype.disposeInternal = function() {
  * structure they build is fairly complicated.
  * @param {Element} element Element to decorate.
  * @return {boolean} Returns always false.
+ * @override
  */
 goog.ui.PopupColorPicker.prototype.canDecorate = function(element) {
   return false;

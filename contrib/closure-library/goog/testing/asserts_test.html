@@ -788,19 +788,21 @@ See the COPYING file for details.
     assertFalse('Fail should not get set to true', failed);
 
 
+    var result;
     try {
-      assertNotThrows('valid function',
+      result = assertNotThrows('valid function',
           function() {
-            //do nothing;
+            return 'some value';
           });
     } catch (e) {
       // Shouldn't be here: throw exception.
       fail('assertNotThrows returned failure on a valid function');
     }
+    assertEquals('assertNotThrows should return the result of the function.',
+        'some value', result);
 
     var errorDescription = 'a test error exception';
     try {
-    throw new Error(errorDescription);
       assertNotThrows('non valid error throwing function',
           function() {
             throw new Error(errorDescription);
@@ -808,8 +810,11 @@ See the COPYING file for details.
       failed = true;
     } catch (e) {
       // Some browsers don't have a stack trace so expect to at least have the
-      // error description.
-      assertContains(errorDescription, e.message);
+      // error description. For Gecko and IE7 not even that is included.
+      if (!goog.userAgent.GECKO &&
+          (!goog.userAgent.IE || goog.userAgent.isVersionOrHigher('8'))) {
+        assertContains(errorDescription, e.message);
+      }
     }
     assertFalse('assertNotThrows did not fail on a thrown exception', failed);
   }
@@ -1015,6 +1020,21 @@ See the COPYING file for details.
     assertNotNull(goog.testing.asserts.findDifferences(a, c));
   }
 
+  function testFindDifferences_multiCycles() {
+    var a = {};
+    a.cycle1 = a;
+    a.test = {
+      cycle2: a
+    };
+
+    var b = {};
+    b.cycle1 = b;
+    b.test = {
+      cycle2: b
+    };
+    assertNull(goog.testing.asserts.findDifferences(a, b));
+  }
+
   function testFindDifferences_binaryTree() {
     function createBinTree(depth, root) {
       if (depth == 0) {
@@ -1036,7 +1056,7 @@ See the COPYING file for details.
   }
 
   function testStringForWindowIE() {
-    if (goog.userAgent.IE && !goog.userAgent.isVersion('8')) {
+    if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('8')) {
       // NOTE(user): This test sees of we are being affected by a JScript bug
       // in try/finally handling. This bug only affects the lowest try/finally
       // block in the stack. Calling this function via VBScript allows
@@ -1084,8 +1104,45 @@ See the COPYING file for details.
         'Expected <2> (Number) but was <1> (Number)');
   }
 
+  function testStackTrace() {
+    try {
+      assertTrue(false);
+    } catch (e) {
+      if (Error.captureStackTrace) {
+        assertNotUndefined(e.stack);
+      }
+      if (e.stack) {
+        assertContains('testStackTrace', e.stack);
+      }
+    }
+  }
+
   function stringForWindowIEHelper() {
     window.stringForWindowIEResult = _displayStringForValue(window);
+  }
+
+  function testDisplayStringForValue() {
+    assertEquals('<hello> (String)', _displayStringForValue('hello'));
+    assertEquals('<1> (Number)', _displayStringForValue(1));
+    assertEquals('<null>', _displayStringForValue(null));
+    assertEquals('<undefined>', _displayStringForValue(undefined));
+    assertEquals('<hello,,,,1> (Array)', _displayStringForValue(
+        ['hello', /* array hole */, undefined, null, 1]));
+  }
+
+  function testDisplayStringForValue_exception() {
+    assertEquals('<toString failed: foo message> (Object)',
+        _displayStringForValue({toString: function() {
+          throw Error('foo message');
+        }}));
+  }
+
+  function testDisplayStringForValue_cycle() {
+    var cycle = ['cycle'];
+    cycle.push(cycle);
+    assertTrue(
+        'Computing string should terminate and result in a reasonable length',
+        _displayStringForValue(cycle).length < 1000);
   }
 
 </script>

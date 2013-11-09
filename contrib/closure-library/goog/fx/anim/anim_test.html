@@ -22,6 +22,7 @@ See the COPYING file for details.
   goog.require('goog.testing.MockClock');
   goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.recordFunction');
   goog.require('goog.userAgent');
 </script>
 <style>
@@ -50,18 +51,41 @@ function tearDown() {
   goog.fx.anim.tearDown();
 }
 
-function testRegisterAndUnregisterAnimationWithMocks() {
+function testDelayWithMocks() {
+  goog.fx.anim.setAnimationWindow(null);
+  registerAndUnregisterAnimationWithMocks(goog.async.Delay);
+}
+
+function testAnimationDelayWithMocks() {
+  goog.fx.anim.setAnimationWindow(window);
+  registerAndUnregisterAnimationWithMocks(goog.async.AnimationDelay);
+}
+
+/**
+ * @param {!Function} delayType The constructor for Delay or AnimationDelay.
+ *     The methods will be mocked out.
+ */
+function registerAndUnregisterAnimationWithMocks(delayType) {
   var timerCount = 0;
 
-  replacer.set(goog.async.AnimationDelay.prototype, 'start', function() {
+  replacer.set(delayType.prototype, 'start', function() {
     timerCount++;
   });
-  replacer.set(goog.async.AnimationDelay.prototype, 'stop', function() {
+  replacer.set(delayType.prototype, 'stop', function() {
     timerCount--;
   });
-  replacer.set(goog.async.AnimationDelay.prototype, 'isActive', function() {
+  replacer.set(delayType.prototype, 'isActive', function() {
     return timerCount > 0;
   });
+
+  var forbiddenDelayType = delayType == goog.async.AnimationDelay ?
+      goog.async.Delay : goog.async.AnimationDelay;
+  replacer.set(forbiddenDelayType.prototype,
+      'start', goog.functions.error());
+  replacer.set(forbiddenDelayType.prototype,
+      'stop', goog.functions.error());
+  replacer.set(forbiddenDelayType.prototype,
+      'isActive', goog.functions.error());
 
   var anim = new goog.fx.Animation([0], [1], 1000);
   var anim2 = new goog.fx.Animation([0], [1], 1000);
@@ -103,15 +127,10 @@ function testRegisterAndUnregisterAnimationWithMocks() {
   anim2.dispose();
 }
 
-function testRegisterAndUnregisterAnimationWithRequestAnimationFrame() {
-  goog.fx.anim.setAnimationWindow(window);
-  testRegisterAndUnregisterAnimationWithMocks();
-  goog.fx.anim.setAnimationWindow(null);
-}
-
 function testRegisterAndUnregisterAnimationWithRequestAnimationFrameGecko() {
   // Only FF4 onwards support requestAnimationFrame.
-  if (!goog.userAgent.GECKO || !goog.userAgent.isVersion('2.0')) {
+  if (!goog.userAgent.GECKO || !goog.userAgent.isVersionOrHigher('2.0') ||
+      goog.userAgent.isVersionOrHigher('17')) {
     return;
   }
 
@@ -177,6 +196,28 @@ function testRegisterUnregisterAnimation() {
       goog.fx.anim.animationDelay_ && goog.fx.anim.animationDelay_.isActive());
 
   anim.dispose();
+}
+
+function testCycleWithMockClock() {
+  goog.fx.anim.setAnimationWindow(null);
+  var anim = new goog.fx.Animation([0], [1], 1000);
+  anim.onAnimationFrame = goog.testing.recordFunction();
+
+  goog.fx.anim.registerAnimation(anim);
+  clock.tick(goog.fx.anim.TIMEOUT);
+
+  assertEquals(1, anim.onAnimationFrame.getCallCount());
+}
+
+function testCycleWithMockClockAndAnimationWindow() {
+  goog.fx.anim.setAnimationWindow(window);
+  var anim = new goog.fx.Animation([0], [1], 1000);
+  anim.onAnimationFrame = goog.testing.recordFunction();
+
+  goog.fx.anim.registerAnimation(anim);
+  clock.tick(goog.fx.anim.TIMEOUT);
+
+  assertEquals(1, anim.onAnimationFrame.getCallCount());
 }
 
 </script>

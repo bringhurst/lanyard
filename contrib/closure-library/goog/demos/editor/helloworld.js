@@ -33,6 +33,7 @@ goog.require('goog.editor.Plugin');
  * Plugin to insert 'Hello World!' into an editable field.
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.demos.editor.HelloWorld = function() {
   goog.editor.Plugin.call(this);
@@ -72,8 +73,8 @@ goog.demos.editor.HelloWorld.prototype.isSupportedCommand = function(
  */
 goog.demos.editor.HelloWorld.prototype.execCommandInternal = function(
     command) {
-  var domHelper = this.fieldObject.getEditableDomHelper();
-  var range = this.fieldObject.getRange();
+  var domHelper = this.getFieldObject().getEditableDomHelper();
+  var range = this.getFieldObject().getRange();
   range.removeContents();
   var newNode =
       domHelper.createDom(goog.dom.TagName.SPAN, null, 'Hello World!');

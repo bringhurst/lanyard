@@ -22,15 +22,14 @@
 goog.provide('goog.ui.OfflineStatusComponent');
 goog.provide('goog.ui.OfflineStatusComponent.StatusClassNames');
 
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
-goog.require('goog.gears.StatusType');
-goog.require('goog.positioning');
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.Overflow');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.OfflineStatusCard.EventType');
+goog.require('goog.ui.GearsStatusType');
+goog.require('goog.ui.OfflineStatusCard');
 goog.require('goog.ui.Popup');
 
 
@@ -72,27 +71,19 @@ goog.ui.OfflineStatusComponent.prototype.dirty_ = false;
 
 /**
  * The status of the component.
- * @type {goog.gears.StatusType}
+ * @type {goog.ui.GearsStatusType}
  * @private
  */
 goog.ui.OfflineStatusComponent.prototype.status_ =
-    goog.gears.StatusType.NOT_INSTALLED;
+    goog.ui.GearsStatusType.NOT_INSTALLED;
 
 
 /**
  * The status of the component that is displayed.
- * @type {goog.gears.StatusType?}
+ * @type {goog.ui.GearsStatusType?}
  * @private
  */
 goog.ui.OfflineStatusComponent.prototype.displayedStatus_ = null;
-
-
-/**
- * The dialog that manages the install flow.
- * @type {goog.ui.OfflineInstallDialog?}
- * @private
- */
-goog.ui.OfflineStatusComponent.prototype.dialog_ = null;
 
 
 /**
@@ -178,7 +169,7 @@ goog.ui.OfflineStatusComponent.prototype.MSG_OFFLINE_STATUS_ERROR_TITLE_ =
 
 /**
  * Gets the status of the offline component of the app.
- * @return {goog.gears.StatusType} The offline status.
+ * @return {goog.ui.GearsStatusType} The offline status.
  */
 goog.ui.OfflineStatusComponent.prototype.getStatus = function() {
   return this.status_;
@@ -187,7 +178,7 @@ goog.ui.OfflineStatusComponent.prototype.getStatus = function() {
 
 /**
  * Sets the status of the offline component of the app.
- * @param {goog.gears.StatusType} status The offline
+ * @param {goog.ui.GearsStatusType} status The offline
  *     status.
  */
 goog.ui.OfflineStatusComponent.prototype.setStatus = function(status) {
@@ -210,33 +201,11 @@ goog.ui.OfflineStatusComponent.prototype.setStatus = function(status) {
 /**
  * Returns whether the given status is different from the currently
  * recorded status.
- * @param {goog.gears.StatusType} status The offline status.
+ * @param {goog.ui.GearsStatusType} status The offline status.
  * @return {boolean} Whether the status is different.
  */
 goog.ui.OfflineStatusComponent.prototype.isStatusDifferent = function(status) {
   return this.status_ != status;
-};
-
-
-/**
- * Sets the install dialog.
- * @param {goog.ui.OfflineInstallDialog} dialog The dialog.
- */
-goog.ui.OfflineStatusComponent.prototype.setInstallDialog = function(dialog) {
-  // If there is a current dialog, remove it.
-  if (this.dialog_ && this.indexOfChild(this.dialog_) >= 0) {
-    this.removeChild(this.dialog_);
-  }
-  this.dialog_ = dialog;
-};
-
-
-/**
- * Gets the install dialog.
- * @return {goog.ui.OfflineInstallDialog} dialog The dialog.
- */
-goog.ui.OfflineStatusComponent.prototype.getInstallDialog = function() {
-  return this.dialog_;
 };
 
 
@@ -260,7 +229,7 @@ goog.ui.OfflineStatusComponent.prototype.setStatusCard = function(card) {
   this.card_ = card;
   this.getHandler().listen(this.card_,
       goog.ui.OfflineStatusCard.EventType.DISMISS,
-      this.performStatusAction, false, this);
+      this.performStatusAction);
   card.setStatus(this.status_);
 };
 
@@ -276,6 +245,7 @@ goog.ui.OfflineStatusComponent.prototype.getStatusCard = function() {
 
 /**
  * Creates the initial DOM representation for the component.
+ * @override
  */
 goog.ui.OfflineStatusComponent.prototype.createDom = function() {
   var anchorProps = {
@@ -318,11 +288,11 @@ goog.ui.OfflineStatusComponent.prototype.update = function() {
     var previousStatusClassName = this.getStatusClassName_(previousStatus);
     var currentStatusClassName = this.getStatusClassName_(status);
     if (previousStatus &&
-        goog.dom.classes.has(element, previousStatusClassName)) {
-      goog.dom.classes.swap(
+        goog.dom.classlist.contains(element, previousStatusClassName)) {
+      goog.dom.classlist.swap(
           element, previousStatusClassName, currentStatusClassName);
     } else {
-      goog.dom.classes.add(element, currentStatusClassName);
+      goog.dom.classlist.add(element, currentStatusClassName);
     }
 
     // Set the current display status
@@ -343,7 +313,7 @@ goog.ui.OfflineStatusComponent.prototype.update = function() {
 
 /**
  * Gets the messaging info for the given status.
- * @param {goog.gears.StatusType} status Status to get the message info for.
+ * @param {goog.ui.GearsStatusType} status Status to get the message info for.
  * @return {Object} Object that has three properties - text (string),
  *     textIsHtml (boolean), and title (string).
  */
@@ -353,24 +323,24 @@ goog.ui.OfflineStatusComponent.prototype.getMessageInfo = function(status) {
   var textIsHtml = true;
 
   switch (status) {
-    case goog.gears.StatusType.NOT_INSTALLED:
-    case goog.gears.StatusType.INSTALLED:
+    case goog.ui.GearsStatusType.NOT_INSTALLED:
+    case goog.ui.GearsStatusType.INSTALLED:
       text = this.MSG_OFFLINE_NEW_FEATURE_;
       textIsHtml = false;
       break;
-    case goog.gears.StatusType.PAUSED:
+    case goog.ui.GearsStatusType.PAUSED:
       title = this.MSG_OFFLINE_STATUS_PAUSED_TITLE_;
       break;
-    case goog.gears.StatusType.OFFLINE:
+    case goog.ui.GearsStatusType.OFFLINE:
       title = this.MSG_OFFLINE_STATUS_OFFLINE_TITLE_;
       break;
-    case goog.gears.StatusType.ONLINE:
+    case goog.ui.GearsStatusType.ONLINE:
       title = this.MSG_OFFLINE_STATUS_ONLINE_TITLE_;
       break;
-    case goog.gears.StatusType.SYNCING:
+    case goog.ui.GearsStatusType.SYNCING:
       title = this.MSG_OFFLINE_STATUS_SYNCING_TITLE_;
       break;
-    case goog.gears.StatusType.ERROR:
+    case goog.ui.GearsStatusType.ERROR:
       title = this.MSG_OFFLINE_STATUS_ERROR_TITLE_;
       break;
     default:
@@ -383,7 +353,7 @@ goog.ui.OfflineStatusComponent.prototype.getMessageInfo = function(status) {
 
 /**
  * Gets the CSS className for the given status.
- * @param {goog.gears.StatusType} status Status to get the className for.
+ * @param {goog.ui.GearsStatusType} status Status to get the className for.
  * @return {string} The className.
  * @private
  */
@@ -391,27 +361,27 @@ goog.ui.OfflineStatusComponent.prototype.getStatusClassName_ = function(
     status) {
   var className = '';
   switch (status) {
-    case goog.gears.StatusType.NOT_INSTALLED:
+    case goog.ui.GearsStatusType.NOT_INSTALLED:
       className =
           goog.ui.OfflineStatusComponent.StatusClassNames.NOT_INSTALLED;
       break;
-    case goog.gears.StatusType.INSTALLED:
+    case goog.ui.GearsStatusType.INSTALLED:
       className = goog.ui.OfflineStatusComponent.StatusClassNames.INSTALLED;
       break;
-    case goog.gears.StatusType.PAUSED:
+    case goog.ui.GearsStatusType.PAUSED:
       className = goog.ui.OfflineStatusComponent.StatusClassNames.PAUSED;
       break;
-    case goog.gears.StatusType.OFFLINE:
+    case goog.ui.GearsStatusType.OFFLINE:
       className = goog.ui.OfflineStatusComponent.StatusClassNames.OFFLINE;
       break;
-    case goog.gears.StatusType.ONLINE:
+    case goog.ui.GearsStatusType.ONLINE:
       className = goog.ui.OfflineStatusComponent.StatusClassNames.ONLINE;
       break;
-    case goog.gears.StatusType.SYNCING:
-    case goog.gears.StatusType.CAPTURING:
+    case goog.ui.GearsStatusType.SYNCING:
+    case goog.ui.GearsStatusType.CAPTURING:
       className = goog.ui.OfflineStatusComponent.StatusClassNames.SYNCING;
       break;
-    case goog.gears.StatusType.ERROR:
+    case goog.ui.GearsStatusType.ERROR:
       className = goog.ui.OfflineStatusComponent.StatusClassNames.ERROR;
       break;
     default:
@@ -440,8 +410,8 @@ goog.ui.OfflineStatusComponent.prototype.handleClick_ = function(e) {
 goog.ui.OfflineStatusComponent.prototype.performAction = function() {
   var status = this.getStatus();
 
-  if (status == goog.gears.StatusType.NOT_INSTALLED ||
-      status == goog.gears.StatusType.INSTALLED) {
+  if (status == goog.ui.GearsStatusType.NOT_INSTALLED ||
+      status == goog.ui.GearsStatusType.INSTALLED) {
     this.performEnableAction();
   } else {
     this.performStatusAction();
@@ -453,18 +423,7 @@ goog.ui.OfflineStatusComponent.prototype.performAction = function() {
  * Performs the action to start the flow of enabling the offline feature of
  * the application.
  */
-goog.ui.OfflineStatusComponent.prototype.performEnableAction = function() {
-  // If Gears is not installed or if it is installed but not enabled, then
-  // show the install dialog.
-  var dialog = this.dialog_;
-  if (dialog) {
-    if (!dialog.isInDocument()) {
-      this.addChild(dialog);
-      dialog.render(this.getDomHelper().getDocument().body);
-    }
-    dialog.setVisible(true);
-  }
-};
+goog.ui.OfflineStatusComponent.prototype.performEnableAction = function() {};
 
 
 /**
@@ -522,11 +481,6 @@ goog.ui.OfflineStatusComponent.prototype.getPopupInternal = function() {
 /** @override */
 goog.ui.OfflineStatusComponent.prototype.disposeInternal = function() {
   goog.ui.OfflineStatusComponent.superClass_.disposeInternal.call(this);
-
-  if (this.dialog_) {
-    this.dialog_.dispose();
-    this.dialog_ = null;
-  }
 
   if (this.card_) {
     this.card_.dispose();

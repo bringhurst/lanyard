@@ -28,7 +28,6 @@ goog.provide('goog.fx.Dragger.EventType');
 
 goog.require('goog.dom');
 goog.require('goog.events');
-goog.require('goog.events.BrowserEvent.MouseButton');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -61,6 +60,7 @@ goog.fx.Dragger = function(target, opt_handle, opt_limits) {
 
   this.document_ = goog.dom.getOwnerDocument(target);
   this.eventHandler_ = new goog.events.EventHandler(this);
+  this.registerDisposable(this.eventHandler_);
 
   // Add listener. Do not use the event handler here since the event handler is
   // used for listeners added and removed during the drag operation.
@@ -80,7 +80,7 @@ goog.fx.Dragger.HAS_SET_CAPTURE_ =
     // IE and Gecko after 1.9.3 has setCapture
     // WebKit does not yet: https://bugs.webkit.org/show_bug.cgi?id=27330
     goog.userAgent.IE ||
-    goog.userAgent.GECKO && goog.userAgent.isVersion('1.9.3');
+    goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9.3');
 
 
 /**
@@ -237,14 +237,6 @@ goog.fx.Dragger.prototype.document_;
 
 
 /**
- * Event handler used to simplify managing events.
- * @type {goog.events.EventHandler}
- * @private
- */
-goog.fx.Dragger.prototype.eventHandler_;
-
-
-/**
  * The SCROLL event target used to make drag element follow scrolling.
  * @type {EventTarget}
  * @private
@@ -369,15 +361,13 @@ goog.fx.Dragger.prototype.setEnabled = function(enabled) {
 /** @override */
 goog.fx.Dragger.prototype.disposeInternal = function() {
   goog.fx.Dragger.superClass_.disposeInternal.call(this);
-
   goog.events.unlisten(this.handle,
       [goog.events.EventType.TOUCHSTART, goog.events.EventType.MOUSEDOWN],
       this.startDrag, false, this);
-  this.eventHandler_.dispose();
+  this.cleanUpAfterDragging_();
 
-  delete this.target;
-  delete this.handle;
-  delete this.eventHandler_;
+  this.target = null;
+  this.handle = null;
 };
 
 
@@ -411,8 +401,8 @@ goog.fx.Dragger.prototype.startDrag = function(e) {
       (!isMouseDown || e.isMouseActionButton())) {
     this.maybeReinitTouchEvent_(e);
     if (this.hysteresisDistanceSquared_ == 0) {
-      this.initializeDrag_(e);
-      if (this.dragging_) {
+      if (this.fireDragStart_(e)) {
+        this.dragging_ = true;
         e.preventDefault();
       } else {
         // If the start drag is cancelled, don't setup for a drag.
@@ -487,53 +477,51 @@ goog.fx.Dragger.prototype.setupDragHandlers = function() {
 
 
 /**
- * Event handler that is used to start the drag
- * @param {goog.events.BrowserEvent|goog.events.Event} e Event object.
+ * Fires a goog.fx.Dragger.EventType.START event.
+ * @param {goog.events.BrowserEvent} e Browser event that triggered the drag.
+ * @return {boolean} False iff preventDefault was called on the DragEvent.
  * @private
  */
-goog.fx.Dragger.prototype.initializeDrag_ = function(e) {
-  var rv = this.dispatchEvent(new goog.fx.DragEvent(
-      goog.fx.Dragger.EventType.START, this, e.clientX, e.clientY,
-      /** @type {goog.events.BrowserEvent} */(e)));
-  if (rv !== false) {
-    this.dragging_ = true;
+goog.fx.Dragger.prototype.fireDragStart_ = function(e) {
+  return this.dispatchEvent(new goog.fx.DragEvent(
+      goog.fx.Dragger.EventType.START, this, e.clientX, e.clientY, e));
+};
+
+
+/**
+ * Unregisters the event handlers that are only active during dragging, and
+ * releases mouse capture.
+ * @private
+ */
+goog.fx.Dragger.prototype.cleanUpAfterDragging_ = function() {
+  this.eventHandler_.removeAll();
+  if (goog.fx.Dragger.HAS_SET_CAPTURE_) {
+    this.document_.releaseCapture();
   }
 };
 
 
 /**
- * Event handler that is used to end the drag
+ * Event handler that is used to end the drag.
  * @param {goog.events.BrowserEvent} e Event object.
  * @param {boolean=} opt_dragCanceled Whether the drag has been canceled.
  */
 goog.fx.Dragger.prototype.endDrag = function(e, opt_dragCanceled) {
-  this.eventHandler_.removeAll();
-
-  if (goog.fx.Dragger.HAS_SET_CAPTURE_) {
-    this.document_.releaseCapture();
-  }
-
-  var x = this.limitX(this.deltaX);
-  var y = this.limitY(this.deltaY);
+  this.cleanUpAfterDragging_();
 
   if (this.dragging_) {
     this.maybeReinitTouchEvent_(e);
     this.dragging_ = false;
 
-    var dragCancelled = opt_dragCanceled ||
-                        e.type == goog.events.EventType.TOUCHCANCEL;
+    var x = this.limitX(this.deltaX);
+    var y = this.limitY(this.deltaY);
+    var dragCanceled = opt_dragCanceled ||
+        e.type == goog.events.EventType.TOUCHCANCEL;
     this.dispatchEvent(new goog.fx.DragEvent(
         goog.fx.Dragger.EventType.END, this, e.clientX, e.clientY, e, x, y,
-        dragCancelled));
+        dragCanceled));
   } else {
     this.dispatchEvent(goog.fx.Dragger.EventType.EARLY_CANCEL);
-  }
-
-  // Call preventDefault to prevent mouseup from being raised if this is a
-  // touchend event.
-  if (e.type == goog.events.EventType.TOUCHEND ||
-      e.type == goog.events.EventType.TOUCHCANCEL) {
-    e.preventDefault();
   }
 };
 
@@ -589,10 +577,14 @@ goog.fx.Dragger.prototype.handleMove_ = function(e) {
       var diffY = this.startY - this.clientY;
       var distance = diffX * diffX + diffY * diffY;
       if (distance > this.hysteresisDistanceSquared_) {
-        this.initializeDrag_(e);
-        if (!this.dragging_) {
-          // If the start drag is cancelled, stop trying to drag.
-          this.endDrag(e);
+        if (this.fireDragStart_(e)) {
+          this.dragging_ = true;
+        } else {
+          // DragListGroup disposes of the dragger if BEFOREDRAGSTART is
+          // canceled.
+          if (!this.isDisposed()) {
+            this.endDrag(e);
+          }
           return;
         }
       }
@@ -610,7 +602,7 @@ goog.fx.Dragger.prototype.handleMove_ = function(e) {
 
       // Only do the defaultAction and dispatch drag event if predrag didn't
       // prevent default
-      if (rv !== false) {
+      if (rv) {
         this.doDrag(e, x, y, false);
         e.preventDefault();
       }
@@ -720,6 +712,14 @@ goog.fx.Dragger.prototype.defaultAction = function(x, y) {
     this.target.style.left = x + 'px';
   }
   this.target.style.top = y + 'px';
+};
+
+
+/**
+ * @return {boolean} Whether the dragger is currently in the midst of a drag.
+ */
+goog.fx.Dragger.prototype.isDragging = function() {
+  return this.dragging_;
 };
 
 

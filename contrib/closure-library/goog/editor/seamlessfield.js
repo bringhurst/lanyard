@@ -26,7 +26,6 @@
 goog.provide('goog.editor.SeamlessField');
 
 goog.require('goog.cssom.iframe.style');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
@@ -38,6 +37,7 @@ goog.require('goog.editor.icontent.FieldStyleInfo');
 goog.require('goog.editor.node');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.log');
 goog.require('goog.style');
 
 
@@ -64,14 +64,14 @@ goog.inherits(goog.editor.SeamlessField, goog.editor.Field);
  * @override
  */
 goog.editor.SeamlessField.prototype.logger =
-    goog.debug.Logger.getLogger('goog.editor.SeamlessField');
+    goog.log.getLogger('goog.editor.SeamlessField');
 
 // Functions dealing with field sizing.
 
 
 /**
  * The key used for listening for the "dragover" event.
- * @type {number?}
+ * @type {goog.events.Key}
  * @private
  */
 goog.editor.SeamlessField.prototype.listenForDragOverEventKey_;
@@ -79,7 +79,7 @@ goog.editor.SeamlessField.prototype.listenForDragOverEventKey_;
 
 /**
  * The key used for listening for the iframe "load" event.
- * @type {number?}
+ * @type {goog.events.Key}
  * @private
  */
 goog.editor.SeamlessField.prototype.listenForIframeLoadEventKey_;
@@ -174,6 +174,7 @@ goog.editor.SeamlessField.prototype.handleOuterDocChange_ = function() {
  */
 goog.editor.SeamlessField.prototype.sizeIframeToBodyHeightGecko_ = function() {
   if (this.acquireSizeIframeLockGecko_()) {
+    var resized = false;
     var ifr = this.getEditableIframe();
     if (ifr) {
       var fieldHeight = this.getIframeBodyHeightGecko_();
@@ -183,9 +184,13 @@ goog.editor.SeamlessField.prototype.sizeIframeToBodyHeightGecko_ = function() {
       }
       if (parseInt(goog.style.getStyle(ifr, 'height'), 10) != fieldHeight) {
         ifr.style.height = fieldHeight + 'px';
+        resized = true;
       }
     }
     this.releaseSizeIframeLockGecko_();
+    if (resized) {
+      this.dispatchEvent(goog.editor.Field.EventType.IFRAME_RESIZED);
+    }
   }
 };
 
@@ -260,6 +265,7 @@ goog.editor.SeamlessField.prototype.sizeIframeToWrapperGecko_ = function() {
   if (this.acquireSizeIframeLockGecko_()) {
     var ifr = this.getEditableIframe();
     var field = this.getElement();
+    var resized = false;
     if (ifr && field) {
       var fieldPaddingBox;
       var widthDiv = ifr.parentNode;
@@ -270,6 +276,7 @@ goog.editor.SeamlessField.prototype.sizeIframeToWrapperGecko_ = function() {
         ifr.style.width = width + 'px';
         field.style.width =
             width - fieldPaddingBox.left - fieldPaddingBox.right + 'px';
+        resized = true;
       }
 
       var height = widthDiv.offsetHeight;
@@ -281,9 +288,14 @@ goog.editor.SeamlessField.prototype.sizeIframeToWrapperGecko_ = function() {
         ifr.style.height = height + 'px';
         field.style.height =
             height - fieldPaddingBox.top - fieldPaddingBox.bottom + 'px';
+        resized = true;
       }
+
     }
     this.releaseSizeIframeLockGecko_();
+    if (resized) {
+      this.dispatchEvent(goog.editor.Field.EventType.IFRAME_RESIZED);
+    }
   }
 };
 
@@ -655,7 +667,7 @@ goog.editor.SeamlessField.prototype.attachIframe = function(iframe) {
     goog.style.setStyle(field, 'lineHeight', '0');
   }
 
-  field.innerHTML = html;
+  goog.editor.node.replaceInnerHtml(field, html);
   // Set the initial size
   goog.style.setSize(iframe, width, height);
   goog.style.setSize(field, oldWidth, oldHeight);

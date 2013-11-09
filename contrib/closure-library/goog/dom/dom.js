@@ -29,13 +29,16 @@
 
 
 goog.provide('goog.dom');
+goog.provide('goog.dom.Appendable');
 goog.provide('goog.dom.DomHelper');
-goog.provide('goog.dom.NodeType');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom.BrowserFeature');
+goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
+goog.require('goog.functions');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.object');
@@ -47,14 +50,14 @@ goog.require('goog.userAgent');
  * @define {boolean} Whether we know at compile time that the browser is in
  * quirks mode.
  */
-goog.dom.ASSUME_QUIRKS_MODE = false;
+goog.define('goog.dom.ASSUME_QUIRKS_MODE', false);
 
 
 /**
  * @define {boolean} Whether we know at compile time that the browser is in
  * standards compliance mode.
  */
-goog.dom.ASSUME_STANDARDS_MODE = false;
+goog.define('goog.dom.ASSUME_STANDARDS_MODE', false);
 
 
 /**
@@ -64,26 +67,6 @@ goog.dom.ASSUME_STANDARDS_MODE = false;
  */
 goog.dom.COMPAT_MODE_KNOWN_ =
     goog.dom.ASSUME_QUIRKS_MODE || goog.dom.ASSUME_STANDARDS_MODE;
-
-
-/**
- * Enumeration for DOM node types (for reference)
- * @enum {number}
- */
-goog.dom.NodeType = {
-  ELEMENT: 1,
-  ATTRIBUTE: 2,
-  TEXT: 3,
-  CDATA_SECTION: 4,
-  ENTITY_REFERENCE: 5,
-  ENTITY: 6,
-  PROCESSING_INSTRUCTION: 7,
-  COMMENT: 8,
-  DOCUMENT: 9,
-  DOCUMENT_TYPE: 10,
-  DOCUMENT_FRAGMENT: 11,
-  NOTATION: 12
-};
 
 
 /**
@@ -118,14 +101,62 @@ goog.dom.getDocument = function() {
 
 
 /**
- * Alias for getElementById. If a DOM node is passed in then we just return
- * that.
+ * Gets an element from the current document by element id.
+ *
+ * If an Element is passed in, it is returned.
+ *
  * @param {string|Element} element Element ID or a DOM node.
  * @return {Element} The element with the given ID, or the node passed in.
  */
 goog.dom.getElement = function(element) {
+  return goog.dom.getElementHelper_(document, element);
+};
+
+
+/**
+ * Gets an element by id from the given document (if present).
+ * If an element is given, it is returned.
+ * @param {!Document} doc
+ * @param {string|Element} element Element ID or a DOM node.
+ * @return {Element} The resulting element.
+ * @private
+ */
+goog.dom.getElementHelper_ = function(doc, element) {
   return goog.isString(element) ?
-      document.getElementById(element) : element;
+      doc.getElementById(element) :
+      element;
+};
+
+
+/**
+ * Gets an element by id, asserting that the element is found.
+ *
+ * This is used when an element is expected to exist, and should fail with
+ * an assertion error if it does not (if assertions are enabled).
+ *
+ * @param {string} id Element ID.
+ * @return {!Element} The element with the given ID, if it exists.
+ */
+goog.dom.getRequiredElement = function(id) {
+  return goog.dom.getRequiredElementHelper_(document, id);
+};
+
+
+/**
+ * Helper function for getRequiredElementHelper functions, both static and
+ * on DomHelper.  Asserts the element with the given id exists.
+ * @param {!Document} doc
+ * @param {string} id
+ * @return {!Element} The element with the given ID, if it exists.
+ * @private
+ */
+goog.dom.getRequiredElementHelper_ = function(doc, id) {
+  // To prevent users passing in Elements as is permitted in getElement().
+  goog.asserts.assertString(id);
+  var element = goog.dom.getElementHelper_(doc, id);
+  element = goog.asserts.assertElement(element,
+      'No element found with id: ' + id);
+  return element;
 };
 
 
@@ -198,6 +229,23 @@ goog.dom.getElementByClass = function(className, opt_el) {
     retVal = goog.dom.getElementsByClass(className, opt_el)[0];
   }
   return retVal || null;
+};
+
+
+/**
+ * Ensures an element with the given className exists, and then returns the
+ * first element with the provided className.
+ * @see {goog.dom.query}
+ * @param {string} className the name of the class to look for.
+ * @param {!Element|!Document=} opt_root Optional element or document to look
+ *     in.
+ * @return {!Element} The first item with the class name provided.
+ * @throws {goog.asserts.AssertionError} Thrown if no element is found.
+ */
+goog.dom.getRequiredElementByClass = function(className, opt_root) {
+  var retValue = goog.dom.getElementByClass(className, opt_root);
+  return goog.asserts.assert(retValue,
+      'No element found with className: ' + className);
 };
 
 
@@ -306,7 +354,8 @@ goog.dom.setProperties = function(element, properties) {
       element.htmlFor = val;
     } else if (key in goog.dom.DIRECT_ATTRIBUTE_MAP_) {
       element.setAttribute(goog.dom.DIRECT_ATTRIBUTE_MAP_[key], val);
-    } else if (goog.string.startsWith(key, 'aria-')) {
+    } else if (goog.string.startsWith(key, 'aria-') ||
+        goog.string.startsWith(key, 'data-')) {
       element.setAttribute(key, val);
     } else {
       element[key] = val;
@@ -327,14 +376,15 @@ goog.dom.DIRECT_ATTRIBUTE_MAP_ = {
   'cellpadding': 'cellPadding',
   'cellspacing': 'cellSpacing',
   'colspan': 'colSpan',
-  'rowspan': 'rowSpan',
-  'valign': 'vAlign',
-  'height': 'height',
-  'width': 'width',
-  'usemap': 'useMap',
   'frameborder': 'frameBorder',
+  'height': 'height',
   'maxlength': 'maxLength',
-  'type': 'type'
+  'role': 'role',
+  'rowspan': 'rowSpan',
+  'type': 'type',
+  'usemap': 'useMap',
+  'valign': 'vAlign',
+  'width': 'width'
 };
 
 
@@ -538,6 +588,13 @@ goog.dom.getDocumentScroll = function() {
 goog.dom.getDocumentScroll_ = function(doc) {
   var el = goog.dom.getDocumentScrollElement_(doc);
   var win = goog.dom.getWindow_(doc);
+  if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('10') &&
+      win.pageYOffset != el.scrollTop) {
+    // The keyboard on IE10 touch devices shifts the page using the pageYOffset
+    // without modifying scrollTop. For this case, we want the body scroll
+    // offsets.
+    return new goog.math.Coordinate(el.scrollLeft, el.scrollTop);
+  }
   return new goog.math.Coordinate(win.pageXOffset || el.scrollLeft,
       win.pageYOffset || el.scrollTop);
 };
@@ -559,9 +616,13 @@ goog.dom.getDocumentScrollElement = function() {
  * @private
  */
 goog.dom.getDocumentScrollElement_ = function(doc) {
-  // Safari (2 and 3) needs body.scrollLeft in both quirks mode and strict mode.
-  return !goog.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(doc) ?
-      doc.documentElement : doc.body;
+  // WebKit needs body.scrollLeft in both quirks mode and strict mode. We also
+  // default to the documentElement if the document does not have a body (e.g.
+  // a SVG document).
+  if (!goog.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(doc)) {
+    return doc.documentElement;
+  }
+  return doc.body || doc.documentElement;
 };
 
 
@@ -642,8 +703,13 @@ goog.dom.createDom_ = function(doc, args) {
       // Clone attributes map to remove 'type' without mutating the input.
       var clone = {};
       goog.object.extend(clone, attributes);
+
+      // JSCompiler can't see how goog.object.extend added this property,
+      // because it was essentially added by reflection.
+      // So it needs to be quoted.
+      delete clone['type'];
+
       attributes = clone;
-      delete attributes.type;
     }
     tagNameArr.push('>');
     tagName = tagNameArr.join('');
@@ -729,11 +795,11 @@ goog.dom.createElement = function(name) {
 
 /**
  * Creates a new text node.
- * @param {string} content Content.
+ * @param {number|string} content Content.
  * @return {!Text} The new text node.
  */
 goog.dom.createTextNode = function(content) {
-  return document.createTextNode(content);
+  return document.createTextNode(String(content));
 };
 
 
@@ -778,7 +844,11 @@ goog.dom.createTable_ = function(doc, rows, columns, fillWithNbsp) {
 
 
 /**
- * Converts an HTML string into a document fragment.
+ * Converts an HTML string into a document fragment. The string must be
+ * sanitized in order to avoid cross-site scripting. For example
+ * {@code goog.dom.htmlToDocumentFragment('&lt;img src=x onerror=alert(0)&gt;')}
+ * triggers an alert in all browsers, even if the returned document fragment
+ * is thrown away immediately.
  *
  * @param {string} htmlString The HTML string to convert.
  * @return {!Node} The resulting document fragment.
@@ -813,16 +883,6 @@ goog.dom.htmlToDocumentFragment_ = function(doc, htmlString) {
     }
     return fragment;
   }
-};
-
-
-/**
- * Returns the compatMode of the document.
- * @return {string} The result is either CSS1Compat or BackCompat.
- * @deprecated use goog.dom.isCss1CompatMode instead.
- */
-goog.dom.getCompatMode = function() {
-  return goog.dom.isCss1CompatMode() ? 'CSS1Compat' : 'BackCompat';
 };
 
 
@@ -871,6 +931,9 @@ goog.dom.isCss1CompatMode_ = function(doc) {
  *   console.log(a.innerHTML);  // Chrome: "", IE9: "foobar", FF3.5: "foobar"
  * </pre>
  *
+ * For more information, see:
+ * http://dev.w3.org/html5/markup/syntax.html#syntax-elements
+ *
  * TODO(user): Rename shouldAllowChildren() ?
  *
  * @param {Node} node The node to check.
@@ -886,12 +949,15 @@ goog.dom.canHaveChildren = function(node) {
     case goog.dom.TagName.BASE:
     case goog.dom.TagName.BR:
     case goog.dom.TagName.COL:
+    case goog.dom.TagName.COMMAND:
+    case goog.dom.TagName.EMBED:
     case goog.dom.TagName.FRAME:
     case goog.dom.TagName.HR:
     case goog.dom.TagName.IMG:
     case goog.dom.TagName.INPUT:
     case goog.dom.TagName.IFRAME:
     case goog.dom.TagName.ISINDEX:
+    case goog.dom.TagName.KEYGEN:
     case goog.dom.TagName.LINK:
     case goog.dom.TagName.NOFRAMES:
     case goog.dom.TagName.NOSCRIPT:
@@ -899,7 +965,10 @@ goog.dom.canHaveChildren = function(node) {
     case goog.dom.TagName.OBJECT:
     case goog.dom.TagName.PARAM:
     case goog.dom.TagName.SCRIPT:
+    case goog.dom.TagName.SOURCE:
     case goog.dom.TagName.STYLE:
+    case goog.dom.TagName.TRACK:
+    case goog.dom.TagName.WBR:
       return false;
   }
   return true;
@@ -1212,10 +1281,18 @@ goog.dom.isWindow = function(obj) {
  */
 goog.dom.getParentElement = function(element) {
   if (goog.dom.BrowserFeature.CAN_USE_PARENT_ELEMENT_PROPERTY) {
-    return element.parentElement;
+    var isIe9 = goog.userAgent.IE &&
+        goog.userAgent.isVersionOrHigher('9') &&
+        !goog.userAgent.isVersionOrHigher('10');
+    // SVG elements in IE9 can't use the parentElement property.
+    // goog.global['SVGElement'] is not defined in IE9 quirks mode.
+    if (!(isIe9 && goog.global['SVGElement'] &&
+        element instanceof goog.global['SVGElement'])) {
+      return element.parentElement;
+    }
   }
   var parent = element.parentNode;
-  return goog.dom.isElement(parent) ? (/** @type {!Element} */ parent) : null;
+  return goog.dom.isElement(parent) ? /** @type {!Element} */ (parent) : null;
 };
 
 
@@ -1270,6 +1347,16 @@ goog.dom.compareNodeOrder = function(node1, node2) {
   if (node1.compareDocumentPosition) {
     // 4 is the bitmask for FOLLOWS.
     return node1.compareDocumentPosition(node2) & 2 ? 1 : -1;
+  }
+
+  // Special case for document nodes on IE 7 and 8.
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
+    if (node1.nodeType == goog.dom.NodeType.DOCUMENT) {
+      return -1;
+    }
+    if (node2.nodeType == goog.dom.NodeType.DOCUMENT) {
+      return 1;
+    }
   }
 
   // Process in IE using sourceIndex - we check to see if the first node has
@@ -1436,36 +1523,40 @@ goog.dom.getFrameContentDocument = function(frame) {
 
 /**
  * Cross-browser function for getting the window of a frame or iframe.
- * @param {HTMLIFrameElement|HTMLFrameElement} frame Frame element.
+ * @param {Element} frame Frame element.
  * @return {Window} The window associated with the given frame.
  */
 goog.dom.getFrameContentWindow = function(frame) {
   return frame.contentWindow ||
-      goog.dom.getWindow_(goog.dom.getFrameContentDocument(frame));
+      goog.dom.getWindow(goog.dom.getFrameContentDocument(frame));
 };
 
 
 /**
- * Cross-browser function for setting the text content of an element.
- * @param {Element} element The element to change the text content of.
- * @param {string} text The string that should replace the current element
- *     content.
+ * Sets the text content of a node, with cross-browser support.
+ * @param {Node} node The node to change the text content of.
+ * @param {string|number} text The value that should replace the node's content.
  */
-goog.dom.setTextContent = function(element, text) {
-  if ('textContent' in element) {
-    element.textContent = text;
-  } else if (element.firstChild &&
-             element.firstChild.nodeType == goog.dom.NodeType.TEXT) {
+goog.dom.setTextContent = function(node, text) {
+  goog.asserts.assert(node != null,
+      'goog.dom.setTextContent expects a non-null value for node');
+
+  if ('textContent' in node) {
+    node.textContent = text;
+  } else if (node.nodeType == goog.dom.NodeType.TEXT) {
+    node.data = text;
+  } else if (node.firstChild &&
+             node.firstChild.nodeType == goog.dom.NodeType.TEXT) {
     // If the first child is a text node we just change its data and remove the
     // rest of the children.
-    while (element.lastChild != element.firstChild) {
-      element.removeChild(element.lastChild);
+    while (node.lastChild != node.firstChild) {
+      node.removeChild(node.lastChild);
     }
-    element.firstChild.data = text;
+    node.firstChild.data = text;
   } else {
-    goog.dom.removeChildren(element);
-    var doc = goog.dom.getOwnerDocument(element);
-    element.appendChild(doc.createTextNode(text));
+    goog.dom.removeChildren(node);
+    var doc = goog.dom.getOwnerDocument(node);
+    node.appendChild(doc.createTextNode(String(text)));
   }
 };
 
@@ -1583,7 +1674,7 @@ goog.dom.PREDEFINED_TAG_VALUES_ = {'IMG': ' ', 'BR': '\n'};
 
 /**
  * Returns true if the element has a tab index that allows it to receive
- * keyboard focus (tabIndex >= 0), false otherwise.  Note that form elements
+ * keyboard focus (tabIndex >= 0), false otherwise.  Note that some elements
  * natively support keyboard focus, even if they have no tab index.
  * @param {Element} element Element to check.
  * @return {boolean} Whether the element has a tab index that allows keyboard
@@ -1591,16 +1682,8 @@ goog.dom.PREDEFINED_TAG_VALUES_ = {'IMG': ' ', 'BR': '\n'};
  * @see http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
  */
 goog.dom.isFocusableTabIndex = function(element) {
-  // IE returns 0 for an unset tabIndex, so we must use getAttributeNode(),
-  // which returns an object with a 'specified' property if tabIndex is
-  // specified.  This works on other browsers, too.
-  var attrNode = element.getAttributeNode('tabindex'); // Must be lowercase!
-  if (attrNode && attrNode.specified) {
-    var index = element.tabIndex;
-    // NOTE: IE9 puts tabIndex in 16-bit int, e.g. -2 is 65534.
-    return goog.isNumber(index) && index >= 0 && index < 32768;
-  }
-  return false;
+  return goog.dom.hasSpecifiedTabIndex_(element) &&
+         goog.dom.isTabIndexFocusable_(element);
 };
 
 
@@ -1624,6 +1707,90 @@ goog.dom.setFocusableTabIndex = function(element, enable) {
     element.tabIndex = -1;
     element.removeAttribute('tabIndex'); // Must be camelCase!
   }
+};
+
+
+/**
+ * Returns true if the element can be focused, i.e. it has a tab index that
+ * allows it to receive keyboard focus (tabIndex >= 0), or it is an element
+ * that natively supports keyboard focus.
+ * @param {Element} element Element to check.
+ * @return {boolean} Whether the element allows keyboard focus.
+ */
+goog.dom.isFocusable = function(element) {
+  var focusable;
+  // Some elements can have unspecified tab index and still receive focus.
+  if (goog.dom.nativelySupportsFocus_(element)) {
+    // Make sure the element is not disabled ...
+    focusable = !element.disabled &&
+        // ... and if a tab index is specified, it allows focus.
+        (!goog.dom.hasSpecifiedTabIndex_(element) ||
+         goog.dom.isTabIndexFocusable_(element));
+  } else {
+    focusable = goog.dom.isFocusableTabIndex(element);
+  }
+
+  // IE requires elements to be visible in order to focus them.
+  return focusable && goog.userAgent.IE ?
+             goog.dom.hasNonZeroBoundingRect_(element) : focusable;
+};
+
+
+/**
+ * Returns true if the element has a specified tab index.
+ * @param {Element} element Element to check.
+ * @return {boolean} Whether the element has a specified tab index.
+ * @private
+ */
+goog.dom.hasSpecifiedTabIndex_ = function(element) {
+  // IE returns 0 for an unset tabIndex, so we must use getAttributeNode(),
+  // which returns an object with a 'specified' property if tabIndex is
+  // specified.  This works on other browsers, too.
+  var attrNode = element.getAttributeNode('tabindex'); // Must be lowercase!
+  return goog.isDefAndNotNull(attrNode) && attrNode.specified;
+};
+
+
+/**
+ * Returns true if the element's tab index allows the element to be focused.
+ * @param {Element} element Element to check.
+ * @return {boolean} Whether the element's tab index allows focus.
+ * @private
+ */
+goog.dom.isTabIndexFocusable_ = function(element) {
+  var index = element.tabIndex;
+  // NOTE: IE9 puts tabIndex in 16-bit int, e.g. -2 is 65534.
+  return goog.isNumber(index) && index >= 0 && index < 32768;
+};
+
+
+/**
+ * Returns true if the element is focusable even when tabIndex is not set.
+ * @param {Element} element Element to check.
+ * @return {boolean} Whether the element natively supports focus.
+ * @private
+ */
+goog.dom.nativelySupportsFocus_ = function(element) {
+  return element.tagName == goog.dom.TagName.A ||
+         element.tagName == goog.dom.TagName.INPUT ||
+         element.tagName == goog.dom.TagName.TEXTAREA ||
+         element.tagName == goog.dom.TagName.SELECT ||
+         element.tagName == goog.dom.TagName.BUTTON;
+};
+
+
+/**
+ * Returns true if the element has a bounding rectangle that would be visible
+ * (i.e. its width and height are greater than zero).
+ * @param {Element} element Element to check.
+ * @return {boolean} Whether the element has a non-zero bounding rectangle.
+ * @private
+ */
+goog.dom.hasNonZeroBoundingRect_ = function(element) {
+  var rect = goog.isFunction(element['getBoundingClientRect']) ?
+      element.getBoundingClientRect() :
+      {'height': element.offsetHeight, 'width': element.offsetWidth};
+  return goog.isDefAndNotNull(rect) && rect.height > 0 && rect.width > 0;
 };
 
 
@@ -1768,7 +1935,7 @@ goog.dom.getNodeTextOffset = function(node, opt_offsetParent) {
  * @return {Node} The node at the given offset.
  */
 goog.dom.getNodeAtOffset = function(parent, offset, opt_result) {
-  var stack = [parent], pos = 0, cur;
+  var stack = [parent], pos = 0, cur = null;
   while (stack.length > 0 && pos < offset) {
     cur = stack.pop();
     if (cur.nodeName in goog.dom.TAGS_TO_IGNORE_) {
@@ -1916,6 +2083,60 @@ goog.dom.getActiveElement = function(doc) {
 };
 
 
+/**
+ * @private {number} Cached version of the devicePixelRatio.
+ */
+goog.dom.devicePixelRatio_;
+
+
+/**
+ * Gives the devicePixelRatio, or attempts to determine if not present.
+ *
+ * By default, this is the same value given by window.devicePixelRatio. If
+ * devicePixelRatio is not defined, the ratio is calculated with
+ * window.matchMedia, if present. Otherwise, gives 1.0.
+ *
+ * This function is cached so that the pixel ratio is calculated only once
+ * and only calculated when first requested.
+ *
+ * @return {number} The number of actual pixels per virtual pixel.
+ */
+goog.dom.getPixelRatio = goog.functions.cacheReturnValue(function() {
+  var win = goog.dom.getWindow();
+
+  // devicePixelRatio does not work on Mobile firefox.
+  // TODO(user): Enable this check on a known working mobile Gecko version.
+  // Filed a bug: https://bugzilla.mozilla.org/show_bug.cgi?id=896804
+  var isFirefoxMobile = goog.userAgent.GECKO && goog.userAgent.MOBILE;
+
+  if (goog.isDef(win.devicePixelRatio) && !isFirefoxMobile) {
+    return win.devicePixelRatio;
+  } else if (win.matchMedia) {
+    return goog.dom.matchesPixelRatio_(.75) ||
+           goog.dom.matchesPixelRatio_(1.5) ||
+           goog.dom.matchesPixelRatio_(2) ||
+           goog.dom.matchesPixelRatio_(3) || 1;
+  }
+  return 1;
+});
+
+
+/**
+ * Calculates a mediaQuery to check if the current device supports the
+ * given actual to virtual pixel ratio.
+ * @param {number} pixelRatio The ratio of actual pixels to virtual pixels.
+ * @return {number} pixelRatio if applicable, otherwise 0.
+ * @private
+ */
+goog.dom.matchesPixelRatio_ = function(pixelRatio) {
+  var win = goog.dom.getWindow();
+  var query = ('(-webkit-min-device-pixel-ratio: ' + pixelRatio + '),' +
+               '(min--moz-device-pixel-ratio: ' + pixelRatio + '),' +
+               '(min-resolution: ' + pixelRatio + 'dppx)');
+  return win.matchMedia(query).matches ? pixelRatio : 0;
+};
+
+
 
 /**
  * Create an instance of a DOM helper with a new document object.
@@ -1966,11 +2187,21 @@ goog.dom.DomHelper.prototype.getDocument = function() {
  * @return {Element} The element with the given ID, or the node passed in.
  */
 goog.dom.DomHelper.prototype.getElement = function(element) {
-  if (goog.isString(element)) {
-    return this.document_.getElementById(element);
-  } else {
-    return element;
-  }
+  return goog.dom.getElementHelper_(this.document_, element);
+};
+
+
+/**
+ * Gets an element by id, asserting that the element is found.
+ *
+ * This is used when an element is expected to exist, and should fail with
+ * an assertion error if it does not (if assertions are enabled).
+ *
+ * @param {string} id Element ID.
+ * @return {!Element} The element with the given ID, if it exists.
+ */
+goog.dom.DomHelper.prototype.getRequiredElement = function(id) {
+  return goog.dom.getRequiredElementHelper_(this.document_, id);
 };
 
 
@@ -2028,6 +2259,23 @@ goog.dom.DomHelper.prototype.getElementsByClass = function(className, opt_el) {
 goog.dom.DomHelper.prototype.getElementByClass = function(className, opt_el) {
   var doc = opt_el || this.document_;
   return goog.dom.getElementByClass(className, doc);
+};
+
+
+/**
+ * Ensures an element with the given className exists, and then returns the
+ * first element with the provided className.
+ * @see {goog.dom.query}
+ * @param {string} className the name of the class to look for.
+ * @param {(!Element|!Document)=} opt_root Optional element or document to look
+ *     in.
+ * @return {!Element} The first item found with the class name provided.
+ * @throws {goog.asserts.AssertionError} Thrown if no element is found.
+ */
+goog.dom.DomHelper.prototype.getRequiredElementByClass = function(className,
+                                                                  opt_root) {
+  var root = opt_root || this.document_;
+  return goog.dom.getRequiredElementByClass(className, root);
 };
 
 
@@ -2142,11 +2390,11 @@ goog.dom.DomHelper.prototype.createElement = function(name) {
 
 /**
  * Creates a new text node.
- * @param {string} content Content.
+ * @param {number|string} content Content.
  * @return {!Text} The new text node.
  */
 goog.dom.DomHelper.prototype.createTextNode = function(content) {
-  return this.document_.createTextNode(content);
+  return this.document_.createTextNode(String(content));
 };
 
 
@@ -2175,16 +2423,6 @@ goog.dom.DomHelper.prototype.createTable = function(rows, columns,
  */
 goog.dom.DomHelper.prototype.htmlToDocumentFragment = function(htmlString) {
   return goog.dom.htmlToDocumentFragment_(this.document_, htmlString);
-};
-
-
-/**
- * Returns the compatMode of the document.
- * @return {string} The result is either CSS1Compat or BackCompat.
- * @deprecated use goog.dom.DomHelper.prototype.isCss1CompatMode instead.
- */
-goog.dom.DomHelper.prototype.getCompatMode = function() {
-  return this.isCss1CompatMode() ? 'CSS1Compat' : 'BackCompat';
 };
 
 
@@ -2226,6 +2464,16 @@ goog.dom.DomHelper.prototype.getDocumentScroll = function() {
 
 
 /**
+ * Determines the active element in the given document.
+ * @param {Document=} opt_doc The document to look in.
+ * @return {Element} The active element.
+ */
+goog.dom.DomHelper.prototype.getActiveElement = function(opt_doc) {
+  return goog.dom.getActiveElement(opt_doc || this.document_);
+};
+
+
+/**
  * Appends a child to a node.
  * @param {Node} parent Parent.
  * @param {Node} child Child.
@@ -2242,6 +2490,16 @@ goog.dom.DomHelper.prototype.appendChild = goog.dom.appendChild;
  *     If this is an array like object then fields 0 to length - 1 are appended.
  */
 goog.dom.DomHelper.prototype.append = goog.dom.append;
+
+
+/**
+ * Determines if the given node can contain children, intended to be used for
+ * HTML generation.
+ *
+ * @param {Node} node The node to check.
+ * @return {boolean} Whether the node can contain children.
+ */
+goog.dom.DomHelper.prototype.canHaveChildren = goog.dom.canHaveChildren;
 
 
 /**
@@ -2270,6 +2528,18 @@ goog.dom.DomHelper.prototype.insertSiblingAfter = goog.dom.insertSiblingAfter;
 
 
 /**
+ * Insert a child at a given index. If index is larger than the number of child
+ * nodes that the parent currently has, the node is inserted as the last child
+ * node.
+ * @param {Element} parent The element into which to insert the child.
+ * @param {Node} child The element to insert.
+ * @param {number} index The index at which to insert the new child node. Must
+ *     not be negative.
+ */
+goog.dom.DomHelper.prototype.insertChildAt = goog.dom.insertChildAt;
+
+
+/**
  * Removes a node from its parent.
  * @param {Node} node The node to remove.
  * @return {Node} The node removed if removed; else, null.
@@ -2294,6 +2564,15 @@ goog.dom.DomHelper.prototype.replaceNode = goog.dom.replaceNode;
  *     document.
  */
 goog.dom.DomHelper.prototype.flattenElement = goog.dom.flattenElement;
+
+
+/**
+ * Returns an array containing just the element children of the given element.
+ * @param {Element} element The element whose element children we want.
+ * @return {!(Array|NodeList)} An array or array-like list of just the element
+ *     children of the given element.
+ */
+goog.dom.DomHelper.prototype.getChildren = goog.dom.getChildren;
 
 
 /**
@@ -2338,8 +2617,7 @@ goog.dom.DomHelper.prototype.getPreviousElementSibling =
  * @return {Node} The next node in the DOM tree, or null if this was the last
  *     node.
  */
-goog.dom.DomHelper.prototype.getNextNode =
-    goog.dom.getNextNode;
+goog.dom.DomHelper.prototype.getNextNode = goog.dom.getNextNode;
 
 
 /**
@@ -2348,8 +2626,7 @@ goog.dom.DomHelper.prototype.getNextNode =
  * @return {Node} The previous node in the DOM tree, or null if this was the
  *     first node.
  */
-goog.dom.DomHelper.prototype.getPreviousNode =
-    goog.dom.getPreviousNode;
+goog.dom.DomHelper.prototype.getPreviousNode = goog.dom.getPreviousNode;
 
 
 /**
@@ -2361,12 +2638,62 @@ goog.dom.DomHelper.prototype.isNodeLike = goog.dom.isNodeLike;
 
 
 /**
+ * Whether the object looks like an Element.
+ * @param {*} obj The object being tested for Element likeness.
+ * @return {boolean} Whether the object looks like an Element.
+ */
+goog.dom.DomHelper.prototype.isElement = goog.dom.isElement;
+
+
+/**
+ * Returns true if the specified value is a Window object. This includes the
+ * global window for HTML pages, and iframe windows.
+ * @param {*} obj Variable to test.
+ * @return {boolean} Whether the variable is a window.
+ */
+goog.dom.DomHelper.prototype.isWindow = goog.dom.isWindow;
+
+
+/**
+ * Returns an element's parent, if it's an Element.
+ * @param {Element} element The DOM element.
+ * @return {Element} The parent, or null if not an Element.
+ */
+goog.dom.DomHelper.prototype.getParentElement = goog.dom.getParentElement;
+
+
+/**
  * Whether a node contains another node.
  * @param {Node} parent The node that should contain the other node.
  * @param {Node} descendant The node to test presence of.
  * @return {boolean} Whether the parent node contains the descendent node.
  */
 goog.dom.DomHelper.prototype.contains = goog.dom.contains;
+
+
+/**
+ * Compares the document order of two nodes, returning 0 if they are the same
+ * node, a negative number if node1 is before node2, and a positive number if
+ * node2 is before node1.  Note that we compare the order the tags appear in the
+ * document so in the tree <b><i>text</i></b> the B node is considered to be
+ * before the I node.
+ *
+ * @param {Node} node1 The first node to compare.
+ * @param {Node} node2 The second node to compare.
+ * @return {number} 0 if the nodes are the same node, a negative number if node1
+ *     is before node2, and a positive number if node2 is before node1.
+ */
+goog.dom.DomHelper.prototype.compareNodeOrder = goog.dom.compareNodeOrder;
+
+
+/**
+ * Find the deepest common ancestor of the given nodes.
+ * @param {...Node} var_args The nodes to find a common ancestor of.
+ * @return {Node} The common ancestor of the nodes, or null if there is none.
+ *     null will only be returned if two or more of the nodes are from different
+ *     documents.
+ */
+goog.dom.DomHelper.prototype.findCommonAncestor = goog.dom.findCommonAncestor;
 
 
 /**
@@ -2388,7 +2715,7 @@ goog.dom.DomHelper.prototype.getFrameContentDocument =
 
 /**
  * Cross browser function for getting the window of a frame or iframe.
- * @param {HTMLIFrameElement|HTMLFrameElement} frame Frame element.
+ * @param {Element} frame Frame element.
  * @return {Window} The window associated with the given frame.
  */
 goog.dom.DomHelper.prototype.getFrameContentWindow =
@@ -2396,12 +2723,20 @@ goog.dom.DomHelper.prototype.getFrameContentWindow =
 
 
 /**
- * Cross browser function for setting the text content of an element.
- * @param {Element} element The element to change the text content of.
- * @param {string} text The string that should replace the current element
- *     content with.
+ * Sets the text content of a node, with cross-browser support.
+ * @param {Node} node The node to change the text content of.
+ * @param {string|number} text The value that should replace the node's content.
  */
 goog.dom.DomHelper.prototype.setTextContent = goog.dom.setTextContent;
+
+
+/**
+ * Gets the outerHTML of a node, which islike innerHTML, except that it
+ * actually contains the HTML of the node itself.
+ * @param {Element} element The element to get the HTML of.
+ * @return {string} The outerHTML of the given element.
+ */
+goog.dom.DomHelper.prototype.getOuterHtml = goog.dom.getOuterHtml;
 
 
 /**
@@ -2422,6 +2757,40 @@ goog.dom.DomHelper.prototype.findNode = goog.dom.findNode;
  * @return {Array.<Node>} The found nodes or an empty array if none are found.
  */
 goog.dom.DomHelper.prototype.findNodes = goog.dom.findNodes;
+
+
+/**
+ * Returns true if the element has a tab index that allows it to receive
+ * keyboard focus (tabIndex >= 0), false otherwise.  Note that some elements
+ * natively support keyboard focus, even if they have no tab index.
+ * @param {Element} element Element to check.
+ * @return {boolean} Whether the element has a tab index that allows keyboard
+ *     focus.
+ */
+goog.dom.DomHelper.prototype.isFocusableTabIndex = goog.dom.isFocusableTabIndex;
+
+
+/**
+ * Enables or disables keyboard focus support on the element via its tab index.
+ * Only elements for which {@link goog.dom.isFocusableTabIndex} returns true
+ * (or elements that natively support keyboard focus, like form elements) can
+ * receive keyboard focus.  See http://go/tabindex for more info.
+ * @param {Element} element Element whose tab index is to be changed.
+ * @param {boolean} enable Whether to set or remove a tab index on the element
+ *     that supports keyboard focus.
+ */
+goog.dom.DomHelper.prototype.setFocusableTabIndex =
+    goog.dom.setFocusableTabIndex;
+
+
+/**
+ * Returns true if the element can be focused, i.e. it has a tab index that
+ * allows it to receive keyboard focus (tabIndex >= 0), or it is an element
+ * that natively supports keyboard focus.
+ * @param {Element} element Element to check.
+ * @return {boolean} Whether the element allows keyboard focus.
+ */
+goog.dom.DomHelper.prototype.isFocusable = goog.dom.isFocusable;
 
 
 /**
@@ -2460,6 +2829,30 @@ goog.dom.DomHelper.prototype.getNodeTextLength = goog.dom.getNodeTextLength;
  * @return {number} The text offset.
  */
 goog.dom.DomHelper.prototype.getNodeTextOffset = goog.dom.getNodeTextOffset;
+
+
+/**
+ * Returns the node at a given offset in a parent node.  If an object is
+ * provided for the optional third parameter, the node and the remainder of the
+ * offset will stored as properties of this object.
+ * @param {Node} parent The parent node.
+ * @param {number} offset The offset into the parent node.
+ * @param {Object=} opt_result Object to be used to store the return value. The
+ *     return value will be stored in the form {node: Node, remainder: number}
+ *     if this object is provided.
+ * @return {Node} The node at the given offset.
+ */
+goog.dom.DomHelper.prototype.getNodeAtOffset = goog.dom.getNodeAtOffset;
+
+
+/**
+ * Returns true if the object is a {@code NodeList}.  To qualify as a NodeList,
+ * the object must have a numeric length property and an item function (which
+ * has type 'string' on IE for some reason).
+ * @param {Object} val Object to test.
+ * @return {boolean} Whether the object is a NodeList.
+ */
+goog.dom.DomHelper.prototype.isNodeList = goog.dom.isNodeList;
 
 
 /**

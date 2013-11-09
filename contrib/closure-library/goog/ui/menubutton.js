@@ -22,21 +22,22 @@
 goog.provide('goog.ui.MenuButton');
 
 goog.require('goog.Timer');
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.State');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
-goog.require('goog.events.KeyHandler.EventType');
+goog.require('goog.events.KeyHandler');
 goog.require('goog.math.Box');
 goog.require('goog.math.Rect');
 goog.require('goog.positioning');
 goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.MenuAnchoredPosition');
+goog.require('goog.positioning.Overflow');
 goog.require('goog.style');
 goog.require('goog.ui.Button');
-goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.Component.State');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.ui.registry');
@@ -49,7 +50,7 @@ goog.require('goog.userAgent.product');
  * A menu button control.  Extends {@link goog.ui.Button} by composing a button
  * with a dropdown arrow and a popup menu.
  *
- * @param {goog.ui.ControlContent} content Text caption or existing DOM
+ * @param {goog.ui.ControlContent=} opt_content Text caption or existing DOM
  *     structure to display as the button's caption (if any).
  * @param {goog.ui.Menu=} opt_menu Menu to render under the button when clicked.
  * @param {goog.ui.ButtonRenderer=} opt_renderer Renderer used to render or
@@ -59,8 +60,9 @@ goog.require('goog.userAgent.product');
  * @constructor
  * @extends {goog.ui.Button}
  */
-goog.ui.MenuButton = function(content, opt_menu, opt_renderer, opt_domHelper) {
-  goog.ui.Button.call(this, content, opt_renderer ||
+goog.ui.MenuButton = function(opt_content, opt_menu, opt_renderer,
+    opt_domHelper) {
+  goog.ui.Button.call(this, opt_content, opt_renderer ||
       goog.ui.MenuButtonRenderer.getInstance(), opt_domHelper);
 
   // Menu buttons support the OPENED state.
@@ -83,7 +85,7 @@ goog.ui.MenuButton = function(content, opt_menu, opt_renderer, opt_domHelper) {
   // Phones running iOS prior to version 4.2.
   if ((goog.userAgent.product.IPHONE || goog.userAgent.product.IPAD) &&
       // Check the webkit version against the version for iOS 4.2.1.
-      !goog.userAgent.isVersion('533.17.9')) {
+      !goog.userAgent.isVersionOrHigher('533.17.9')) {
     // @bug 4322060 This is required so that the menu works correctly on
     // iOS prior to version 4.2. Otherwise, the blur action closes the menu
     // before the menu button click can be processed.
@@ -181,8 +183,8 @@ goog.ui.MenuButton.prototype.enterDocument = function() {
   if (this.menu_) {
     this.attachMenuEventListeners_(this.menu_, true);
   }
-  goog.dom.a11y.setState(this.getElement(),
-      goog.dom.a11y.State.HASPOPUP, 'true');
+  goog.a11y.aria.setState(this.getElementStrict(),
+      goog.a11y.aria.State.HASPOPUP, !!this.menu_);
 };
 
 
@@ -328,8 +330,9 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
 
   if (e.keyCode == goog.events.KeyCodes.DOWN ||
       e.keyCode == goog.events.KeyCodes.UP ||
-      e.keyCode == goog.events.KeyCodes.SPACE) {
-    // Menu is closed, and the user hit the down/up/space key; open menu.
+      e.keyCode == goog.events.KeyCodes.SPACE ||
+      e.keyCode == goog.events.KeyCodes.ENTER) {
+    // Menu is closed, and the user hit the down/up/space/enter key; open menu.
     this.setOpen(true);
     return true;
   }
@@ -411,6 +414,10 @@ goog.ui.MenuButton.prototype.setMenu = function(menu) {
         this.attachMenuEventListeners_(oldMenu, false);
       }
       delete this.menu_;
+    }
+    if (this.isInDocument()) {
+      goog.a11y.aria.setState(this.getElementStrict(),
+          goog.a11y.aria.State.HASPOPUP, !!menu);
     }
     if (menu) {
       this.menu_ = menu;
@@ -714,10 +721,12 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
       this.setActive(false);
       this.menu_.setMouseButtonPressed(false);
 
+      var element = this.getElement();
       // Clear any remaining a11y state.
-      if (this.getElement()) {
-        goog.dom.a11y.setState(this.getElement(),
-            goog.dom.a11y.State.ACTIVEDESCENDANT, '');
+      if (element) {
+        goog.a11y.aria.setState(element,
+            goog.a11y.aria.State.ACTIVEDESCENDANT,
+            '');
       }
 
       // Clear any sizes that might have been stored.
@@ -741,6 +750,17 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
 
 
 /**
+ * Resets the MenuButton's size.  This is useful for cases where items are added
+ * or removed from the menu and scrollOnOverflow is on.  In those cases the
+ * menu will not behave correctly and resize itself unless this is called
+ * (usually followed by positionMenu()).
+ */
+goog.ui.MenuButton.prototype.invalidateMenuSize = function() {
+  this.originalSize_ = undefined;
+};
+
+
+/**
  * Positions the menu under the button.  May be called directly in cases when
  * the menu size is known to change.
  */
@@ -756,7 +776,7 @@ goog.ui.MenuButton.prototype.positionMenu = function() {
   var elem = this.menu_.getElement();
   if (!this.menu_.isVisible()) {
     elem.style.visibility = 'hidden';
-    goog.style.showElement(elem, true);
+    goog.style.setElementShown(elem, true);
   }
 
   if (!this.originalSize_ && this.isScrollOnOverflow()) {
@@ -766,7 +786,7 @@ goog.ui.MenuButton.prototype.positionMenu = function() {
   position.reposition(elem, popupCorner, this.menuMargin_, this.originalSize_);
 
   if (!this.menu_.isVisible()) {
-    goog.style.showElement(elem, false);
+    goog.style.setElementShown(elem, false);
     elem.style.visibility = 'visible';
   }
 };
@@ -819,8 +839,13 @@ goog.ui.MenuButton.prototype.attachMenuEventListeners_ = function(menu,
  * @param {goog.events.Event} e Highlight event to handle.
  */
 goog.ui.MenuButton.prototype.handleHighlightItem = function(e) {
-  goog.dom.a11y.setState(this.getElement(),
-      goog.dom.a11y.State.ACTIVEDESCENDANT, e.target.getElement().id);
+  var element = this.getElement();
+  goog.asserts.assert(element, 'The menu button DOM element cannot be null.');
+  if (e.target.getElement() != null) {
+    goog.a11y.aria.setState(element,
+        goog.a11y.aria.State.ACTIVEDESCENDANT,
+        e.target.getElement().id);
+  }
 };
 
 
@@ -830,8 +855,11 @@ goog.ui.MenuButton.prototype.handleHighlightItem = function(e) {
  */
 goog.ui.MenuButton.prototype.handleUnHighlightItem = function(e) {
   if (!this.menu_.getHighlighted()) {
-    goog.dom.a11y.setState(this.getElement(),
-        goog.dom.a11y.State.ACTIVEDESCENDANT, '');
+    var element = this.getElement();
+    goog.asserts.assert(element, 'The menu button DOM element cannot be null.');
+    goog.a11y.aria.setState(element,
+        goog.a11y.aria.State.ACTIVEDESCENDANT,
+        '');
   }
 };
 

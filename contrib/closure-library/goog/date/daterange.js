@@ -34,6 +34,7 @@ goog.require('goog.iter.StopIteration');
  * @constructor
  * @param {goog.date.Date} startDate The first date in the range.
  * @param {goog.date.Date} endDate The last date in the range.
+ * @final
  */
 goog.date.DateRange = function(startDate, endDate) {
   /**
@@ -79,6 +80,18 @@ goog.date.DateRange.prototype.getStartDate = function() {
  */
 goog.date.DateRange.prototype.getEndDate = function() {
   return this.endDate_;
+};
+
+
+/**
+ * Tests if a date falls within this range.
+ *
+ * @param {goog.date.Date} date The date to test.
+ * @return {boolean} Whether the date is in the range.
+ */
+goog.date.DateRange.prototype.contains = function(date) {
+  return date.valueOf() >= this.startDate_.valueOf() &&
+      date.valueOf() <= this.endDate_.valueOf();
 };
 
 
@@ -382,6 +395,7 @@ goog.date.DateRange.cloneOrCreate_ = function(opt_today) {
  * @constructor
  * @extends {goog.iter.Iterator}
  * @param {goog.date.DateRange} dateRange The date range to iterate.
+ * @final
  */
 goog.date.DateRange.Iterator = function(dateRange) {
   /**

@@ -27,6 +27,7 @@ goog.require('goog.Disposable');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.events');
 goog.require('goog.testing.events.Event');
+goog.require('goog.testing.watchers');
 
 
 
@@ -52,6 +53,7 @@ goog.require('goog.testing.events.Event');
  * @param {boolean=} opt_autoInstall Install the MockClock at construction time.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.testing.MockClock = function(opt_autoInstall) {
   goog.Disposable.call(this);
@@ -151,6 +153,7 @@ goog.testing.MockClock.prototype.install = function() {
     var r = this.replacer_ = new goog.testing.PropertyReplacer();
     r.set(goog.global, 'setTimeout', goog.bind(this.setTimeout_, this));
     r.set(goog.global, 'setInterval', goog.bind(this.setInterval_, this));
+    r.set(goog.global, 'setImmediate', goog.bind(this.setImmediate_, this));
     r.set(goog.global, 'clearTimeout', goog.bind(this.clearTimeout_, this));
     r.set(goog.global, 'clearInterval', goog.bind(this.clearInterval_, this));
 
@@ -208,6 +211,8 @@ goog.testing.MockClock.prototype.uninstall = function() {
     this.replacer_ = null;
     goog.now = this.oldGoogNow_;
   }
+
+  this.fireResetEvent();
 };
 
 
@@ -230,6 +235,17 @@ goog.testing.MockClock.prototype.reset = function() {
   this.nowMillis_ = 0;
   this.timeoutsMade_ = 0;
   this.timeoutDelay_ = 0;
+
+  this.fireResetEvent();
+};
+
+
+/**
+ * Signals that the mock clock has been reset, allowing objects that
+ * maintain their own internal state to reset.
+ */
+goog.testing.MockClock.prototype.fireResetEvent = function() {
+  goog.testing.watchers.signalClockReset();
 };
 
 
@@ -457,13 +473,42 @@ goog.testing.MockClock.prototype.requestAnimationFrame_ = function(funcToCall) {
 
 
 /**
+ * Schedules a function to be called immediately after the current JS
+ * execution.
+ * Mock implementation for setImmediate.
+ * @param {Function} funcToCall The function to call.
+ * @return {number} The number of timeouts created.
+ * @private
+ */
+goog.testing.MockClock.prototype.setImmediate_ = function(funcToCall) {
+  return this.setTimeout_(funcToCall, 0);
+};
+
+
+/**
  * Clears a timeout.
  * Mock implementation for clearTimeout.
  * @param {number} timeoutKey The timeout key to clear.
  * @private
  */
 goog.testing.MockClock.prototype.clearTimeout_ = function(timeoutKey) {
-  this.deletedKeys_[timeoutKey] = true;
+  // Some common libraries register static state with timers.
+  // This is bad. It leads to all sorts of crazy test problems where
+  // 1) Test A sets up a new mock clock and a static timer.
+  // 2) Test B sets up a new mock clock, but re-uses the static timer
+  //    from Test A.
+  // 3) A timeout key from test A gets cleared, breaking a timeout in
+  //    Test B.
+  //
+  // For now, we just hackily fail silently if someone tries to clear a timeout
+  // key before we've allocated it.
+  // Ideally, we should throw an exception if we see this happening.
+  //
+  // TODO(user): We might also try allocating timeout ids from a global
+  // pool rather than a local pool.
+  if (this.isTimeoutSet(timeoutKey)) {
+    this.deletedKeys_[timeoutKey] = true;
+  }
 };
 
 
@@ -474,7 +519,7 @@ goog.testing.MockClock.prototype.clearTimeout_ = function(timeoutKey) {
  * @private
  */
 goog.testing.MockClock.prototype.clearInterval_ = function(timeoutKey) {
-  this.deletedKeys_[timeoutKey] = true;
+  this.clearTimeout_(timeoutKey);
 };
 
 
@@ -486,5 +531,5 @@ goog.testing.MockClock.prototype.clearInterval_ = function(timeoutKey) {
  */
 goog.testing.MockClock.prototype.cancelRequestAnimationFrame_ =
     function(timeoutKey) {
-  this.deletedKeys_[timeoutKey] = true;
+  this.clearTimeout_(timeoutKey);
 };

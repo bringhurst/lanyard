@@ -83,6 +83,18 @@ goog.string.caseInsensitiveEndsWith = function(str, suffix) {
 
 
 /**
+ * Case-insensitive equality checker.
+ * @param {string} str1 First string to check.
+ * @param {string} str2 Second string to check.
+ * @return {boolean} True if {@code str1} and {@code str2} are the same string,
+ *     ignoring case.
+ */
+goog.string.caseInsensitiveEquals = function(str1, str2) {
+  return str1.toLowerCase() == str2.toLowerCase();
+};
+
+
+/**
  * Does simple python-style string substitution.
  * subs("foo%s hot%s", "bar", "dog") becomes "foobar hotdog".
  * @param {string} str The string containing the pattern.
@@ -91,18 +103,18 @@ goog.string.caseInsensitiveEndsWith = function(str, suffix) {
  *     {@code %s} has been replaced an argument from {@code var_args}.
  */
 goog.string.subs = function(str, var_args) {
-  // This appears to be slow, but testing shows it compares more or less
-  // equivalent to the regex.exec method.
-  for (var i = 1; i < arguments.length; i++) {
-    // We cast to String in case an argument is a Function.  Replacing $&, for
-    // example, with $$$& stops the replace from subsituting the whole match
-    // into the resultant string.  $$$& in the first replace becomes $$& in the
-    //  second, which leaves $& in the resultant string.  Also:
-    // $$, $`, $', $n $nn
-    var replacement = String(arguments[i]).replace(/\$/g, '$$$$');
-    str = str.replace(/\%s/, replacement);
+  var splitParts = str.split('%s');
+  var returnString = '';
+
+  var subsArguments = Array.prototype.slice.call(arguments, 1);
+  while (subsArguments.length &&
+         // Replace up to the last split part. We are inserting in the
+         // positions between split parts.
+         splitParts.length > 1) {
+    returnString += splitParts.shift() + subsArguments.shift();
   }
-  return str;
+
+  return returnString + splitParts.join('%s'); // Join unused '%s'
 };
 
 
@@ -136,9 +148,10 @@ goog.string.isEmpty = function(str) {
 
 
 /**
- * Checks if a string is null, empty or contains only whitespaces.
+ * Checks if a string is null, undefined, empty or contains only whitespaces.
  * @param {*} str The string to check.
- * @return {boolean} True if{@code str} is null, empty, or whitespace only.
+ * @return {boolean} True if{@code str} is null, undefined, empty, or
+ *     whitespace only.
  */
 goog.string.isEmptySafe = function(str) {
   return goog.string.isEmpty(goog.string.makeSafe(str));
@@ -1173,7 +1186,7 @@ goog.string.createUniqueString = function() {
 
 
 /**
- * Converts the supplied string to a number, which may be Ininity or NaN.
+ * Converts the supplied string to a number, which may be Infinity or NaN.
  * This function strips whitespace: (toNumber(' 123') === 123)
  * This function accepts scientific notation: (toNumber('1e1') === 10)
  *
@@ -1189,6 +1202,34 @@ goog.string.toNumber = function(str) {
     return NaN;
   }
   return num;
+};
+
+
+/**
+ * Returns whether the given string is lower camel case (e.g. "isFooBar").
+ *
+ * Note that this assumes the string is entirely letters.
+ * @see http://en.wikipedia.org/wiki/CamelCase#Variations_and_synonyms
+ *
+ * @param {string} str String to test.
+ * @return {boolean} Whether the string is lower camel case.
+ */
+goog.string.isLowerCamelCase = function(str) {
+  return /^[a-z]+([A-Z][a-z]*)*$/.test(str);
+};
+
+
+/**
+ * Returns whether the given string is upper camel case (e.g. "FooBarBaz").
+ *
+ * Note that this assumes the string is entirely letters.
+ * @see http://en.wikipedia.org/wiki/CamelCase#Variations_and_synonyms
+ *
+ * @param {string} str String to test.
+ * @return {boolean} Whether the string is upper camel case.
+ */
+goog.string.isUpperCamelCase = function(str) {
+  return /^([A-Z][a-z]*)+$/.test(str);
 };
 
 
@@ -1262,3 +1303,76 @@ goog.string.toTitleCase = function(str, opt_delimiters) {
     return p1 + p2.toUpperCase();
   });
 };
+
+
+/**
+ * Parse a string in decimal or hexidecimal ('0xFFFF') form.
+ *
+ * To parse a particular radix, please use parseInt(string, radix) directly. See
+ * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/parseInt
+ *
+ * This is a wrapper for the built-in parseInt function that will only parse
+ * numbers as base 10 or base 16.  Some JS implementations assume strings
+ * starting with "0" are intended to be octal. ES3 allowed but discouraged
+ * this behavior. ES5 forbids it.  This function emulates the ES5 behavior.
+ *
+ * For more information, see Mozilla JS Reference: http://goo.gl/8RiFj
+ *
+ * @param {string|number|null|undefined} value The value to be parsed.
+ * @return {number} The number, parsed. If the string failed to parse, this
+ *     will be NaN.
+ */
+goog.string.parseInt = function(value) {
+  // Force finite numbers to strings.
+  if (isFinite(value)) {
+    value = String(value);
+  }
+
+  if (goog.isString(value)) {
+    // If the string starts with '0x' or '-0x', parse as hex.
+    return /^\s*-?0x/i.test(value) ?
+        parseInt(value, 16) : parseInt(value, 10);
+  }
+
+  return NaN;
+};
+
+
+/**
+ * Splits a string on a separator a limited number of times.
+ *
+ * This implementation is more similar to Python or Java, where the limit
+ * parameter specifies the maximum number of splits rather than truncating
+ * the number of results.
+ *
+ * See http://docs.python.org/2/library/stdtypes.html#str.split
+ * See JavaDoc: http://goo.gl/F2AsY
+ * See Mozilla reference: http://goo.gl/dZdZs
+ *
+ * @param {string} str String to split.
+ * @param {string} separator The separator.
+ * @param {number} limit The limit to the number of splits. The resulting array
+ *     will have a maximum length of limit+1.  Negative numbers are the same
+ *     as zero.
+ * @return {!Array.<string>} The string, split.
+ */
+
+goog.string.splitLimit = function(str, separator, limit) {
+  var parts = str.split(separator);
+  var returnVal = [];
+
+  // Only continue doing this while we haven't hit the limit and we have
+  // parts left.
+  while (limit > 0 && parts.length) {
+    returnVal.push(parts.shift());
+    limit--;
+  }
+
+  // If there are remaining parts, append them to the end.
+  if (parts.length) {
+    returnVal.push(parts.join(separator));
+  }
+
+  return returnVal;
+};
+

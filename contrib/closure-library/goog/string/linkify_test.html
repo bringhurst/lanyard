@@ -12,8 +12,8 @@ See the COPYING file for details.
 <script src="../base.js"></script>
 <script>
   goog.require('goog.string.linkify');
-  goog.require('goog.testing.jsunit');
   goog.require('goog.testing.dom');
+  goog.require('goog.testing.jsunit');
 </script>
 </head>
 <body>
@@ -157,6 +157,16 @@ function testUrlWithoutHttp() {
       'It\'s faster to type www.google.com without the http:// in front.',
       'It\'s faster to type <a href="http://www.google.com">www.google.com' +
           '<\/a> without the http:// in front.');
+}
+
+function testUrlHashBang() {
+  assertLinkify(
+      'URL with #!',
+      'Another test URL: ' +
+      'https://www.google.com/testurls/#!/page',
+      'Another test URL: ' +
+      '<a href="https://www.google.com/testurls/#!/page">' +
+      'https://www.google.com/testurls/#!/page<\/a>');
 }
 
 function testTextLooksLikeUrlWithoutHttp() {
@@ -308,52 +318,122 @@ function testLinkifyOptionsClassName() {
 }
 
 function testFindFirstUrlNoScheme() {
-  assertEquals(goog.string.linkify.findFirstUrl('www.google.com'), 'www.google.com');
+  assertEquals('www.google.com', goog.string.linkify.findFirstUrl(
+      'www.google.com'));
 }
 
 function testFindFirstUrlNoSchemeWithText() {
-  assertEquals(goog.string.linkify.findFirstUrl(
-      'prefix www.google.com something'), 'www.google.com');
+  assertEquals('www.google.com', goog.string.linkify.findFirstUrl(
+      'prefix www.google.com something'));
 }
 
 function testFindFirstUrlScheme() {
-  assertEquals(goog.string.linkify.findFirstUrl('http://www.google.com'),
-      'http://www.google.com');
+  assertEquals('http://www.google.com', goog.string.linkify.findFirstUrl(
+      'http://www.google.com'));
 }
 
 function testFindFirstUrlSchemeWithText() {
-  assertEquals(goog.string.linkify.findFirstUrl(
-      'prefix http://www.google.com something'), 'http://www.google.com');
+  assertEquals('http://www.google.com', goog.string.linkify.findFirstUrl(
+      'prefix http://www.google.com something'));
 }
 
 function testFindFirstUrlNoUrl() {
-  assertEquals(goog.string.linkify.findFirstUrl(
-      'ygvtfr676 5v68fk uygbt85F^&%^&I%FVvc .'), '');
+  assertEquals('', goog.string.linkify.findFirstUrl(
+      'ygvtfr676 5v68fk uygbt85F^&%^&I%FVvc .'));
 }
 
 function testFindFirstEmailNoScheme() {
-  assertEquals(goog.string.linkify.findFirstEmail('fake@google.com'),
-      'fake@google.com');
+  assertEquals('fake@google.com', goog.string.linkify.findFirstEmail(
+      'fake@google.com'));
 }
 
 function testFindFirstEmailNoSchemeWithText() {
-  assertEquals(goog.string.linkify.findFirstEmail(
-      'prefix fake@google.com something'), 'fake@google.com');
+  assertEquals('fake@google.com', goog.string.linkify.findFirstEmail(
+      'prefix fake@google.com something'));
 }
 
 function testFindFirstEmailScheme() {
-  assertEquals(goog.string.linkify.findFirstEmail('mailto:fake@google.com'),
-      'mailto:fake@google.com');
+  assertEquals('mailto:fake@google.com', goog.string.linkify.findFirstEmail(
+      'mailto:fake@google.com'));
 }
 
 function testFindFirstEmailSchemeWithText() {
-  assertEquals(goog.string.linkify.findFirstEmail(
-      'prefix mailto:fake@google.com something'), 'mailto:fake@google.com');
+  assertEquals('mailto:fake@google.com', goog.string.linkify.findFirstEmail(
+      'prefix mailto:fake@google.com something'));
 }
 
 function testFindFirstEmailNoUrl() {
-  assertEquals(goog.string.linkify.findFirstEmail(
-      'ygvtfr676 5v68fk uygbt85F^&%^&I%FVvc .'), '');
+  assertEquals('', goog.string.linkify.findFirstEmail(
+      'ygvtfr676 5v68fk uygbt85F^&%^&I%FVvc .'));
+}
+
+function testContainsPunctuation_parens() {
+  assertLinkify(
+      'Link contains parens, but does not end with them',
+      'www.google.com/abc(v1).html',
+      '<a href="http://www.google.com/abc(v1).html">' +
+          'www.google.com/abc(v1).html<\/a>');
+}
+
+function testEndsWithPunctuation() {
+  assertLinkify(
+      'Link ends with punctuation',
+      'Have you seen www.google.com? It\'s awesome.',
+      'Have you seen <a href="http://www.google.com">www.google.com<\/a>?' +
+      ' It\'s awesome.');
+}
+
+function testEndsWithPunctuation_closeParen() {
+  assertLinkify(
+      'Link inside parentheses',
+      '(For more info see www.googl.com)',
+      '(For more info see <a href="http://www.googl.com">www.googl.com<\/a>)');
+}
+
+function testEndsWithPunctuation_openParen() {
+  assertLinkify(
+      'Link followed by open parenthesis',
+      'www.google.com(',
+      '<a href="http://www.google.com(">www.google.com(<\/a>');
+}
+
+function testEndsWithPunctuation_angles() {
+  assertLinkify(
+      'Link inside angled brackets',
+      'Here is a bibliography entry <http://www.google.com/>',
+      'Here is a bibliography entry &lt;<a href="http://www.google.com/">' +
+          'http://www.google.com/<\/a>&gt;');
+}
+
+function testEndsWithPunctuation_closingPairThenSingle() {
+  assertLinkify(
+      'Link followed by closing punctuation pair then singular punctuation',
+      'Here is a bibliography entry <http://www.google.com/>, PTAL.',
+      'Here is a bibliography entry &lt;<a href="http://www.google.com/">' +
+          'http://www.google.com/<\/a>&gt;, PTAL.');
+}
+
+function testEndsWithPunctuation_ellipses() {
+  assertLinkify(
+      'Link followed by three dots',
+      'just look it up on www.google.com...',
+      'just look it up on <a href="http://www.google.com">www.google.com' +
+          '<\/a>...');
+}
+
+function testBracketsInUrl() {
+  assertLinkify(
+      'Link containing brackets',
+      'before http://google.com/details?answer[0]=42 after',
+      'before <a href="http://google.com/details?answer[0]=42">' +
+          'http://google.com/details?answer[0]=42<\/a> after');
+}
+
+function testUrlWithExclamation() {
+  assertLinkify(
+      'URL with exclamation points',
+      'This is awesome www.google.com!',
+      'This is awesome <a href="http://www.google.com">www.google.com<\/a>!');
 }
 
 </script>

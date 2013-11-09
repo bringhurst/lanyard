@@ -13,6 +13,7 @@ See the COPYING file for details.
   <script src="../base.js"></script>
   <script>
     goog.require('goog.events.Event');
+    goog.require('goog.events.EventId');
     goog.require('goog.events.EventTarget');
     goog.require('goog.testing.jsunit');
   </script>
@@ -39,17 +40,6 @@ See the COPYING file for details.
           e.currentTarget);
     }
 
-    function testDispose() {
-      assertFalse('Event must not have been disposed of', e.isDisposed());
-      e.dispose();
-      assertTrue('Event must have been disposed of', e.isDisposed());
-      assertUndefined('Event type must have been deleted', e.type);
-      assertUndefined('Event target reference must have been deleted',
-          e.target);
-      assertUndefined('Current target reference must have been deleted',
-          e.currentTarget);
-    }
-
     function testStopPropagation() {
       // This test breaks encapsulation because there is no public getter for
       // propagationStopped_.
@@ -71,6 +61,11 @@ See the COPYING file for details.
       assertFalse('Default action must not be prevented', e.defaultPrevented);
       e.preventDefault();
       assertTrue('Default action must be prevented', e.defaultPrevented);
+    }
+
+    function testEventId() {
+      e = new goog.events.Event(new goog.events.EventId('eventType'));
+      assertEquals('Event type must be as expected', 'eventType', e.type);
     }
   </script>
 </body>

@@ -45,6 +45,7 @@ See the COPYING file for details.
 
   function setUp() {
     stubs.set(goog.net, 'XhrIo', MockXhrIo);
+    goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT = true;
   }
 
   function tearDown() {
@@ -299,6 +300,96 @@ See the COPYING file for details.
     assertEquals(originalSetTimeout, window.setTimeout);
   }
 
+  function testSetContextPrefix() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setContextPrefix('baz.');
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals('trace=trace&baz.foo=bar', MockXhrIo.lastContent);
+  }
+
+  function testTruncationLimit() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setTruncationLimit(6);
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals('trace=', MockXhrIo.lastContent);
+  }
+
+  function testEnablePOSTBodySizeReporting() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setEnablePostBodySizeReporting(true);
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals('size=27&trace=trace&context.foo=bar', MockXhrIo.lastContent);
+  }
+
+  function testZeroTruncationLimit() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setTruncationLimit(0);
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals('', MockXhrIo.lastContent);
+  }
+
+  function testTruncationLimitLargerThanBody() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setTruncationLimit(9999);
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals('trace=trace&context.foo=bar', MockXhrIo.lastContent);
+  }
+
+  function testSetNegativeTruncationLimit() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    assertThrows(function() {
+      errorReporter.setTruncationLimit(-10);
+    });
+  }
+
+  function testSetTruncationLimitNull() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setTruncationLimit(null);
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals('trace=trace&context.foo=bar', MockXhrIo.lastContent);
+  }
+
+  function testAttemptAutoProtectWithAllowAutoProtectOff() {
+    goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT = false;
+    assertThrows(function() {
+      errorReporter = new goog.debug.ErrorReporter(
+          '/log', function(e, context) {}, false);
+    });
+  }
+
+  function testSetAdditionalArgumentsArgsEmptyObject() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setAdditionalArguments({});
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals('/log?script=filename.js&error=message&line=123',
+        MockXhrIo.lastUrl);
+  }
+
+  function testSetAdditionalArgumentsSingleArgument() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setAdditionalArguments({'extra': 'arg'});
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals('/log?script=filename.js&error=message&line=123&extra=arg',
+        MockXhrIo.lastUrl);
+  }
+
+  function testSetAdditionalArgumentsMultipleArguments() {
+    errorReporter = new goog.debug.ErrorReporter('/log');
+    errorReporter.setAdditionalArguments({'extra': 'arg', 'cat': 'dog'});
+    errorReporter.sendErrorReport(
+        'message', 'filename.js', 123, 'trace', {"foo": "bar"});
+    assertEquals(
+        '/log?script=filename.js&error=message&line=123&extra=arg&cat=dog',
+        MockXhrIo.lastUrl);
+  }
 </script>
 </body>
 </html>

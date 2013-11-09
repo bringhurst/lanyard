@@ -35,6 +35,7 @@ goog.require('goog.ui.Component');
  * @param {goog.dom.DomHelper=} opt_domHelper An optional dom helper.
  * @constructor
  * @extends {goog.ui.Component}
+ * @final
  */
 goog.debug.FpsDisplay = function(opt_domHelper) {
   goog.base(this, opt_domHelper);
@@ -84,8 +85,10 @@ goog.debug.FpsDisplay.prototype.enterDocument = function() {
  * @private
  */
 goog.debug.FpsDisplay.prototype.handleDelay_ = function(now) {
-  this.animation_.onAnimationFrame(now);
-  this.delay_.start();
+  if (this.isInDocument()) {
+    this.animation_.onAnimationFrame(now);
+    this.delay_.start();
+  }
 };
 
 

@@ -29,7 +29,6 @@ goog.provide('goog.debug.FancyWindow');
 goog.require('goog.debug.DebugWindow');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
-goog.require('goog.debug.Logger.Level');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -73,14 +72,9 @@ goog.debug.FancyWindow.HAS_LOCAL_STORE = (function() {
 goog.debug.FancyWindow.LOCAL_STORE_PREFIX = 'fancywindow.sel.';
 
 
-/**
- * Write to the log and maybe scroll into view
- * @param {string} html HTML to post to the log.
- * @protected
- * @suppress {underscore}
- */
-goog.debug.FancyWindow.prototype.writeBufferToLog_ = function(html) {
-  this.lastCall_ = goog.now();
+/** @override */
+goog.debug.FancyWindow.prototype.writeBufferToLog = function() {
+  this.lastCall = goog.now();
   if (this.hasActiveWindow()) {
     var logel = this.dh_.getElement('log');
 
@@ -88,12 +82,12 @@ goog.debug.FancyWindow.prototype.writeBufferToLog_ = function(html) {
     var scroll =
         logel.scrollHeight - (logel.scrollTop + logel.offsetHeight) <= 100;
 
-    for (var i = 0; i < this.outputBuffer_.length; i++) {
+    for (var i = 0; i < this.outputBuffer.length; i++) {
       var div = this.dh_.createDom('div', 'logmsg');
-      div.innerHTML = this.outputBuffer_[i];
+      div.innerHTML = this.outputBuffer[i];
       logel.appendChild(div);
     }
-    this.outputBuffer_.length = 0;
+    this.outputBuffer.length = 0;
     this.resizeStuff_();
 
     if (scroll) {
@@ -103,22 +97,18 @@ goog.debug.FancyWindow.prototype.writeBufferToLog_ = function(html) {
 };
 
 
-/**
- * Writes the initial HTML of the debug window
- * @protected
- * @suppress {underscore}
- */
-goog.debug.FancyWindow.prototype.writeInitialDocument_ = function() {
+/** @override */
+goog.debug.FancyWindow.prototype.writeInitialDocument = function() {
   if (!this.hasActiveWindow()) {
     return;
   }
 
-  var doc = this.win_.document;
+  var doc = this.win.document;
   doc.open();
   doc.write(this.getHtml_());
   doc.close();
 
-  (goog.userAgent.IE ? doc.body : this.win_).onresize =
+  (goog.userAgent.IE ? doc.body : this.win).onresize =
       goog.bind(this.resizeStuff_, this);
 
   // Create a dom helper for the logging window
@@ -130,11 +120,11 @@ goog.debug.FancyWindow.prototype.writeInitialDocument_ = function() {
   this.dh_.getElement('closebutton').onclick =
       goog.bind(this.closeOptions_, this);
   this.dh_.getElement('clearbutton').onclick =
-      goog.bind(this.clear_, this);
+      goog.bind(this.clear, this);
   this.dh_.getElement('exitbutton').onclick =
       goog.bind(this.exit_, this);
 
-  this.writeSavedMessages_();
+  this.writeSavedMessages();
 };
 
 
@@ -234,15 +224,13 @@ goog.debug.FancyWindow.prototype.resizeStuff_ = function() {
  */
 goog.debug.FancyWindow.prototype.exit_ = function(e) {
   this.setEnabled(false);
-  if (this.win_) {
-    this.win_.close();
+  if (this.win) {
+    this.win.close();
   }
 };
 
 
-/**
- * @return {string} The style rule text, for inclusion in the initial HTML.
- */
+/** @override */
 goog.debug.FancyWindow.prototype.getStyleRules = function() {
   return goog.base(this, 'getStyleRules') +
       'html,body{height:100%;width:100%;margin:0px;padding:0px;' +
@@ -276,12 +264,12 @@ goog.debug.FancyWindow.prototype.getHtml_ = function() {
   return '' +
       '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"' +
       '"http://www.w3.org/TR/html4/loose.dtd">' +
-      '<html><head><title>Logging: ' + this.identifier_ + '</title>' +
+      '<html><head><title>Logging: ' + this.identifier + '</title>' +
       '<style>' + this.getStyleRules() + '</style>' +
       '</head><body>' +
       '<div id="log" style="overflow:auto"></div>' +
       '<div id="head">' +
-      '<p><b>Logging: ' + this.identifier_ + '</b></p><p>' +
+      '<p><b>Logging: ' + this.identifier + '</b></p><p>' +
       this.welcomeMessage + '</p>' +
       '<span id="clearbutton">clear</span>' +
       '<span id="exitbutton">exit</span>' +

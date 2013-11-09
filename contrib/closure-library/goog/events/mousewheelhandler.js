@@ -32,10 +32,12 @@ goog.provide('goog.events.MouseWheelEvent');
 goog.provide('goog.events.MouseWheelHandler');
 goog.provide('goog.events.MouseWheelHandler.EventType');
 
+goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.math');
+goog.require('goog.style');
 goog.require('goog.userAgent');
 
 
@@ -43,12 +45,14 @@ goog.require('goog.userAgent');
 /**
  * This event handler allows you to catch mouse wheel events in a consistent
  * manner.
- * @param {Element|Document} element  The element to listen to the mouse wheel
+ * @param {Element|Document} element The element to listen to the mouse wheel
  *     event on.
+ * @param {boolean=} opt_capture Whether to handle the mouse wheel event in
+ *     capture phase.
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-goog.events.MouseWheelHandler = function(element) {
+goog.events.MouseWheelHandler = function(element, opt_capture) {
   goog.events.EventTarget.call(this);
 
   /**
@@ -58,14 +62,25 @@ goog.events.MouseWheelHandler = function(element) {
    */
   this.element_ = element;
 
+  var rtlElement = goog.dom.isElement(this.element_) ?
+      /** @type {Element} */ (this.element_) :
+      (this.element_ ? /** @type {Document} */ (this.element_).body : null);
+
+  /**
+   * True if the element exists and is RTL, false otherwise.
+   * @type {boolean}
+   * @private
+   */
+  this.isRtl_ = !!rtlElement && goog.style.isRightToLeft(rtlElement);
+
   var type = goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel';
 
   /**
    * The key returned from the goog.events.listen.
-   * @type {?number}
+   * @type {goog.events.Key}
    * @private
    */
-  this.listenKey_ = goog.events.listen(this.element_, type, this);
+  this.listenKey_ = goog.events.listen(this.element_, type, this, opt_capture);
 };
 goog.inherits(goog.events.MouseWheelHandler, goog.events.EventTarget);
 
@@ -126,7 +141,7 @@ goog.events.MouseWheelHandler.prototype.handleEvent = function(e) {
     var wheelDeltaScaleFactor = 1;
     if (goog.userAgent.IE ||
         goog.userAgent.WEBKIT &&
-        (goog.userAgent.WINDOWS || goog.userAgent.isVersion('532.0'))) {
+        (goog.userAgent.WINDOWS || goog.userAgent.isVersionOrHigher('532.0'))) {
       // In IE we get a multiple of 120; we adjust to a multiple of 3 to
       // represent number of lines scrolled (like Gecko).
       // Newer versions of Webkit match IE behavior, and WebKit on
@@ -179,12 +194,12 @@ goog.events.MouseWheelHandler.prototype.handleEvent = function(e) {
   // Don't clamp 'detail', since it could be ambiguous which axis it refers to
   // and because it's informally deprecated anyways.
 
-  var newEvent = new goog.events.MouseWheelEvent(detail, be, deltaX, deltaY);
-  try {
-    this.dispatchEvent(newEvent);
-  } finally {
-    newEvent.dispose();
+  // For horizontal scrolling we need to flip the value for RTL grids.
+  if (this.isRtl_) {
+    deltaX = -deltaX;
   }
+  var newEvent = new goog.events.MouseWheelEvent(detail, be, deltaX, deltaY);
+  this.dispatchEvent(newEvent);
 };
 
 
@@ -226,7 +241,7 @@ goog.events.MouseWheelHandler.smartScale_ = function(mouseWheelDelta,
 goog.events.MouseWheelHandler.prototype.disposeInternal = function() {
   goog.events.MouseWheelHandler.superClass_.disposeInternal.call(this);
   goog.events.unlistenByKey(this.listenKey_);
-  delete this.listenKey_;
+  this.listenKey_ = null;
 };
 
 
@@ -243,6 +258,7 @@ goog.events.MouseWheelHandler.prototype.disposeInternal = function() {
  *     direction.
  * @constructor
  * @extends {goog.events.BrowserEvent}
+ * @final
  */
 goog.events.MouseWheelEvent = function(detail, browserEvent, deltaX, deltaY) {
   goog.events.BrowserEvent.call(this, browserEvent);

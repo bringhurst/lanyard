@@ -245,6 +245,7 @@ goog.fx.Animation.prototype.lastFrame = null;
  * @param {boolean=} opt_restart Whether to restart the
  *     animation from the beginning if it has been paused.
  * @return {boolean} Whether animation was started.
+ * @override
  */
 goog.fx.Animation.prototype.play = function(opt_restart) {
   if (opt_restart || this.isStopped()) {
@@ -287,13 +288,15 @@ goog.fx.Animation.prototype.play = function(opt_restart) {
 
 /**
  * Stops the animation.
- * @param {boolean} gotoEnd If true the animation will move to the end coords.
+ * @param {boolean=} opt_gotoEnd If true the animation will move to the
+ *     end coords.
+ * @override
  */
-goog.fx.Animation.prototype.stop = function(gotoEnd) {
+goog.fx.Animation.prototype.stop = function(opt_gotoEnd) {
   goog.fx.anim.unregisterAnimation(this);
   this.setStateStopped();
 
-  if (gotoEnd) {
+  if (!!opt_gotoEnd) {
     this.progress = 1;
   }
 
@@ -306,6 +309,7 @@ goog.fx.Animation.prototype.stop = function(gotoEnd) {
 
 /**
  * Pauses the animation (iff it's playing).
+ * @override
  */
 goog.fx.Animation.prototype.pause = function() {
   if (this.isPlaying()) {
@@ -313,6 +317,15 @@ goog.fx.Animation.prototype.pause = function() {
     this.setStatePaused();
     this.onPause();
   }
+};
+
+
+/**
+ * @return {number} The current progress of the animation, the number
+ *     is between 0 and 1 inclusive.
+ */
+goog.fx.Animation.prototype.getProgress = function() {
+  return this.progress;
 };
 
 
@@ -358,7 +371,7 @@ goog.fx.Animation.prototype.destroy = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.Animation.prototype.onAnimationFrame = function(now) {
   this.cycle(now);
 };
@@ -484,7 +497,7 @@ goog.fx.AnimationEvent = function(type, anim) {
    * The current progress.
    * @type {number}
    */
-  this.progress = anim.progress;
+  this.progress = anim.getProgress();
 
   /**
    * Frames per second so far.

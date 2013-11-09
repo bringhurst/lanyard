@@ -31,6 +31,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyNames');
 goog.require('goog.object');
+goog.require('goog.userAgent');
 
 
 
@@ -83,6 +84,14 @@ goog.ui.KeyboardShortcutHandler = function(keyTarget) {
       goog.ui.KeyboardShortcutHandler.DEFAULT_GLOBAL_KEYS_);
 
   /**
+   * List of input types that should only accept ENTER as a shortcut.
+   * @type {Object}
+   * @private
+   */
+  this.textInputs_ = goog.object.createSet(
+      goog.ui.KeyboardShortcutHandler.DEFAULT_TEXT_INPUTS_);
+
+  /**
    * Whether to always prevent the default action if a shortcut event is fired.
    * @type {boolean}
    * @private
@@ -112,6 +121,14 @@ goog.ui.KeyboardShortcutHandler = function(keyTarget) {
    * @private
    */
   this.modifierShortcutsAreGlobal_ = true;
+
+  /**
+   * Whether to treat space key as a shortcut when the focused element is a
+   * checkbox, radiobutton or button.
+   * @type {boolean}
+   * @private
+   */
+  this.allowSpaceKeyOnButtons_ = false;
 
   this.initializeKeyListener(keyTarget);
 };
@@ -159,6 +176,30 @@ goog.ui.KeyboardShortcutHandler.DEFAULT_GLOBAL_KEYS_ = [
   goog.events.KeyCodes.F11,
   goog.events.KeyCodes.F12,
   goog.events.KeyCodes.PAUSE
+];
+
+
+/**
+ * Text input types to allow only ENTER shortcuts.
+ * Web Forms 2.0 for HTML5: Section 4.10.7 from 29 May 2012.
+ * @type {Array.<string>}
+ * @private
+ */
+goog.ui.KeyboardShortcutHandler.DEFAULT_TEXT_INPUTS_ = [
+  'color',
+  'date',
+  'datetime',
+  'datetime-local',
+  'email',
+  'month',
+  'number',
+  'password',
+  'search',
+  'tel',
+  'text',
+  'time',
+  'url',
+  'week'
 ];
 
 
@@ -339,6 +380,18 @@ goog.ui.KeyboardShortcutHandler.prototype.getModifierShortcutsAreGlobal =
 
 
 /**
+ * Sets whether to treat space key as a shortcut when the focused element is a
+ * checkbox, radiobutton or button.
+ * @param {boolean} allowSpaceKeyOnButtons Whether to treat space key as a
+ *     shortcut when the focused element is a checkbox, radiobutton or button.
+ */
+goog.ui.KeyboardShortcutHandler.prototype.setAllowSpaceKeyOnButtons = function(
+    allowSpaceKeyOnButtons) {
+  this.allowSpaceKeyOnButtons_ = allowSpaceKeyOnButtons;
+};
+
+
+/**
  * Registers a keyboard shortcut.
  * @param {string} identifier Identifier for the task performed by the keyboard
  *                 combination. Multiple shortcuts can be provided for the same
@@ -496,7 +549,7 @@ goog.ui.KeyboardShortcutHandler.prototype.setGlobalKeys = function(keys) {
 
 
 /**
- * @return {Array.<number>} The global keys, i.e. keys that are safe to always
+ * @return {Array.<string>} The global keys, i.e. keys that are safe to always
  *     regard as shortcuts, even if entered in a textarea or input field.
  */
 goog.ui.KeyboardShortcutHandler.prototype.getGlobalKeys = function() {
@@ -583,7 +636,7 @@ goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener =
   // In this case we capture the keyup (which is fired) and fake as
   // if the user had pressed the key to begin with.
   if (goog.userAgent.MAC &&
-      goog.userAgent.GECKO && goog.userAgent.isVersion('1.8')) {
+      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.8')) {
     goog.events.listen(this.keyTarget_, goog.events.EventType.KEYUP,
         this.handleMacGeckoKeyUp_, false, this);
   }
@@ -692,7 +745,7 @@ goog.ui.KeyboardShortcutHandler.prototype.clearKeyListener = function() {
   goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYDOWN,
       this.handleKeyDown_, false, this);
   if (goog.userAgent.MAC &&
-      goog.userAgent.GECKO && goog.userAgent.isVersion('1.8')) {
+      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.8')) {
     goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYUP,
         this.handleMacGeckoKeyUp_, false, this);
   }
@@ -950,12 +1003,18 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
     return true;
   }
   // Allow ENTER to be used as shortcut for text inputs.
-  if (el.tagName == 'INPUT' && (el.type == 'text' || el.type == 'password')) {
+  if (el.tagName == 'INPUT' && this.textInputs_[el.type]) {
     return keyCode == goog.events.KeyCodes.ENTER;
   }
   // Checkboxes, radiobuttons and buttons. Allow all but SPACE as shortcut.
   if (el.tagName == 'INPUT' || el.tagName == 'BUTTON') {
-    return keyCode != goog.events.KeyCodes.SPACE;
+    // TODO(gboyer): If more flexibility is needed, create protected helper
+    // methods for each case (e.g. button, input, etc).
+    if (this.allowSpaceKeyOnButtons_) {
+      return true;
+    } else {
+      return keyCode != goog.events.KeyCodes.SPACE;
+    }
   }
   // Don't allow any additional shortcut keys for textareas or selects.
   return false;
@@ -971,6 +1030,7 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
  *     event originated from.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.ui.KeyboardShortcutEvent = function(type, identifier, target) {
   goog.events.Event.call(this, type, target);

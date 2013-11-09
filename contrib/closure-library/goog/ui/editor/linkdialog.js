@@ -23,25 +23,21 @@ goog.provide('goog.ui.editor.LinkDialog.EventType');
 goog.provide('goog.ui.editor.LinkDialog.OkEvent');
 
 goog.require('goog.dom');
-goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
-goog.require('goog.dom.selection');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Link');
 goog.require('goog.editor.focus');
-goog.require('goog.events');
+goog.require('goog.editor.node');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
-goog.require('goog.events.InputHandler.EventType');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.Button');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.LinkButtonRenderer');
 goog.require('goog.ui.editor.AbstractDialog');
-goog.require('goog.ui.editor.AbstractDialog.Builder');
-goog.require('goog.ui.editor.AbstractDialog.EventType');
 goog.require('goog.ui.editor.TabPane');
 goog.require('goog.ui.editor.messages');
 goog.require('goog.userAgent');
@@ -56,6 +52,7 @@ goog.require('goog.window');
  * @param {goog.editor.Link} link The target link.
  * @constructor
  * @extends {goog.ui.editor.AbstractDialog}
+ * @final
  */
 goog.ui.editor.LinkDialog = function(domHelper, link) {
   goog.base(this, domHelper);
@@ -91,6 +88,7 @@ goog.ui.editor.LinkDialog.EventType = {
  *     attribute.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.editor.LinkDialog.OkEvent = function(
     linkText, linkUrl, openInNewWindow, noFollow) {
@@ -123,12 +121,14 @@ goog.ui.editor.LinkDialog.OkEvent = function(
 goog.inherits(goog.ui.editor.LinkDialog.OkEvent, goog.events.Event);
 
 
+
 /**
  * Event fired before testing a link by opening it in another window.
  * Calling preventDefault will stop the link from being opened.
  * @param {string} url Url of the link being tested.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.editor.LinkDialog.BeforeTestLinkEvent = function(url) {
   goog.base(this, goog.ui.editor.LinkDialog.EventType.BEFORE_TEST_LINK);
@@ -340,6 +340,9 @@ goog.ui.editor.LinkDialog.prototype.disposeInternal = function() {
   this.eventHandler_.dispose();
   this.eventHandler_ = null;
 
+  this.tabPane_.dispose();
+  this.tabPane_ = null;
+
   this.urlInputHandler_.dispose();
   this.urlInputHandler_ = null;
   this.emailInputHandler_.dispose();
@@ -485,10 +488,12 @@ goog.ui.editor.LinkDialog.prototype.createDialogContent_ = function() {
   this.tabPane_.addTab(goog.ui.editor.LinkDialog.Id_.ON_WEB_TAB,
       goog.ui.editor.messages.MSG_ON_THE_WEB,
       goog.ui.editor.messages.MSG_ON_THE_WEB_TIP,
+      goog.ui.editor.LinkDialog.BUTTON_GROUP_,
       this.buildTabOnTheWeb_());
   this.tabPane_.addTab(goog.ui.editor.LinkDialog.Id_.EMAIL_ADDRESS_TAB,
       goog.ui.editor.messages.MSG_EMAIL_ADDRESS,
       goog.ui.editor.messages.MSG_EMAIL_ADDRESS_TIP,
+      goog.ui.editor.LinkDialog.BUTTON_GROUP_,
       this.buildTabEmailAddress_());
   this.tabPane_.render(content);
 
@@ -592,8 +597,10 @@ goog.ui.editor.LinkDialog.prototype.buildTabOnTheWeb_ = function() {
   var headingDiv = this.dom.createDom(goog.dom.TagName.DIV,
       {innerHTML: '<b>' + goog.ui.editor.messages.MSG_WHAT_URL + '</b>'});
   var urlInput = this.dom.createDom(goog.dom.TagName.INPUT,
-      {id: goog.ui.editor.LinkDialog.Id_.ON_WEB_INPUT,
-       className: goog.ui.editor.LinkDialog.TARGET_INPUT_CLASSNAME_});
+      {
+        id: goog.ui.editor.LinkDialog.Id_.ON_WEB_INPUT,
+        className: goog.ui.editor.LinkDialog.TARGET_INPUT_CLASSNAME_
+      });
   // IE throws on unknown values for type.
   if (!goog.userAgent.IE) {
     // On browsers that support Web Forms 2.0, allow autocompletion of URLs.
@@ -624,8 +631,10 @@ goog.ui.editor.LinkDialog.prototype.buildTabOnTheWeb_ = function() {
 
   // Build the "On the web" explanation text div.
   var explanationDiv = this.dom.createDom(goog.dom.TagName.DIV,
-      {className: goog.ui.editor.LinkDialog.EXPLANATION_TEXT_CLASSNAME_,
-       innerHTML: goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION});
+      {
+        className: goog.ui.editor.LinkDialog.EXPLANATION_TEXT_CLASSNAME_,
+        innerHTML: goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION
+      });
   onTheWebDiv.appendChild(headingDiv);
   onTheWebDiv.appendChild(inputDiv);
   onTheWebDiv.appendChild(explanationDiv);
@@ -646,8 +655,10 @@ goog.ui.editor.LinkDialog.prototype.buildTabEmailAddress_ = function() {
       {innerHTML: '<b>' + goog.ui.editor.messages.MSG_WHAT_EMAIL + '</b>'});
   goog.dom.appendChild(emailTab, headingDiv);
   var emailInput = this.dom.createDom(goog.dom.TagName.INPUT,
-      {id: goog.ui.editor.LinkDialog.Id_.EMAIL_ADDRESS_INPUT,
-       className: goog.ui.editor.LinkDialog.TARGET_INPUT_CLASSNAME_});
+      {
+        id: goog.ui.editor.LinkDialog.Id_.EMAIL_ADDRESS_INPUT,
+        className: goog.ui.editor.LinkDialog.TARGET_INPUT_CLASSNAME_
+      });
 
   if (goog.editor.BrowserFeature.NEEDS_99_WIDTH_IN_STANDARDS_MODE &&
       goog.editor.node.isStandardsMode(emailInput)) {
@@ -664,15 +675,18 @@ goog.ui.editor.LinkDialog.prototype.buildTabEmailAddress_ = function() {
 
   goog.dom.appendChild(emailTab,
       this.dom.createDom(goog.dom.TagName.DIV,
-          {id: goog.ui.editor.LinkDialog.Id_.EMAIL_WARNING,
-           className: goog.ui.editor.LinkDialog.EMAIL_WARNING_CLASSNAME_,
-           style: 'visibility:hidden'},
-          goog.ui.editor.messages.MSG_INVALID_EMAIL));
+          {
+            id: goog.ui.editor.LinkDialog.Id_.EMAIL_WARNING,
+            className: goog.ui.editor.LinkDialog.EMAIL_WARNING_CLASSNAME_,
+            style: 'visibility:hidden'
+          }, goog.ui.editor.messages.MSG_INVALID_EMAIL));
 
   if (this.emailWarning_) {
     var explanationDiv = this.dom.createDom(goog.dom.TagName.DIV,
-        {className: goog.ui.editor.LinkDialog.EXPLANATION_TEXT_CLASSNAME_,
-         innerHTML: this.emailWarning_});
+        {
+          className: goog.ui.editor.LinkDialog.EXPLANATION_TEXT_CLASSNAME_,
+          innerHTML: this.emailWarning_
+        });
     goog.dom.appendChild(emailTab, explanationDiv);
   }
   return emailTab;
@@ -1016,6 +1030,14 @@ goog.ui.editor.LinkDialog.Id_ = {
   EMAIL_WARNING: 'linkdialog-email-warning',
   TAB_INPUT_SUFFIX: '-tab-input'
 };
+
+
+/**
+ * Base name for the radio buttons group.
+ * @type {string}
+ * @private
+ */
+goog.ui.editor.LinkDialog.BUTTON_GROUP_ = 'linkdialog-buttons';
 
 
 /**
