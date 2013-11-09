@@ -35,6 +35,10 @@
         <arg line='-p "${closure-library.dir}"' />
         <arg line="-o @{outputmode}" />
         <arg line='-c "@{compilerjarfile}"' />
+
+        <!-- Manually add deps.js because it doesn't have any goog.require statements. -->
+        <arg line='-i "${closure-library.dir}/goog/deps.js"' />
+
         <!-- <arg line='-f "- -create_source_map=${build.dir}/inspector.map"' /> -->
         <arg line='-f "--compilation_level=@{compilationlevel}"' />
 
